@@ -1,0 +1,22 @@
+{
+  "name": "jlint",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "acorn": "^8.8.2",
+    "commander": "^10.0.1",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.21.5",
+    "@babel/core": "^7.21.8",
+    "@babel/preset-env": "^7.21.5",
+    "@types/estree": "^1.0.1",
+    "@types/node": "^18.16.3",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.4"
+  }
+}

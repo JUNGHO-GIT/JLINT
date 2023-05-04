@@ -1,0 +1,26 @@
+# IDE
+.idea/
+.vscode/
+.settings/
+
+# Compiled output
+/target/
+/build/
+/classes/
+/*.class
+
+# node
+node_modules/
+
+# Log files
+/logs/
+*.log
+*.properties
+
+# Gradle specific
+.gradle/
+/build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Spring Boot specific
+/maven-wrapper/
