@@ -4,15 +4,16 @@ class JsRules {
 
   // 1. data -------------------------------------------------------------------------------------->
   public data() {
+
     const readInit = new readFile();
-    const dataFile = readInit.readFile();
+    const dataFile = readInit.main();
     const data = dataFile.toString().split("\n");
 
     return data;
   }
 
   // 2. main -------------------------------------------------------------------------------------->
-  public jsRules() {
+  public main() {
     const data = this.data();
 
     const trueResult = [" = "];
@@ -34,7 +35,7 @@ class JsRules {
   public outPut() {
     try {
       console.log("_____________________");
-      const results = this.jsRules();
+      const results = this.main();
       results.forEach((result) => {
         console.log(result);
       });

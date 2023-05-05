@@ -1,7 +1,7 @@
 import ReadFile from "../components/Read";
 import RecognizeFile from "../components/Recognize";
-import JsRules from "../lang/JsRules";
 import CopyFile from "../components/Copy";
+import Controller from "../utils/Controller";
 
 class Main {
 
@@ -19,11 +19,10 @@ class Main {
     return recognizeFile;
   }
 
-  public rules() {
-    const jsRules = new JsRules();
-    const jsFile = jsRules.outPut();
+  public controller() {
+    const controller = new Controller();
 
-    return jsFile;
+    return controller;
   }
 
   public copy() {
@@ -37,7 +36,7 @@ class Main {
 
     this.read();
     this.recognize();
-    this.rules();
+    this.controller();
     this.copy();
   }
 }

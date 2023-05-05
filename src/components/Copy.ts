@@ -1,9 +1,10 @@
 import fs from "fs";
 import path from "path";
+import {Rules} from "../logic/Rules";
 
 const filePath = process.argv[2];
 
-class Copy {
+class Copy implements Rules {
 
   // 1. data -------------------------------------------------------------------------------------->
   public data(): string {
@@ -16,7 +17,7 @@ class Copy {
   }
 
   // 2. main -------------------------------------------------------------------------------------->
-  public copyFile(): string | Error {
+  public main(): string | Error {
     try {
       const destinationFile = this.data();
       return destinationFile;
@@ -29,7 +30,7 @@ class Copy {
   public outPut() {
     try {
       console.log("_____________________");
-      console.log("파일이 복사되었습니다 : ", this.copyFile());
+      console.log("파일이 복사되었습니다 : ",this.main());
     }
     catch (err) {
       console.log("_____________________");

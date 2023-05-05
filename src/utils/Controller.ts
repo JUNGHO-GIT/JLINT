@@ -1,10 +1,28 @@
-/* import fs from "fs";
-import path from "path";
 import Recognize from "../components/Recognize";
 
-const filePath = process.argv[2];
+class Controller {
 
-class Controller() {
+  public controller() {
 
-  const data = Recognize.recognizeFile();
- */
+    const languageArray = [
+      ".js",".ts",".json",".html",".css",".scss",".md",".java",".xml",".yml",".py",".sh",".bat",".c",".cpp",".cs",".go",".kt",".php",".rb",".rs",".scala",".swift",".vb"
+    ];
+
+    const recognizeInit = new Recognize();
+    const data = recognizeInit.main().toString();
+    for(const item of languageArray) {
+      if(data === item) {
+        const lang = item.replace(".","").replace(/^[a-z]/,(v) => v.toUpperCase()) + "Rules";
+        const langRulesModule = await import(`../lang/${lang}`);
+        const langRulesInit = new langRulesModule.main();
+        const langRulesResult = langRulesInit.outPut();
+
+        result = langRulesResult;
+      }
+    }
+
+    return result;
+  }
+}
+
+export default Controller;

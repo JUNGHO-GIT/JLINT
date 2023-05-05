@@ -1,8 +1,9 @@
 import path from "path";
+import {Rules} from "../logic/Rules";
 
 const filePath = process.argv[2];
 
-class Recognize {
+class Recognize implements Rules {
 
   // 1. data -------------------------------------------------------------------------------------->
   public data() {
@@ -12,7 +13,7 @@ class Recognize {
   }
 
   // 2. main -------------------------------------------------------------------------------------->
-  public recognizeFile(): string | Error {
+  public main(): string | Error {
     try {
       return this.data();
     }
@@ -25,7 +26,7 @@ class Recognize {
   public outPut() {
     try {
       console.log("_____________________");
-      console.log("확장자는",this.recognizeFile(),"입니다.");
+      console.log("확장자는",this.main(),"입니다.");
     }
     catch (err) {
       console.log("_____________________");
