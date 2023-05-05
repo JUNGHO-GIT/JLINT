@@ -1,65 +1,57 @@
-import fs from 'fs';
-import path from 'path';
-import acorn from 'acorn';
-import {BaseNode,AssignmentExpression} from 'estree';
+const fs = require("fs");
+const path = require("path");
+const abcd = require("./rules/lint/Js.ts");
 
-interface Problem {
-  message: string;
-  line: number;
-  column: number;
-}
+const filePath = process.argv[2];
 
-function lint(ast: BaseNode): Problem[] {
-  const problems: Problem[] = [];
-
-  function walk(node: BaseNode) {
-    if(node.type === 'AssignmentExpression') {
-      const assignmentNode = node as AssignmentExpression;
-      const {left,right,operator} = assignmentNode;
-
-      if(operator === '=') {
-        const leftRange = left.range as [number,number];
-        const rightRange = right.range as [number,number];
-
-        if(leftRange[1] + 1 !== rightRange[0]) {
-          problems.push({
-            message: '빈 공간이 없음: = 앞뒤로 빈 공간을 추가하세요.',
-            line: node.loc!.start.line,
-            column: node.loc!.start.column
-          });
+class Reader {
+  
+  public readFile() {
+    const data = fs.readFileSync(filePath, "utf8");
+    try {
+      console.log("_____________________");
+      console.log(data);
+      console.log("_____________________");
+      for (let i = 0; i < abcd.length; i++) {
+        const char = abcd[i];
+        const count = (data.match(new RegExp(char, "gi")) || []).length;
+        if (count > 0) {
+          console.log(`${char}가 ${count}번 포함됨`);
         }
       }
-    }
-
-    for(const key in node) {
-      const child = node[key as keyof BaseNode];
-      if(typeof child === 'object' && child !== null && 'type' in child) {
-        walk(child as BaseNode);
-      }
+      return data;
+    } 
+    catch (err) {
+      console.error(err);
+      return err;
     }
   }
 
-  walk(ast);
-
-  return problems;
-}
-
-// main 함수 추가
-async function main(file: string) {
-  const filePath = path.resolve(process.cwd(),file);
-  const code = fs.readFileSync(filePath,'utf-8');
-  const ast = acorn.parse(code,{ecmaVersion: 'latest',locations: true}) as BaseNode;
-  const problems = lint(ast);
-
-  if(problems.length === 0) {
-    console.log('린팅 완료: 문제 없음');
-  } else {
-    console.log(`린팅 완료: ${problems.length}개의 문제 발견`);
-    for(const problem of problems) {
-      console.log(`  ${problem.line}:${problem.column} - ${problem.message}`);
+  public copyFile() {
+    const ext = path.extname(filePath);
+    const basename = path.basename(filePath, ext);
+    const destinationFile = `${basename}-2${ext}`;
+    const data = fs.copyFileSync(filePath, destinationFile);
+    try {
+      console.log("_____________________");
+      console.log(`파일이 성공적으로 복사되었습니다: ${destinationFile}`);
+      console.log("_____________________");
+      return data;
+    }
+    catch (err) {
+      console.log("_____________________");
+      console.error("복사 중 오류 발생:", err);
+      console.log("_____________________");
+      return err;
     }
   }
+
+  static main() {
+    const reader = new Reader();
+    reader.readFile();
+    reader.copyFile();
+  }
+  
 }
 
-// 실행하기 위해 main 함수 호출
-main(process.argv[2]);
+Reader.main();
