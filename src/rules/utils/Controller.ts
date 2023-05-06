@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import Recognize from "../../components/Recognize";
 
 class Controller {
 
@@ -8,64 +7,48 @@ class Controller {
   private filePath = process.argv[2];
   private fileName = path.basename(__filename);
   private fileExt = path.extname(this.filePath);
-  private copyPath = this.filePath + "-2" + this.fileExt;
+  private copyPath = this.filePath.slice(0,-this.fileExt.length) + "-2" + this.fileExt;
 
-  // 1. data -------------------------------------------------------------------------------------->
-  public data() {
-    const data = new Recognize().main().toString();
-
-    try {
-      return data;
-    }
-    catch(err) {
-      return new Error();
-    }
+  // 1. common ------------------------------------------------------------------------------------>
+  public common() {
+    const commonArray = [
+      "Equal","Comma"
+    ];
+    const commonImport = commonArray.map((item) => require(`../common/${item}Rules`).default);
+    const commonInit = commonArray.map((item) => new commonImport[commonArray.indexOf(item)]());
+    const commonResult = commonInit.map((item) => item.output());
   }
 
   // 2. main -------------------------------------------------------------------------------------->
   public main() {
 
-    // 0. data
-    const data = this.data();
+    const langArray = [
+      ".java", ".js"
+    ];
 
-    const yesRecognize
-    = console.log(`\n_____________________\n "${data}" 파일의 언어를 인식할 수 있습니다.`);
-    const noRecognize
-    = console.log(`\n_____________________\n "${data}" 파일의 언어를 인식할 수 없습니다.`);
+    if(langArray.includes(this.fileExt)) {
+      const langUpper = langArray.map((item) => item.slice(1).toUpperCase());
+      const langImport = langArray.map((item) => require(`../main/${item.slice(1)}Rules`).default);
+      const langInit = langArray.map((item) => new langImport[langArray.indexOf(item)]());
+      const langResult = langInit.map((item) => item.output());
 
-    // 1. common rules
-    const commonArray = ["Equal","Comma"];
-    let commonImport = commonArray.map((item) => require(`../common/${item}Rules`).default);
-    let commonInit = commonArray.map((item) => new commonImport[commonArray.indexOf(item)]());
-    let commonResult = commonInit.map((item) => item.output());
-
-    // 2. lang rules
-    const lang = [".java",".js"];
-    const langArray = lang.map((item) => item.replace(".","").replace(/^[a-z]/,(v) => v.toUpperCase()));
-    let langIndex = lang.indexOf(path.extname(this.filePath));
-    let langResult = [];
-
-    // 3. result
-    if(langIndex !== -1) {
-      let langImport = langArray.map((item) => require(`../lang/${item}Rules`).default);
-      let langInit = langArray.map((item) => new langImport[lang.indexOf(item)]());
-      langResult = langInit.map((item) => item.output());
-      console.log(yesRecognize);
-      return [...commonResult, ...langResult];
+      return langResult;
     }
     else {
-      return [...commonResult, noRecognize];
+      return console.log("file type is not supported");
     }
-  }
 
+  }
 
   // 3. output ------------------------------------------------------------------------------------>
   public output() {
     try {
-      console.log(this.main());
+      console.log("_____________________\n" + this.fileName + "실행 \n :",this.main());
+      return this.main();
     }
     catch(err) {
-      console.log(new Error());
+      console.log("_____________________\n" + this.fileName + "에서 에러 발생  \n :",new Error());
+      return new Error();
     }
   }
 

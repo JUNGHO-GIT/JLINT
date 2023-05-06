@@ -8,7 +8,7 @@ class Copy implements Components {
   private filePath = process.argv[2];
   private fileName = path.basename(__filename);
   private fileExt = path.extname(this.filePath);
-  private copyPath = this.filePath + "-2" + this.fileExt;
+  private copyPath = this.filePath.slice(0, -this.fileExt.length) + "-2" + this.fileExt;
 
   // 1. data -------------------------------------------------------------------------------------->
   public data(): string | Error {

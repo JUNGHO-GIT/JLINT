@@ -8,13 +8,16 @@ class Recognize implements Components {
   private filePath = process.argv[2];
   private fileName = path.basename(__filename);
   private fileExt = path.extname(this.filePath);
-  private copyPath = this.filePath + "-2" + this.fileExt;
+  private copyPath = this.filePath.slice(0,-this.fileExt.length) + "-2" + this.fileExt;
 
   // 1. data -------------------------------------------------------------------------------------->
   public data() {
-    const data = path.extname(this.filePath);
-
-    return data;
+    try {
+      return path.extname(this.filePath);
+    }
+    catch(err) {
+      return new Error();
+    }
   }
 
   // 2. main -------------------------------------------------------------------------------------->
@@ -30,7 +33,7 @@ class Recognize implements Components {
   // 3. output ------------------------------------------------------------------------------------>
   public output() {
     try {
-      console.log("_____________________\n 확장자 이름 \n",this.main());
+      console.log("_____________________\n 확장자 이름 \n :",this.main());
       return this.main();
     }
     catch(err) {

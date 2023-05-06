@@ -7,42 +7,26 @@ import Controller from "../rules/utils/Controller";
 class Main {
 
   public readTitle() {
-    const read = new ReadTitle();
-    const readFile = read.output();
-
-    return readFile;
+    return new ReadTitle().output();
   }
 
   public copy() {
-    const copy = new Copy();
-    const copyFile = copy.output();
-
-    return copyFile;
+    return new Copy().output();
   }
 
   public readContents() {
-    const read = new ReadContents();
-    const readFile = read.output();
-
-    return readFile;
+    return new ReadContents().output();
   }
 
   public recognize() {
-    const recognize = new Recognize();
-    const recognizeFile = recognize.output();
-
-    return recognizeFile;
+    return new Recognize().output();
   }
 
   public controller() {
-    const controller = new Controller();
-    const controllerOutput = controller.output();
-
-    return controllerOutput;
+    return new Controller().output();
   }
 
   public async main() {
-
     this.readTitle();
     this.copy();
     this.readContents();

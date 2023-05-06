@@ -8,14 +8,12 @@ class ReadContents implements Components {
   private filePath = process.argv[2];
   private fileName = path.basename(__filename);
   private fileExt = path.extname(this.filePath);
-  private copyPath = this.filePath + "-2" + this.fileExt;
+  private copyPath = this.filePath.slice(0, -this.fileExt.length) + "-2" + this.fileExt;
 
   // 1. data -------------------------------------------------------------------------------------->
   public data(): string | Error {
-
     try {
-      const data = fs.readFileSync(this.copyPath,"utf-8").toString();
-      return data;
+      return fs.readFileSync(this.copyPath,"utf-8").toString();
     }
     catch(err) {
       return new Error();
@@ -35,7 +33,7 @@ class ReadContents implements Components {
   // 3. output ------------------------------------------------------------------------------------>
   public output() {
     try {
-      console.log("_____________________\n 파일 내용 \n", this.main());
+      console.log("_____________________\n 파일 내용 \n :", this.main());
       return this.main();
     }
     catch(err) {
