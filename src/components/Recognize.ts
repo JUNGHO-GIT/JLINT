@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import ReadTitle from "./ReadTitle";
 import {Components} from "../rules/interface/Components";
 
 class Recognize implements Components {
@@ -13,10 +14,10 @@ class Recognize implements Components {
   // 1. data -------------------------------------------------------------------------------------->
   public data() {
     try {
-      return path.extname(this.filePath);
+      return this.fileExt;
     }
     catch(err) {
-      return new Error();
+      return new Error(`확장자 이름을 읽을 수 없습니다. \n`);
     }
   }
 
@@ -33,12 +34,10 @@ class Recognize implements Components {
   // 3. output ------------------------------------------------------------------------------------>
   public output() {
     try {
-      console.log("_____________________\n 확장자 이름 \n :",this.main());
-      return this.main();
+      return console.log("\n_____________________\n 확장자 이름 : \n" + this.main());
     }
     catch(err) {
-      console.log("_____________________\n" + this.filePath + "에서 에러 발생 : \n", new Error());
-      return new Error();
+      return console.log(new Error());
     }
   }
 }

@@ -17,7 +17,7 @@ class Copy implements Components {
       return this.copyPath;
     }
     catch(err) {
-      return new Error();
+      return new Error(`파일을 복사할 수 없습니다. \n`);
     }
   }
 
@@ -34,12 +34,10 @@ class Copy implements Components {
   // 3. output ------------------------------------------------------------------------------------>
   public output() {
     try {
-      console.log("_____________________\n 파일 복사 \n :", this.main());
-      return this.main();
+      return console.log("\n_____________________\n 파일 복사 : \n" + this.main());
     }
     catch(err) {
-      console.log("_____________________\n" + this.filePath + "에서 에러 발생 : \n", new Error());
-      return new Error();
+      return console.log(new Error());
     }
   }
 }

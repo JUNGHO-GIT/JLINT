@@ -17,40 +17,41 @@ class EqualRules implements Common {
       return new ReadContents().main().toString();
     }
     catch(err) {
-      return new Error();
+      return new Error(`파일내용을 읽을 수 없습니다. \n`);
     }
   }
 
-  // 3. main ---------------------------------------------------------------------------------->
+  // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
 
-    const falseResult = " *[ ]*=/*[ ]*";
+    const falseResult1 = "\\b(?!/=)\\s*(===)\\s*\\b(?!/=)";
+    const falseResult2 = "\\b(?!/=)\\s*(==)\\s*\\b(?!/=)";
+    const falseResult3 = "\\b(?!/=)\\s*(=)\\s*\\b(?!/=)";
 
     const data = this.data();
     if(data instanceof Error) {
       return new Error();
     }
-
-    try {
-      const regExp = new RegExp(falseResult, "g");
-      let result = data.replace(regExp, " = ");
-      fs.writeFileSync(this.copyPath, result);
-      return result;
-    }
-    catch(err) {
-      return new Error();
+    else {
+      const regExp = new RegExp(falseResult1, "g");
+      const result1 = data.replace(regExp, " $1 ");
+      const regExp2 = new RegExp(falseResult2, "g");
+      const result2 = result1.replace(regExp2, " $1 ");
+      const regExp3 = new RegExp(falseResult3, "g");
+      const result3 = result2.replace(regExp3, " $1 ");
+      fs.writeFileSync(this.copyPath, result3);
+      return result3;
     }
   }
+
 
   // 3. output ------------------------------------------------------------------------------------>
   public output() {
     try {
-      console.log("_____________________\n" + this.fileName + "실행 \n : ", this.main());
-      return this.main();
+      return console.log("\n_____________________\n" + this.fileName + "실행 : \n" + this.main());
     }
     catch(err) {
-      console.log("_____________________\n" + this.fileName + "에서 에러 발생 \n : ", new Error());
-      return new Error();
+      return console.log(new Error());
     }
   }
 }

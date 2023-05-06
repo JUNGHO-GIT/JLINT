@@ -17,7 +17,7 @@ class CommaRules implements Common {
       return new ReadContents().main().toString();
     }
     catch(err) {
-      return new Error();
+      return new Error(`파일내용을 읽을 수 없습니다. \n`);
     }
   }
 
@@ -30,26 +30,26 @@ class CommaRules implements Common {
     if(data instanceof Error) {
       return new Error();
     }
-    try {
-      const regExp = new RegExp(falseResult, "g");
-      let result = data.replace(regExp, ", ");
-      fs.writeFileSync(this.copyPath, result);
-      return result;
-    }
-    catch(err) {
-      return new Error();
+    else {
+      try {
+        const regExp = new RegExp(falseResult, "g");
+        let result = data.replace(regExp, ", ");
+        fs.writeFileSync(this.copyPath, result);
+        return result;
+      }
+      catch(err) {
+        return new Error();
+      }
     }
   }
 
   // 3. output ------------------------------------------------------------------------------------>
   public output() {
     try {
-      console.log("_____________________\n" + this.fileName + "실행 \n :", this.main());
-      return this.main();
+      return console.log("\n_____________________\n" + this.fileName + "실행 : \n" + this.main());
     }
     catch(err) {
-      console.log("_____________________\n" + this.fileName + "에서 에러 발생  \n :", new Error());
-      return new Error();
+      return console.log(new Error());
     }
   }
 }

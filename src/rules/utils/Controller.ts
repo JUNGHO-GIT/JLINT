@@ -12,11 +12,12 @@ class Controller {
   // 1. common ------------------------------------------------------------------------------------>
   public common() {
     const commonArray = [
-      "Equal","Comma"
+      "Equal", "Comma", "Quote", "SemiColon"
     ];
     const commonImport = commonArray.map((item) => require(`../common/${item}Rules`).default);
     const commonInit = commonArray.map((item) => new commonImport[commonArray.indexOf(item)]());
-    const commonResult = commonInit.map((item) => item.output());
+
+    return commonInit.map((item) => item.output()).join("");
   }
 
   // 2. main -------------------------------------------------------------------------------------->
@@ -26,32 +27,23 @@ class Controller {
       ".java", ".js"
     ];
 
-    if(langArray.includes(this.fileExt)) {
-      const langUpper = langArray.map((item) => item.slice(1).toUpperCase());
-      const langImport = langArray.map((item) => require(`../main/${item.slice(1)}Rules`).default);
-      const langInit = langArray.map((item) => new langImport[langArray.indexOf(item)]());
-      const langResult = langInit.map((item) => item.output());
+    const langUpper = langArray.map((item) => item.slice(1).toUpperCase());
 
-      return langResult;
+    if(langArray.includes(this.fileExt)) {
+      const langImport = langUpper.map((item) => require(`../main/${item.slice(1)}Rules`).default);
+      const langInit = langUpper.map((item) => new langImport[langUpper.indexOf(item)]());
+      const langResult = langInit.map((item) => item.output()).join("");
+      return [langResult];
     }
     else {
-      return console.log("file type is not supported");
+      return [`해당 언어(${this.fileExt})는 지원하지 않습니다.`];
     }
-
   }
 
-  // 3. output ------------------------------------------------------------------------------------>
+  // 3. output ----------------------------------------------------------------------------------->
   public output() {
-    try {
-      console.log("_____________________\n" + this.fileName + "실행 \n :",this.main());
-      return this.main();
-    }
-    catch(err) {
-      console.log("_____________________\n" + this.fileName + "에서 에러 발생  \n :",new Error());
-      return new Error();
-    }
+    return console.log(`${this.common()} \n_____________________\n ${this.main()}`);
   }
-
 }
 
 export default Controller;
