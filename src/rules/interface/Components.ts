@@ -2,7 +2,7 @@ interface Components {
 
   data(): string | Error;
   main(): string | Error;
-  outPut(): void;
+  output(): void;
 }
 
 export {Components};

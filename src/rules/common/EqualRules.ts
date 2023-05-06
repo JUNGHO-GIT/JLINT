@@ -1,26 +1,21 @@
 import ReadContents from "../../components/ReadContents";
-import { Common } from "../interface/Common";
+import {Common} from "../interface/Common";
 import fs from "fs";
+import path from 'path';
 
 class EqualRules implements Common {
 
   // 0. path -------------------------------------------------------------------------------------->
   private filePath = process.argv[2];
-
-  private copyPath(): string {
-    const fileName = this.filePath.split(".")[0];
-    const fileExt = this.filePath.split(".")[1];
-
-    const copyPath = fileName + "-2." + fileExt;
-
-    return copyPath;
-  }
+  private fileName = path.basename(__filename);
+  private fileExt = path.extname(this.filePath);
+  private copyPath = this.filePath + "-2" + this.fileExt;
 
   // 1. data -------------------------------------------------------------------------------------->
-  public data(): string[] | Error {
+  public data(): string | Error {
 
     try {
-      const data = new ReadContents().main().toString().split("\n")
+      const data = new ReadContents().main().toString();
       return data;
     }
     catch(err) {
@@ -28,16 +23,10 @@ class EqualRules implements Common {
     }
   }
 
-  // 2. find() ------------------------------------------------------------------------------------>
-  public find(): string[] | Error {
+  // 3. main ---------------------------------------------------------------------------------->
+  public main(): string | Error {
 
-    const falseResult = [
-      /(?<=[a-zA-Z0-9])=(?=[a-zA-Z0-9])/,
-      /(?<=[a-zA-Z0-9]) =(?=[a-zA-Z0-9])/,
-      /(?<=[a-zA-Z0-9])= (?=[a-zA-Z0-9])/
-    ];
-
-    const result: string[] = [];
+    const falseResult = " *[ ]*=/*[ ]*";
 
     const data = this.data();
     if(data instanceof Error) {
@@ -45,11 +34,9 @@ class EqualRules implements Common {
     }
 
     try {
-      Array.from(data).forEach((param) => {
-        if(falseResult.some((regex) => regex.test(param))) {
-          result.push("False : " + param);
-        }
-      });
+      const regExp = new RegExp(falseResult, "g");
+      let result = data.replace(regExp, " = ");
+      fs.writeFileSync(this.copyPath, result);
       return result;
     }
     catch(err) {
@@ -57,64 +44,15 @@ class EqualRules implements Common {
     }
   }
 
-  // 3. update() ---------------------------------------------------------------------------------->
-  public update(): string[] | Error {
-
-    const falseResult = [
-      /(?<=[a-zA-Z0-9])=(?=[a-zA-Z0-9])/,
-      /(?<=[a-zA-Z0-9]) =(?=[a-zA-Z0-9])/,
-      /(?<=[a-zA-Z0-9])= (?=[a-zA-Z0-9])/
-    ];
-
-    const result:string[] = [];
-    const data = this.data();
-    if(data instanceof Error) {
-      return new Error();
-    }
-
+  // 3. output ------------------------------------------------------------------------------------>
+  public output() {
     try {
-      Array.from(data).forEach((param) => {
-        let updatedParam = param;
-        falseResult.forEach((regex) => {
-          if(regex.test(updatedParam)) {
-            updatedParam = updatedParam.replace(regex, " = ");
-          }
-        });
-        result.push(updatedParam);
-      });
-      fs.writeFileSync(this.copyPath(), result.join("\n"), "utf-8");
-      return result;
+      console.log("_____________________\n" + this.fileName + "실행 \n" + this.main());
+      return this.main();
     }
     catch(err) {
+      console.log("_____________________\n" + this.fileName + "에서 에러 발생 : \n",new Error());
       return new Error();
-    }
-  }
-
-  // 4. outPut ------------------------------------------------------------------------------------>
-  public outPut() {
-    try {
-      console.log("_____________________");
-      const results = this.find();
-      if(results instanceof Error) {
-        throw results;
-      }
-      results.forEach((result) => {
-        console.log(result);
-      });
-
-      console.log("_____________________");
-      console.log("Updated data:");
-      const updatedData = this.update();
-      if(updatedData instanceof Error) {
-        throw updatedData;
-      }
-      updatedData.forEach((line) => {
-        console.log(line);
-      });
-    }
-    catch(err) {
-      console.log("_____________________");
-      console.log("Error:", err);
     }
   }
 }

@@ -1,9 +1,8 @@
-interface Lang {
+interface Components {
 
-  data(): string[] | Error;
-  find(): string | Error;
-  update(): string | Error;
-  outPut(): void;
+  data(): string | Error;
+  main(): string | Error;
+  output(): void;
 }
 
-export {Lang};
+export {Components};

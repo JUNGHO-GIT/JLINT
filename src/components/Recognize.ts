@@ -1,3 +1,4 @@
+import fs from "fs";
 import path from "path";
 import {Components} from "../rules/interface/Components";
 
@@ -5,15 +6,9 @@ class Recognize implements Components {
 
   // 0. path -------------------------------------------------------------------------------------->
   private filePath = process.argv[2];
-
-  private copyPath(): string {
-    const fileName = this.filePath.split(".")[0];
-    const fileExt = this.filePath.split(".")[1];
-
-    const copyPath = fileName + "-2." + fileExt;
-
-    return copyPath;
-  }
+  private fileName = path.basename(__filename);
+  private fileExt = path.extname(this.filePath);
+  private copyPath = this.filePath + "-2" + this.fileExt;
 
   // 1. data -------------------------------------------------------------------------------------->
   public data() {
@@ -32,15 +27,15 @@ class Recognize implements Components {
     }
   }
 
-  // 3. outPut ------------------------------------------------------------------------------------>
-  public outPut() {
+  // 3. output ------------------------------------------------------------------------------------>
+  public output() {
     try {
-      console.log("_____________________");
-      console.log("확장자는",this.main(),"입니다.");
+      console.log("_____________________\n 확장자 이름 \n",this.main());
+      return this.main();
     }
-    catch (err) {
-      console.log("_____________________");
-      console.log(new Error());
+    catch(err) {
+      console.log("_____________________\n" + this.filePath + "에서 에러 발생 : \n", new Error());
+      return new Error();
     }
   }
 }

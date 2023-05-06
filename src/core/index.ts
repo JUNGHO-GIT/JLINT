@@ -8,35 +8,35 @@ class Main {
 
   public readTitle() {
     const read = new ReadTitle();
-    const readFile = read.outPut();
+    const readFile = read.output();
 
     return readFile;
   }
 
   public copy() {
     const copy = new Copy();
-    const copyFile = copy.outPut();
+    const copyFile = copy.output();
 
     return copyFile;
   }
 
   public readContents() {
     const read = new ReadContents();
-    const readFile = read.outPut();
+    const readFile = read.output();
 
     return readFile;
   }
 
   public recognize() {
     const recognize = new Recognize();
-    const recognizeFile = recognize.outPut();
+    const recognizeFile = recognize.output();
 
     return recognizeFile;
   }
 
   public controller() {
     const controller = new Controller();
-    const controllerOutput = controller.outPut();
+    const controllerOutput = controller.output();
 
     return controllerOutput;
   }

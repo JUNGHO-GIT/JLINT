@@ -6,21 +6,15 @@ class Copy implements Components {
 
   // 0. path -------------------------------------------------------------------------------------->
   private filePath = process.argv[2];
-
-  private copyPath(): string {
-    const fileName = this.filePath.split(".")[0];
-    const fileExt = this.filePath.split(".")[1];
-
-    const copyPath = fileName + "-2." + fileExt;
-
-    return copyPath;
-  }
+  private fileName = path.basename(__filename);
+  private fileExt = path.extname(this.filePath);
+  private copyPath = this.filePath + "-2" + this.fileExt;
 
   // 1. data -------------------------------------------------------------------------------------->
   public data(): string | Error {
     try {
-      fs.copyFileSync(this.filePath,this.copyPath());
-      return this.copyPath();
+      fs.copyFileSync(this.filePath, this.copyPath);
+      return this.copyPath;
     }
     catch(err) {
       return new Error();
@@ -37,15 +31,15 @@ class Copy implements Components {
     }
   }
 
-  // 3. outPut ------------------------------------------------------------------------------------>
-  public outPut() {
+  // 3. output ------------------------------------------------------------------------------------>
+  public output() {
     try {
-      console.log("_____________________");
-      console.log("파일이 복사되었습니다 :", this.main());
+      console.log("_____________________\n 파일 복사 \n :", this.main());
+      return this.main();
     }
     catch(err) {
-      console.log("_____________________");
-      console.log(new Error());
+      console.log("_____________________\n" + this.filePath + "에서 에러 발생 : \n", new Error());
+      return new Error();
     }
   }
 }

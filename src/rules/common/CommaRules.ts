@@ -1,8 +1,9 @@
+import ReadContents from "../../components/ReadContents";
+import {Common} from "../interface/Common";
 import fs from "fs";
-import path from "path";
-import {Components} from "../rules/interface/Components";
+import path from 'path';
 
-class ReadContents implements Components {
+class CommaRules implements Common {
 
   // 0. path -------------------------------------------------------------------------------------->
   private filePath = process.argv[2];
@@ -14,7 +15,7 @@ class ReadContents implements Components {
   public data(): string | Error {
 
     try {
-      const data = fs.readFileSync(this.copyPath,"utf-8").toString();
+      const data = new ReadContents().main().toString();
       return data;
     }
     catch(err) {
@@ -24,10 +25,21 @@ class ReadContents implements Components {
 
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
-    try {
-      return this.data();
+
+    const falseResult = " *[ ]*,/*[ ]*";
+
+    const data = this.data();
+    if(data instanceof Error) {
+      return new Error();
     }
-    catch (err) {
+
+    try {
+      const regExp = new RegExp(falseResult, "g");
+      let result = data.replace(regExp, ", ");
+      fs.writeFileSync(this.copyPath, result);
+      return result;
+    }
+    catch(err) {
       return new Error();
     }
   }
@@ -35,14 +47,14 @@ class ReadContents implements Components {
   // 3. output ------------------------------------------------------------------------------------>
   public output() {
     try {
-      console.log("_____________________\n 파일 내용 \n", this.main());
+      console.log("_____________________\n" + this.fileName + "실행 \n" + this.main());
       return this.main();
     }
     catch(err) {
-      console.log("_____________________\n" + this.filePath + "에서 에러 발생 : \n", new Error());
+      console.log("_____________________\n" + this.fileName + "에서 에러 발생 : \n", new Error());
       return new Error();
     }
   }
 }
 
-export default ReadContents;
+export default CommaRules;
