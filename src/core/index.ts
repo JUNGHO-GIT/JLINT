@@ -1,19 +1,34 @@
-import ReadFile from "../components/Read";
-import RecognizeFile from "../components/Recognize";
-import CopyFile from "../components/Copy";
-import Controller from "../utils/Controller";
+import ReadTitle from "../components/ReadTitle";
+import Copy from "../components/Copy";
+import ReadContents from "../components/ReadContents";
+import Recognize from "../components/Recognize";
+import Controller from "../rules/utils/Controller";
 
 class Main {
 
-  public read() {
-    const read = new ReadFile();
+  public readTitle() {
+    const read = new ReadTitle();
+    const readFile = read.outPut();
+
+    return readFile;
+  }
+
+  public copy() {
+    const copy = new Copy();
+    const copyFile = copy.outPut();
+
+    return copyFile;
+  }
+
+  public readContents() {
+    const read = new ReadContents();
     const readFile = read.outPut();
 
     return readFile;
   }
 
   public recognize() {
-    const recognize = new RecognizeFile();
+    const recognize = new Recognize();
     const recognizeFile = recognize.outPut();
 
     return recognizeFile;
@@ -21,23 +36,18 @@ class Main {
 
   public controller() {
     const controller = new Controller();
+    const controllerOutput = controller.outPut();
 
-    return controller;
+    return controllerOutput;
   }
 
-  public copy() {
-    const copy = new CopyFile();
-    const copyFile = copy.outPut();
+  public async main() {
 
-    return copyFile;
-  }
-
-  public main() {
-
-    this.read();
+    this.readTitle();
+    this.copy();
+    this.readContents();
     this.recognize();
     this.controller();
-    this.copy();
   }
 }
 

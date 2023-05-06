@@ -1,13 +1,23 @@
 import path from "path";
-import {Rules} from "../logic/Rules";
+import {Components} from "../rules/interface/Components";
 
-const filePath = process.argv[2];
+class Recognize implements Components {
 
-class Recognize implements Rules {
+  // 0. path -------------------------------------------------------------------------------------->
+  private filePath = process.argv[2];
+
+  private copyPath(): string {
+    const fileName = this.filePath.split(".")[0];
+    const fileExt = this.filePath.split(".")[1];
+
+    const copyPath = fileName + "-2." + fileExt;
+
+    return copyPath;
+  }
 
   // 1. data -------------------------------------------------------------------------------------->
   public data() {
-    const data = path.extname(filePath);
+    const data = path.extname(this.filePath);
 
     return data;
   }

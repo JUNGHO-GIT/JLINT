@@ -1,16 +1,31 @@
 import fs from "fs";
-import {Rules} from "../logic/Rules";
+import {Components} from "../rules/interface/Components";
 
-const filePath = process.argv[2];
+class ReadContents implements Components {
 
-class Read implements Rules {
+  // 0. path -------------------------------------------------------------------------------------->
+  private filePath = process.argv[2];
+
+  private copyPath(): string {
+    const fileName = this.filePath.split(".")[0];
+    const fileExt = this.filePath.split(".")[1];
+
+    const copyPath = fileName + "-2." + fileExt;
+
+    return copyPath;
+  }
 
   // 1. data -------------------------------------------------------------------------------------->
   public data(): string | Error {
 
-    const data = fs.readFileSync(filePath,"utf8");
+    const data = fs.readFileSync(this.copyPath(), "utf-8");
 
-    return data;
+    try {
+      return data;
+    }
+    catch(err) {
+      return new Error();
+    }
   }
 
   // 2. main -------------------------------------------------------------------------------------->
@@ -36,4 +51,4 @@ class Read implements Rules {
   }
 }
 
-export default Read;
+export default ReadContents;

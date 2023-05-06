@@ -1,4 +1,4 @@
-import readFile from "../components/Read";
+/* import readFile from "../../components/Read";
 
 class JsRules {
 
@@ -6,8 +6,7 @@ class JsRules {
   public data() {
 
     const readInit = new readFile();
-    const dataFile = readInit.main();
-    const data = dataFile.toString().split("\n");
+    const data = readInit.main().toString().split("\n");
 
     return data;
   }
@@ -23,7 +22,8 @@ class JsRules {
     data.forEach((param) => {
       if(trueResult.some((item) => param.includes(item))) {
         result.push("True : " + param);
-      } else if(falseResult.some((item) => param.includes(item))) {
+      }
+      else if(falseResult.some((item) => param.includes(item))) {
         result.push("False : " + param);
       }
     });
@@ -48,3 +48,4 @@ class JsRules {
 }
 
 export default JsRules;
+ */

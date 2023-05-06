@@ -1,8 +1,7 @@
-import fs from "fs";
 import path from "path";
 import {Components} from "../rules/interface/Components";
 
-class Copy implements Components {
+class ReadTitle implements Components {
 
   // 0. path -------------------------------------------------------------------------------------->
   private filePath = process.argv[2];
@@ -18,13 +17,16 @@ class Copy implements Components {
 
   // 1. data -------------------------------------------------------------------------------------->
   public data(): string | Error {
+
+    const data = path.basename(this.filePath);
+
     try {
-      fs.copyFileSync(this.filePath,this.copyPath());
-      return this.copyPath();
+      return data;
     }
     catch(err) {
       return new Error();
     }
+
   }
 
   // 2. main -------------------------------------------------------------------------------------->
@@ -41,7 +43,7 @@ class Copy implements Components {
   public outPut() {
     try {
       console.log("_____________________");
-      console.log("파일이 복사되었습니다 :", this.main());
+      console.log(this.main());
     }
     catch(err) {
       console.log("_____________________");
@@ -50,4 +52,4 @@ class Copy implements Components {
   }
 }
 
-export default Copy;
+export default ReadTitle;

@@ -1,8 +1,8 @@
-interface Rules {
+interface Components {
 
   data(): string | Error;
   main(): string | Error;
   outPut(): void;
 }
 
-export {Rules};
+export {Components};
