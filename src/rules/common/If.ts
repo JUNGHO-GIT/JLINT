@@ -3,7 +3,7 @@ import {Common} from "../interface/Common";
 import fs from "fs";
 import path from 'path';
 
-class IfRules implements Common {
+class If implements Common {
 
   // 0. path -------------------------------------------------------------------------------------->
   private filePath = process.argv[2];
@@ -49,4 +49,4 @@ class IfRules implements Common {
   }
 }
 
-export default IfRules;
+export default If;

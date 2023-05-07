@@ -3,7 +3,7 @@ import {Common} from "../interface/Common";
 import fs from "fs";
 import path from 'path';
 
-class CommaRules implements Common {
+class Operators implements Common {
 
   // 0. path -------------------------------------------------------------------------------------->
   private filePath = process.argv[2];
@@ -23,18 +23,23 @@ class CommaRules implements Common {
 
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
-
-    const falseResult = "(\\s*)(,)(\\s*)";
+    const operators = ["+", "-", "*", "%", "&&", "||"];
 
     const data = this.data();
-    if(data instanceof Error) {
+    if (data instanceof Error) {
       return new Error();
     }
     else {
-      const regExp1 = new RegExp(falseResult, "gm");
-      const result1 = data.replace(regExp1, (_match, _p1, p2, _p3) => `${p2} `);
-      fs.writeFileSync(this.copyPath, result1);
-      return result1;
+      let result = data;
+
+      operators.forEach((operator) => {
+        const regex = `(?<!\\(${operator}))(\\s*)\\(${operator})(\\s*)(?!\\(${operator}))`;
+        const regExp = new RegExp(regex, "gm");
+        result = result.replace(regExp, (_match, p1, p2, p3, p4) => ` ${p2} `);
+      });
+
+      fs.writeFileSync(this.copyPath, result);
+      return result;
     }
   }
 
@@ -49,4 +54,4 @@ class CommaRules implements Common {
   }
 }
 
-export default CommaRules;
+export default Operators;

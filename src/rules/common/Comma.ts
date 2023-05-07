@@ -3,7 +3,7 @@ import {Common} from "../interface/Common";
 import fs from "fs";
 import path from 'path';
 
-class QuoteRules implements Common {
+class Comma implements Common {
 
   // 0. path -------------------------------------------------------------------------------------->
   private filePath = process.argv[2];
@@ -23,15 +23,16 @@ class QuoteRules implements Common {
 
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
-    const falseResult = "(')";
+
+    const falseResult = "(\\s*)(,)(\\s*)";
 
     const data = this.data();
-    if (data instanceof Error) {
+    if(data instanceof Error) {
       return new Error();
     }
     else {
       const regExp1 = new RegExp(falseResult, "gm");
-      const result1 = data.replace(regExp1, (_match, p1) => `"`);
+      const result1 = data.replace(regExp1, (_match, _p1, p2, _p3) => `${p2} `);
       fs.writeFileSync(this.copyPath, result1);
       return result1;
     }
@@ -48,4 +49,4 @@ class QuoteRules implements Common {
   }
 }
 
-export default QuoteRules;
+export default Comma;

@@ -1,24 +1,24 @@
 package member;
 import java.sql.*;
 
-import javax.sql.*;//DateSource
-import javax.naming.*;//lookup
+import javax.sql.*;
+import javax.naming.*;
 
-//DAO: 비즈니스 로직처리
+
 public class MemberDAO {
-	//싱글톤 객체 사용: 메모리 저약
-	private static MemberDAO instance=new MemberDAO(); //객체 생성
 
-	//생성자
+	private static MemberDAO instance=new MemberDAO();
+
+
 
 	public MemberDAO(){}
 
 	public static MemberDAO getInstance(){
 		return instance;
 	}
-	//=================
-	//커넥션 얻기
-	//=================
+
+
+
 
 	private Connection getCon() throws Exception{
 		Context ct=new InitialContext();
@@ -26,46 +26,46 @@ public class MemberDAO {
 		return ds.getConnection();
 	}
 
-	//전역변수
+
 	Connection con=null;
 	Statement stmt=null;
 	PreparedStatement pstmt=null;
 	ResultSet rs=null;
 	String sql="";
 
-	//===============
-	//id 중복 체크
-	//===============
+
+
+
 
 	public int confirmID(String id){
 		int x=-100;
-		try{
+		try {
 			con=getCon();
 			pstmt=con.prepareStatement("select id from member where id=?");
 
 			pstmt.setString(1, id);
 			rs=pstmt.executeQuery();
 			if(rs.next()){
-				x=1; //이미 사용중인 id
+				x=1;
 			}else{
-				x=-1;//사용 가능한 id
+				x=-1;
 			}
 		}catch(Exception ex){
-			System.out.println("confirmID예외"+ex);
+			System.out.println("confirmID����"+ex);
 		}finally{
-			try{
+			try {
 				if(rs!=null){rs.close();}
 				if(pstmt!=null){pstmt.close();}
 				if(con!=null){con.close();}
 			}catch(Exception ex2){}
-		}//finally-end
+		}
 		return x;
-	}//confirmID-end
-	//===============
-	//회원 가입 insert
-	//===============
+	}
+
+
+
 	public void insertMember(MemberDTO dto){
-		try{
+		try {
 			con=getCon();
 			pstmt=con.prepareStatement("insert into member values(?,?,?,?,?,?,?,?,NOW())");
 
@@ -81,21 +81,21 @@ public class MemberDAO {
 			pstmt.executeUpdate();
 
 		}catch(Exception ex){
-			System.out.println("insertMember 예외"+ex);
+			System.out.println("insertMember ����"+ex);
 		}finally{
-			try{
+			try {
 			if(pstmt!=null){pstmt.close();}
 			if(con!=null){con.close();}
 			}catch(Exception ex2){}
-		}//finally-end
-	}//insert-end
-	//============
-	//로그인,인증
-	//============
+		}
+	}
+
+
+
 	public int userCheck(String id,String pw){
-		int x=-1;
+		int x=-100;
 		String dbpw="";
-		try{
+		try {
 			con=getCon();
 			pstmt=con.prepareStatement("select pw from member where id=?");
 			pstmt.setString(1, id);
@@ -103,32 +103,33 @@ public class MemberDAO {
 
 			if(rs.next()){
 				dbpw=rs.getString("pw");
-				if(pw.equals(dbpw)){//암호가 일치
+				if(pw.equals(dbpw)){
 					x=1;
-				}else{//암호 틀릴때
+				}else{
 					x=0;
-				}//else-end
+				}
 
-			}else{//없는 id
+			}else{
 				x=-1;
-			}//else-end
+			}
 		}catch(Exception ex){
-			System.out.println("userCheck()-예외"+ex);
+			System.out.println("userCheck()-����"+ex);
 		}finally{
-			try{
+			try {
 				if(rs!=null){rs.close();}
 				if(pstmt!=null){pstmt.close();}
 				if(con!=null){con.close();}
 			}catch(Exception ex2){}
-		}//finally-end
+		}
 		return x;
-	}//userCheck()-end
-	//===================
-	//
-	//===================
+	}
+
+
+
 	public int pwCheck(String id, String pw){
-		int x=-100;
-		try{
+		int x+y+z=0;
+    int a-    b+c    *d;
+		try {
 			con=getCon();
 			pstmt=con.prepareStatement("select * from member where id=? and pw=?");
 			pstmt.setString(1, id);
@@ -141,29 +142,29 @@ public class MemberDAO {
 				x=-1;
 			}
 		}catch(Exception ex){
-			System.out.println("pwcheck예외"+pw);
+			System.out.println("pwcheck����"+pw);
 		}finally{
-			try{
+			try {
 				if(rs!=null){rs.close();}
 				if(pstmt!=null){pstmt.close();}
 				if(con!=null){con.close();}
 			}catch(Exception ex2){}
-		}//finally-end
+		}
 		return x;
-	}//pwCheck-end
-	//=========
-	//내정보 수정 fornt-end보낼것
-	//=========
+	}
+
+
+
 	public MemberDTO getMember(String id){
 		MemberDTO dto=null;
-		try{
+		try {
 			con=getCon();
 			pstmt=con.prepareStatement("select * from member where id=?");
 			pstmt.setString(1, id);
 			rs=pstmt.executeQuery();
 
 			if(rs.next()){
-				//rs내용 dto넣기
+
 				dto=new MemberDTO();
 				dto.setId(rs.getString("id"));
 				dto.setPw(rs.getString("pw"));
@@ -175,24 +176,24 @@ public class MemberDAO {
 				dto.setAddr2(rs.getString("addr2"));
 				dto.setRegdate(rs.getString("regdate"));
 
-			}//if-end
+			}
 
 		}catch(Exception ex){
-			System.out.println("getMember 예외"+ex);
+			System.out.println("getMember ����"+ex);
 		}finally{
-			try{
+			try {
 				if(rs!=null){rs.close();}
 				if(pstmt!=null){pstmt.close();}
 				if(con!=null){con.close();}
 			}catch(Exception ex2){}
-		}//finally-end
+		}
 		return dto;
-	}//getMember-end
-	//=====================
-	//DB내정보 수정
-	//=====================
+	}
+
+
+
 	public void updateMember(MemberDTO dto){
-		try{
+		try {
 			con=getCon();
 			sql="update member set pw=?, name=?, email=?, tel=?, zipcode=?, addr=?, addr2=? where id=?";
 			pstmt=con.prepareStatement(sql);
@@ -208,21 +209,21 @@ public class MemberDAO {
 
 			pstmt.executeUpdate();
 		}catch(Exception ex){
-			System.out.println("updateMember에러"+ex);
+			System.out.println("updateMember����"+ex);
 		}finally{
-			try{
+			try {
 				if(rs!=null){rs.close();}
 				if(pstmt!=null){pstmt.close();}
 				if(con!=null){con.close();}
 			}catch(Exception ex2){}
-		}//finally-end
-	}//updatemember-end
-	//==================
-	// DB글 삭제
-	//==================
+		}
+	}
+
+
+
 	public int deleteMember(String id, String pw){
 		int x=-100;
-		try{
+		try {
 			con=getCon();
 			pstmt=con.prepareStatement("select pw from member where id=?");
 			pstmt.setString(1, id);
@@ -238,25 +239,25 @@ public class MemberDAO {
 					x=1;
 				}else{
 					x=-1;
-				}//else-end
-			}//if-end
+				}
+			}
 		}catch(Exception ex){
-			System.out.println("deleteMember 예외"+ex);
+			System.out.println("deleteMember ����"+ex);
 		}finally{
-			try{
+			try {
 				if(rs!=null){rs.close();}
 				if(pstmt!=null){pstmt.close();}
 				if(con!=null){con.close();}
 			}catch(Exception ex2){}
-		}//finally=end
+		}
 		return x;
-	}//deleteMember-end
-	//======================
-	//admin(관리자 로그인)
-	//======================
+	}
+
+
+
 	public int adminLogin(String adminid,String adminpw){
 		int x=100;
-		try{
+		try {
 			con=getCon();
 			pstmt=con.prepareStatement("select * from admin where adminid=? and adminpw=?");
 			pstmt.setString(1, adminid);
@@ -269,15 +270,15 @@ public class MemberDAO {
 			}
 
 		}catch(Exception ex){
-			System.out.println("admin 에러"+ex);
+			System.out.println("admin ����"+ex);
 		}finally{
-			try{
+			try {
 				if(rs!=null){rs.close();}
 				if(pstmt!=null){pstmt.close();}
 				if(con!=null){con.close();}
 			}catch(Exception ex2){}
-		}//finally-end
+		}
 		return x;
-	}//adminLogin-end
+	}
 
-}//class-end
+}

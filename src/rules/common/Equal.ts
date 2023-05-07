@@ -3,7 +3,7 @@ import {Common} from "../interface/Common";
 import fs from "fs";
 import path from 'path';
 
-class SemiColonRules implements Common {
+class Equal implements Common {
 
   // 0. path -------------------------------------------------------------------------------------->
   private filePath = process.argv[2];
@@ -23,18 +23,28 @@ class SemiColonRules implements Common {
 
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
-
-    const falseResult = "(;)";
+    const operatorsOne = ["===", "==", "="];
+    const operatorsTwo = "! =";
 
     const data = this.data();
-    if(data instanceof Error) {
+    if (data instanceof Error) {
       return new Error();
     }
     else {
-      const regExp1 = new RegExp(falseResult, "gm");
-      const result1 = data.replace(regExp1, (_match, p1) => `;\n`);
-      fs.writeFileSync(this.copyPath, result1);
-      return result1;
+      let result = data;
+
+      operatorsOne.forEach((operator) => {
+        const regex = `(?<!=)(\\s*)(${operator})(\\s*)(?!=)`;
+        const regExp = new RegExp(regex, "gm");
+        result = result.replace(regExp, (_match, p1, p2, p3, p4) => ` ${p2} `);
+      });
+
+      const regex = `(\\s*)(${operatorsTwo})(\\s*)`;
+      const regExp = new RegExp(regex, "gm");
+      result = result.replace(regExp, (_match, p1, p2, p3) => ` != `);
+
+      fs.writeFileSync(this.copyPath, result);
+      return result;
     }
   }
 
@@ -49,4 +59,4 @@ class SemiColonRules implements Common {
   }
 }
 
-export default SemiColonRules;
+export default Equal;
