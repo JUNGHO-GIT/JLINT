@@ -12,7 +12,7 @@ class Controller {
   // 1. common ------------------------------------------------------------------------------------>
   public common() {
     const commonArray = [
-      "Equal", "Comma", "Quote", "SemiColon"
+      "Equal", "Comma", "Quote", "SemiColon", "If", "Else"
     ];
     const commonImport = commonArray.map((item) => require(`../common/${item}Rules`).default);
     const commonInit = commonArray.map((item) => new commonImport[commonArray.indexOf(item)]());
@@ -29,7 +29,7 @@ class Controller {
 
     const langUpper = langArray.map((item) => item.slice(1).toUpperCase());
 
-    if(langArray.includes(this.fileExt)) {
+    if (langArray.includes(this.fileExt)) {
       const langImport = langUpper.map((item) => require(`../main/${item.slice(1)}Rules`).default);
       const langInit = langUpper.map((item) => new langImport[langUpper.indexOf(item)]());
       const langResult = langInit.map((item) => item.output()).join("");

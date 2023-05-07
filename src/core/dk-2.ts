@@ -1,35 +1,72 @@
-"const aaa = 1;
-const bbb = 2;
-const aaa = 1;
-2const aaa, 1const ccc, 3const aaa, 1const ddd, 4cons;
-
-ASDFASFASDF  """"      "DSF"
+1. } else {example}
+2. }
 
 
-" ASASFD === ASDFA = SDF "    " AS = D = F = A = SD "     """""""""ADSF"""""""""""""""""""""""""""""""""""""DD"FSA"F3   " Sd"""""""""" FDSAF;
-
-nst bbb, 2;
-const aaa, 1;
-const ccc, 3;
-const aaa, 1;
-const ddd, 4;
-const aaa, 1;
-const eee, 5;
-const aaa, 1;
-const fff, 6;
-const aaa, 1;
-const ggg, 7;
-const aaa, 1;
-const hhh, 8;
-
-const aaa, 1const bbb, 2const aaa, 1const ccc, 3const aa
 
 
-kk===================11;
 
 
-dd == 11
 
-sss====11
 
-fdfdfdfd === 123123123
+else{example}
+3. }   else   {example}
+4. }
+   else {
+   example}
+5. }
+   else
+   {example}
+6. } else
+   {example}
+7. }
+else {example}
+8. }
+
+
+
+
+
+
+
+
+
+else
+   {example}
+9. }
+else
+{example}
+10. }
+    else
+    {example}
+11. } else {
+    example
+    }
+12. } else
+    {
+    example
+    }
+13. }
+   else
+   {
+   example
+   }
+14. } else {
+   example
+   }
+15. } else
+   {
+   example}
+16. }
+   else{
+   example}
+17. } else{
+   example}
+18. }else{
+   example
+   }
+19. }    else    {
+   example
+   }
+20. }
+   else    {
+   example}

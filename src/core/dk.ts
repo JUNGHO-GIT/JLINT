@@ -8,9 +8,45 @@ const aaa, 1const bbb,2const aaa, 1const ccc, 3const aa
 
 
 kk===================11;
-
+                                         if(         (aaa){
+    console.log('aaa')
 dd==11
 
 sss====11
 
 fdfdfdfd===123123123
+
+
+      \n? (\s*?) (\}*?) \s* (else) \s* (\{*?) (\s*) (\S*) (\n) (\s*?) (\}*)
+
+
+if(asdfasfas DSAD)SDAfadsFA)SDfASD)FaS)DFAS)Df)ASdf0Asd0fasd0Fas)DF)ASDf0asdf
+
+}
+       }else{
+          console.log('bbb')
+           }
+
+                            }       else          {
+                              console.log('bbb')
+                            }
+
+
+
+
+
+                                                            }              else             {}
+}
+
+
+
+
+
+  }else{         dfdfdfdfdfdfdfdfdfdfdfdfdfdfdf
+
+  }   else {asdfasdfasdfasdf
+
+
+
+
+}else{}

@@ -3,7 +3,7 @@ import {Common} from "../interface/Common";
 import fs from "fs";
 import path from 'path';
 
-class EqualRules implements Common {
+class ElseRules implements Common {
 
   // 0. path -------------------------------------------------------------------------------------->
   private filePath = process.argv[2];
@@ -23,29 +23,23 @@ class EqualRules implements Common {
 
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
-
-    const falseResult1 = "\\b(?!/=)\\s*(===)\\s*\\b(?!/=)";
-    const falseResult2 = "\\b(?!/=)\\s*(==)\\s*\\b(?!/=)";
-    const falseResult3 = "\\b(?!/=)\\s*(=)\\s*\\b(?!/=)";
+    const falseResult1 = "(\\})\\s*(else)\\s*(\\{)\\s*(?:\\})*";
 
     const data = this.data();
     if(data instanceof Error) {
       return new Error();
-    }
-    else {
-      const regExp = new RegExp(falseResult1, "g");
-      const result1 = data.replace(regExp, " $1 ");
-
-      const regExp2 = new RegExp(falseResult2, "g");
-      const result2 = result1.replace(regExp2, " $1 ");
-
-      const regExp3 = new RegExp(falseResult3, "g");
-      const result3 = result2.replace(regExp3, " $1 ");
-
-      fs.writeFileSync(this.copyPath, result3);
-      return result3;
+    } else {
+      try {
+        const regExp = new RegExp(falseResult1,"g");
+        let result = data.replace(regExp,(match,p1,p2,p3) => `${p1}\n${p2} ${p3}`);
+        fs.writeFileSync(this.copyPath,result);
+        return result;
+      } catch(err) {
+        return new Error();
+      }
     }
   }
+
 
 
   // 3. output ------------------------------------------------------------------------------------>
@@ -59,4 +53,4 @@ class EqualRules implements Common {
   }
 }
 
-export default EqualRules;
+export default ElseRules;
