@@ -24,22 +24,17 @@ class CommaRules implements Common {
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
 
-    const falseResult = " *[ ]*,/*[ ]*";
+    const falseResult = "(\\s*)(,)(\\s*)";
 
     const data = this.data();
     if(data instanceof Error) {
       return new Error();
     }
     else {
-      try {
-        const regExp = new RegExp(falseResult, "g");
-        let result = data.replace(regExp, ", ");
-        fs.writeFileSync(this.copyPath, result);
-        return result;
-      }
-      catch(err) {
-        return new Error();
-      }
+      const regExp1 = new RegExp(falseResult, "gm");
+      const result1 = data.replace(regExp1, (_match, _p1, p2, _p3) => `${p2} `);
+      fs.writeFileSync(this.copyPath, result1);
+      return result1;
     }
   }
 

@@ -23,23 +23,17 @@ class QuoteRules implements Common {
 
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
-
-    const falseResult = "/*'/*";
+    const falseResult = "(')";
 
     const data = this.data();
-    if(data instanceof Error) {
+    if (data instanceof Error) {
       return new Error();
     }
     else {
-      try {
-        const regExp = new RegExp(falseResult,"g");
-        let result = data.replace(regExp,"\"");
-        fs.writeFileSync(this.copyPath,result);
-        return result;
-      }
-      catch(err) {
-        return new Error();
-      }
+      const regExp1 = new RegExp(falseResult, "gm");
+      const result1 = data.replace(regExp1, (_match, p1) => `"`);
+      fs.writeFileSync(this.copyPath, result1);
+      return result1;
     }
   }
 

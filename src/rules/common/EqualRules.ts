@@ -24,26 +24,28 @@ class EqualRules implements Common {
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
 
-    const falseResult1 = "\\b(?!/=)\\s*(===)\\s*\\b(?!/=)";
-    const falseResult2 = "\\b(?!/=)\\s*(==)\\s*\\b(?!/=)";
-    const falseResult3 = "\\b(?!/=)\\s*(=)\\s*\\b(?!/=)";
+    const falseResult1 = "(?!/=)(\\s*)(===)(\\s*)(?!/=)";
+    const falseResult2 = "(?!/=)(\\s*)(==)(\\s*)(?!/=)";
+    const falseResult3 = "(?!/=)(\\s*)(=)(\\s*)(?!/=)";
 
     const data = this.data();
     if(data instanceof Error) {
       return new Error();
     }
     else {
-      const regExp = new RegExp(falseResult1, "g");
-      const result1 = data.replace(regExp, " $1 ");
+      let result = data;
 
-      const regExp2 = new RegExp(falseResult2, "g");
-      const result2 = result1.replace(regExp2, " $1 ");
+      const regExp1 = new RegExp(falseResult1, "gm");
+      result = result.replace(regExp1, (_match, p1, p2, p3, p4) => ` ${p2} `);
 
-      const regExp3 = new RegExp(falseResult3, "g");
-      const result3 = result2.replace(regExp3, " $1 ");
+      const regExp2 = new RegExp(falseResult2, "gm");
+      result = result.replace(regExp2, (_match, p1, p2, p3, p4) => ` ${p2} `);
 
-      fs.writeFileSync(this.copyPath, result3);
-      return result3;
+      const regExp3 = new RegExp(falseResult3, "gm");
+      result = result.replace(regExp3, (_match, p1, p2, p3, p4) => ` ${p2} `);
+
+      fs.writeFileSync(this.copyPath, result);
+      return result;
     }
   }
 
