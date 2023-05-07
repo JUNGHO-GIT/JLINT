@@ -33,7 +33,7 @@ class Operators implements Common {
       let result = data;
 
       operators.forEach((operator) => {
-        const regex = `(?<!\\(${operator}))(\\s*)\\(${operator})(\\s*)(?!\\(${operator}))`;
+        const regex = `(?<!\\${operator})(\\s*)(\\${operator})(\\s*)(?!\\${operator})`;
         const regExp = new RegExp(regex, "gm");
         result = result.replace(regExp, (_match, p1, p2, p3, p4) => ` ${p2} `);
       });

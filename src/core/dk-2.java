@@ -1,8 +1,8 @@
 package member;
-import java.sql.*;
+import java.sql. * ;
 
-import javax.sql.*;
-import javax.naming.*;
+import javax.sql. * ;
+import javax.naming. * ;
 
 
 public class MemberDAO {
@@ -38,7 +38,7 @@ public class MemberDAO {
 
 
 	public int confirmID(String id) {
-		int x = -100;
+		int x = - 100;
 		try {
 			con = getCon();
 			pstmt = con.prepareStatement("select id from member where id=?");
@@ -49,11 +49,11 @@ public class MemberDAO {
 				x = 1;
 			}
 			else {
-				x = -1;
+				x = - 1;
 			}
 		}
 		catch (Exception ex) {
-			System.out.println("confirmID����"+ex);
+			System.out.println("confirmID����" + ex);
 		}
 		finally {
 			try {
@@ -86,7 +86,7 @@ public class MemberDAO {
 
 		}
 		catch (Exception ex) {
-			System.out.println("insertMember ����"+ex);
+			System.out.println("insertMember ����" + ex);
 		}
 		finally {
 			try {
@@ -100,7 +100,7 @@ public class MemberDAO {
 
 
 	public int userCheck(String id, String pw) {
-		int x = -100;
+		int x = - 100;
 		String dbpw = "";
 		try {
 			con = getCon();
@@ -119,11 +119,11 @@ public class MemberDAO {
 
 			}
 			else {
-				x = -1;
+				x = - 1;
 			}
 		}
 		catch (Exception ex) {
-			System.out.println("userCheck()-����"+ex);
+			System.out.println("userCheck() - ����" + ex);
 		}
 		finally {
 			try {
@@ -139,8 +139,8 @@ public class MemberDAO {
 
 
 	public int pwCheck(String id, String pw) {
-		int x+y+z = 0;
-    int a-    b+c    *d;
+		int x + y + z = 0;
+    int a - b + c * d;
 		try {
 			con = getCon();
 			pstmt = con.prepareStatement("select * from member where id=? and pw=?");
@@ -152,11 +152,11 @@ public class MemberDAO {
 				x = 1;
 			}
 			else {
-				x = -1;
+				x = - 1;
 			}
 		}
 		catch (Exception ex) {
-			System.out.println("pwcheck����"+pw);
+			System.out.println("pwcheck����" + pw);
 		}
 		finally {
 			try {
@@ -196,7 +196,7 @@ public class MemberDAO {
 
 		}
 		catch (Exception ex) {
-			System.out.println("getMember ����"+ex);
+			System.out.println("getMember ����" + ex);
 		}
 		finally {
 			try {
@@ -229,7 +229,7 @@ public class MemberDAO {
 			pstmt.executeUpdate();
 		}
 		catch (Exception ex) {
-			System.out.println("updateMember����"+ex);
+			System.out.println("updateMember����" + ex);
 		}
 		finally {
 			try {
@@ -244,7 +244,7 @@ public class MemberDAO {
 
 
 	public int deleteMember(String id, String pw) {
-		int x = -100;
+		int x = - 100;
 		try {
 			con = getCon();
 			pstmt = con.prepareStatement("select pw from member where id=?");
@@ -261,12 +261,12 @@ public class MemberDAO {
 					x = 1;
 				}
 				else {
-					x = -1;
+					x = - 1;
 				}
 			}
 		}
 		catch (Exception ex) {
-			System.out.println("deleteMember ����"+ex);
+			System.out.println("deleteMember ����" + ex);
 		}
 		finally {
 			try {
@@ -293,12 +293,12 @@ public class MemberDAO {
 				x = 1;
 			}
 			else {
-				x = -1;
+				x = - 1;
 			}
 
 		}
 		catch (Exception ex) {
-			System.out.println("admin ����"+ex);
+			System.out.println("admin ����" + ex);
 		}
 		finally {
 			try {
