@@ -2,7 +2,7 @@ import ReadTitle from "../components/ReadTitle";
 import Copy from "../components/Copy";
 import ReadContents from "../components/ReadContents";
 import Recognize from "../components/Recognize";
-import Controller from "../rules/utils/Controller";
+import Controller from "../utils/Controller";
 
 class Main {
 

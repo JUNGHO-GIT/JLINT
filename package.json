@@ -2,7 +2,7 @@
   "name": "jlint",
   "version": "1.0.0",
   "scripts": {
-    "start": "ts-node src/index.ts"
+    "start": "ts-node src/core/index.ts"
   },
   "dependencies": {
     "acorn": "^8.8.2",

@@ -10,7 +10,7 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "noEmit": true,
-    "outDir": "./bin",
+    "outDir": "./bin"
   },
   "include": [
     "src/**/*"

@@ -1,9 +1,13 @@
 import fs from "fs";
 import path from "path";
-import ReadTitle from "./ReadTitle";
-import {Components} from "../rules/interface/Components";
+import {Components} from "../interface/Components";
 
 class Recognize implements Components {
+
+  // constructor ---------------------------------------------------------------------------------->
+  constructor() {
+    this.main();
+  }
 
   // 0. path -------------------------------------------------------------------------------------->
   private filePath = process.argv[2];
@@ -34,7 +38,7 @@ class Recognize implements Components {
   // 3. output ------------------------------------------------------------------------------------>
   public output() {
     try {
-      return console.log("\n_____________________\n 확장자 이름 : \n" + this.main());
+      return console.log("_____________________\n" + this.fileName + "  실행");
     }
     catch(err) {
       return console.log(new Error());

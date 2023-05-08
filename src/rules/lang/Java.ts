@@ -1,9 +1,14 @@
 import ReadContents from "../../components/ReadContents";
-import {Common} from "../interface/Common";
+import {Lang} from "../../interface/Lang";
 import fs from "fs";
 import path from 'path';
 
-class Sql implements Common {
+class Java implements Lang {
+
+  // constructor ---------------------------------------------------------------------------------->
+  constructor() {
+    this.main();
+  }
 
   // 0. path -------------------------------------------------------------------------------------->
   private filePath = process.argv[2];
@@ -23,9 +28,7 @@ class Sql implements Common {
 
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
-    const falseResult1 = "(\\s*)(=)(\\s*)(\\?)(\\s*)";
-    const falseResult2 = "(\\s*)(=)(\\s*)(N)(\\s*)";
-    const falseResult3 = "(\\s*)(=)(\\s*)(n)(\\s*)";
+    const falseResult1 = "(\\s*)(package)(\\s*)([\\s\\S]*?)(;)(\\n)(\\s*)(import)";
 
     const data = this.data();
     if(data instanceof Error) {
@@ -33,21 +36,10 @@ class Sql implements Common {
     }
     else {
       let result = data;
-
       const regExp1 = new RegExp(falseResult1, "gm");
-      result = result.replace(regExp1, (_match, p1, p2, p3, p4, p5) =>
-        `${p2}${p4}${p5}`
-      );
-
-      const regExp2 = new RegExp(falseResult2, "gm");
-      result = result.replace(regExp2, (_match, p1, p2, p3, p4, p5) =>
-        `${p2}${p4}${p5}`
-      );
-
-      const regExp3 = new RegExp(falseResult3, "gm");
-      result = result.replace(regExp3, (_match, p1, p2, p3, p4, p5) =>
-        `${p2}${p4}${p5}`
-      );
+      result = result.replace(regExp1, (_match, p1, p2, p3, p4, p5, p6, p7, p8) => {
+        return `${p2} ${p4}${p5}${p6}\n${p8}`
+      });
       fs.writeFileSync(this.copyPath, result);
       return result;
     }
@@ -56,7 +48,7 @@ class Sql implements Common {
   // 3. output ------------------------------------------------------------------------------------>
   public output() {
     try {
-      return console.log("\n_____________________\n" + this.fileName + "실행 : \n" + this.main());
+      return console.log("_____________________\n" + this.fileName + "  실행");
     }
     catch(err) {
       return console.log(new Error());
@@ -64,4 +56,4 @@ class Sql implements Common {
   }
 }
 
-export default Sql;
+export default Java;

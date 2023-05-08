@@ -1,8 +1,13 @@
 import fs from "fs";
 import path from "path";
-import {Components} from "../rules/interface/Components";
+import {Components} from "../interface/Components";
 
 class Copy implements Components {
+
+  // constructor ---------------------------------------------------------------------------------->
+  constructor() {
+    this.main();
+  }
 
   // 0. path -------------------------------------------------------------------------------------->
   private filePath = process.argv[2];
@@ -34,7 +39,7 @@ class Copy implements Components {
   // 3. output ------------------------------------------------------------------------------------>
   public output() {
     try {
-      return console.log("\n_____________________\n 파일 복사 : \n" + this.main());
+      return console.log("_____________________\n" + this.fileName + "  실행");
     }
     catch(err) {
       return console.log(new Error());

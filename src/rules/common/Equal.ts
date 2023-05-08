@@ -1,9 +1,14 @@
 import ReadContents from "../../components/ReadContents";
-import {Common} from "../interface/Common";
+import {Common} from "../../interface/Common";
 import fs from "fs";
 import path from 'path';
 
 class Equal implements Common {
+
+  // constructor ---------------------------------------------------------------------------------->
+  constructor() {
+    this.main();
+  }
 
   // 0. path -------------------------------------------------------------------------------------->
   private filePath = process.argv[2];
@@ -51,7 +56,7 @@ class Equal implements Common {
   // 3. output ------------------------------------------------------------------------------------>
   public output() {
     try {
-      return console.log("\n_____________________\n" + this.fileName + "실행 : \n" + this.main());
+      return console.log("_____________________\n" + this.fileName + "  실행");
     }
     catch(err) {
       return console.log(new Error());

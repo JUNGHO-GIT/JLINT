@@ -1,9 +1,9 @@
 import ReadContents from "../../components/ReadContents";
 import {Common} from "../../interface/Common";
 import fs from "fs";
-import path from 'path';
+import path from "path";
 
-class Finally implements Common {
+class Semicolon implements Common {
 
   // constructor ---------------------------------------------------------------------------------->
   constructor() {
@@ -29,38 +29,19 @@ class Finally implements Common {
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
 
-    const falseResult1 = "(^.*)(\\.*)(\\})(\\n)(\\s*)(finally)(\\s*)(\\{)(\\})";
-    const falseResult2 = "(^.*)(\\.*)(\\})(\\n)(\\s*)(finally)(\\s*)(\\{)";
-    const falseResult3 = "(^.*)(\\.*)(\\})(\\s*)(finally)(\\s*)(\\{)";
+    const falseResult = "(;)(?!\\n|\\/\\/| \\/\\/|\\}\\n)";
 
     const data = this.data();
-    if (data instanceof Error) {
+    if(data instanceof Error) {
       return new Error();
     }
     else {
-      let result = data;
-
-      const regExp1 = new RegExp(falseResult1, "gm");
-      result = result.replace(regExp1, (_match, p1, p2, p3, p4, p5, p6, p7, p8, p9) =>
-        `${p1}${p2}${p3}${p4}${p5}${p6} ${p8}\n${p1}${p9}`
-      );
-
-      const regExp2 = new RegExp(falseResult2, "gm");
-      result = result.replace(regExp2, (_match, p1, p2, p3, p4, p5, p6, p7, p8) =>
-        `${p1}${p3}\n${p1}${p6} ${p8}`
-      );
-
-      const regExp3 = new RegExp(falseResult3, "gm");
-      result = result.replace(regExp3, (_match, p1, p2, p3, p4, p5, p6, p7, p8) =>
-        `${p1}${p3}\n${p1}${p5} ${p7}`
-      );
-
-      fs.writeFileSync(this.copyPath, result);
-      return result;
+      const regExp1 = new RegExp(falseResult, "gm");
+      const result1 = data.replace(regExp1, (_match, p1) => `;\n`);
+      fs.writeFileSync(this.copyPath, result1);
+      return result1;
     }
   }
-
-
 
   // 3. output ------------------------------------------------------------------------------------>
   public output() {
@@ -73,4 +54,4 @@ class Finally implements Common {
   }
 }
 
-export default Finally;
+export default Semicolon;

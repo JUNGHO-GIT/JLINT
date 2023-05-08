@@ -1,8 +1,13 @@
 import fs from "fs";
 import path from "path";
-import {Components} from "../rules/interface/Components";
+import {Components} from "../interface/Components";
 
 class ReadContents implements Components {
+
+  // constructor ---------------------------------------------------------------------------------->
+  constructor() {
+    this.main();
+  }
 
   // 0. path -------------------------------------------------------------------------------------->
   private filePath = process.argv[2];
@@ -13,7 +18,7 @@ class ReadContents implements Components {
   // 1. data -------------------------------------------------------------------------------------->
   public data(): string | Error {
     try {
-      return fs.readFileSync(this.copyPath,"utf-8").toString();
+      return fs.readFileSync(this.copyPath, "utf-8").toString();
     }
     catch(err) {
       return new Error(`파일내용을 읽을 수 없습니다. \n`);
@@ -33,10 +38,10 @@ class ReadContents implements Components {
   // 3. output ------------------------------------------------------------------------------------>
   public output() {
     try {
-      return console.log("\n_____________________\n 파일 내용 : \n" + this.main());
+      return console.log("_____________________\n" + this.fileName + "  실행");
     }
     catch(err) {
-      return  console.log(new Error());
+      return console.log(new Error());
     }
   }
 }

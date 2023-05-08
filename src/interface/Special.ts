@@ -1,8 +1,8 @@
-interface Components {
+interface Special {
 
   data(): string | Error;
   main(): string | Error;
   output(): void;
 }
 
-export {Components};
+export {Special};

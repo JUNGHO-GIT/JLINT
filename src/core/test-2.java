@@ -1,43 +1,40 @@
 package member;
-import java.sql. * ;
 
-import javax.sql. * ;
-import javax.naming. * ;
-
-
+import java.sql.*;
+import javax.sql.*;
+import javax.naming.*;
 public class MemberDAO {
 
-	private static MemberDAO instance=new MemberDAO();
-
-
-
-	public MemberDAO() {}
-
-	public static MemberDAO getInstance() {
+	private static MemberDAO instance = new MemberDAO () ;
+	// ---------------------------------------------------------------------------------------------->
+	public MemberDAO () {}
+  // 2. main -------------------------------------------------------------------------------------->
+  // 0. path -------------------------------------------------------------------------------------->
+	// ---------------------------------------------------------------------------------------------->
+	public static MemberDAO getInstance () {
 		return instance;
 	}
 
 
+  // 2. main -------------------------------------------------------------------------------------->
+  // 0. path -------------------------------------------------------------------------------------->
 
-
-	private Connection getCon() throws Exception{
-		Context ct=new InitialContext();
+	// ---------------------------------------------------------------------------------------------->
+	private Connection getCon () throws Exception {
+		Context ct = new InitialContext();
 		DataSource ds = (DataSource)ct.lookup("java:comp/env/jdbc/mysql");
 		return ds.getConnection();
 	}
 
 
-	Connection con=null;
-	Statement stmt=null;
-	PreparedStatement pstmt=null;
-	ResultSet rs=null;
+	Connection con = null;
+	Statement stmt = null;
+	PreparedStatement pstmt = null;
+	ResultSet rs = null;
 	String sql = "";
 
-
-
-
-
-	public int confirmID(String id) {
+	// ---------------------------------------------------------------------------------------------->
+	public int confirmId (String id) {
 		int x = - 100;
 		try {
 			con = getCon();
@@ -57,18 +54,16 @@ public class MemberDAO {
 		}
 		finally {
 			try {
-				if (rs !=null) {rs.close();}
-				if (pstmt !=null) {pstmt.close();}
-				if (con !=null) {con.close();}
+				if (rs != null) {rs.close();}
+				if (pstmt != null) {pstmt.close();}
+				if (con != null) {con.close();}
 			}
 			catch (Exception ex2) {}
 		}
 		return x;
 	}
-
-
-
-	public void insertMember(MemberDTO dto) {
+	// ---------------------------------------------------------------------------------------------->
+	public void insertMember (MemberDTO dto) {
 		try {
 			con = getCon();
 			pstmt = con.prepareStatement("insert into member values(?, ?, ?, ?, ?, ?, ?, ?, NOW())");
@@ -90,8 +85,8 @@ public class MemberDAO {
 		}
 		finally {
 			try {
-			if (pstmt !=null) {pstmt.close();}
-			if (con !=null) {con.close();}
+			if (pstmt != null) {pstmt.close();}
+			if (con != null) {con.close();}
 			}
 			catch (Exception ex2) {}
 		}
@@ -99,7 +94,8 @@ public class MemberDAO {
 
 
 
-	public int userCheck(String id, String pw) {
+	// ---------------------------------------------------------------------------------------------->
+	public int userCheck (String id, String pw) {
 		int x = - 100;
 		String dbpw = "";
 		try {
@@ -127,9 +123,9 @@ public class MemberDAO {
 		}
 		finally {
 			try {
-				if (rs !=null) {rs.close();}
-				if (pstmt !=null) {pstmt.close();}
-				if (con !=null) {con.close();}
+				if (rs != null) {rs.close();}
+				if (pstmt != null) {pstmt.close();}
+				if (con != null) {con.close();}
 			}
 			catch (Exception ex2) {}
 		}
@@ -138,7 +134,8 @@ public class MemberDAO {
 
 
 
-	public int pwCheck(String id, String pw) {
+	// ---------------------------------------------------------------------------------------------->
+	public int pwCheck (String id, String pw) {
 		int x + y + z = 0;
     int a - b + c * d;
 		try {
@@ -160,9 +157,9 @@ public class MemberDAO {
 		}
 		finally {
 			try {
-				if (rs !=null) {rs.close();}
-				if (pstmt !=null) {pstmt.close();}
-				if (con !=null) {con.close();}
+				if (rs != null) {rs.close();}
+				if (pstmt != null) {pstmt.close();}
+				if (con != null) {con.close();}
 			}
 			catch (Exception ex2) {}
 		}
@@ -171,8 +168,9 @@ public class MemberDAO {
 
 
 
-	public MemberDTO getMember(String id) {
-		MemberDTO dto=null;
+	// ---------------------------------------------------------------------------------------------->
+	public MemberDTO getMember (String id) {
+		MemberDTO dto = null;
 		try {
 			con = getCon();
 			pstmt = con.prepareStatement("select * from member where id=?");
@@ -181,7 +179,7 @@ public class MemberDAO {
 
 			if (rs.next()) {
 
-				dto=new MemberDTO();
+				dto = new MemberDTO();
 				dto.setId(rs.getString("id"));
 				dto.setPw(rs.getString("pw"));
 				dto.setName(rs.getString("name"));
@@ -200,9 +198,9 @@ public class MemberDAO {
 		}
 		finally {
 			try {
-				if (rs !=null) {rs.close();}
-				if (pstmt !=null) {pstmt.close();}
-				if (con !=null) {con.close();}
+				if (rs != null) {rs.close();}
+				if (pstmt != null) {pstmt.close();}
+				if (con != null) {con.close();}
 			}
 			catch (Exception ex2) {}
 		}
@@ -211,7 +209,8 @@ public class MemberDAO {
 
 
 
-	public void updateMember(MemberDTO dto) {
+	// ---------------------------------------------------------------------------------------------->
+	public void updateMember (MemberDTO dto) {
 		try {
 			con = getCon();
 			sql = "update member set pw=?, name=?, email=?, tel=?, zipcode=?, addr=?, addr2=? where id=?";
@@ -233,9 +232,9 @@ public class MemberDAO {
 		}
 		finally {
 			try {
-				if (rs !=null) {rs.close();}
-				if (pstmt !=null) {pstmt.close();}
-				if (con !=null) {con.close();}
+				if (rs != null) {rs.close();}
+				if (pstmt != null) {pstmt.close();}
+				if (con != null) {con.close();}
 			}
 			catch (Exception ex2) {}
 		}
@@ -243,7 +242,8 @@ public class MemberDAO {
 
 
 
-	public int deleteMember(String id, String pw) {
+	// ---------------------------------------------------------------------------------------------->
+	public int deleteMember (String id, String pw) {
 		int x = - 100;
 		try {
 			con = getCon();
@@ -270,9 +270,9 @@ public class MemberDAO {
 		}
 		finally {
 			try {
-				if (rs !=null) {rs.close();}
-				if (pstmt !=null) {pstmt.close();}
-				if (con !=null) {con.close();}
+				if (rs != null) {rs.close();}
+				if (pstmt != null) {pstmt.close();}
+				if (con != null) {con.close();}
 			}
 			catch (Exception ex2) {}
 		}
@@ -281,7 +281,8 @@ public class MemberDAO {
 
 
 
-	public int adminLogin(String adminid, String adminpw) {
+	// ---------------------------------------------------------------------------------------------->
+	public int adminLogin (String adminid, String adminpw) {
 		int x = 100;
 		try {
 			con = getCon();
@@ -302,9 +303,9 @@ public class MemberDAO {
 		}
 		finally {
 			try {
-				if (rs !=null) {rs.close();}
-				if (pstmt !=null) {pstmt.close();}
-				if (con !=null) {con.close();}
+				if (rs != null) {rs.close();}
+				if (pstmt != null) {pstmt.close();}
+				if (con != null) {con.close();}
 			}
 			catch (Exception ex2) {}
 		}

@@ -1,9 +1,14 @@
 import ReadContents from "../../components/ReadContents";
-import {Common} from "../interface/Common";
+import {Common} from "../../interface/Common";
 import fs from "fs";
 import path from 'path';
 
 class Brackets implements Common {
+
+  // constructor ---------------------------------------------------------------------------------->
+  constructor() {
+    this.main();
+  }
 
   // 0. path -------------------------------------------------------------------------------------->
   private filePath = process.argv[2];
@@ -41,10 +46,10 @@ class Brackets implements Common {
   // 3. output ------------------------------------------------------------------------------------>
   public output() {
     try {
-      return console.log("\n_____________________\n" + this.fileName + "실행 : \n" + this.main());
+      return "_____________________\n" + this.fileName + "  실행" + this.main();
     }
     catch(err) {
-      return console.log(new Error());
+      return new Error();
     }
   }
 }
