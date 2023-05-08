@@ -1,8 +1,8 @@
 import fs from "fs";
 import path from "path";
-import {Components} from "../interface/Components";
+import {Components} from "../../interface/Components";
 
-class ReadContents implements Components {
+class Recognize implements Components {
 
   // constructor ---------------------------------------------------------------------------------->
   constructor() {
@@ -13,15 +13,15 @@ class ReadContents implements Components {
   private filePath = process.argv[2];
   private fileName = path.basename(__filename);
   private fileExt = path.extname(this.filePath);
-  private copyPath = this.filePath.slice(0, -this.fileExt.length) + "-2" + this.fileExt;
+  private copyPath = this.filePath.slice(0,-this.fileExt.length) + "-2" + this.fileExt;
 
   // 1. data -------------------------------------------------------------------------------------->
-  public data(): string | Error {
+  public data() {
     try {
-      return fs.readFileSync(this.copyPath, "utf-8").toString();
+      return this.fileExt;
     }
     catch(err) {
-      return new Error(`파일내용을 읽을 수 없습니다. \n`);
+      return new Error(`확장자 이름을 읽을 수 없습니다. \n`);
     }
   }
 
@@ -46,4 +46,4 @@ class ReadContents implements Components {
   }
 }
 
-export default ReadContents;
+export default Recognize;

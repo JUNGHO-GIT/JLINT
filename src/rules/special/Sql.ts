@@ -1,4 +1,4 @@
-import ReadContents from "../../components/ReadContents";
+import ReadContents from "../components/ReadContents";
 import {Special} from "../../interface/Special";
 import fs from "fs";
 import path from 'path';

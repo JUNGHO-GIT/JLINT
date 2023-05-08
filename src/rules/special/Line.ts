@@ -1,9 +1,9 @@
-import ReadContents from "../../components/ReadContents";
+import ReadContents from "../components/ReadContents";
 import { Special } from "../../interface/Special";
 import fs from "fs";
 import path from "path";
 
-class Test implements Special {
+class Line implements Special {
 
   // constructor ---------------------------------------------------------------------------------->
   constructor() {
@@ -80,4 +80,4 @@ class Test implements Special {
   }
 }
 
-export default Test;
+export default Line;

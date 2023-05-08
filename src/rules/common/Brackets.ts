@@ -1,4 +1,4 @@
-import ReadContents from "../../components/ReadContents";
+import ReadContents from "../components/ReadContents";
 import {Common} from "../../interface/Common";
 import fs from "fs";
 import path from 'path';
@@ -46,10 +46,10 @@ class Brackets implements Common {
   // 3. output ------------------------------------------------------------------------------------>
   public output() {
     try {
-      return "_____________________\n" + this.fileName + "  실행" + this.main();
+      return console.log("_____________________\n" + this.fileName + "  실행");
     }
     catch(err) {
-      return new Error();
+      return console.log(new Error());
     }
   }
 }
