@@ -1,5 +1,5 @@
 import ReadContents from "../components/ReadContents";
-import {Common} from "../../interface/Common";
+import {Common} from "../interface/Common";
 import fs from "fs";
 import path from "path";
 
@@ -29,17 +29,20 @@ class Semicolon implements Common {
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
 
-    const falseResult = "(;)(?!\\n|\\/\\/| \\/\\/|\\}\\n)";
+    const falseResult1 = "(;)(?!\\n|\\/\\/| \\/\\/|\\}\\n)";
 
     const data = this.data();
     if(data instanceof Error) {
       return new Error();
     }
     else {
-      const regExp1 = new RegExp(falseResult, "gm");
-      const result1 = data.replace(regExp1, (_match, p1) => `;\n`);
-      fs.writeFileSync(this.copyPath, result1);
-      return result1;
+      let result = data;
+
+      const regExp1 = new RegExp(falseResult1, "gm");
+      result = result.replace(regExp1, (_match, p1) => `;\n`);
+
+      fs.writeFileSync(this.copyPath, result);
+      return result;
     }
   }
 

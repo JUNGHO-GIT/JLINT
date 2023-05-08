@@ -1,276 +1,256 @@
-package member;
-import java.sql.*;
+package com.good.neighbor;
 
-import javax.sql.*;
-import javax.naming.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.ibatis.session.SqlSession;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.web.servlet.ModelAndView;
+
+import model.board.BoardDTO;
+
+import org.springframework.ui.Model;
+
+import org.springframework.web.bind.annotation.ModelAttribute;
+
+import util.PageTest;
+
+@RequestMapping("/board")
+@Controller
+public class BoardController {
+
+		@Autowired
+		private SqlSession sqlSession;
 
 
-public class MemberDAO {
+		@RequestMapping("/writeForm.do")
+		public String writeForm(Model model, HttpServletRequest request) {
 
-	private static MemberDAO instance=new MemberDAO();
-	public MemberDAO () {}
-  // 2. main -------------------------------------------------------------------------------------->
-  // 0. path -------------------------------------------------------------------------------------->
-	public static MemberDAO getInstance () {
-		return instance;
-	}
+			String board_num=request.getParameter("board_num");
+			String board_ref=request.getParameter("board_ref");
+			String board_re_step=request.getParameter("board_r(\\s?)(^.)(\\s*)(public|private)(.*?)(\\{)e_step");
+			String board_re_level=request.getParameter("board_re_level");
+			String pageNum=request.getParameter("pageNum");
 
+			if(board_num==null) {
+				board_num="0";
+				board_ref="1";
+				board_re_step="0";
+				board_re_level="0";
+			}else {
 
-  // 2. main -------------------------------------------------------------------------------------->
-  // 0. path -------------------------------------------------------------------------------------->
-
-	private Connection getCon () throws Exception {
-		Context ct=new InitialContext();
-		DataSource ds=(DataSource)ct.lookup("java:comp/env/jdbc/mysql");
-		return ds.getConnection();
-	}
-
-
-	Connection con=null;
-	Statement stmt=null;
-	PreparedStatement pstmt=null;
-	ResultSet rs=null;
-	String sql="";
-
-	public int confirmId (String id) {
-		int x=-100;
-		try {
-			con=getCon();
-			pstmt=con.prepareStatement("select id from member where id=?");
-
-			pstmt.setString(1, id);
-			rs=pstmt.executeQuery();
-			if(rs.next()){
-				x=1;
-			}else{
-				x=-1;
 			}
-		}catch(Exception ex){
-			System.out.println("confirmID����"+ex);
-		}finally{
-			try {
-				if(rs!=null){rs.close();}
-				if(pstmt!=null){pstmt.close();}
-				if(con!=null){con.close();}
-			}catch(Exception ex2){}
+
+			model.addAttribute("pageNum",pageNum);
+			model.addAttribute("board_num",board_num);
+			model.addAttribute("board_ref",board_ref);
+			model.addAttribute("board_re_step",board_re_step);
+			model.addAttribute("board_re_level",board_re_level);
+
+
+			return ".main.board.writeForm";
+
 		}
-		return x;
-	}
-	public void insertMember (MemberDTO dto) {
-		try {
-			con=getCon();
-			pstmt=con.prepareStatement("insert into member values(?,?,?,?,?,?,?,?,NOW())");
 
-			pstmt.setString(1, dto.getId());
-			pstmt.setString(2, dto.getPw());
-			pstmt.setString(3, dto.getName());
-			pstmt.setString(4, dto.getEmail());
-			pstmt.setString(5, dto.getTel());
-			pstmt.setString(6, dto.getZipcode());
-			pstmt.setString(7, dto.getAddr());
-			pstmt.setString(8, dto.getAddr2());
 
-			pstmt.executeUpdate();
 
-		}catch(Exception ex){
-			System.out.println("insertMember ����"+ex);
-		}finally{
-			try {
-			if(pstmt!=null){pstmt.close();}
-			if(con!=null){con.close();}
-			}catch(Exception ex2){}
+		@RequestMapping(value="writePro.do",method=RequestMethod.POST)
+		public String writePro(@ModelAttribute("boardDTO") BoardDTO boardDTO,
+				HttpServletRequest request) {
+
+			int maxNum=0;
+
+			if(sqlSession.selectOne("board.numMax") != null) {
+				maxNum=sqlSession.selectOne("board.numMax");
+			}
+
+			if(maxNum != 0) {
+				maxNum=maxNum+1;
+			}else {
+				maxNum=1;
+			}
+
+
+			String ip=request.getRemoteAddr();
+			boardDTO.setBoard_ip(ip);
+
+			if(boardDTO.getBoard_num() != 0) {
+
+
+				sqlSession.update("board.reStep",boardDTO);
+				boardDTO.setBoard_re_step(boardDTO.getBoard_re_step()+1);
+				boardDTO.setBoard_re_level(boardDTO.getBoard_re_level()+1);
+
+				System.out.println("re_level=" + boardDTO.getBoard_re_level());
+			}else {
+				boardDTO.setBoard_ref(new Integer(maxNum));
+				boardDTO.setBoard_re_step(new Integer(0));
+				boardDTO.setBoard_re_level(new Integer(0));
+
+			}
+			sqlSession.insert("board.insertDAO",boardDTO);
+			return "redirect:/board/list.do";
+
 		}
-	}
+
+		@RequestMapping("list.do")
+		   public String listBoard(@ModelAttribute("boardDTO") BoardDTO boardDTO, Model model, HttpServletRequest request,
+		      @RequestParam(value="pageNum",required = false) String pageNum) {
+		     String keyWord="";
+		     String keyField="";
+		     if(request.getParameter("keyWord")!=null) {
+		         keyWord=request.getParameter("keyWord");
+		         keyField=request.getParameter("keyField");
+		        } else {
+		          keyWord="";
+		          keyField="";
+		        }
+
+		      if(pageNum==null) {
+		         pageNum="1";
+		      }
+
+
+		        int cnt=0;
+		        int curPage=Integer.parseInt(pageNum);
+		        Map<String, Object> map=new HashMap<String, Object>();
+		         Map<String, Object> map2=new HashMap<String, Object>();
+		        Map<String, Object> map3=new HashMap<String, Object>();
+		        if(keyWord==null || keyWord.length()<1 || keyWord=="") {
+		         cnt=sqlSession.selectOne("board.selectCount");
+		        } else {
+		          map3.put("columnParam", keyField);
+		           map3.put("keyWord", keyWord);
+		          cnt=sqlSession.selectOne("board.searchCount",map3);
+		        }
+		      util.PageTest pt=new util.PageTest(cnt,curPage);
+		      int startpos=pt.getStartRow()-1;
+
+		        List<BoardDTO> list=null;
+
+		        if(keyWord==null || keyWord.length()<1 || keyWord=="") {
+		          map.put("start", new Integer(startpos));
+		          map.put("count", new Integer(pt.getPageSize()));
+
+		          list=sqlSession.selectList("board.selectListBoard",map);
+
+		        } else if(keyWord!=null||keyWord.length()>1){
+		          map2.put("columnParam", keyField);
+		          map2.put("keyWord", keyWord);
+		          map2.put("start", new Integer(startpos));
+		          map2.put("count", new Integer(pt.getPageSize()));
+
+		          list=sqlSession.selectList("board.selectSeachBoard",map2);
+		        }
+
+		      if(pt.getEndPage()>pt.getPageCnt()) {
+		         pt.setEndPage(pt.getPageCnt());
+		      }
+		      int number=cnt-(curPage-1)*pt.getPageSize();
 
 
 
-	public int userCheck (String id,String pw) {
-		int x=-100;
-		String dbpw="";
-		try {
-			con=getCon();
-			pstmt=con.prepareStatement("select pw from member where id=?");
-			pstmt.setString(1, id);
-			rs=pstmt.executeQuery();
+		      model.addAttribute("number",number);
+		      model.addAttribute("pageNum",pageNum);
+		      model.addAttribute("keyField",keyField);
+		      model.addAttribute("keyWord",keyWord);
+		      model.addAttribute("pt",pt);
+		      model.addAttribute("cnt",cnt);
+		      model.addAttribute("list",list);
 
-			if(rs.next()){
-				dbpw=rs.getString("pw");
-				if(pw.equals(dbpw)){
-					x=1;
-				}else{
-					x=0;
+		      return ".main.board.list";
+		   }
+
+
+
+
+
+		@RequestMapping("content.do")
+		public String contentDo(Model model,HttpServletRequest request) {
+
+			String pageNum=request.getParameter("pageNum");
+
+			int num1=Integer.parseInt(request.getParameter("board_num"));
+			sqlSession.update("board.readCount",num1);
+
+			BoardDTO dto=sqlSession.selectOne("board.selectOneBoard",num1);
+
+			model.addAttribute("pageNum",pageNum);
+			model.addAttribute("dto",dto);
+
+
+			return ".main.board.content";
+		}
+
+
+
+
+		@RequestMapping("updateForm.do")
+		public ModelAndView updateForm(HttpServletRequest request) {
+
+			String pageNum=request.getParameter("pageNum");
+			int board_num=Integer.parseInt(request.getParameter("board_num"));
+			BoardDTO dto=sqlSession.selectOne("board.selectOneBoard",board_num);
+
+			ModelAndView mv=new ModelAndView();
+			mv.addObject("board_num",board_num);
+			mv.addObject("pageNum",pageNum);
+			mv.addObject("dto",dto);
+
+
+				mv.setViewName(".main.board.updateForm");
+			return mv;
+		}
+
+
+
+
+
+		@RequestMapping(value="updatePro.do",method=RequestMethod.POST)
+		public ModelAndView updatePro(@ModelAttribute("boardDTO") BoardDTO boardDTO,
+				HttpServletRequest request) {
+
+			String pageNum=request.getParameter("pageNum");
+			sqlSession.update("board.updateBoard",boardDTO);
+
+			ModelAndView mv=new ModelAndView();
+			mv.addObject("pageNum",pageNum);
+			mv.setViewName("redirect:/board/list.do");
+			return mv;
+		}
+
+
+
+
+		@RequestMapping("deletePro.do")
+		public String deletePro(Model model, String board_num, String pageNum) {
+
+			sqlSession.delete("board.deleteBoard",new Integer(board_num));
+			model.addAttribute("pageNum",pageNum);
+
+			return "redirect:/board/list.do";
+		}
+
+
+				@RequestMapping(value="deletePro.do", method=RequestMethod.POST)
+				public String deletePro (HttpServletRequest request) {
+
+					String board_pw = request.getParameter("board_pw");
+
+
+					Map<String , String> map = new HashMap<String, String>();
+
+					map.put("board_pw", board_pw);
+
+					sqlSession.delete("board.deleteMember" , map);
+					return "redirect:/board/list.do";
 				}
 
-			}else{
-				x=-1;
-			}
-		}catch(Exception ex){
-			System.out.println("userCheck()-����"+ex);
-		}finally{
-			try {
-				if(rs!=null){rs.close();}
-				if(pstmt!=null){pstmt.close();}
-				if(con!=null){con.close();}
-			}catch(Exception ex2){}
-		}
-		return x;
-	}
-
-
-
-	public int pwCheck (String id, String pw) {
-		int x+y+z=0;
-    int a-    b+c    *d;
-		try {
-			con=getCon();
-			pstmt=con.prepareStatement("select * from member where id=? and pw=?");
-			pstmt.setString(1, id);
-			pstmt.setString(2, pw);
-			rs=pstmt.executeQuery();
-
-			if(rs.next()){
-				x=1;
-			}else{
-				x=-1;
-			}
-		}catch(Exception ex){
-			System.out.println("pwcheck����"+pw);
-		}finally{
-			try {
-				if(rs!=null){rs.close();}
-				if(pstmt!=null){pstmt.close();}
-				if(con!=null){con.close();}
-			}catch(Exception ex2){}
-		}
-		return x;
-	}
-
-
-
-	public MemberDTO getMember (String id) {
-		MemberDTO dto=null;
-		try {
-			con=getCon();
-			pstmt=con.prepareStatement("select * from member where id=?");
-			pstmt.setString(1, id);
-			rs=pstmt.executeQuery();
-
-			if(rs.next()){
-
-				dto=new MemberDTO();
-				dto.setId(rs.getString("id"));
-				dto.setPw(rs.getString("pw"));
-				dto.setName(rs.getString("name"));
-				dto.setEmail(rs.getString("email"));
-				dto.setTel(rs.getString("tel"));
-				dto.setZipcode(rs.getString("zipcode"));
-				dto.setAddr(rs.getString("addr"));
-				dto.setAddr2(rs.getString("addr2"));
-				dto.setRegdate(rs.getString("regdate"));
-
-			}
-
-		}catch(Exception ex){
-			System.out.println("getMember ����"+ex);
-		}finally{
-			try {
-				if(rs!=null){rs.close();}
-				if(pstmt!=null){pstmt.close();}
-				if(con!=null){con.close();}
-			}catch(Exception ex2){}
-		}
-		return dto;
-	}
-
-
-
-	public void updateMember (MemberDTO dto) {
-		try {
-			con=getCon();
-			sql="update member set pw=?, name=?, email=?, tel=?, zipcode=?, addr=?, addr2=? where id=?";
-			pstmt=con.prepareStatement(sql);
-
-			pstmt.setString(1, dto.getPw());
-			pstmt.setString(2, dto.getName());
-			pstmt.setString(3, dto.getEmail());
-			pstmt.setString(4, dto.getTel());
-			pstmt.setString(5, dto.getZipcode());
-			pstmt.setString(6, dto.getAddr());
-			pstmt.setString(7, dto.getAddr2());
-			pstmt.setString(8, dto.getId());
-
-			pstmt.executeUpdate();
-		}catch(Exception ex){
-			System.out.println("updateMember����"+ex);
-		}finally{
-			try {
-				if(rs!=null){rs.close();}
-				if(pstmt!=null){pstmt.close();}
-				if(con!=null){con.close();}
-			}catch(Exception ex2){}
-		}
-	}
-
-
-
-	public int deleteMember (String id, String pw) {
-		int x=-100;
-		try {
-			con=getCon();
-			pstmt=con.prepareStatement("select pw from member where id=?");
-			pstmt.setString(1, id);
-			rs=pstmt.executeQuery();
-
-			if(rs.next()){
-				String dbpw=rs.getString("pw");
-				if(pw.equals(dbpw)){
-					pstmt=con.prepareStatement("delete from member where id=?");
-					pstmt.setString(1, id);
-					pstmt.executeUpdate();
-
-					x=1;
-				}else{
-					x=-1;
-				}
-			}
-		}catch(Exception ex){
-			System.out.println("deleteMember ����"+ex);
-		}finally{
-			try {
-				if(rs!=null){rs.close();}
-				if(pstmt!=null){pstmt.close();}
-				if(con!=null){con.close();}
-			}catch(Exception ex2){}
-		}
-		return x;
-	}
-
-
-
-	public int adminLogin (String adminid,String adminpw) {
-		int x=100;
-		try {
-			con=getCon();
-			pstmt=con.prepareStatement("select * from admin where adminid=? and adminpw=?");
-			pstmt.setString(1, adminid);
-			pstmt.setString(2, adminpw);
-			rs=pstmt.executeQuery();
-			if(rs.next()){
-				x=1;
-			}else{
-				x=-1;
-			}
-
-		}catch(Exception ex){
-			System.out.println("admin ����"+ex);
-		}finally{
-			try {
-				if(rs!=null){rs.close();}
-				if(pstmt!=null){pstmt.close();}
-				if(con!=null){con.close();}
-			}catch(Exception ex2){}
-		}
-		return x;
-	}
 
 }

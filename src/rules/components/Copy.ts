@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import {Components} from "../../interface/Components";
+import {Components} from "../interface/Components";
 
 class Copy implements Components {
 

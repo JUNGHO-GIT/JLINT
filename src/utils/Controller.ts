@@ -53,7 +53,7 @@ class Controller {
   // 5. lang -------------------------------------------------------------------------------------->
   public lang() {
     const lang = [
-      ".java",".js"
+      ".java"
     ];
     const array: string[] = [
       this.fileExt.slice(1).toUpperCase()

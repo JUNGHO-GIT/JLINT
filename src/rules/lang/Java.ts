@@ -1,5 +1,5 @@
 import ReadContents from "../components/ReadContents";
-import {Lang} from "../../interface/Lang";
+import {Lang} from "../interface/Lang";
 import fs from "fs";
 import path from 'path';
 
@@ -29,6 +29,7 @@ class Java implements Lang {
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
     const falseResult1 = "(\\s*)(package)(\\s*)([\\s\\S]*?)(;)(\\n)(\\s*)(import)";
+    const falseResult2 = "(\\s*)(\\))(\\s+)(;)";
 
     const data = this.data();
     if(data instanceof Error) {
@@ -36,10 +37,15 @@ class Java implements Lang {
     }
     else {
       let result = data;
+
       const regExp1 = new RegExp(falseResult1, "gm");
       result = result.replace(regExp1, (_match, p1, p2, p3, p4, p5, p6, p7, p8) => {
         return `${p2} ${p4}${p5}${p6}\n${p8}`
       });
+
+      const regExp2 = new RegExp(falseResult2, "gm");
+      result  = result.replace(regExp2, (_match, p1, p2, p3, p4) => `${p1}${p2}${p4}`);
+
       fs.writeFileSync(this.copyPath, result);
       return result;
     }

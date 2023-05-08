@@ -30,7 +30,7 @@ class Line implements Special {
   public main(): string | Error {
 
     const falseResult1
-    = "((@)(\\s*)(\\S*)(\\s*)(\\n))(\\s*)(public|private)(\\s*)([\s\S]*?)(\\s*)(\\()(\\s*)([\\s\\S]*?)(\\s*)(\\))(\\s*)(([\\s\\S]*?)?)(\\s*?)(\\{)";
+    = "(\\s?)(^.)(\\s*)(public|private)(.*?)(\\{)";
 
     const falseResult2
     = "(\\s*)(public|private)(\\s*)([\\s\\S]*?)(\\s*)(\\()(\\s*)([\\s\\S]*?)(\\s*)(\\))(\\s*)(([\\s\\S]*?)?)(\\s*?)(\\{)";
@@ -50,15 +50,7 @@ class Line implements Special {
       let result = data;
 
       const regExp1 = new RegExp(falseResult1, "gm");
-      result =
-
-
-
-
-
-
-
-      result.replace(regExp1, (match, p1, p2, p3, p4, p5, p6) => {
+      result = result.replace(regExp1, (match, p1, p2, p3, p4, p5, p6) => {
         const remainingLength = 95 - p2.length - p3.length;
         return `\n${p2}${p3}// ${"-".repeat(remainingLength)}>\n${p2}${p3}${p4}${p5}${p6}`;
       });
