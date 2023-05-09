@@ -58,10 +58,10 @@ class Js implements Lang {
       endOfLine: "lf",
       embeddedLanguageFormatting: "auto"
     });
-
     fs.writeFileSync(this.copyPath, formattedCode, "utf8");
+    const files  = fs.readFileSync(this.copyPath, "utf8");
 
-    return formattedCode;
+    return files;
   }
 
   // 3. output ------------------------------------------------------------------------------------>

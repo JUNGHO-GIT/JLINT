@@ -10,11 +10,11 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "noEmit": true,
-    "outDir": "./bin"
+    "outDir": "./bin",
   },
   "include": [
     "src/**/*"
-, "src/types/prettier-plugin-java.d.ts"  ],
+  ],
   "exclude": [
     "node_modules"
   ]

@@ -1,10 +1,9 @@
-import ReadContents from "../components/ReadContents";
-import {Lang} from "../interface/Lang";
 import fs from "fs";
 import path from "path";
-import prettier from "prettier";
+import {Components} from "../interface/Components";
+import ReadContents from "./ReadContents";
 
-class Java implements Lang {
+class Detector implements Components {
 
   // constructor ---------------------------------------------------------------------------------->
   constructor() {
@@ -12,6 +11,7 @@ class Java implements Lang {
   }
 
   // 0. path -------------------------------------------------------------------------------------->
+  [index: string]: any;
   private filePath = process.argv[2];
   private fileName = path.basename(__filename);
   private fileExt = path.extname(this.filePath);
@@ -23,44 +23,22 @@ class Java implements Lang {
       return new ReadContents().main().toString();
     }
     catch(err) {
-      return new Error(`파일내용을 읽을 수 없습니다. \n`);
+      return new Error(`파일이름을 읽을 수 없습니다. \n`);
     }
   }
 
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
-    const data = this.data();
-    if (data instanceof Error) {
-      return data;
+    if(this.data() instanceof Error) {
+      return this.data();
     }
-
-    const formattedCode = prettier.format(data, {
-      parser: "java",
-      printWidth: 100,
-      tabWidth: 2,
-      useTabs: true,
-      semi: true,
-      singleQuote: false,
-      quoteProps: "as-needed",
-      jsxSingleQuote: false,
-      trailingComma: "all",
-      bracketSpacing: true,
-      jsxBracketSameLine: false,
-      arrowParens: "always",
-      rangeStart: 0,
-      rangeEnd: Infinity,
-      requirePragma: false,
-      insertPragma: false,
-      proseWrap: "preserve",
-      htmlWhitespaceSensitivity: "css",
-      vueIndentScriptAndStyle: true,
-      endOfLine: "lf",
-      embeddedLanguageFormatting: "auto"
+    const lang = [".java", ".js", ".ts", ".py", ".sql"];
+    const langArray = lang.map((item) => this[item]()).flat();
+    const langImport = langArray.map((item) => {
+      return require(`../lang/${item}`).default;
     });
-    fs.writeFileSync(this.copyPath, formattedCode, "utf8");
-    const files  = fs.readFileSync(this.copyPath, "utf8");
-
-    return files;
+    const langInit = langArray.map((_item, index) => new langImport[index]());
+    return langInit.map((item) => item.output()).join("");
   }
 
   // 3. output ------------------------------------------------------------------------------------>
@@ -74,4 +52,4 @@ class Java implements Lang {
   }
 }
 
-export default Java;
+export default Detector;

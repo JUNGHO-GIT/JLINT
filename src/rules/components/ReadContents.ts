@@ -1,11 +1,6 @@
-import fs from "fs";
-import path from "path";
+import * as fs from "fs";
+import * as path from "path";
 import { Components } from "../interface/Components";
-import { Node } from "estree";
-import acorn from "acorn";
-import escodegen from "escodegen";
-
-
 
 class ReadContents implements Components {
 
@@ -15,6 +10,7 @@ class ReadContents implements Components {
   }
 
   // 0. path -------------------------------------------------------------------------------------->
+  [index: string]: any;
   private filePath = process.argv[2];
   private fileName = path.basename(__filename);
   private fileExt = path.extname(this.filePath);
@@ -47,7 +43,7 @@ class ReadContents implements Components {
     }
   }
 
-  // 2. main -------------------------------------------------------------------------------------->
+  // 2. lang -------------------------------------------------------------------------------------->
   public main(): string | Error {
     try {
       return this.data();
@@ -56,6 +52,7 @@ class ReadContents implements Components {
       return new Error();
     }
   }
+
 
   // 3. output ------------------------------------------------------------------------------------>
   public output() {

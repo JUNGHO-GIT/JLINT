@@ -1,5 +1,8 @@
+import ReadContents from "../rules/components/ReadContents";
+import { Lang } from "../rules/interface/Lang";3
 import fs from "fs";
 import path from "path";
+import prettier from "prettier";
 
 class Controller {
 
@@ -13,7 +16,7 @@ class Controller {
   // 1. main -------------------------------------------------------------------------------------->
   public main() {
     const mainTitle = [
-      "components", "common",  "special", "lang"
+      "components", "common", "special"
     ];
     const mainArray = mainTitle.map((item) => this[item]()).flat();
 
@@ -50,18 +53,6 @@ class Controller {
     ];
     return array;
   }
-
-  // 3. lang -------------------------------------------------------------------------------------->
-  public lang() {
-    const lang = [
-      ".java", ".js", "ts"
-    ];
-    const array: string[] = [
-      this.fileExt.charAt(1).toUpperCase() + this.fileExt.substring(2),
-    ];
-    return lang.includes(this.fileExt) ? array : [];
-  }
-
 }
 
 export default Controller;
