@@ -53,7 +53,9 @@ class Controller {
 
   // 5. lang -------------------------------------------------------------------------------------->
   public lang() {
-    const lang = [".java"];
+    const lang = [
+      ".java", ".js"
+    ];
     const array: string[] = [
       this.fileExt.charAt(1).toUpperCase() + this.fileExt.substring(2),
     ];

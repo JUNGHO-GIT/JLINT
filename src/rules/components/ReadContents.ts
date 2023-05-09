@@ -1,6 +1,11 @@
 import fs from "fs";
 import path from "path";
 import { Components } from "../interface/Components";
+import { Node } from "estree";
+import acorn from "acorn";
+import escodegen from "escodegen";
+
+
 
 class ReadContents implements Components {
 
@@ -15,12 +20,27 @@ class ReadContents implements Components {
   private fileExt = path.extname(this.filePath);
   private copyPath = this.filePath.slice(0, -this.fileExt.length) + "-2" + this.fileExt;
 
-
   // 1. data -------------------------------------------------------------------------------------->
   public data(): string | Error {
     try {
+      // 1. 파일 내용 읽기
       const content = fs.readFileSync(this.copyPath, "utf8").toString();
-      return content.split("\n").map(line => line.replace(/\t/g, " ".repeat(2))).join("\n");
+
+      // 2. 들여쓰기 변경
+      const updateContent = content.split("\n").map(line => {
+        const indentMatch = line.match(/^(\s+)/);
+        if (indentMatch) {
+          const spaces = indentMatch[1].length;
+          const newIndent = Math.ceil(spaces / 2) * 2;
+          return line.replace(/^(\s+)/, " ".repeat(newIndent));
+        }
+        return line;
+      }).join("\n");
+
+      // 3. 파일 내용 쓰기
+      fs.writeFileSync(this.copyPath, updateContent, "utf8");
+
+      return updateContent;
     }
     catch (err) {
       return new Error(`파일내용을 읽을 수 없습니다. \n`);

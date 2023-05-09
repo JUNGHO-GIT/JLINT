@@ -1,0 +1,27 @@
+try {
+      // 1. 파일 내용 읽기
+      const content = fs.readFileSync(this.copyPath, "utf8").toString();
+
+      // 2. 들여쓰기 변경
+      const updateContent = content
+        .split("\n")
+        .map(line => {
+          const indentMatch = line.match(/^(\s+)/);
+          if (indentMatch) {
+            const spaces = indentMatch[1].length;
+            const newIndent = Math.ceil(spaces / 2) * 2;
+            return line.replace(/^(\s+)/, " ".repeat(newIndent));
+          }
+          return line;
+        })
+        .join("\n");
+
+      // 3. 파일 내용 쓰기
+      fs.writeFileSync(this.copyPath, updateContent, "utf8");
+
+      return updateContent;
+    }
+    catch (err) {
+      return new Error(`파일내용을 읽을 수 없습니다. \n`);
+    }
+  }
