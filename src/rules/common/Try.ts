@@ -1,7 +1,8 @@
 import ReadContents from "../components/ReadContents";
 import {Common} from "../interface/Common";
 import fs from "fs";
-import path from 'path';
+import path from "path";
+import lodash from "lodash";
 
 class Try implements Common {
 
@@ -28,23 +29,19 @@ class Try implements Common {
 
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
+    this.data() instanceof Error ? new Error() : null;
 
-    const falseResult1 = "(\\s*)(try)(\\s*)(\\{)";
+    const rulesOne = /(\s*)(try)(\s*)(\{)/gm;
 
-    const data = this.data();
-    if (data instanceof Error) {
-      return new Error();
-    }
-    else {
-      let result = data;
+    const result = lodash.chain(this.data())
 
-      const regExp1 = new RegExp(falseResult1, "gm");
-      result = result.replace(regExp1, (_match, p1, p2, p3, p4) =>
-        `${p1}${p2} ${p4}`
-      );
-      fs.writeFileSync(this.copyPath, result);
-      return result;
-    }
+    .replace(rulesOne, (match, p1, p2, p3, p4) => {
+      return `${p1}${p2} ${p4}`;
+    })
+    .value();
+
+    fs.writeFileSync(this.copyPath, result);
+    return result;
   }
 
 

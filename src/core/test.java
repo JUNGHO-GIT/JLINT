@@ -18,7 +18,6 @@ import model.board.BoardDTO;
 import org.springframework.ui.Model;
 
 import org.springframework.web.bind.annotation.ModelAttribute;
-
 import util.PageTest;
 
 @RequestMapping("/board")
@@ -28,13 +27,12 @@ public class BoardController {
 		@Autowired
 		private SqlSession sqlSession;
 
-
-		@RequestMapping("/writeForm.do")
+		@RequestMapping ("/writeForm.do")
 		public String writeForm(Model model, HttpServletRequest request) {
 
 			String board_num=request.getParameter("board_num");
 			String board_ref=request.getParameter("board_ref");
-			String board_re_step=request.getParameter("board_r(\\s?)(^.)(\\s*)(public|private)(.*?)(\\{)e_step");
+			String board_re_step=request.getParameter("board_r");
 			String board_re_level=request.getParameter("board_re_level");
 			String pageNum=request.getParameter("pageNum");
 
@@ -71,7 +69,7 @@ public class BoardController {
 			}
 
 			if(maxNum != 0) {
-				maxNum=maxNum+1;
+				maxNum=maxNum + 1;
 			}else {
 				maxNum=1;
 			}
@@ -84,8 +82,8 @@ public class BoardController {
 
 
 				sqlSession.update("board.reStep",boardDTO);
-				boardDTO.setBoard_re_step(boardDTO.getBoard_re_step()+1);
-				boardDTO.setBoard_re_level(boardDTO.getBoard_re_level()+1);
+				boardDTO.setBoard_re_step(boardDTO.getBoard_re_step() + 1);
+				boardDTO.setBoard_re_level(boardDTO.getBoard_re_level() + 1);
 
 				System.out.println("re_level=" + boardDTO.getBoard_re_level());
 			}else {
@@ -160,7 +158,7 @@ public class BoardController {
 		      model.addAttribute("pageNum",pageNum);
 		      model.addAttribute("keyField",keyField);
 		      model.addAttribute("keyWord",keyWord);
-		      model.addAttribute("pt",pt);
+		      model.addAttribute("pt",pt); asdfas + asdfasdfad + asdfsadf----xcvxcv||Asdfasdf
 		      model.addAttribute("cnt",cnt);
 		      model.addAttribute("list",list);
 

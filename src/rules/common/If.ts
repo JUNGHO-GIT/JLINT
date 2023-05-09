@@ -1,7 +1,8 @@
 import ReadContents from "../components/ReadContents";
 import {Common} from "../interface/Common";
 import fs from "fs";
-import path from 'path';
+import path from "path";
+import lodash from "lodash";
 
 class If implements Common {
 
@@ -28,19 +29,18 @@ class If implements Common {
 
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
+    this.data() instanceof Error ? new Error() : null;
 
-    const falseResult = "(\\b)(if)(\\()";
+    const rulesOne = /(\b)(if)(\()/gm;
 
-    const data = this.data();
-    if(data instanceof Error) {
-      return new Error();
-    }
-    else {
-      const regExp1 = new RegExp(falseResult, "gm");
-      const result1 = data.replace(regExp1, (_match, _p1, p2, _p3) => `${p2} (`);
-      fs.writeFileSync(this.copyPath, result1);
-      return result1;
-    }
+    const result = lodash.chain(this.data())
+    .replace(rulesOne, (match, p1, p2, p3) => {
+      return `${p2} (`;
+    })
+    .value();
+
+    fs.writeFileSync(this.copyPath, result);
+    return result;
   }
 
   // 3. output ------------------------------------------------------------------------------------>

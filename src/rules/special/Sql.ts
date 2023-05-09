@@ -1,7 +1,8 @@
 import ReadContents from "../components/ReadContents";
 import {Special} from "../interface/Special";
 import fs from "fs";
-import path from 'path';
+import path from "path";
+import lodash from "lodash";
 
 class Sql implements Special {
 
@@ -28,34 +29,26 @@ class Sql implements Special {
 
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
-    const falseResult1 = "(\\s*)(=)(\\s*)(\\?)(\\s*)";
-    const falseResult2 = "(\\s*)(=)(\\s*)(NOW)(\\s*)";
-    const falseResult3 = "(\\s*)(=)(\\s*)(now)(\\s*)";
+    this.data() instanceof Error ? new Error() : null;
 
-    const data = this.data();
-    if(data instanceof Error) {
-      return new Error();
-    }
-    else {
-      let result = data;
+    const rulesOne = /(\s*)(\s*)(=)(\s*)(\?)(\s*)/gm;
+    const rulesTwo = /(\s*)(\s*)(=)(\s*)(NOW)(\s*)/gm;
+    const rulesThree = /(\s*)(\s*)(=)(\s*)(now)(\s*)/gm;
 
-      const regExp1 = new RegExp(falseResult1, "gm");
-      result = result.replace(regExp1, (_match, p1, p2, p3, p4, p5) =>
-        `${p2}${p4}${p5}`
-      );
+    const result = lodash.chain(this.data())
+    .replace(rulesOne, (match, p1, p2, p3, p4, p5) => {
+      return `${p2}${p4}${p5}`;
+    })
+    .replace(rulesTwo, (match, p1, p2, p3, p4, p5) => {
+      return `${p2}${p4}${p5}`;
+    })
+    .replace(rulesThree, (match, p1, p2, p3, p4, p5) => {
+      return `${p2}${p4}${p5}`;
+    })
+    .value();
 
-      const regExp2 = new RegExp(falseResult2, "gm");
-      result = result.replace(regExp2, (_match, p1, p2, p3, p4, p5) =>
-        `${p2}${p4}${p5}`
-      );
-
-      const regExp3 = new RegExp(falseResult3, "gm");
-      result = result.replace(regExp3, (_match, p1, p2, p3, p4, p5) =>
-        `${p2}${p4}${p5}`
-      );
-      fs.writeFileSync(this.copyPath, result);
-      return result;
-    }
+    fs.writeFileSync(this.copyPath, result);
+    return result;
   }
 
   // 3. output ------------------------------------------------------------------------------------>

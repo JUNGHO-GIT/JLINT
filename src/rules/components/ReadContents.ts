@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import {Components} from "../interface/Components";
+import { Components } from "../interface/Components";
 
 class ReadContents implements Components {
 
@@ -15,12 +15,14 @@ class ReadContents implements Components {
   private fileExt = path.extname(this.filePath);
   private copyPath = this.filePath.slice(0, -this.fileExt.length) + "-2" + this.fileExt;
 
+
   // 1. data -------------------------------------------------------------------------------------->
   public data(): string | Error {
     try {
-      return fs.readFileSync(this.copyPath, "utf-8").toString();
+      const content = fs.readFileSync(this.copyPath, "utf8").toString();
+      return content.split("\n").map(line => line.replace(/\t/g, " ".repeat(2))).join("\n");
     }
-    catch(err) {
+    catch (err) {
       return new Error(`파일내용을 읽을 수 없습니다. \n`);
     }
   }
@@ -40,7 +42,7 @@ class ReadContents implements Components {
     try {
       return console.log("_____________________\n" + this.fileName + "  실행");
     }
-    catch(err) {
+    catch (err) {
       return console.log(new Error());
     }
   }

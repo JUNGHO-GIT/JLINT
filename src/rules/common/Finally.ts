@@ -1,7 +1,8 @@
 import ReadContents from "../components/ReadContents";
 import {Common} from "../interface/Common";
 import fs from "fs";
-import path from 'path';
+import path from "path";
+import lodash from "lodash";
 
 class Finally implements Common {
 
@@ -28,39 +29,28 @@ class Finally implements Common {
 
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
+    this.data() instanceof Error ? new Error() : null;
 
-    const falseResult1 = "(^.*)(\\.*)(\\})(\\n)(\\s*)(finally)(\\s*)(\\{)(\\})";
-    const falseResult2 = "(^.*)(\\.*)(\\})(\\n)(\\s*)(finally)(\\s*)(\\{)";
-    const falseResult3 = "(^.*)(\\.*)(\\})(\\s*)(finally)(\\s*)(\\{)";
+    const rulesOne = /(^.*)(\.*)(\})(\n)(\s*)(finally)(\s*)(\{)(\})/gm;
+    const rulesTwo = /(^.*)(\.*)(\})(\n)(\s*)(finally)(\s*)(\{)/gm;
+    const rulesThree = /(^.*)(\.*)(\})(\s*)(finally)(\s*)(\{)/gm;
 
-    const data = this.data();
-    if (data instanceof Error) {
-      return new Error();
-    }
-    else {
-      let result = data;
+    const result = lodash.chain(this.data())
+    .replace(new RegExp(rulesOne, "gm"), (match, p1, p2, p3, p4, p5, p6, p7, p8, p9) => {
+      return `${p1}${p2}${p3}${p4}${p5}${p6} ${p8}\n${p1}${p9}`
+    })
+    .replace(new RegExp(rulesTwo, "gm"), (match, p1, p2, p3, p4, p5, p6, p7, p8) => {
+      return `${p1}${p3}\n${p1}${p6} ${p8}`
+    })
+    .replace(new RegExp(rulesThree, "gm"), (match, p1, p2, p3, p4, p5, p6, p7) => {
+      return `${p1}${p3}\n${p1}${p5} ${p7}`
+    })
+    .value();
 
-      const regExp1 = new RegExp(falseResult1, "gm");
-      result = result.replace(regExp1, (_match, p1, p2, p3, p4, p5, p6, p7, p8, p9) =>
-        `${p1}${p2}${p3}${p4}${p5}${p6} ${p8}\n${p1}${p9}`
-      );
+    fs.writeFileSync(this.copyPath, result);
+    return result;
 
-      const regExp2 = new RegExp(falseResult2, "gm");
-      result = result.replace(regExp2, (_match, p1, p2, p3, p4, p5, p6, p7, p8) =>
-        `${p1}${p3}\n${p1}${p6} ${p8}`
-      );
-
-      const regExp3 = new RegExp(falseResult3, "gm");
-      result = result.replace(regExp3, (_match, p1, p2, p3, p4, p5, p6, p7, p8) =>
-        `${p1}${p3}\n${p1}${p5} ${p7}`
-      );
-
-      fs.writeFileSync(this.copyPath, result);
-      return result;
-    }
   }
-
-
 
   // 3. output ------------------------------------------------------------------------------------>
   public output() {

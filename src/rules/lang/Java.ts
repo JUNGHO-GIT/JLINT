@@ -1,7 +1,8 @@
 import ReadContents from "../components/ReadContents";
 import {Lang} from "../interface/Lang";
 import fs from "fs";
-import path from 'path';
+import path from "path";
+import lodash from "lodash";
 
 class Java implements Lang {
 
@@ -28,27 +29,26 @@ class Java implements Lang {
 
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
-    const falseResult1 = "(\\s*)(package)(\\s*)([\\s\\S]*?)(;)(\\n)(\\s*)(import)";
-    const falseResult2 = "(\\s*)(\\))(\\s+)(;)";
+    this.data() instanceof Error ? new Error() : null;
 
-    const data = this.data();
-    if(data instanceof Error) {
-      return new Error();
-    }
-    else {
-      let result = data;
+    const rulesOne = /(\s*)(;)(\s*)(\n?)(\s*)(import)/gm;
+    const rulesTwo = /(\s*)(package)(\s*)([\s\S]*?)(;)(\n)(\s*)(import)/gm;
+    const rulesThree = /(\s*)(\))(\s+)(;)/gm;
 
-      const regExp1 = new RegExp(falseResult1, "gm");
-      result = result.replace(regExp1, (_match, p1, p2, p3, p4, p5, p6, p7, p8) => {
-        return `${p2} ${p4}${p5}${p6}\n${p8}`
-      });
+    const result = lodash.chain(this.data())
+    .replace(rulesOne, (match, p1, p2, p3, p4, p5, p6) => {
+      return `${p2}\n${p6}`;
+    })
+    .replace(rulesTwo, (match, p1, p2, p3, p4, p5, p6, p7, p8) => {
+      return `${p2} ${p4}${p5}${p6}\n${p8}`;
+    })
+    .replace(rulesThree, (match, p1, p2, p3, p4) => {
+      return `${p1}${p2}${p4}`;
+    })
+    .value();
 
-      const regExp2 = new RegExp(falseResult2, "gm");
-      result  = result.replace(regExp2, (_match, p1, p2, p3, p4) => `${p1}${p2}${p4}`);
-
-      fs.writeFileSync(this.copyPath, result);
-      return result;
-    }
+    fs.writeFileSync(this.copyPath, result);
+    return result;
   }
 
   // 3. output ------------------------------------------------------------------------------------>

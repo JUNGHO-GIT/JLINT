@@ -1,7 +1,8 @@
 import ReadContents from "../components/ReadContents";
 import {Common} from "../interface/Common";
 import fs from "fs";
-import path from 'path';
+import path from "path";
+import lodash from "lodash";
 
 class Equal implements Common {
 
@@ -28,29 +29,30 @@ class Equal implements Common {
 
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
-    const operatorsOne = ["===", "==", "="];
-    const operatorsTwo = "! =";
+    this.data() instanceof Error ? new Error() : null;
 
-    const data = this.data();
-    if (data instanceof Error) {
-      return new Error();
-    }
-    else {
-      let result = data;
+    const rulesOne = /(?<!=)(\s*)(===)(\s*)(?!=)/gm;
+    const rulesTwo = /(?<!=)(\s*)(==)(\s*)(?!=)/gm;
+    const rulesThree = /(?<!=)(\s*)(=)(\s*)(?!=)/gm;
+    const rulesFour = /(\s*)(! =)(\s*)/gm;
 
-      operatorsOne.forEach((operator) => {
-        const regex = `(?<!=)(\\s*)(${operator})(\\s*)(?!=)`;
-        const regExp = new RegExp(regex, "gm");
-        result = result.replace(regExp, (_match, p1, p2, p3, p4) => ` ${p2} `);
-      });
+    const result = lodash.chain(this.data())
+    .replace(rulesOne, (match, p1, p2, p3) => {
+      return ` ${p2} `;
+    })
+    .replace(rulesTwo, (match, p1, p2, p3) => {
+      return ` ${p2} `;
+    })
+    .replace(rulesThree, (match, p1, p2, p3) => {
+      return ` ${p2} `;
+    })
+    .replace(rulesFour, (match, p1, p2, p3) => {
+      return ` != `;
+    })
+    .value();
 
-      const regex = `(\\s*)(${operatorsTwo})(\\s*)`;
-      const regExp = new RegExp(regex, "gm");
-      result = result.replace(regExp, (_match, p1, p2, p3) => ` != `);
-
-      fs.writeFileSync(this.copyPath, result);
-      return result;
-    }
+    fs.writeFileSync(this.copyPath, result);
+    return result;
   }
 
   // 3. output ------------------------------------------------------------------------------------>

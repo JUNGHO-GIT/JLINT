@@ -2,6 +2,7 @@ import ReadContents from "../components/ReadContents";
 import {Common} from "../interface/Common";
 import fs from "fs";
 import path from "path";
+import lodash from "lodash";
 
 class Semicolon implements Common {
 
@@ -28,22 +29,18 @@ class Semicolon implements Common {
 
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
+    this.data() instanceof Error ? new Error() : null;
 
-    const falseResult1 = "(;)(?!\\n|\\/\\/| \\/\\/|\\}\\n)";
+    const rulesOne = /(;)(?!\n|\/\/| \/\/|\}\n)/gm;
 
-    const data = this.data();
-    if(data instanceof Error) {
-      return new Error();
-    }
-    else {
-      let result = data;
+    const result = lodash.chain(this.data())
+    .replace(rulesOne, (match, p1) => {
+      return `;\n`;
+    })
+    .value();
 
-      const regExp1 = new RegExp(falseResult1, "gm");
-      result = result.replace(regExp1, (_match, p1) => `;\n`);
-
-      fs.writeFileSync(this.copyPath, result);
-      return result;
-    }
+    fs.writeFileSync(this.copyPath, result);
+    return result;
   }
 
   // 3. output ------------------------------------------------------------------------------------>

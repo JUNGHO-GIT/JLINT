@@ -2,6 +2,7 @@ import ReadContents from "../components/ReadContents";
 import { Special } from "../interface/Special";
 import fs from "fs";
 import path from "path";
+import lodash from "lodash";
 
 class Line implements Special {
 
@@ -28,60 +29,36 @@ class Line implements Special {
 
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
+    this.data() instanceof Error ? new Error() : null;
 
-    const falseResult1
-    = "((@)(\\s*)(\\S*)(\\s*)(\\n))(\\s*)(public|private)(\\s*)([\s\S]*?)(\\s*)(\\()(\\s*)([\\s\\S]*?)(\\s*)(\\))(\\s*)(([\\s\\S]*?)?)(\\s*?)(\\{)";
+    const rulesOne
+    = /(\n+)(\s+)(public|private)((([\s\S](?!;|class))*?))(\s*)(?<=\{)/gm;
+    const rulesTwo
+    = /(\s*)(public|private)(\s*)([\s\S]*?)(\s*)(\()(\s*)([\s\S]*?)(\s*)(\))(\s*)(([\s\S]*?)?)(\s*?)(\{)/gm;
+    const rulesThree
+    = /(\s*)(ception)(\{)/gm;
+    const rulesFour
+    = /(\n)(^.)(\s*)(\})(\s*)(\n)(\s*)(\/\/)/gm;
 
-    const falseResult2
-    = "(\\s*)(public|private)(\\s*)([\\s\\S]*?)(\\s*)(\\()(\\s*)([\\s\\S]*?)(\\s*)(\\))(\\s*)(([\\s\\S]*?)?)(\\s*?)(\\{)";
+    const result = lodash.chain(this.data())
 
-    const falseResult3
-    = "(\\s*)(ception)(\\{)";
+    .replace(rulesOne, (match, p1, p2, p3, p4, p5, p6, p7) => {
+      const insetLine = "// " + "-".repeat(96 - p2.length) + ">";
+      return `\n${p2}${insetLine}\n${p2}${p3}${p4}${p7}`;
+    })
+    .replace(rulesTwo, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15) => {
+      return `${p1}${p2} ${p4} ${p6}${p8}${p10} ${p12} ${p15}`;
+    })
+    .replace(rulesThree, (match, p1, p2, p3) => {
+      return `${p2} ${p3}`;
+    })
+    .replace(rulesFour, (match, p1, p2, p3, p4, p5, p6, p7, p8) => {
+      return `${p1}${p2}${p3}${p4}\n\n${p7}${p8}`;
+    })
+    .value();
 
-    const falseResult4
-    = "(\\n)(^.)(\\s*)(\\})(\\s*)(\\n)(\\s*)(\\/\\/)";
-
-    const data = this.data();
-
-    if (data instanceof Error) {
-      return new Error();
-    }
-    else {
-      let result = data;
-
-      const regExp1 = new RegExp(falseResult1, "gm");
-      result =
-
-
-
-
-
-
-
-      result.replace(regExp1, (match, p1, p2, p3, p4, p5, p6) => {
-        const remainingLength = 95 - p2.length - p3.length;
-        return `\n${p2}${p3}// ${"-".repeat(remainingLength)}>\n${p2}${p3}${p4}${p5}${p6}`;
-      });
-
-      const regExp2 = new RegExp(falseResult2, "gm");
-      result = result.replace(regExp2, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12,
-      p13, p14, p15) => {
-        return `${p1}${p2} ${p4} ${p6}${p8}${p10} ${p12} ${p15}`;
-      });
-
-      const regExp3 = new RegExp(falseResult3, "gm");
-      result = result.replace(regExp3, (match, p1, p2, p3) => {
-        return `${p2} ${p3}`;
-      });
-
-      const regExp4 = new RegExp(falseResult4, "gm");
-      result = result.replace(regExp4, (match, p1, p2, p3, p4, p5, p6, p7, p8) => {
-        return `${p1}${p2}${p3}${p4}\n\n${p7}${p8}`;
-      });
-
-      fs.writeFileSync(this.copyPath, result);
-      return result;
-    }
+    fs.writeFileSync(this.copyPath, result);
+    return result;
   }
 
 

@@ -1,7 +1,8 @@
 import ReadContents from "../components/ReadContents";
 import {Common} from "../interface/Common";
 import fs from "fs";
-import path from 'path';
+import path from "path";
+import lodash from "lodash";
 
 class Operators implements Common {
 
@@ -28,31 +29,42 @@ class Operators implements Common {
 
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
+    this.data() instanceof Error ? new Error() : null;
 
-    const rules1 = ["+", "-", "*", "%", "&&", "||"];
-    const rules2 = "(\\s*)(\\.)(\\s*)(\\*)(\\s*)(;\n)(\\s*)";
+    const rulesOne = /(\s*)(\+)(\s*)/gm;
+    const rulesTwo = /(\s*)(\-)(\s*)/gm;
+    const rulesThree = /(\s*)(\*)(\s*)/gm;
+    const rulesFour = /(\s*)(\%)(\s*)/gm;
+    const rulesFive = /(\s*)(\&\&)(\s*)/gm;
+    const rulesSix = /(\s*)(\|\|)(\s*)/gm;
+    const rulesSeven = /(\s*)(\.)(\s*)(\*)(\s*)(;\n)(\s*)/gm;
 
-    const data = this.data();
-    if (data instanceof Error) {
-      return new Error();
-    }
-    else {
-      let result = data;
+    const result = lodash.chain(this.data())
+    .replace(rulesOne, (match, p1, p2, p3) => {
+      return ` ${p2} `;
+    })
+    .replace(rulesTwo, (match, p1, p2, p3) => {
+      return ` ${p2} `;
+    })
+    .replace(rulesThree, (match, p1, p2, p3) => {
+      return ` ${p2} `;
+    })
+    .replace(rulesFour, (match, p1, p2, p3) => {
+      return ` ${p2} `;
+    })
+    .replace(rulesFive, (match, p1, p2, p3) => {
+      return ` ${p2} `;
+    })
+    .replace(rulesSix, (match, p1, p2, p3) => {
+      return ` ${p2} `;
+    })
+    .replace(rulesSeven, (match, p1, p2, p3, p4, p5, p6, p7) => {
+      return `${p2}${p4}${p6}`;
+    })
+    .value();
 
-      rules1.forEach((operators) => {
-        const regex = `(?<!\\${operators})(\\s*)(\\${operators})(\\s*)(?!\\${operators})`;
-        const regExp1 = new RegExp(regex, "gm");
-        result = result.replace(regExp1, (_match, p1, p2, p3, p4) => ` ${p2} `);
-      });
-
-      const regExp2 = new RegExp(rules2, "gm");
-      result = result.replace(regExp2, (_match, p1, p2, p3, p4, p5, p6, p7) =>
-        `${p2}${p4}${p6}`
-      );
-
-      fs.writeFileSync(this.copyPath, result);
-      return result;
-    }
+    fs.writeFileSync(this.copyPath, result);
+    return result;
   }
 
   // 3. output ------------------------------------------------------------------------------------>

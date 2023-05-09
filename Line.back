@@ -29,44 +29,42 @@ class Line implements Special {
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
 
-    const falseResult1
+    const rulesOne
     = "(\\s?)(^.)(\\s*)(public|private)(.*?)(\\{)";
 
-    const falseResult2
+    const rulesTwo
     = "(\\s*)(public|private)(\\s*)([\\s\\S]*?)(\\s*)(\\()(\\s*)([\\s\\S]*?)(\\s*)(\\))(\\s*)(([\\s\\S]*?)?)(\\s*?)(\\{)";
 
-    const falseResult3
+    const rulesThree
     = "(\\s*)(ception)(\\{)";
 
-    const falseResult4
+    const rulesFour
     = "(\\n)(^.)(\\s*)(\\})(\\s*)(\\n)(\\s*)(\\/\\/)";
 
     const data = this.data();
 
-    if (data instanceof Error) {
-      return new Error();
-    }
+    this.data() instanceof Error ? new Error() : null;
     else {
-      let result = data;
+      const result = lodash.chain(this.data())
 
-      const regExp1 = new RegExp(falseResult1, "gm");
+      const regExp1 = new RegExp(rulesOne, "gm");
       result = result.replace(regExp1, (match, p1, p2, p3, p4, p5, p6) => {
         const remainingLength = 95 - p2.length - p3.length;
         return `\n${p2}${p3}// ${"-".repeat(remainingLength)}>\n${p2}${p3}${p4}${p5}${p6}`;
       });
 
-      const regExp2 = new RegExp(falseResult2, "gm");
+      const regExp2 = new RegExp(rulesTwo, "gm");
       result = result.replace(regExp2, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12,
       p13, p14, p15) => {
         return `${p1}${p2} ${p4} ${p6}${p8}${p10} ${p12} ${p15}`;
       });
 
-      const regExp3 = new RegExp(falseResult3, "gm");
+      const regExp3 = new RegExp(rulesThree, "gm");
       result = result.replace(regExp3, (match, p1, p2, p3) => {
         return `${p2} ${p3}`;
       });
 
-      const regExp4 = new RegExp(falseResult4, "gm");
+      const regExp4 = new RegExp(rulesFour, "gm");
       result = result.replace(regExp4, (match, p1, p2, p3, p4, p5, p6, p7, p8) => {
         return `${p1}${p2}${p3}${p4}\n\n${p7}${p8}`;
       });
