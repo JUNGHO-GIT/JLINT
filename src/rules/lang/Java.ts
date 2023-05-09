@@ -34,6 +34,7 @@ class Java implements Lang {
     const rulesOne = /(\s*)(;)(\s*)(\n?)(\s*)(import)/gm;
     const rulesTwo = /(\s*)(package)(\s*)([\s\S]*?)(;)(\n)(\s*)(import)/gm;
     const rulesThree = /(\s*)(\))(\s+)(;)/gm;
+    const rulesFour = /(\s*)(@)(\s*)([\s\S]*?)(\s*)(\()/gm;
 
     const result = lodash.chain(this.data())
     .replace(rulesOne, (match, p1, p2, p3, p4, p5, p6) => {
@@ -44,6 +45,9 @@ class Java implements Lang {
     })
     .replace(rulesThree, (match, p1, p2, p3, p4) => {
       return `${p1}${p2}${p4}`;
+    })
+    .replace(rulesFour, (match, p1, p2, p3, p4, p5, p6) => {
+      return `${p1}${p2}${p4} ${p6}`;
     })
     .value();
 

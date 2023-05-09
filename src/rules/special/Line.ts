@@ -39,6 +39,8 @@ class Line implements Special {
     = /(\s*)(ception)(\{)/gm;
     const rulesFour
     = /(\n)(^.)(\s*)(\})(\s*)(\n)(\s*)(\/\/)/gm;
+    const rulesFive
+    = /(^.\s*)(@)(.*)(\n+)(\s*)(\/\/.*?>)(\n+)(\s+)(public|private)((([\s\S](?!;|class))*?))(\s*)(?<=\{)/gm;
 
     const result = lodash.chain(this.data())
 
@@ -54,6 +56,9 @@ class Line implements Special {
     })
     .replace(rulesFour, (match, p1, p2, p3, p4, p5, p6, p7, p8) => {
       return `${p1}${p2}${p3}${p4}\n\n${p7}${p8}`;
+    })
+    .replace(rulesFive, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12) => {
+      return `${p5}${p6}\n${p5}${p2}${p3}\n${p8}${p9}${p10}`;
     })
     .value();
 

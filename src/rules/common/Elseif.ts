@@ -31,9 +31,9 @@ class Elseif implements Common {
   public main(): string | Error {
     this.data() instanceof Error ? new Error() : null;
 
-    const rulesOne = /(^.*)(\.*)(\})(\n)(\s*)(else if)(\s*)(\()(\))/gm;
-    const rulesTwo = /(^.*)(\.*)(\})(\n)(\s*)(else if)(\s*)(\()/gm;
-    const rulesThree = /(^.*)(\.*)(\})(\s*)(else if)(\s*)(\()/gm;
+    const rulesOne = /(^.*)(.*)(\})(\n)(\s*)(else if)(\s*)(\()(\))/gm;
+    const rulesTwo = /(^.*)(.*)(\})(\n)(\s*)(else if)(\s*)(\()/gm;
+    const rulesThree = /(^.*)(.*)(\})(\s*)(else if)(\s*)(\()/gm;
 
     const result = lodash.chain(this.data())
     .replace(rulesOne, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9) => {

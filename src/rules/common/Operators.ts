@@ -32,12 +32,11 @@ class Operators implements Common {
     this.data() instanceof Error ? new Error() : null;
 
     const rulesOne = /(\s*)(\+)(\s*)/gm;
-    const rulesTwo = /(\s*)(\-)(\s*)/gm;
-    const rulesThree = /(\s*)(\*)(\s*)/gm;
-    const rulesFour = /(\s*)(\%)(\s*)/gm;
-    const rulesFive = /(\s*)(\&\&)(\s*)/gm;
+    const rulesTwo = /(\s*)(?!=-)(-)(\s*)(?!-|>)/gm;
+    const rulesThree = /(?<!\/)(\s*)(\*)(?!;|\/)/gm;
+    const rulesFour = /(\s*)(%)(\s*)/gm;
+    const rulesFive = /(\s*)(&&)(\s*)/gm;
     const rulesSix = /(\s*)(\|\|)(\s*)/gm;
-    const rulesSeven = /(\s*)(\.)(\s*)(\*)(\s*)(;\n)(\s*)/gm;
 
     const result = lodash.chain(this.data())
     .replace(rulesOne, (match, p1, p2, p3) => {
@@ -47,7 +46,7 @@ class Operators implements Common {
       return ` ${p2} `;
     })
     .replace(rulesThree, (match, p1, p2, p3) => {
-      return ` ${p2} `;
+      return ` ${p3} `;
     })
     .replace(rulesFour, (match, p1, p2, p3) => {
       return ` ${p2} `;
@@ -57,9 +56,6 @@ class Operators implements Common {
     })
     .replace(rulesSix, (match, p1, p2, p3) => {
       return ` ${p2} `;
-    })
-    .replace(rulesSeven, (match, p1, p2, p3, p4, p5, p6, p7) => {
-      return `${p2}${p4}${p6}`;
     })
     .value();
 

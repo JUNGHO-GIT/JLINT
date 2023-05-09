@@ -31,9 +31,9 @@ class Finally implements Common {
   public main(): string | Error {
     this.data() instanceof Error ? new Error() : null;
 
-    const rulesOne = /(^.*)(\.*)(\})(\n)(\s*)(finally)(\s*)(\{)(\})/gm;
-    const rulesTwo = /(^.*)(\.*)(\})(\n)(\s*)(finally)(\s*)(\{)/gm;
-    const rulesThree = /(^.*)(\.*)(\})(\s*)(finally)(\s*)(\{)/gm;
+    const rulesOne = /(^.*)(.*)(\})(\n)(\s*)(finally)(\s*)(\{)(\})/gm;
+    const rulesTwo = /(^.*)(.*)(\})(\n)(\s*)(finally)(\s*)(\{)/gm;
+    const rulesThree = /(^.*)(.*)(\})(\s*)(finally)(\s*)(\{)/gm;
 
     const result = lodash.chain(this.data())
     .replace(new RegExp(rulesOne, "gm"), (match, p1, p2, p3, p4, p5, p6, p7, p8, p9) => {

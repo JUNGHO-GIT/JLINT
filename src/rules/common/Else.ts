@@ -31,9 +31,9 @@ class Else implements Common {
   public main(): string | Error {
     this.data() instanceof Error ? new Error() : null;
 
-    const rulesOne = /(^.*)(\.*)(\})(\n)(\s*)(else)(\s*)(\{)(\})/gm;
-    const rulesTwo = /(^.*)(\.*)(\})(\n)(\s*)(else)(\s*)(\{)/gm;
-    const rulesThree = /(^.*)(\.*)(\})(\s*)(else)(\s*)(\{)/gm;
+    const rulesOne = /(^.*)(.*)(\})(\n)(\s*)(else)(\s*)(\{)(\})/gm;
+    const rulesTwo = /(^.*)(.*)(\})(\n)(\s*)(else)(\s*)(\{)/gm;
+    const rulesThree = /(^.*)(.*)(\})(\s*)(else)(\s*)(\{)/gm;
 
     const result = lodash.chain(this.data())
     .replace(rulesOne, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9) => {

@@ -14,7 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import util.PageTest;
 
-@RequestMapping("/board")
+@RequestMapping ("/board")
 @Controller
 public class BoardController {
 
@@ -53,9 +53,9 @@ public class BoardController {
 
 
 
-    @RequestMapping(value = "writePro.do", method = RequestMethod.POST)
     // -------------------------------------------------------------------------------------------->
-    public String writePro (@ModelAttribute("boardDTO") BoardDTO boardDTO, HttpServletRequest request) {
+    @RequestMapping (value = "writePro.do", method = RequestMethod.POST)
+    public String writePro (@ModelAttribute ("boardDTO") BoardDTO boardDTO, HttpServletRequest request) {
 
       int maxNum = 0;
 
@@ -94,9 +94,9 @@ public class BoardController {
 
     }
 
-    @RequestMapping("list.do")
        // ----------------------------------------------------------------------------------------->
-       public String listBoard (@ModelAttribute("boardDTO") BoardDTO boardDTO, Model model, HttpServletRequest request, @RequestParam(value = "pageNum", required = false) String pageNum) {
+       @RequestMapping ("list.do")
+       public String listBoard (@ModelAttribute ("boardDTO") BoardDTO boardDTO, Model model, HttpServletRequest request, @RequestParam (value = "pageNum", required = false) String pageNum) {
          String keyWord = "";
          String keyField = "";
          if (request.getParameter("keyWord") != null) {
@@ -170,8 +170,8 @@ public class BoardController {
 
 
 
-    @RequestMapping("content.do")
     // -------------------------------------------------------------------------------------------->
+    @RequestMapping ("content.do")
     public String contentDo (Model model, HttpServletRequest request) {
 
       String pageNum = request.getParameter("pageNum");
@@ -191,8 +191,8 @@ public class BoardController {
 
 
 
-    @RequestMapping("updateForm.do")
     // -------------------------------------------------------------------------------------------->
+    @RequestMapping ("updateForm.do")
     public ModelAndView updateForm(HttpServletRequest request) {
 
       String pageNum = request.getParameter("pageNum");
@@ -213,9 +213,9 @@ public class BoardController {
 
 
 
-    @RequestMapping(value = "updatePro.do", method = RequestMethod.POST)
     // -------------------------------------------------------------------------------------------->
-    public ModelAndView updatePro (@ModelAttribute("boardDTO") BoardDTO boardDTO, HttpServletRequest request) {
+    @RequestMapping (value = "updatePro.do", method = RequestMethod.POST)
+    public ModelAndView updatePro (@ModelAttribute ("boardDTO") BoardDTO boardDTO, HttpServletRequest request) {
 
       String pageNum = request.getParameter("pageNum");
       sqlSession.update("board.updateBoard", boardDTO);
@@ -229,8 +229,8 @@ public class BoardController {
 
 
 
-    @RequestMapping("deletePro.do")
     // -------------------------------------------------------------------------------------------->
+    @RequestMapping ("deletePro.do")
     public String deletePro (Model model, String board_num, String pageNum) {
 
       sqlSession.delete("board.deleteBoard", new Integer(board_num));
@@ -240,8 +240,8 @@ public class BoardController {
     }
 
 
-        @RequestMapping(value = "deletePro.do", method = RequestMethod.POST)
         // ---------------------------------------------------------------------------------------->
+        @RequestMapping (value = "deletePro.do", method = RequestMethod.POST)
         public String deletePro (HttpServletRequest request) {
 
           String board_pw = request.getParameter("board_pw");

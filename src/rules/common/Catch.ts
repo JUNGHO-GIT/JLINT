@@ -31,13 +31,13 @@ class Catch implements Common {
   public main(): string | Error {
     this.data() instanceof Error ? new Error() : null;
 
-    const resultOne = /(^.*)(\.*)(\})(\n)(\s*)(catch)(\s*)(\()(.*)(\))/gm;
-    const resultTwo = /(^.*)(\.*)(\})(\n)(\s*)(catch)(\s*)(\()/gm;
-    const resultThree = /(^.*)(\.*)(\})(\s*)(catch)(\s*)(\()/gm;
+    const resultOne = /(^.*)(\})(\n+)(\s*)(catch)(\s*)(\()(.*)(\))/gm;
+    const resultTwo = /(^.*)(.*)(\})(\n)(\s*)(catch)(\s*)(\()/gm;
+    const resultThree = /(^.*)(.*)(\})(\s*)(catch)(\s*)(\()/gm;
 
     const result = lodash.chain(this.data())
     .replace(resultOne, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9) => {
-      return `${p1}${p2}${p3}${p4}${p5}${p6} ${p8}\n${p1}${p9}`
+      return `${p1}${p2}\n${p4}${p5} ${p7}${p8}${p9}`
     })
     .replace(resultTwo, (match, p1, p2, p3, p4, p5, p6, p7, p8) => {
       return `${p1}${p3}\n${p1}${p6} ${p8}`

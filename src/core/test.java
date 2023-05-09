@@ -69,7 +69,7 @@ public class BoardController {
 			}
 
 			if(maxNum != 0) {
-				maxNum=maxNum + 1;
+				maxNum=maxNum+1;
 			}else {
 				maxNum=1;
 			}
@@ -82,7 +82,7 @@ public class BoardController {
 
 
 				sqlSession.update("board.reStep",boardDTO);
-				boardDTO.setBoard_re_step(boardDTO.getBoard_re_step() + 1);
+				boardDTO.setBoard_re_step(boardDTO.getBoard_re_step()+1);
 				boardDTO.setBoard_re_level(boardDTO.getBoard_re_level() + 1);
 
 				System.out.println("re_level=" + boardDTO.getBoard_re_level());
