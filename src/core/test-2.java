@@ -137,7 +137,8 @@ public class BoardController {
 
               list = sqlSession.selectList("board.selectListBoard", map);
 
-            } else if (keyWord != null || keyWord.length()>1) {
+            }
+            else if (keyWord != null || keyWord.length()>1) {
               map2.put("columnParam", keyField);
               map2.put("keyWord", keyWord);
               map2.put("start", new Integer(startpos));
