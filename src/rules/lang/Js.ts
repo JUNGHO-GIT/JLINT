@@ -2,12 +2,10 @@ import ReadContents from "../components/ReadContents";
 import { Lang } from "../interface/Lang";
 import fs from "fs";
 import path from "path";
-import lodash from "lodash";
-import { Node } from "estree";
-import acorn from "acorn";
-import escodegen from "escodegen";
+import prettier from "prettier";
 
 class Js implements Lang {
+
   // constructor ---------------------------------------------------------------------------------->
   constructor() {
     this.main();
@@ -37,35 +35,33 @@ class Js implements Lang {
       return data;
     }
 
-    // 1. ast
-    const ast = acorn.parse(data, { ecmaVersion: 2020 });
-
-    // 2. ast format (js)
-    const astFormat = escodegen.generate(ast, {
-      format: {
-        indent: {
-          style: "  ",
-          base: 0,
-          adjustMultilineComment: true,
-        },
-        newline: "\n",
-        space: " ",
-        json: false,
-        renumber: false,
-        hexadecimal: false,
-        quotes: "double",
-        escapeless: false,
-        compact: false,
-        parentheses: true,
-        semicolons: true,
-        safeConcatenation: false,
-      },
+    const formattedCode = prettier.format(data, {
+      parser: "javascript",
+      printWidth: 100,
+      tabWidth: 2,
+      useTabs: true,
+      semi: true,
+      singleQuote: false,
+      quoteProps: "as-needed",
+      jsxSingleQuote: false,
+      trailingComma: "all",
+      bracketSpacing: true,
+      jsxBracketSameLine: false,
+      arrowParens: "always",
+      rangeStart: 0,
+      rangeEnd: Infinity,
+      requirePragma: false,
+      insertPragma: false,
+      proseWrap: "preserve",
+      htmlWhitespaceSensitivity: "css",
+      vueIndentScriptAndStyle: true,
+      endOfLine: "lf",
+      embeddedLanguageFormatting: "auto"
     });
 
-    // 3. 파일 내용 쓰기
-    fs.writeFileSync(this.copyPath, astFormat, "utf8");
+    fs.writeFileSync(this.copyPath, formattedCode, "utf8");
 
-    return astFormat;
+    return formattedCode;
   }
 
   // 3. output ------------------------------------------------------------------------------------>

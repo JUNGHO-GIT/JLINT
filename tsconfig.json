@@ -14,7 +14,7 @@
   },
   "include": [
     "src/**/*"
-  ],
+, "src/types/prettier-plugin-java.d.ts"  ],
   "exclude": [
     "node_modules"
   ]

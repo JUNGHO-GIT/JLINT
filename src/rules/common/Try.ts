@@ -29,7 +29,10 @@ class Try implements Common {
 
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
-    this.data() instanceof Error ? new Error() : null;
+    const data = this.data();
+    if (data instanceof Error) {
+      return data;
+    }
 
     const rulesOne = /(\s*)(try)(\s*)(\{)/gm;
 

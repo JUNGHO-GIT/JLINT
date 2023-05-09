@@ -29,11 +29,14 @@ class Equal implements Common {
 
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
-    this.data() instanceof Error ? new Error() : null;
+    const data = this.data();
+    if (data instanceof Error) {
+      return data;
+    }
 
-    const rulesOne = /(?<!=)(\s*)(===)(\s*)(?!=)/gm;
-    const rulesTwo = /(?<!=)(\s*)(==)(\s*)(?!=)/gm;
-    const rulesThree = /(?<!=)(\s*)(=)(\s*)(?!=)/gm;
+    const rulesOne = /(?<!=|\/)(\s*)(===)(\s*)(?!=|>)/gm;
+    const rulesTwo = /(?<!=|\/)(\s*)(==)(\s*)(?!=|>)/gm;
+    const rulesThree = /(?<!=|\/)(\s*)(=)(\s*)(?!=|>)/gm;
     const rulesFour = /(\s*)(! =)(\s*)/gm;
 
     const result = lodash.chain(this.data())

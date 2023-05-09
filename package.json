@@ -17,11 +17,16 @@
     "@babel/cli": "^7.21.5",
     "@babel/core": "^7.21.8",
     "@babel/preset-env": "^7.21.5",
+    "@types/acorn": "^6.0.0",
     "@types/escodegen": "^0.0.7",
     "@types/estree": "^1.0.1",
     "@types/lodash": "^4.14.194",
     "@types/node": "^18.16.3",
-    "editorconfig-checker": "^5.0.1",
+    "@types/prettier": "^2.7.2",
+    "acorn-typescript": "^1.2.0",
+    "escodegen-ts": "^1.7.1",
+    "prettier": "^2.8.8",
+    "prettier-plugin-java": "^2.1.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
   }

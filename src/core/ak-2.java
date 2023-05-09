@@ -1,212 +1,244 @@
 package com.good.neighbor;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import model.notice.NoticeDTO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.apache.ibatis.session.SqlSession;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
-import util.PageTest;
+import javax.servlet.http.HttpServletRequest;
+import model.board.BoardDTO;
+import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model; //       Ƽ  front - end
+//									return    ̸;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+import util.PageTest; //list
 
-
-@RequestMapping ("/notice")
+@RequestMapping ("/board")
 @Controller
-public class NoticeController {
-  @Autowired
+public class BoardController {
+
+  @Autowired // ڵ  setter  ۾
   private SqlSession sqlSession;
 
-  @RequestMapping ("/insertForm.do") // ---------------------------------------------------------------------------------------------->
-  public String insertForm() {
-    return ".main.notice.insertForm";
+  // ۾, ۾
+  @RequestMapping ("/writeForm.do") // ---------------------------------------------------------------------------------------------->
+  public String writeForm(Model model, HttpServletRequest request) {
+  String board_num = request.getParameter("board_num");
+  String board_ref = request.getParameter("board_ref");
+  String board_re_step = request.getParameter("board_re_step");
+  String board_re_level = request.getParameter("board_re_level");
+  String pageNum = request.getParameter("pageNum");
+
+  if (board_num == null) { //
+    board_num = "0";
+    board_ref = "1";
+    board_re_step = "0";
+    board_re_level = "0";
+  }
+  else {}
+
+  model.addAttribute("pageNum", pageNum);
+  model.addAttribute("board_num", board_num);
+  model.addAttribute("board_ref", board_ref);
+  model.addAttribute("board_re_step", board_re_step);
+  model.addAttribute("board_re_level", board_re_level);
+
+  //return "/board/writeForm";// 丮   views/board/writeForm.jsp
+  return ".main.board.writeForm";
   }
 
+  //-------------------------------- - //DB ۾
+  //--------------------------------- - @RequestMapping (value = "writePro.do", method = RequestMethod.POST)
   // ---------------------------------------------------------------------------------------------->
-  @RequestMapping (value = "/insertPro.do", method = RequestMethod.POST)
-  public String insertPro (NoticeDTO noticeDTO, HttpServletRequest request) {
-      String fixed = request.getParameter("fixed");
+  public String writePro (@ModelAttribute ("boardDTO") BoardDTO boardDTO,
+  HttpServletRequest request
+  ) {
+  int maxNum = 0; // ִ   ۹ ȣ
 
-      if (fixed == null) {
-    sqlSession.insert("noticeDAO.insertNotice", noticeDTO);
-    System.out.println("fixed(null):" + fixed);
-      }
-      else {
-        sqlSession.insert("noticeDAO.fixNotice", noticeDTO);
-        System.out.println("fixed:" + fixed);
-      }
-    return "redirect:/notice/list.do";
+  if (sqlSession.selectOne("board.numMax") != null) {
+    maxNum = sqlSession.selectOne("board.numMax");
   }
 
-  // ---------------------------------------------------------------------------------------------->
-  @RequestMapping ("list.do")
-  public String noticeList (@ModelAttribute ("noticeDTO") NoticeDTO noticeDTO, Model model, HttpServletRequest request, @RequestParam (value = "pageNum", required = false) String pageNum) {
-    String keyword = "";
-    String keyfield = "";
-    if (request.getParameter("keyword") != null) {
-         keyword = request.getParameter("keyword");
-         keyfield = request.getParameter("keyfield");
-        }
-        else {
-          keyword = "";
-          keyfield = "";
-        }
-
-    if (pageNum == null) {
-      pageNum = "1";
-    }
-
-    //int cnt = sqlSession.selectOne("noticeDAO.countNotice");//
-      int cnt = 0;
-      int curPage = Integer.parseInt(pageNum);
-      Map<String, Object> map = new HashMap<String, Object>();
-        Map<String, Object> map2 = new HashMap<String, Object>();
-      Map<String, Object> map3 = new HashMap<String, Object>();
-      if (keyword == null || keyword.length()<1 || keyword == "") {
-       cnt = sqlSession.selectOne("noticeDAO.countNotice");
-      }
-      else {
-        map3.put("columnParam", keyfield);
-          map3.put("keyword", keyword);
-        cnt = sqlSession.selectOne("noticeDAO.searchCount", map3);
-      }
-    util.PageTest pt = new util.PageTest(cnt, curPage);
-    int startpos = pt.getStartRow() - 1;
-
-        List<NoticeDTO> list = null;
-
-        if (keyword == null || keyword.length()<1 || keyword == "") {
-          map.put("start", new Integer(startpos));
-          map.put("count", new Integer(pt.getPageSize()));
-
-          list = sqlSession.selectList("noticeDAO.selectNotice", map);
-        }
-        else if (keyword != null || keyword.length()>1) {
-          map2.put("columnParam", keyfield);
-          map2.put("keyword", keyword);
-          map2.put("start", new Integer(startpos));
-          map2.put("count", new Integer(pt.getPageSize()));
-
-          list = sqlSession.selectList("noticeDAO.searchNotice", map2);
-        }
-
-    if (pt.getEndPage()>pt.getPageCnt()) {
-      pt.setEndPage(pt.getPageCnt());
-    }
-    int number = cnt - (curPage - 1) 3392 pt.getPageSize();
-
-    List<NoticeDTO>fixlist = sqlSession.selectList("noticeDAO.selectFix");
-
-
-    model.addAttribute("number", number);
-    model.addAttribute("pageNum", pageNum);
-    model.addAttribute("keyfield", keyfield);
-    model.addAttribute("keyword", keyword);
-    model.addAttribute("pt", pt);
-    model.addAttribute("cnt", cnt);
-    model.addAttribute("list", list);
-    model.addAttribute("fixlist", fixlist);
-
-    return ".main.notice.list";
+  if (maxNum != 0) {
+    maxNum = maxNum + 1; //     ׷          Ϸ    ref
   }
-  /*
+  else { //ó      ̸
+    maxNum = 1;
+  }
+
+  String ip = request.getRemoteAddr(); //ip   ϱ
+  boardDTO.setBoard_ip(ip); //setter  ۾
+
+  if (boardDTO.getBoard_num() != 0) { //    ̸
+    //         ֱ    ġ Ȯ
+    sqlSession.update("board.reStep", boardDTO);
+    boardDTO.setBoard_re_step(boardDTO.getBoard_re_step() + 1); //+1
+    boardDTO.setBoard_re_level(boardDTO.getBoard_re_level() + 1); //+1
+
+    System.out.println("re_level = " + boardDTO.getBoard_re_level());
+  }
+  else { //
+    boardDTO.setBoard_ref(new Integer(maxNum)); // ۱׷
+    boardDTO.setBoard_re_step(new Integer(0));
+    boardDTO.setBoard_re_level(new Integer(0));
+  }
+  sqlSession.insert("board.insertDAO", boardDTO);
+  return "redirect:/board/list.do"; //url  ּ
+  }
+
+  //--------------------------------- - @RequestMapping ("list.do")
   // ---------------------------------------------------------------------------------------------->
-  @RequestMapping ("search.do")
-  public String searchPro (HttpServletRequest request, NoticeDTO noticeDTO, @RequestParam (value = "pageNum", required = false) String pageNum, Model model) {
-    if (pageNum == null) {
-      pageNum = "1";
-    }
-    String keyword = request.getParameter("keyword");
-      String keyfield = request.getParameter("keyfield");
-    System.out.println(keyword);
-    System.out.println(keyfield);
+  public String listBoard (@ModelAttribute ("boardDTO") BoardDTO boardDTO,
+  Model model,
+  HttpServletRequest request,
+  @RequestParam (value = "pageNum", required = false) String pageNum
+  ) {
+  String keyWord = "";
+  String keyField = "";
+  if (request.getParameter("keyWord") != null) {
+    keyWord = request.getParameter("keyWord");
+    keyField = request.getParameter("keyField");
+  }
+  else {
+    keyWord = "";
+    keyField = "";
+  }
 
-      int cnt = sqlSession.selectOne("noticeDAO.searchCount");
-    System.out.println(cnt);
-    int curPage = Integer.parseInt(pageNum);
+  if (pageNum == null) {
+    pageNum = "1";
+  }
 
-    util.PageTest pt = new PageTest(cnt, curPage);
+  //int cnt = sqlSession.selectOne("noticeDAO.countNotice");//
+  int cnt = 0;
+  int curPage = Integer.parseInt(pageNum);
+  Map<String, Object> map = new HashMap<String, Object>();
+  Map<String, Object> map2 = new HashMap<String, Object>();
+  Map<String, Object> map3 = new HashMap<String, Object>();
+  if (keyWord == null || keyWord.length() < 1 || keyWord == "") {
+    cnt = sqlSession.selectOne("board.selectCount");
+  }
+  else {
+    map3.put("columnParam", keyField);
+    map3.put("keyWord", keyWord);
+    cnt = sqlSession.selectOne("board.searchCount", map3);
+  }
+  util.PageTest pt = new util.PageTest(cnt, curPage);
+  int startpos = pt.getStartRow() - 1;
 
-    int startpos = pt.getStartRow() - 1;
+  List<BoardDTO> list = null;
 
-
-    Map<String, Object> map = new HashMap<String, Object>();
+  if (keyWord == null || keyWord.length() < 1 || keyWord == "") {
     map.put("start", new Integer(startpos));
     map.put("count", new Integer(pt.getPageSize()));
-    map.put("keyword", keyword);
-    map.put("columnParam", keyfield);
 
-    List<NoticeDTO> list = sqlSession.selectList("noticeDAO.searchNotice", map);
+    list = sqlSession.selectList("board.selectListBoard", map);
+  }
+  else if (keyWord != null || keyWord.length() > 1) {
+    map2.put("columnParam", keyField);
+    map2.put("keyWord", keyWord);
+    map2.put("start", new Integer(startpos));
+    map2.put("count", new Integer(pt.getPageSize()));
 
-    if (pt.getEndPage()>pt.getPageCnt()) {
-        pt.setEndPage(pt.getPageCnt());
-      }
+    list = sqlSession.selectList("board.selectSeachBoard", map2);
+  }
 
-    int number = cnt - (curPage - 1) 4955 pt.getPageSize();
+  if (pt.getEndPage() > pt.getPageCnt()) {
+    pt.setEndPage(pt.getPageCnt());
+  }
+  int number = cnt - (curPage - 1) * pt.getPageSize();
 
-    model.addAttribute("number", number);
-      model.addAttribute("pageNum", pageNum);
-      model.addAttribute("pt", pt);
-      model.addAttribute("cnt", cnt);
-      model.addAttribute("list", list);
+  model.addAttribute("number", number);
+  model.addAttribute("pageNum", pageNum);
+  model.addAttribute("keyField", keyField);
+  model.addAttribute("keyWord", keyWord);
+  model.addAttribute("pt", pt);
+  model.addAttribute("cnt", cnt);
+  model.addAttribute("list", list);
 
-      return ".main.notice.search";
-  }*/
+  return ".main.board.list";
+  }
+
+  //--------------------------------------- - //   ȸ, ۳
+  //--------------------------------------- - //${ctxpath}/board/content.do?num = ${dto.num}&pageNum = ${pageNum}
 
   // ---------------------------------------------------------------------------------------------->
   @RequestMapping ("content.do")
-  public String content (HttpServletRequest request, Model model) {
-    String pageNum = request.getParameter("pageNum");
-    int num = Integer.parseInt(request.getParameter("notice_number"));
-    sqlSession.update("noticeDAO.readCnt", num);
+  public String contentDo (Model model, HttpServletRequest request) {
+  String pageNum = request.getParameter("pageNum");
 
-    NoticeDTO dto = sqlSession.selectOne("noticeDAO.oneNotice", num);
-    model.addAttribute("dto", dto);
-    model.addAttribute("pageNum", pageNum);
+  int num1 = Integer.parseInt(request.getParameter("board_num"));
+  sqlSession.update("board.readCount", num1); //  ȸ
 
-    return ".main.notice.content";
+  BoardDTO dto = sqlSession.selectOne("board.selectOneBoard", num1);
+
+  model.addAttribute("pageNum", pageNum);
+  model.addAttribute("dto", dto);
+
+  //return "/board/content"; // 丮, content.jsp
+  return ".main.board.content";
   }
 
+  //----------------------------------------------------- - //        ȭ
+  //-------------------------------------------------- - // updateForm.do?num = $ {dto.num}&pageNum = ${pageNum}
   // ---------------------------------------------------------------------------------------------->
-  @RequestMapping ("editForm.do")
-  public String editForm(HttpServletRequest request, Model model) {
-    String pageNum = request.getParameter("pageNum");
-    int num = Integer.parseInt(request.getParameter("notice_number"));
+  @RequestMapping ("updateForm.do")
+  public ModelAndView updateForm (HttpServletRequest request) {
+  String pageNum = request.getParameter("pageNum");
+  int board_num = Integer.parseInt(request.getParameter("board_num"));
+  BoardDTO dto = sqlSession.selectOne("board.selectOneBoard", board_num);
 
-    NoticeDTO dto = sqlSession.selectOne("noticeDAO.oneNotice", num);
-    model.addAttribute("pageNum", pageNum);
-    model.addAttribute("dto", dto);
+  ModelAndView mv = new ModelAndView();
+  mv.addObject("board_num", board_num);
+  mv.addObject("pageNum", pageNum);
+  mv.addObject("dto", dto);
 
-    return ".main.notice.editForm";
-
+  //mv.setViewName("/board/updateForm");// 丮   updateFor.jsp
+  mv.setViewName(".main.board.updateForm"); //
+  return mv;
   }
+
+  //------------------------------ - // updatePro.do
+  // DB
+  //--------------------------------- - @RequestMapping (value = "updatePro.do", method = RequestMethod.POST)
   // ---------------------------------------------------------------------------------------------->
-  @RequestMapping (value = "editPro.do", method = RequestMethod.POST)
-  public String editPro (NoticeDTO noticeDTO, HttpServletRequest request, Model model) {
-    String pageNum = request.getParameter("pageNum");
-    String fixed = request.getParameter("fixed");
-    if (fixed == null) {
-    sqlSession.update("noticeDAO.editNotice", noticeDTO);
-    }
-    else {
-      sqlSession.update("noticeDAO.updateFix", noticeDTO);
-    }
+  public ModelAndView updatePro(
+  @ModelAttribute ("boardDTO") BoardDTO boardDTO,
+  HttpServletRequest request
+  ) {
+  String pageNum = request.getParameter("pageNum");
+  sqlSession.update("board.updateBoard", boardDTO); // ۼ
 
-    model.addAttribute("pageNum", pageNum);
-    return "redirect:/notice/list.do";
+  ModelAndView mv = new ModelAndView();
+  mv.addObject("pageNum", pageNum);
+  mv.setViewName("redirect:/board/list.do");
+  return mv;
   }
 
+  //--------------------------------------------------- - //DB ۻ
+  //---------------------------------------------------- - //deletePro.do?num = ${dto.num}&pageNum = ${pageNum}
   // ---------------------------------------------------------------------------------------------->
   @RequestMapping ("deletePro.do")
-  public String deletePro (HttpServletRequest request, Model model)  {
-    String pageNum = request.getParameter("pageNum");
-    int num = Integer.parseInt(request.getParameter("notice_number"));
-    sqlSession.delete("noticeDAO.deleteNotice", num);
-    model.addAttribute("pageNum", pageNum);
+  public String deletePro (Model model, String board_num, String pageNum) {
+  sqlSession.delete("board.deleteBoard", new Integer(board_num));
+  model.addAttribute("pageNum", pageNum);
 
-    return "redirect:/notice/list.do";
+  return "redirect:/board/list.do"; //response.sendredirect("list.jsp")
   }
-}
+
+  //ȸ  Ż   DB
+
+  // ---------------------------------------------------------------------------------------------->
+  @RequestMapping (value = "deletePro.do", method = RequestMethod.POST)
+  public String deletePro(HttpServletRequest request) {
+  String board_pw = request.getParameter("board_pw");
+
+  Map<String, String> map = new HashMap<String, String>();
+
+  map.put("board_pw", board_pw);
+
+  sqlSession.delete("board.deleteMember", map);
+  return "redirect:/board/list.do";
+  }
+} //class - end

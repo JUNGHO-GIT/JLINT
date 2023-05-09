@@ -1,10 +1,10 @@
 import ReadContents from "../components/ReadContents";
-import {Common} from "../interface/Common";
+import {Lang} from "../interface/Lang";
 import fs from "fs";
 import path from "path";
 import lodash from "lodash";
 
-class Brackets implements Common {
+class Java implements Lang {
 
   // constructor ---------------------------------------------------------------------------------->
   constructor() {
@@ -34,17 +34,28 @@ class Brackets implements Common {
       return data;
     }
 
-    const rulesOne = /(\))(\{)/gm;
+    const rulesOne = /(\s*)(;)(\s*)(\n?)(\s*)(import)/gm;
+    const rulesTwo = /(\s*)(package)(\s*)([\s\S]*?)(;)(\n)(\s*)(import)/gm;
+    const rulesThree = /(\s*)(\))(\s+)(;)/gm;
+    const rulesFour = /(\s*)(@)(\s*)([\s\S]*?)(\s*)(\()/gm;
 
     const result = lodash.chain(this.data())
-    .replace(rulesOne, (match, p1, p2) => {
-      return `${p1} ${p2}`;
+    .replace(rulesOne, (match, p1, p2, p3, p4, p5, p6) => {
+      return `${p2}\n${p6}`;
+    })
+    .replace(rulesTwo, (match, p1, p2, p3, p4, p5, p6, p7, p8) => {
+      return `${p2} ${p4}${p5}${p6}\n${p8}`;
+    })
+    .replace(rulesThree, (match, p1, p2, p3, p4) => {
+      return `${p1}${p2}${p4}`;
+    })
+    .replace(rulesFour, (match, p1, p2, p3, p4, p5, p6) => {
+      return `${p1}${p2}${p4} ${p6}`;
     })
     .value();
 
     fs.writeFileSync(this.copyPath, result);
     return result;
-
   }
 
   // 3. output ------------------------------------------------------------------------------------>
@@ -58,4 +69,4 @@ class Brackets implements Common {
   }
 }
 
-export default Brackets;
+export default Java;

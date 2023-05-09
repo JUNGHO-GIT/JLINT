@@ -29,7 +29,10 @@ class Catch implements Common {
 
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
-    this.data() instanceof Error ? new Error() : null;
+    const data = this.data();
+    if (data instanceof Error) {
+      return data;
+    }
 
     const resultOne = /(^.*)(\})(\n+)(\s*)(catch)(\s*)(\()(.*)(\))/gm;
     const resultTwo = /(^.*)(.*)(\})(\n)(\s*)(catch)(\s*)(\()/gm;
