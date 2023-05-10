@@ -35,19 +35,19 @@ class Line implements Special {
     }
 
     const rulesOne
-    = /(\n+)(\s+)(public|private)((([\s\S](?!;|class))*?))(\s*)(?<=\{)/gm;
+    = /(\n+?)(^.\s*?)(public|private)((([\s\S](?!;|class))*?))(\s*)(?<=\{)/gm;
     const rulesTwo
-    = /(\s*)(public|private)(\s*)([\s\S]*?)(\s*)(\()(\s*)([\s\S]*?)(\s*)(\))(\s*)(([\s\S]*?)?)(\s*?)(\{)/gm;
+    = /(\s*?)(public|private)(\s*)([\s\S]*?)(\s*)(\()(\s*)([\s\S]*?)(\s*)(\))(\s*)(([\s\S]*?)?)(\s*?)(\{)/gm;
     const rulesThree
-    = /(\s*)(ception)(\{)/gm;
+    = /(\s*?)(ception)(\{)/gm;
     const rulesFour
-    = /(\n)(^.)(\s*)(\})(\s*)(\n)(\s*)(\/\/)/gm;
+    = /(\n+)(^.)(\s*)(\})(\s*)(\n)(\s*)(\/\/)/gm;
     const rulesFive
-    = /(^.\s*)(@)(.*)(\n+)(\s*)(\/\/.*?>)(\n+)(\s+)(public|private)((([\s\S](?!;|class))*?))(\s*)(?<=\{)/gm;
+    = /(^.\s*?)(@)(.*)(\n+)(\s*)(\/\/.*?>)(\n+)(\s+)(public|private)((([\s\S](?!;|class))*?))(\s*)(?<=\{)/gm;
     const rulesSix
-    = /(^\s?)(import)([\s\S]*?)((;)|(\n+)?)(\s?)(\/\/)([\s\S]*?)(\n+?)(?=import)/gm;
+    = /(^\s*?)(import)([\s\S]*?)((;)|(\n+)?)(\s?)(\/\/)([\s\S]*?)(\n+?)(?=import)/gm;
     const rulesSeven
-    = /(^\s*)(import)([\s\S]*?)(;)(\s*)(\n*)(^\s*?)(@)(\s*)(\S*)/gm;
+    = /(^\s*?)(import)([\s\S]*?)(;)(\s*)(\n*)(^\s*?)(@)(\s*)(\S*)/gm;
 
     const result = lodash.chain(this.data())
 

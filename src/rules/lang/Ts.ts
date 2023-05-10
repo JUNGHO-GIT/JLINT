@@ -37,26 +37,26 @@ class Ts implements Lang {
 
     const formattedCode = prettier.format(data, {
       parser: "babel",
-      printWidth: 100,
+      printWidth: 1000,
       tabWidth: 2,
-      useTabs: true,
+      useTabs: false,
       semi: true,
       singleQuote: false,
-      quoteProps: 'as-needed',
+      quoteProps: "as-needed",
       jsxSingleQuote: false,
-      trailingComma: 'all',
+      trailingComma: "all",
       bracketSpacing: true,
       jsxBracketSameLine: false,
-      arrowParens: 'always',
+      arrowParens: "always",
       rangeStart: 0,
       rangeEnd: Infinity,
       requirePragma: false,
       insertPragma: false,
-      proseWrap: 'preserve',
-      htmlWhitespaceSensitivity: 'css',
+      proseWrap: "preserve",
+      htmlWhitespaceSensitivity: "css",
       vueIndentScriptAndStyle: true,
-      endOfLine: 'lf',
-      embeddedLanguageFormatting: 'auto'
+      endOfLine: "lf",
+      embeddedLanguageFormatting: "auto"
     });
 
     fs.writeFileSync(this.copyPath, formattedCode, 'utf8');

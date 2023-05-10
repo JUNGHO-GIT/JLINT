@@ -38,9 +38,9 @@ class Js implements Lang {
 
     const formattedCode = prettier.format(data, {
       parser: "babel",
-      printWidth: 100,
+      printWidth: 1000,
       tabWidth: 2,
-      useTabs: true,
+      useTabs: false,
       semi: true,
       singleQuote: false,
       quoteProps: "as-needed",
@@ -60,9 +60,8 @@ class Js implements Lang {
       embeddedLanguageFormatting: "auto"
     });
     fs.writeFileSync(this.copyPath, formattedCode, "utf8");
-    const files  = fs.readFileSync(this.copyPath, "utf8");
 
-    return files;
+    return formattedCode;
   }
 
   // 3. output ------------------------------------------------------------------------------------>

@@ -34,10 +34,18 @@ class RemoveComments implements Common {
       return data;
     }
 
-    const rulesOne = /(\/\/)(.*?)(-)(.*)/gm;
+    const rulesOne = /(\/\/)(.*?)((-)|(=))(.*)/gm;
+    const rulesTwo = /(\/\/)(.*)(end)/gm;
+    const rulesThree = /(\/\/)(\s*?)(\*)(.*)(\*)/gm;
 
     const result = lodash.chain(this.data())
     .replace(rulesOne, (match, p1, p2, p3, p4) => {
+      return ``;
+    })
+    .replace(rulesTwo, (match, p1, p2, p3) => {
+      return ``;
+    })
+    .replace(rulesThree, (match, p1, p2, p3, p4, p5) => {
       return ``;
     })
     .value();
