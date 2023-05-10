@@ -34,11 +34,11 @@ class Semicolon implements Common {
       return data;
     }
 
-    const rulesOne = /(;)(?!\n|\/\/| \/\/|\}\n)/gm;
+    const rulesOne = /(^\s*)([\s\S]*?)(\s*)(;)(\s*)(?!(\n)|(\/\/)|( \/\/)|(\})|(;))(\s*)/gm;
 
     const result = lodash.chain(this.data())
-    .replace(rulesOne, (match, p1) => {
-      return `;\n`;
+    .replace(rulesOne, (match, p1, p2, p3, p4, p5) => {
+      return `${p1}${p2}${p4}\n${p1}${p5}`;
     })
     .value();
 

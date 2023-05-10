@@ -20,7 +20,7 @@ class Sql implements Special {
   // 1. data -------------------------------------------------------------------------------------->
   public data(): string | Error {
     try {
-      return new ReadContents().main().toString();
+        return new ReadContents().main().toString();
     }
     catch(err) {
       return new Error(`파일내용을 읽을 수 없습니다. \n`);

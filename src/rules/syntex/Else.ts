@@ -34,13 +34,16 @@ class Else implements Common {
       return data;
     }
 
-    const rulesOne = /(^.*)(.*)(\})(\n)(\s*)(else)(\s*)(\{)(\})/gm;
-    const rulesTwo = /(^.*)(.*)(\})(\n)(\s*)(else)(\s*)(\{)/gm;
-    const rulesThree = /(^.*)(.*)(\})(\s*)(else)(\s*)(\{)/gm;
+    const rulesOne
+    = /(^.*)(\})(\n?)(\s*)(else)(\s*)(\{)(\s*?)(.*)(\s*)(?<=\})/gm;
+    const rulesTwo
+    = /(^.*)(.*)(\})(\n)(\s*)(else)(\s*)(\{)/gm;
+    const rulesThree
+    = /(^.*)(.*)(\})(\s*)(else)(\s*)(\{)/gm;
 
     const result = lodash.chain(this.data())
-    .replace(rulesOne, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9) => {
-      return `${p1}${p2}${p3}${p4}${p5}${p6} ${p8}\n${p1}${p9}`
+    .replace(rulesOne, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) => {
+      return `${p1}${p2}${p3}${p4}${p5} ${p7}\n${p1}${p8}${p9}${p10}\n${p1}${p9}`
     })
     .replace(rulesTwo, (match, p1, p2, p3, p4, p5, p6, p7, p8) => {
       return `${p1}${p3}\n${p1}${p6} ${p8}`

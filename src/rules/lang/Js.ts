@@ -11,6 +11,7 @@ class Js implements Lang {
     this.main();
   }
 
+
   // 0. path -------------------------------------------------------------------------------------->
   private filePath = process.argv[2];
   private fileName = path.basename(__filename);

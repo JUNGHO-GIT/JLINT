@@ -2,7 +2,7 @@ import ReadContents from "../components/ReadContents";
 import {Lang} from "../interface/Lang";
 import fs from "fs";
 import path from "path";
-import * as prettier from "prettier";
+import prettier from "prettier";
 
 class Java implements Lang {
 
@@ -38,7 +38,7 @@ class Java implements Lang {
       parser: "java",
       printWidth: 100,
       tabWidth: 2,
-      useTabs: true,
+      useTabs: false,
       semi: true,
       singleQuote: false,
       quoteProps: "as-needed",
