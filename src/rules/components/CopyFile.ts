@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import {Components} from "../interface/Components";
 
-class Copy implements Components {
+class CopyFile implements Components {
 
   // constructor ---------------------------------------------------------------------------------->
   constructor() {
@@ -47,4 +47,4 @@ class Copy implements Components {
   }
 }
 
-export default Copy;
+export default CopyFile;

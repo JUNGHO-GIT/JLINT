@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@RequestMapping ("/member")
+@RequestMapping("/member")
 @Controller
 public class MemberController {
 
@@ -28,29 +28,26 @@ public class MemberController {
 
   //자동 setter 작업
 
-  @RequestMapping ("/insertForm") // ---------------------------------------------------------------------------------------------->
+  @RequestMapping("/insertForm")
   public String insertForm() {
     return ".main.member.insertForm";
   }
 
   //팝업창
-  // ---------------------------------------------------------------------------------------------->
-  @RequestMapping ("/agree_TemsofUse.do")
-  public String popup1 (HttpSession session) {
+  @RequestMapping("/agree_TemsofUse.do")
+  public String popup1(HttpSession session) {
     return "/popup/agree_TemsofUse";
   }
 
-  // ---------------------------------------------------------------------------------------------->
-  @RequestMapping ("/agree_Privacy_popup.do")
+  @RequestMapping("/agree_Privacy_popup.do")
   public String popup2(HttpSession session) {
     return "/popup/agree_Privacy_popup";
   }
 
-  //----------------- - //아이디 중복 체크
-  // ---------------------------------------------------------------------------------------------->
-  @RequestMapping (value = "idCheck.do", method = RequestMethod.POST)
-  public String idCheck (HttpServletRequest request, Model model) {
-    int check =  - 1;
+  //아이디 중복 체크
+  @RequestMapping(value = "idCheck.do", method = RequestMethod.POST)
+  public String idCheck(HttpServletRequest request, Model model) {
+    int check = -1;
     String member_id = request.getParameter("member_id");
     MemberDTO memberDTO = sqlSession.selectOne("member.selectOne", member_id);
 
@@ -66,28 +63,29 @@ public class MemberController {
 
   //회원가입
 
-  // ---------------------------------------------------------------------------------------------->
-  @RequestMapping (value = "insertPro.do", method = RequestMethod.POST)
-  public String insertPro (@ModelAttribute ("memberDTO") MemberDTO memberDTO, HttpServletRequest request
+  @RequestMapping(value = "insertPro.do", method = RequestMethod.POST)
+  public String insertPro(
+    @ModelAttribute("memberDTO") MemberDTO memberDTO,
+    HttpServletRequest request
   ) {
     sqlSession.insert("member.insertMember", memberDTO);
     return ".main.layout";
   }
 
-  //-------------------------- - //로그인 폼
+  //로그인 폼
 
-  // ---------------------------------------------------------------------------------------------->
-  @RequestMapping ("/loginForm.do")
-  public String loginForm (@CookieValue (value = "rememberMemberId", required = false) String checkbox, Model model
+  @RequestMapping("/loginForm.do")
+  public String loginForm(
+    @CookieValue(value = "rememberMemberId", required = false) String checkbox,
+    Model model
   ) {
-    //-------------------------------- - return ".main.member.loginForm";
+    return ".main.member.loginForm";
   }
 
-  //--------------------------- - //loginPro.do
+  //loginPro.do
 
-  // ---------------------------------------------------------------------------------------------->
-  @RequestMapping (value = "loginPro.do", method = RequestMethod.POST)
-  public String loginPro (HttpServletRequest request, Model model, HttpServletResponse response) {
+  @RequestMapping(value = "loginPro.do", method = RequestMethod.POST)
+  public String loginPro(HttpServletRequest request, Model model, HttpServletResponse response) {
     String member_id = request.getParameter("member_id");
     String member_pw = request.getParameter("member_pw");
     String checkbox = request.getParameter("rememberId");
@@ -99,15 +97,14 @@ public class MemberController {
 
     MemberDTO dto = sqlSession.selectOne("member.selectLogin", map);
 
-    //쿠키에 아이디 집어넣기 ----------------------------------- - Cookie cookie = new Cookie("member_id", member_id);
+    Cookie cookie = new Cookie("member_id", member_id);
 
     System.out.println("checkbox");
     if (checkbox != null) {
       //체크박스 여부에 따라 쿠키 넣기말기 정하기
 
       response.addCookie(cookie);
-    }
-    {
+    } else {
       // 체크박스 체크 해제되었을 때
       // 쿠키 유효시간 0으로 해서 브라우저에서 삭제하게 한다.
       cookie.setMaxAge(0);
@@ -124,20 +121,18 @@ public class MemberController {
     model.addAttribute("dto", dto);
 
     return ".main.member.loginSuccess";
-  } //loginPro - end
+  }
 
-  //------------------------- - //---------------------------- - //로그아웃
+  //로그아웃
 
-  // ---------------------------------------------------------------------------------------------->
-  @RequestMapping ("/logOut.do")
-  public String logOut () {
+  @RequestMapping("/logOut.do")
+  public String logOut() {
     return ".main.member.logOut";
   }
 
-  //--------------- - //업데이트 창 form
+  //업데이트 창 form
 
-  // ---------------------------------------------------------------------------------------------->
-  @RequestMapping (value = "updateMember.do", method = RequestMethod.POST)
+  @RequestMapping(value = "updateMember.do", method = RequestMethod.POST)
   public String updateMember(HttpServletRequest request, Model model) {
     String member_id = request.getParameter("member_id");
 
@@ -148,11 +143,13 @@ public class MemberController {
     return ".main.member.updateMember";
   }
 
-  //-- - //DB글 수정
+  //DB글 수정
 
-  // ---------------------------------------------------------------------------------------------->
-  @RequestMapping (value = "updatePro.do", method = RequestMethod.POST)
-  public String updatePro (@ModelAttribute ("memberDTO") MemberDTO memberDTO, Model model, HttpServletRequest request
+  @RequestMapping(value = "updatePro.do", method = RequestMethod.POST)
+  public String updatePro(
+    @ModelAttribute("memberDTO") MemberDTO memberDTO,
+    Model model,
+    HttpServletRequest request
   ) {
     sqlSession.update("member.updateMember", memberDTO); //DB를 수정
 
@@ -160,11 +157,10 @@ public class MemberController {
     return ".main.member.updateSuccess";
   }
 
-  //--- - //회원탈퇴
+  //회원탈퇴
 
-  // ---------------------------------------------------------------------------------------------->
-  @RequestMapping (value = "deleteForm.do", method = RequestMethod.POST)
-  public String deleteForm (Model model, HttpServletRequest request) {
+  @RequestMapping(value = "deleteForm.do", method = RequestMethod.POST)
+  public String deleteForm(Model model, HttpServletRequest request) {
     String member_id = request.getParameter("member_id");
 
     model.addAttribute("member_id", member_id);
@@ -174,8 +170,7 @@ public class MemberController {
 
   //회원탈퇴 DB
 
-  // ---------------------------------------------------------------------------------------------->
-  @RequestMapping (value = "deletePro.do", method = RequestMethod.POST)
+  @RequestMapping(value = "deletePro.do", method = RequestMethod.POST)
   public String deletePro(HttpServletRequest request) {
     String member_id = request.getParameter("member_id");
     String member_pw = request.getParameter("member_pw");
@@ -191,25 +186,22 @@ public class MemberController {
     return ".main.member.logOut";
   }
 
-  //---------------------- - //아이디 비밀번호 찾기 메인창
+  //아이디 비밀번호 찾기 메인창
 
-  // ---------------------------------------------------------------------------------------------->
-  @RequestMapping ("/search_main")
-  public String search_main () {
+  @RequestMapping("/search_main")
+  public String search_main() {
     return ".main.member.search_main";
   }
 
-  //----------------------- - //아이디 찾기 창
+  //아이디 찾기 창
 
-  // ---------------------------------------------------------------------------------------------->
-  @RequestMapping ("/search_id")
+  @RequestMapping("/search_id")
   public String search_id() {
     return ".main.member.search_id";
   }
 
-  //----------------------- - @RequestMapping (value = "search_id_pro", method = RequestMethod.POST)
-  // ---------------------------------------------------------------------------------------------->
-  public String searchIdPro (HttpServletRequest request, Model model) {
+  @RequestMapping(value = "search_id_pro", method = RequestMethod.POST)
+  public String searchIdPro(HttpServletRequest request, Model model) {
     String search_tel_name = request.getParameter("search_tel_name");
     String search_tel_number = request.getParameter("search_tel_number");
     System.out.println("member_name : " + search_tel_name);
@@ -227,17 +219,15 @@ public class MemberController {
     return ".main.member.search_result_id";
   }
 
-  //----------------------- - //비밀번호 찾기 창
+  //비밀번호 찾기 창
 
-  // ---------------------------------------------------------------------------------------------->
-  @RequestMapping ("/search_pwd")
+  @RequestMapping("/search_pwd")
   public String search_pwdForm() {
     return ".main.member.search_pwd";
   }
 
-  // ---------------------------------------------------------------------------------------------->
-  @RequestMapping (value = "search_pwd.do", method = RequestMethod.POST)
-  public String search_pwdPro (HttpServletRequest request, Model model) {
+  @RequestMapping(value = "search_pwd.do", method = RequestMethod.POST)
+  public String search_pwdPro(HttpServletRequest request, Model model) {
     String writeID_search_pw = request.getParameter("writeID_search_pw");
 
     MemberDTO dto = sqlSession.selectOne("member.selectOne", writeID_search_pw);
@@ -249,8 +239,7 @@ public class MemberController {
 
   //비밀번호2 찾기 창
 
-  // ---------------------------------------------------------------------------------------------->
-  @RequestMapping ("/search_pwd_next")
+  @RequestMapping("/search_pwd_next")
   public String search_pwd_nextForm(HttpServletRequest request, Model model) {
     //위의 아이디정보를 받아서
     //아래의 Pro에게 아이디와 전화번호함께뭐시깽이를 넘겨줘야해
@@ -271,4 +260,4 @@ public class MemberController {
 
     return ".main.member.search_result_pwd";
   }
-} //memberController - end
+}

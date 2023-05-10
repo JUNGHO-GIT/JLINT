@@ -14,7 +14,7 @@ class Controller {
     const componentsTitle
     = "components";
     const componentsArray = [
-      "ReadTitle", "Copy", "ReadContents", "Recognize"
+      "ReadTitle", "CopyFile", "ReadContents", "RecogNize", "RemoveComments"
     ];
     const componentsImport = componentsArray.map((item) => {
       return require(`../rules/${componentsTitle}/${item}`).default;
@@ -49,7 +49,7 @@ class Controller {
     const commonTitle
     = "common";
     const commonArray = [
-      "Equal", "Comma", "Quote", /* "Semicolon" */, "Brackets", "Operators"
+      "Equal", "Comma", "Quote", "Semicolon", "Brackets", "Operators"
     ];
     const commonImport = commonArray.map((item) => {
       return require(`../rules/${commonTitle}/${item}`).default;
@@ -57,21 +57,6 @@ class Controller {
     const commonInit = commonArray.map((_item, index) => new commonImport[index]());
 
     return commonInit.map((item) => item.output()).join("");
-  }
-
-  // 4. special ----------------------------------------------------------------------------------->
-  public special() {
-    const specialTitle
-    = "special";
-    const specialArray = [
-      "Sql", "Line", "Import"
-    ];
-    const specialImport = specialArray.map((item) => {
-      return require(`../rules/${specialTitle}/${item}`).default;
-    });
-    const specialInit = specialArray.map((_item, index) => new specialImport[index]());
-
-    return specialInit.map((item) => item.output()).join("");
   }
 
   // 6. syntex  ----------------------------------------------------------------------------------->
@@ -88,6 +73,22 @@ class Controller {
 
     return syntexInit.map((item) => item.output()).join("");
   }
+
+  // 4. special ----------------------------------------------------------------------------------->
+  public special() {
+    const specialTitle
+    = "special";
+    const specialArray = [
+      "Sql",  "Return", "Import", "Line"
+    ];
+    const specialImport = specialArray.map((item) => {
+      return require(`../rules/${specialTitle}/${item}`).default;
+    });
+    const specialInit = specialArray.map((_item, index) => new specialImport[index]());
+
+    return specialInit.map((item) => item.output()).join("");
+  }
+
 }
 
 export default Controller;

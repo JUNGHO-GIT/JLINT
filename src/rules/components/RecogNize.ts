@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import {Components} from "../interface/Components";
 
-class Recognize implements Components {
+class RecogNize implements Components {
 
   // constructor ---------------------------------------------------------------------------------->
   constructor() {
@@ -46,4 +46,4 @@ class Recognize implements Components {
   }
 }
 
-export default Recognize;
+export default RecogNize;

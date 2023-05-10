@@ -4,15 +4,11 @@ class Main {
 
   public main() {
 
-    const controller = new Controller();
-
-    const components = controller.components();
-    const lang = controller.lang();
-    const common = controller.common();
-    const special = controller.special();
-    const syntex = controller.syntex();
-
-    return components + lang + common + special + syntex;
+    return new Controller().components()
+    + new Controller().lang()
+    + new Controller().common()
+    + new Controller().syntex()
+    + new Controller().special();
   }
 }
 
