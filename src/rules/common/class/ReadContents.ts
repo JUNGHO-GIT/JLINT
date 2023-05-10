@@ -1,8 +1,8 @@
 import * as fs from "fs";
 import * as path from "path";
-import { Components } from "../interface/Components";
+import {Common} from "../interface/Common";
 
-class ReadContents implements Components {
+class ReadContents implements Common {
 
   // constructor ---------------------------------------------------------------------------------->
   constructor() {
@@ -36,6 +36,7 @@ class ReadContents implements Components {
       // 3. 파일 내용 쓰기
       fs.writeFileSync(this.copyPath, updateContent, "utf8");
 
+      // 4. 결과 반환
       return updateContent;
     }
     catch (err) {

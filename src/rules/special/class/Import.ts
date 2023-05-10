@@ -1,16 +1,15 @@
-import ReadContents from "../components/ReadContents";
-import { Lang } from "../interface/Lang";
 import fs from "fs";
 import path from "path";
-import prettier from "prettier";
+import lodash from "lodash";
+import { Special } from "../interface/Special";
+import ReadContents from "../../common/class/ReadContents";
 
-class Js implements Lang {
+class Import implements Special {
 
   // constructor ---------------------------------------------------------------------------------->
   constructor() {
     this.main();
   }
-
 
   // 0. path -------------------------------------------------------------------------------------->
   private filePath = process.argv[2];
@@ -30,49 +29,45 @@ class Js implements Lang {
 
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
-
     const data = this.data();
     if (data instanceof Error) {
       return data;
     }
 
-    const formattedCode = prettier.format(data, {
-      parser: "babel",
-      printWidth: 1000,
-      tabWidth: 2,
-      useTabs: false,
-      semi: true,
-      singleQuote: false,
-      quoteProps: "as-needed",
-      jsxSingleQuote: false,
-      trailingComma: "all",
-      bracketSpacing: true,
-      jsxBracketSameLine: false,
-      arrowParens: "always",
-      rangeStart: 0,
-      rangeEnd: Infinity,
-      requirePragma: false,
-      insertPragma: false,
-      proseWrap: "preserve",
-      htmlWhitespaceSensitivity: "css",
-      vueIndentScriptAndStyle: true,
-      endOfLine: "lf",
-      embeddedLanguageFormatting: "auto"
-    });
-    fs.writeFileSync(this.copyPath, formattedCode, "utf8");
+    const rulesOne = /(\s*)(;)(\s*)(\n?)(\s*)(import)/gm;
+    const rulesTwo = /(\s*)(package)(\s*)([\s\S]*?)(;)(\n)(\s*)(import)/gm;
+    const rulesThree = /(\s*)(\))(\s+)(;)/gm;
+    const rulesFour = /(\s*)(@)(\s*)([\s\S]*?)(\s*)(\()/gm;
 
-    return formattedCode;
+    const result = lodash.chain(this.data())
+    .replace(rulesOne, (match, p1, p2, p3, p4, p5, p6) => {
+      return `${p2}\n${p6}`;
+    })
+    .replace(rulesTwo, (match, p1, p2, p3, p4, p5, p6, p7, p8) => {
+      return `${p2} ${p4}${p5}${p6}\n${p8}`;
+    })
+    .replace(rulesThree, (match, p1, p2, p3, p4) => {
+      return `${p1}${p2}${p4}`;
+    })
+    .replace(rulesFour, (match, p1, p2, p3, p4, p5, p6) => {
+      return `${p1}${p2}${p4} ${p6}`;
+    })
+    .value();
+
+    fs.writeFileSync(this.copyPath, result, "utf8");
+    return result;
   }
+
 
   // 3. output ------------------------------------------------------------------------------------>
   public output() {
     try {
       return console.log("_____________________\n" + this.fileName + "  실행");
     }
-    catch (err) {
+    catch(err) {
       return console.log(new Error());
     }
   }
 }
 
-export default Js;
+export default Import;

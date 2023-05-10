@@ -7,7 +7,7 @@ class Main {
     return new Controller().components()
     + new Controller().lang()
     + new Controller().common()
-    + new Controller().syntex()
+    + new Controller().syntax()
     + new Controller().special();
   }
 }

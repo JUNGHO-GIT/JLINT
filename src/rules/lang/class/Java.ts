@@ -1,10 +1,10 @@
-import ReadContents from "../components/ReadContents";
-import {Common} from "../interface/Common";
 import fs from "fs";
 import path from "path";
-import lodash from "lodash";
+import prettier from "prettier";
+import {Lang} from "../interface/Lang";
+import ReadContents from "../../common/class/ReadContents";
 
-class Catch implements Common {
+class Java implements Lang {
 
   // constructor ---------------------------------------------------------------------------------->
   constructor() {
@@ -34,27 +34,33 @@ class Catch implements Common {
       return data;
     }
 
-    const resultOne = /(^.*)(\})(\n+)(\s*)(catch)(\s*)(\()(.*)(\))/gm;
-    const resultTwo = /(^.*)(.*)(\})(\n)(\s*)(catch)(\s*)(\()/gm;
-    const resultThree = /(^.*)(.*)(\})(\s*)(catch)(\s*)(\()/gm;
+    const formattedCode = prettier.format(data, {
+      parser: "java",
+      printWidth: 100,
+      tabWidth: 2,
+      useTabs: false,
+      semi: true,
+      singleQuote: false,
+      quoteProps: "as-needed",
+      jsxSingleQuote: false,
+      trailingComma: "all",
+      bracketSpacing: true,
+      jsxBracketSameLine: false,
+      arrowParens: "always",
+      rangeStart: 0,
+      rangeEnd: Infinity,
+      requirePragma: false,
+      insertPragma: false,
+      proseWrap: "preserve",
+      htmlWhitespaceSensitivity: "css",
+      vueIndentScriptAndStyle: true,
+      endOfLine: "lf",
+      embeddedLanguageFormatting: "auto"
+    });
+    fs.writeFileSync(this.copyPath, formattedCode, "utf8");
 
-    const result = lodash.chain(this.data())
-    .replace(resultOne, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9) => {
-      return `${p1}${p2}\n${p4}${p5} ${p7}${p8}${p9}`
-    })
-    .replace(resultTwo, (match, p1, p2, p3, p4, p5, p6, p7, p8) => {
-      return `${p1}${p3}\n${p1}${p6} ${p8}`
-    })
-    .replace(resultThree, (match, p1, p2, p3, p4, p5, p6, p7) => {
-      return `${p1}${p3}\n${p1}${p5} ${p7}`
-    })
-    .value();
-
-    fs.writeFileSync(this.copyPath, result);
-    return result;
-
+    return formattedCode;
   }
-
 
   // 3. output ------------------------------------------------------------------------------------>
   public output() {
@@ -67,4 +73,4 @@ class Catch implements Common {
   }
 }
 
-export default Catch;
+export default Java;

@@ -9,22 +9,37 @@ class Controller {
   private fileExt = path.extname(this.filePath);
   private copyPath = this.filePath.slice(0, -this.fileExt.length) + "-2" + this.fileExt;
 
+  // 1. common ------------------------------------------------------------------------------------>
+  public common() {
+    const commonTitle
+    = "common";
+    const commonArray = [
+      "ReadTitle", "CopyFile", "ReadContents", "Recognize", "RemoveComments"
+    ];
+    const commonImport = commonArray.map((item) => {
+      return require(`../rules/${commonTitle}/${item}`).default;
+    });
+    const commonInit = commonArray.map((_item, index) => new commonImport[index]());
+
+    return commonInit.map((item) => item.output()).join("");
+  }
+
   // 2. components -------------------------------------------------------------------------------->
   public components() {
     const componentsTitle
-    = "components";
+    = "common";
     const componentsArray = [
-      "ReadTitle", "CopyFile", "ReadContents", "RecogNize", "RemoveComments"
+      "Equal", "Comma", "Quote", "Semicolon", "Brackets", "Operators"
     ];
     const componentsImport = componentsArray.map((item) => {
       return require(`../rules/${componentsTitle}/${item}`).default;
     });
-    const componentsInit = componentsArray.map((_item, index) => new componentsImport[index]());
+    const componentsInit = componentsArray.map((item, index) => new componentsImport[index]());
 
     return componentsInit.map((item) => item.output()).join("");
   }
 
-  // 5. lang -------------------------------------------------------------------------------------->
+  // 3. lang -------------------------------------------------------------------------------------->
   public lang() {
     const langTitle = "lang";
     const langArray = [
@@ -44,37 +59,22 @@ class Controller {
     }
   }
 
-  // 3. common ------------------------------------------------------------------------------------>
-  public common() {
-    const commonTitle
-    = "common";
-    const commonArray = [
-      "Equal", "Comma", "Quote", "Semicolon", "Brackets", "Operators"
-    ];
-    const commonImport = commonArray.map((item) => {
-      return require(`../rules/${commonTitle}/${item}`).default;
-    });
-    const commonInit = commonArray.map((_item, index) => new commonImport[index]());
-
-    return commonInit.map((item) => item.output()).join("");
-  }
-
-  // 6. syntex  ----------------------------------------------------------------------------------->
-  public syntex() {
-    const syntexTitle
-    = "syntex";
-    const syntexArray = [
+  // 4. syntax  ----------------------------------------------------------------------------------->
+  public syntax() {
+    const syntaxTitle
+    = "syntax";
+    const syntaxArray = [
       "If", "Else", "Elseif", "Try", "Catch", "Finally"
     ];
-    const syntexImport = syntexArray.map((item) => {
-      return require(`../rules/${syntexTitle}/${item}`).default;
+    const syntaxImport = syntaxArray.map((item) => {
+      return require(`../rules/${syntaxTitle}/${item}`).default;
     });
-    const syntexInit = syntexArray.map((_item, index) => new syntexImport[index]());
+    const syntaxInit = syntaxArray.map((_item, index) => new syntaxImport[index]());
 
-    return syntexInit.map((item) => item.output()).join("");
+    return syntaxInit.map((item) => item.output()).join("");
   }
 
-  // 4. special ----------------------------------------------------------------------------------->
+  // 5. special ----------------------------------------------------------------------------------->
   public special() {
     const specialTitle
     = "special";

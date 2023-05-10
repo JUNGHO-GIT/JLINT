@@ -1,10 +1,10 @@
-import ReadContents from "./ReadContents";
-import {Common} from "../interface/Common";
 import fs from "fs";
 import path from "path";
 import lodash from "lodash";
+import ReadContents from "../../common/class/ReadContents";
+import {Components} from "../interface/Components";
 
-class RemoveComments implements Common {
+class Quote implements Components {
 
   // constructor ---------------------------------------------------------------------------------->
   constructor() {
@@ -34,19 +34,11 @@ class RemoveComments implements Common {
       return data;
     }
 
-    const rulesOne = /(\/\/)(.*?)((-)|(=))(.*)/gm;
-    const rulesTwo = /(\/\/)(.*)(end)/gm;
-    const rulesThree = /(\/\/)(\s*?)(\*)(.*)(\*)/gm;
+    const rulesOne = /(')/gm;
 
     const result = lodash.chain(this.data())
-    .replace(rulesOne, (match, p1, p2, p3, p4) => {
-      return ``;
-    })
-    .replace(rulesTwo, (match, p1, p2, p3) => {
-      return ``;
-    })
-    .replace(rulesThree, (match, p1, p2, p3, p4, p5) => {
-      return ``;
+    .replace(rulesOne, (match, p1) => {
+      return `"`;
     })
     .value();
 
@@ -65,4 +57,4 @@ class RemoveComments implements Common {
   }
 }
 
-export default RemoveComments;
+export default Quote;

@@ -1,10 +1,10 @@
-import ReadContents from "../components/ReadContents";
-import { Lang } from "../interface/Lang";
 import fs from "fs";
 import path from "path";
-import prettier from "prettier";
+import lodash from "lodash";
+import {Syntax} from "../interface/Syntax";
+import ReadContents from "../../common/class/ReadContents";
 
-class Ts implements Lang {
+class Else implements Syntax {
 
   // constructor ---------------------------------------------------------------------------------->
   constructor() {
@@ -15,53 +15,46 @@ class Ts implements Lang {
   private filePath = process.argv[2];
   private fileName = path.basename(__filename);
   private fileExt = path.extname(this.filePath);
-  private copyPath = this.filePath.slice(0, -this.fileExt.length) + "-2" + this.fileExt;
+  private copyPath = this.filePath.slice(0,-this.fileExt.length) + "-2" + this.fileExt;
 
   // 1. data -------------------------------------------------------------------------------------->
   public data(): string | Error {
     try {
       return new ReadContents().main().toString();
     }
-    catch (err) {
+    catch(err) {
       return new Error(`파일내용을 읽을 수 없습니다. \n`);
     }
   }
 
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
-
     const data = this.data();
     if (data instanceof Error) {
       return data;
     }
 
-    const formattedCode = prettier.format(data, {
-      parser: "babel",
-      printWidth: 1000,
-      tabWidth: 2,
-      useTabs: false,
-      semi: true,
-      singleQuote: false,
-      quoteProps: "as-needed",
-      jsxSingleQuote: false,
-      trailingComma: "all",
-      bracketSpacing: true,
-      jsxBracketSameLine: false,
-      arrowParens: "always",
-      rangeStart: 0,
-      rangeEnd: Infinity,
-      requirePragma: false,
-      insertPragma: false,
-      proseWrap: "preserve",
-      htmlWhitespaceSensitivity: "css",
-      vueIndentScriptAndStyle: true,
-      endOfLine: "lf",
-      embeddedLanguageFormatting: "auto"
-    });
+    const rulesOne
+    = /(^.*)(\})(\n?)(\s*)(else)(\s*)(\{)(\s*?)(.*)(\s*)(?<=\})/gm;
+    const rulesTwo
+    = /(^.*)(.*)(\})(\n)(\s*)(else)(\s*)(\{)/gm;
+    const rulesThree
+    = /(^.*)(.*)(\})(\s*)(else)(\s*)(\{)/gm;
 
-    fs.writeFileSync(this.copyPath, formattedCode, 'utf8');
+    const result = lodash.chain(this.data())
+    .replace(rulesOne, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) => {
+      return `${p1}${p2}${p3}${p4}${p5} ${p7}\n${p1}${p8}${p9}${p10}\n${p1}${p9}`
+    })
+    .replace(rulesTwo, (match, p1, p2, p3, p4, p5, p6, p7, p8) => {
+      return `${p1}${p3}\n${p1}${p6} ${p8}`
+    })
+    .replace(rulesThree, (match, p1, p2, p3, p4, p5, p6, p7) => {
+      return `${p1}${p3}\n${p1}${p5} ${p7}`
+    })
+    .value();
 
-    return formattedCode;
+    fs.writeFileSync(this.copyPath, result);
+    return result;
   }
 
   // 3. output ------------------------------------------------------------------------------------>
@@ -69,10 +62,10 @@ class Ts implements Lang {
     try {
       return console.log("_____________________\n" + this.fileName + "  실행");
     }
-    catch (err) {
+    catch(err) {
       return console.log(new Error());
     }
   }
 }
 
-export default Ts;
+export default Else;

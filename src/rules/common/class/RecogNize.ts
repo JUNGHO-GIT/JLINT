@@ -1,8 +1,8 @@
 import fs from "fs";
 import path from "path";
-import {Components} from "../interface/Components";
+import {Common} from "../interface/Common";
 
-class ReadTitle implements Components {
+class Recognize implements Common {
 
   // constructor ---------------------------------------------------------------------------------->
   constructor() {
@@ -16,12 +16,12 @@ class ReadTitle implements Components {
   private copyPath = this.filePath.slice(0,-this.fileExt.length) + "-2" + this.fileExt;
 
   // 1. data -------------------------------------------------------------------------------------->
-  public data(): string | Error {
+  public data() {
     try {
-      return path.basename(this.filePath).toString();
+      return this.fileExt;
     }
     catch(err) {
-      return new Error(`파일이름을 읽을 수 없습니다. \n`);
+      return new Error(`확장자 이름을 읽을 수 없습니다. \n`);
     }
   }
 
@@ -30,7 +30,7 @@ class ReadTitle implements Components {
     try {
       return this.data();
     }
-    catch(err) {
+    catch (err) {
       return new Error();
     }
   }
@@ -46,4 +46,4 @@ class ReadTitle implements Components {
   }
 }
 
-export default ReadTitle;
+export default Recognize;

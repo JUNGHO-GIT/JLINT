@@ -1,10 +1,10 @@
-import ReadContents from "../components/ReadContents";
-import {Common} from "../interface/Common";
 import fs from "fs";
 import path from "path";
 import lodash from "lodash";
+import {Syntax} from "../interface/Syntax";
+import ReadContents from "../../common/class/ReadContents";
 
-class If implements Common {
+class If implements Syntax {
 
   // constructor ---------------------------------------------------------------------------------->
   constructor() {

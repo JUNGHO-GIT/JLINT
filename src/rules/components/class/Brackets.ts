@@ -1,10 +1,10 @@
-import ReadContents from "../components/ReadContents";
-import {Special} from "../interface/Special";
 import fs from "fs";
 import path from "path";
 import lodash from "lodash";
+import ReadContents from "../../common/class/ReadContents";
+import {Components} from "../interface/Components";
 
-class Sql implements Special {
+class Brackets implements Components {
 
   // constructor ---------------------------------------------------------------------------------->
   constructor() {
@@ -20,7 +20,7 @@ class Sql implements Special {
   // 1. data -------------------------------------------------------------------------------------->
   public data(): string | Error {
     try {
-        return new ReadContents().main().toString();
+      return new ReadContents().main().toString();
     }
     catch(err) {
       return new Error(`파일내용을 읽을 수 없습니다. \n`);
@@ -34,24 +34,17 @@ class Sql implements Special {
       return data;
     }
 
-    const rulesOne = /(\s*)(\s*)(=)(\s*)(\?)(\s*)/gm;
-    const rulesTwo = /(\s*)(\s*)(=)(\s*)(NOW)(\s*)/gm;
-    const rulesThree = /(\s*)(\s*)(=)(\s*)(now)(\s*)/gm;
+    const rulesOne = /(\))(\{)/gm;
 
     const result = lodash.chain(this.data())
-    .replace(rulesOne, (match, p1, p2, p3, p4, p5) => {
-      return `${p2}${p4}${p5}`;
-    })
-    .replace(rulesTwo, (match, p1, p2, p3, p4, p5) => {
-      return `${p2}${p4}${p5}`;
-    })
-    .replace(rulesThree, (match, p1, p2, p3, p4, p5) => {
-      return `${p2}${p4}${p5}`;
+    .replace(rulesOne, (match, p1, p2) => {
+      return `${p1} ${p2}`;
     })
     .value();
 
     fs.writeFileSync(this.copyPath, result);
     return result;
+
   }
 
   // 3. output ------------------------------------------------------------------------------------>
@@ -65,4 +58,4 @@ class Sql implements Special {
   }
 }
 
-export default Sql;
+export default Brackets;

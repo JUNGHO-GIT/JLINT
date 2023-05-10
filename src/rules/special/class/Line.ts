@@ -1,8 +1,8 @@
-import ReadContents from "../components/ReadContents";
-import { Special } from "../interface/Special";
 import fs from "fs";
 import path from "path";
 import lodash from "lodash";
+import { Special } from "../interface/Special";
+import ReadContents from "../../common/class/ReadContents";
 
 class Line implements Special {
 

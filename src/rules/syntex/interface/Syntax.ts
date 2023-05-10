@@ -1,8 +1,6 @@
-interface Special {
-
+interface Syntax {
   data(): string | Error;
   main(): string | Error;
   output(): void;
 }
-
-export {Special};
+export {Syntax};

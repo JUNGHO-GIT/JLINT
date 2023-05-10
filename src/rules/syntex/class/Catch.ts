@@ -1,10 +1,10 @@
-import ReadContents from "../components/ReadContents";
-import {Common} from "../interface/Common";
 import fs from "fs";
 import path from "path";
 import lodash from "lodash";
+import {Syntax} from "../interface/Syntax";
+import ReadContents from "../../common/class/ReadContents";
 
-class Quote implements Common {
+class Catch implements Syntax {
 
   // constructor ---------------------------------------------------------------------------------->
   constructor() {
@@ -34,17 +34,27 @@ class Quote implements Common {
       return data;
     }
 
-    const rulesOne = /(')/gm;
+    const resultOne = /(^.*)(\})(\n+)(\s*)(catch)(\s*)(\()(.*)(\))/gm;
+    const resultTwo = /(^.*)(.*)(\})(\n)(\s*)(catch)(\s*)(\()/gm;
+    const resultThree = /(^.*)(.*)(\})(\s*)(catch)(\s*)(\()/gm;
 
     const result = lodash.chain(this.data())
-    .replace(rulesOne, (match, p1) => {
-      return `"`;
+    .replace(resultOne, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9) => {
+      return `${p1}${p2}\n${p4}${p5} ${p7}${p8}${p9}`
+    })
+    .replace(resultTwo, (match, p1, p2, p3, p4, p5, p6, p7, p8) => {
+      return `${p1}${p3}\n${p1}${p6} ${p8}`
+    })
+    .replace(resultThree, (match, p1, p2, p3, p4, p5, p6, p7) => {
+      return `${p1}${p3}\n${p1}${p5} ${p7}`
     })
     .value();
 
     fs.writeFileSync(this.copyPath, result);
     return result;
+
   }
+
 
   // 3. output ------------------------------------------------------------------------------------>
   public output() {
@@ -57,4 +67,4 @@ class Quote implements Common {
   }
 }
 
-export default Quote;
+export default Catch;

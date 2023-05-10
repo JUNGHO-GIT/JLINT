@@ -1,10 +1,10 @@
-import ReadContents from "../components/ReadContents";
-import {Common} from "../interface/Common";
 import fs from "fs";
 import path from "path";
 import lodash from "lodash";
+import ReadContents from "../../common/class/ReadContents";
+import {Components} from "../interface/Components";
 
-class Equal implements Common {
+class Equal implements Components {
 
   // constructor ---------------------------------------------------------------------------------->
   constructor() {

@@ -1,10 +1,10 @@
-import ReadContents from "../components/ReadContents";
-import { Special } from "../interface/Special";
 import fs from "fs";
 import path from "path";
 import lodash from "lodash";
+import ReadContents from "../../common/class/ReadContents";
+import {Components} from "../interface/Components";
 
-class Import implements Special {
+class Semicolon implements Components {
 
   // constructor ---------------------------------------------------------------------------------->
   constructor() {
@@ -15,14 +15,14 @@ class Import implements Special {
   private filePath = process.argv[2];
   private fileName = path.basename(__filename);
   private fileExt = path.extname(this.filePath);
-  private copyPath = this.filePath.slice(0, -this.fileExt.length) + "-2" + this.fileExt;
+  private copyPath = this.filePath.slice(0,-this.fileExt.length) + "-2" + this.fileExt;
 
   // 1. data -------------------------------------------------------------------------------------->
   public data(): string | Error {
     try {
       return new ReadContents().main().toString();
     }
-    catch (err) {
+    catch(err) {
       return new Error(`파일내용을 읽을 수 없습니다. \n`);
     }
   }
@@ -34,30 +34,17 @@ class Import implements Special {
       return data;
     }
 
-    const rulesOne = /(\s*)(;)(\s*)(\n?)(\s*)(import)/gm;
-    const rulesTwo = /(\s*)(package)(\s*)([\s\S]*?)(;)(\n)(\s*)(import)/gm;
-    const rulesThree = /(\s*)(\))(\s+)(;)/gm;
-    const rulesFour = /(\s*)(@)(\s*)([\s\S]*?)(\s*)(\()/gm;
+    const rulesOne = /(^\s*)([\s\S]*?)(\s*)(;)(\s*)(?!(\n)|(\/\/)|( \/\/)|(\})|(;))(\s*)/gm;
 
     const result = lodash.chain(this.data())
-    .replace(rulesOne, (match, p1, p2, p3, p4, p5, p6) => {
-      return `${p2}\n${p6}`;
-    })
-    .replace(rulesTwo, (match, p1, p2, p3, p4, p5, p6, p7, p8) => {
-      return `${p2} ${p4}${p5}${p6}\n${p8}`;
-    })
-    .replace(rulesThree, (match, p1, p2, p3, p4) => {
-      return `${p1}${p2}${p4}`;
-    })
-    .replace(rulesFour, (match, p1, p2, p3, p4, p5, p6) => {
-      return `${p1}${p2}${p4} ${p6}`;
+    .replace(rulesOne, (match, p1, p2, p3, p4, p5) => {
+      return `${p1}${p2}${p4}\n${p1}${p5}`;
     })
     .value();
 
-    fs.writeFileSync(this.copyPath, result, "utf8");
+    fs.writeFileSync(this.copyPath, result);
     return result;
   }
-
 
   // 3. output ------------------------------------------------------------------------------------>
   public output() {
@@ -70,4 +57,4 @@ class Import implements Special {
   }
 }
 
-export default Import;
+export default Semicolon;
