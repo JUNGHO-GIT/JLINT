@@ -17,9 +17,9 @@ class Controller {
       "ReadTitle", "CopyFile", "ReadContents", "Recognize", "RemoveComments"
     ];
     const commonImport = commonArray.map((item) => {
-      return require(`../rules/${commonTitle}/${item}`).default;
+      return require(`../rules/class/${commonTitle}/${item}`).default;
     });
-    const commonInit = commonArray.map((_item, index) => new commonImport[index]());
+    const commonInit = commonArray.map((item, index) => new commonImport[index]());
 
     return commonInit.map((item) => item.output()).join("");
   }
@@ -27,12 +27,12 @@ class Controller {
   // 2. components -------------------------------------------------------------------------------->
   public components() {
     const componentsTitle
-    = "common";
+    = "components";
     const componentsArray = [
       "Equal", "Comma", "Quote", "Semicolon", "Brackets", "Operators"
     ];
     const componentsImport = componentsArray.map((item) => {
-      return require(`../rules/${componentsTitle}/${item}`).default;
+      return require(`../rules/class/${componentsTitle}/${item}`).default;
     });
     const componentsInit = componentsArray.map((item, index) => new componentsImport[index]());
 
@@ -43,13 +43,13 @@ class Controller {
   public lang() {
     const langTitle = "lang";
     const langArray = [
-      ".java", ".ts", ".js"
+      ".java", ".ts", ".js", ".css"
     ];
 
     const langIndex = langArray.indexOf(this.fileExt);
     if (langIndex !== -1) {
       const langClass = langArray[langIndex].slice(1).toUpperCase();
-      const langImport = require(`../rules/${langTitle}/${langClass}`).default;
+      const langImport = require(`../rules/class/${langTitle}/${langClass}`).default;
       const langInstance = new langImport();
 
       return langInstance.output();
@@ -67,26 +67,26 @@ class Controller {
       "If", "Else", "Elseif", "Try", "Catch", "Finally"
     ];
     const syntaxImport = syntaxArray.map((item) => {
-      return require(`../rules/${syntaxTitle}/${item}`).default;
+      return require(`../rules/class/${syntaxTitle}/${item}`).default;
     });
-    const syntaxInit = syntaxArray.map((_item, index) => new syntaxImport[index]());
+    const syntaxInit = syntaxArray.map((item, index) => new syntaxImport[index]());
 
     return syntaxInit.map((item) => item.output()).join("");
   }
 
-  // 5. special ----------------------------------------------------------------------------------->
-  public special() {
-    const specialTitle
-    = "special";
-    const specialArray = [
+  // 5. extra ----------------------------------------------------------------------------------->
+  public extra() {
+    const extraTitle
+    = "extra";
+    const extraArray = [
       "Sql",  "Return", "Import", "Line"
     ];
-    const specialImport = specialArray.map((item) => {
-      return require(`../rules/${specialTitle}/${item}`).default;
+    const extraImport = extraArray.map((item) => {
+      return require(`../rules/class/${extraTitle}/${item}`).default;
     });
-    const specialInit = specialArray.map((_item, index) => new specialImport[index]());
+    const extraInit = extraArray.map((item, index) => new extraImport[index]());
 
-    return specialInit.map((item) => item.output()).join("");
+    return extraInit.map((item) => item.output()).join("");
   }
 
 }

@@ -4,11 +4,11 @@ class Main {
 
   public main() {
 
-    return new Controller().components()
+    return new Controller().common()
     + new Controller().lang()
-    + new Controller().common()
+    + new Controller().components()
     + new Controller().syntax()
-    + new Controller().special();
+    + new Controller().extra();
   }
 }
 
