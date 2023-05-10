@@ -5,6 +5,7 @@
     "start": "ts-node src/core/index.ts"
   },
   "dependencies": {
+    "@babel/parser": "^7.21.8",
     "acorn": "^8.8.2",
     "ast-parser": "^0.2.0",
     "commander": "^10.0.1",
@@ -26,6 +27,7 @@
     "acorn-typescript": "^1.2.0",
     "escodegen-ts": "^1.7.1",
     "prettier": "^2.8.8",
+    "prettier-plugin-java": "^2.1.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
   }

@@ -36,7 +36,7 @@ class Ts implements Lang {
     }
 
     const formattedCode = prettier.format(data, {
-      parser: 'typescript',
+      parser: "babel",
       printWidth: 100,
       tabWidth: 2,
       useTabs: true,

@@ -2,7 +2,7 @@ import ReadContents from "../components/ReadContents";
 import {Lang} from "../interface/Lang";
 import fs from "fs";
 import path from "path";
-import prettier from "prettier";
+import * as prettier from "prettier";
 
 class Java implements Lang {
 
@@ -58,9 +58,8 @@ class Java implements Lang {
       embeddedLanguageFormatting: "auto"
     });
     fs.writeFileSync(this.copyPath, formattedCode, "utf8");
-    const files  = fs.readFileSync(this.copyPath, "utf8");
 
-    return files;
+    return formattedCode;
   }
 
   // 3. output ------------------------------------------------------------------------------------>

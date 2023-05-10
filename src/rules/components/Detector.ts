@@ -1,7 +1,7 @@
-import fs from "fs";
+/* import fs from "fs";
 import path from "path";
 import {Components} from "../interface/Components";
-import ReadContents from "./ReadContents";
+import Recognize from "./Recognize";
 
 class Detector implements Components {
 
@@ -20,7 +20,7 @@ class Detector implements Components {
   // 1. data -------------------------------------------------------------------------------------->
   public data(): string | Error {
     try {
-      return new ReadContents().main().toString();
+      return new Recognize().main().toString();
     }
     catch(err) {
       return new Error(`파일이름을 읽을 수 없습니다. \n`);
@@ -29,16 +29,25 @@ class Detector implements Components {
 
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
-    if(this.data() instanceof Error) {
-      return this.data();
+    const data = this.data();
+    if (data instanceof Error) {
+      return data;
     }
-    const lang = [".java", ".js", ".ts", ".py", ".sql"];
-    const langArray = lang.map((item) => this[item]()).flat();
-    const langImport = langArray.map((item) => {
-      return require(`../lang/${item}`).default;
-    });
-    const langInit = langArray.map((_item, index) => new langImport[index]());
-    return langInit.map((item) => item.output()).join("");
+    const lang = [".java", ".js", ".ts"];
+    const langArray = ["Java", "Js", "Ts"];
+
+    const langIndex = lang.findIndex((item) => item === data);
+
+    if (langIndex !== -1) {
+      const langImport = langArray.map((item) => {
+        return require(`../lang/${item}`).default;
+      });
+      const langLogic = new langImport[langIndex]();
+      return langLogic.main();
+    }
+    else {
+      return new Error("지원하지 않는 파일 형식입니다.");
+    }
   }
 
   // 3. output ------------------------------------------------------------------------------------>
@@ -52,4 +61,4 @@ class Detector implements Components {
   }
 }
 
-export default Detector;
+export default Detector; */

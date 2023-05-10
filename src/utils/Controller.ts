@@ -16,7 +16,7 @@ class Controller {
   // 1. main -------------------------------------------------------------------------------------->
   public main() {
     const mainTitle = [
-      "components", "common", "special"
+      "components", "common", "lang",/*  "special" */
     ];
     const mainArray = mainTitle.map((item) => this[item]()).flat();
 
@@ -46,10 +46,21 @@ class Controller {
     return array;
   }
 
+  // 3. lang -------------------------------------------------------------------------------------->
+  public lang() {
+    const lang = [".java", ".js", ".ts"];
+    const langArray = ["Java", "Js", "Ts"];
+
+    const langIndex = lang.findIndex((item) => item === this.fileExt);
+    return langIndex === -1 ? [] : [langArray[langIndex]];
+  }
+
+
+
   // 5. special ----------------------------------------------------------------------------------->
   public special() {
     const array = [
-      "Sql", "Line", "Import"
+      "Sql",/*  "Line", */ "Import"
     ];
     return array;
   }

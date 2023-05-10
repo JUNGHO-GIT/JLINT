@@ -36,7 +36,7 @@ class Js implements Lang {
     }
 
     const formattedCode = prettier.format(data, {
-      parser: "javascript",
+      parser: "babel",
       printWidth: 100,
       tabWidth: 2,
       useTabs: true,
