@@ -44,7 +44,7 @@ public class MemberController {
     return "/popup/agree_Privacy_popup";
   }
 
-  //------------------
+
   //아이디 중복 체크
   @RequestMapping(value = "idCheck.do", method = RequestMethod.POST)
   public String idCheck(HttpServletRequest request, Model model) {
@@ -60,7 +60,7 @@ public class MemberController {
     return "/member/idCheck"; //뷰 리턴
   }
 
-  //============================================================
+
 
   //회원가입
 
@@ -73,7 +73,7 @@ public class MemberController {
     return ".main.layout";
   }
 
-  //---------------------------
+
   //로그인 폼
 
   @RequestMapping("/loginForm.do")
@@ -81,12 +81,12 @@ public class MemberController {
     @CookieValue(value = "rememberMemberId", required = false) String checkbox,
     Model model
   ) {
-    //---------------------------------
+
 
     return ".main.member.loginForm";
   }
 
-  //----------------------------
+
 
   //loginPro.do
 
@@ -107,7 +107,7 @@ public class MemberController {
 
     MemberDTO dto = sqlSession.selectOne("member.selectLogin", map);
 
-    //쿠키에 아이디 집어넣기 ------------------------------------
+
 
     Cookie cookie = new Cookie("member_id", member_id);
 
@@ -133,11 +133,11 @@ public class MemberController {
     model.addAttribute("dto", dto);
 
     return ".main.member.loginSuccess";
-  } //loginPro-end
 
-  //--------------------------
 
-  //-----------------------------
+
+
+
 
   //로그아웃
 
@@ -146,7 +146,7 @@ public class MemberController {
     return ".main.member.logOut";
   }
 
-  //----------------
+
 
   //업데이트 창 form
 
@@ -161,7 +161,7 @@ public class MemberController {
     return ".main.member.updateMember";
   }
 
-  //---
+
 
   //DB글 수정
 
@@ -177,7 +177,7 @@ public class MemberController {
     return ".main.member.updateSuccess";
   }
 
-  //----
+
 
   //회원탈퇴
 
@@ -208,7 +208,7 @@ public class MemberController {
     return ".main.member.logOut";
   }
 
-  //-----------------------
+
 
   //아이디 비밀번호 찾기 메인창
 
@@ -217,7 +217,7 @@ public class MemberController {
     return ".main.member.search_main";
   }
 
-  //------------------------
+
 
   //아이디 찾기 창
 
@@ -226,7 +226,7 @@ public class MemberController {
     return ".main.member.search_id";
   }
 
-  //------------------------
+
 
   @RequestMapping(value = "search_id_pro", method = RequestMethod.POST)
   public String searchIdPro(HttpServletRequest request, Model model) {
@@ -247,7 +247,7 @@ public class MemberController {
     return ".main.member.search_result_id";
   }
 
-  //------------------------
+
 
   //비밀번호 찾기 창
 
@@ -281,7 +281,7 @@ public class MemberController {
     HashMap<String, String> map = new HashMap<String, String>();
 
     map.put("member_id", search_tel_id);
-    map.put("member_name", search_tel_name);((?<!((1)|(2))).*?)
+    map.put("member_name", search_tel_name);
     map.put("member_tel", search_tel_number);
 
     MemberDTO dto = sqlSession.selectOne("member.searchPw", map);
@@ -290,4 +290,6 @@ public class MemberController {
 
     return ".main.member.search_result_pwd";
   }
-} //memberController-end
+
+}
+

@@ -24,39 +24,60 @@ class Java implements Lang {
     }
 
     // 1. remove comments
-    const rules1 = /(\/\/)(.*?)((-)|(=))(.*)/gm;
-    const rules2 = /(\/\/)(.*)(end)/gm;
-    const rules3 = /(\/\/)(\s*?)(\*)(.*)(\*)/gm;
+    const rules1 = /((?<=(\s*)).*?)(.*(\/\/)|(\/).*)((?=((-)|(=)|(\*)|(end))).*)/gm;
 
-    // 2. equal sign
-    const rules4 = /(?<!((=)|(\/)).*?)(\s*)(===)(\s*)(?!((=)|(>)).*?)/gm;
-    const rules5 = /(?<!((=)|(\/)).*?)(\s*)(==)(\s*)(?!((=)|(>)).*?)/gm;
-    const rules6 = /(?<!((=)|(\/)).*?)(\s*)(=)(\s*)(?!((=)|(>)).*?)/gm;
-    const rules7 = /(?<!((=)|(\/)).*?)(\s*)(\s*)(! =)(\s*)(?!((=)|(>)).*?)/gm;
+    /* // 2-1. equal sign
+    const rules4 = /(?<!((=)|(\/)|(>)|(<)|(\+)|(-)).*?)(\s*)(===)(\s*)(?!((=)|(>)).*?)/gm;
+    const rules5 = /(?<!((=)|(\/)|(>)|(<)|(\+)|(-)).*?)(\s*)(==)(\s*)(?!((=)|(>)).*?)/gm;
+    const rules6 = /(?<!((=)|(\/)|(>)|(<)|(\+)|(-)).*?)(\s*)(=)(\s*)(?!((=)|(>)).*?)/gm;
 
-    // 3. operators
-    const rules8 = /(?<!=|\/)(\s*)(\+)(\s*)/gm;
-    const rules9 = /(?!((<)|(=)|(\/))|(-))(\s*)(-)(\s*)(?!((-)|(>)))/gm;
-    const rules10 = /(?<!=|\/)(\s*)(\*)(?!;|\/)/gm;
-    const rules11 = /(?<!=|\/)(\s*)(%)(\s*)/gm;
-    const rules12 = /(?<!=|\/)(\s*)(&&)(\s*)/gm;
-    const rules13 = /(?<!=|\/)(\s*)(\|\|)(\s*)/gm;
+    // 2-2. unequal sign
+    const rules7 = /(?<!((=)|(\/)|(>)|(<)|(\+)|(-)).*?)(\s*)(! ===)(\s*)(?!((=)|(>)).*?)/gm;
+    const rules8 = /(?<!((=)|(\/)|(>)|(<)|(\+)|(-)).*?)(\s*)(! ==)(\s*)(?!((=)|(>)).*?)/gm;
+    const rules9 = /(?<!((=)|(\/)|(>)|(<)|(\+)|(-)).*?)(\s*)(! =)(\s*)(?!((=)|(>)).*?)/gm; */
+
+    /* // 3. operators
+    const rules10 = /(?<!=|\/)(\s*)(\+)(\s*)/gm;
+    const rules11 = /(?!((<)|(=)|(\/))|(-))(\s*)(-)(\s*)(?!((-)|(>)))/gm;
+    const rules12 = /(?<!=|\/)(\s*)(\*)(?!;|\/)/gm;
+    const rules13 = /(?<!=|\/)(\s*)(%)(\s*)/gm;
+    const rules14 = /(?<!=|\/)(\s*)(&&)(\s*)/gm;
+    const rules15 = /(?<!=|\/)(\s*)(\|\|)(\s*)/gm;
+    */
 
     // 3. replace
     const result = lodash.chain(data)
-    .replace(rules1, (match, p1, p2, p3, p4) =>  ``)
-    .replace(rules2, (match, p1, p2, p3) =>  ``)
-    .replace(rules3, (match, p1, p2, p3, p4, p5) =>  ``)
-    .replace(rules4, (match, p1, p2, p3) =>  ` ${p2} `)
-    .replace(rules5, (match, p1, p2, p3) =>  ` ${p2} `)
-    .replace(rules6, (match, p1, p2, p3) =>  ` ${p2} `)
-    .replace(rules7, (match, p1, p2, p3) =>  ` != `)
-    .replace(rules8, (match, p1, p2, p3) =>  ` ${p2} `)
-    .replace(rules9, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) =>  ` ${p7} `)
-    .replace(rules10, (match, p1, p2, p3) =>  ` ${p2} `)
-    .replace(rules11, (match, p1, p2, p3) =>  ` ${p2} `)
-    .replace(rules12, (match, p1, p2, p3) =>  ` ${p2} `)
-    .replace(rules13, (match, p1, p2, p3) =>  ` ${p2} `)
+    .replace(rules1, (match, ...groups) => {
+      return ``;
+    })
+
+
+    /* .replace(rules4, (match, ...groups) => {
+      const { p9 } = (groups as any).pop();
+      return ` ${p9} `;
+    })
+    .replace(rules5, (match, ...groups) => {
+      const { p9 } = (groups as any).pop();
+      return ` ${p9} `;
+    })
+    .replace(rules6, (match, ...groups) => {
+      const { p9 } = (groups as any).pop();
+      return ` ${p9} `;
+    })
+
+    .replace(rules7, (match, ...groups) => {
+      const { p9 } = (groups as any).pop();
+      return ` ${p9} `;
+    })
+    .replace(rules8, (match, ...groups) => {
+      const { p9 } = (groups as any).pop();
+      return ` ${p9} `;
+    })
+    .replace(rules9, (match, ...groups) => {
+      const { p9 } = (groups as any).pop();
+      return ` ${p9} `;
+    }) */
+
     .value();
 
     // 4. write
