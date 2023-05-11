@@ -26,12 +26,12 @@ class Js implements Lang {
     // 1. remove comments
     const rules1 = /((?<=(\s*)).*?)(.*(\/\/)|(\/).*)((?=((-)|(=)|(\*)|(end))).*)/gm;
 
-    /* // 2-1. equal sign
-    const rules4 = /(?<!((=)|(\/)|(>)|(<)|(\+)|(-)).*?)(\s*)(===)(\s*)(?!((=)|(>)).*?)/gm;
-    const rules5 = /(?<!((=)|(\/)|(>)|(<)|(\+)|(-)).*?)(\s*)(==)(\s*)(?!((=)|(>)).*?)/gm;
-    const rules6 = /(?<!((=)|(\/)|(>)|(<)|(\+)|(-)).*?)(\s*)(=)(\s*)(?!((=)|(>)).*?)/gm;
+    // 2-1. equal sign
+    const rules4 = /(?![=]|[/]|[>]|[<]|[+]|[-]|[=])(\s*)(===)(\s*)(?![=]|[>])/gm;
+    const rules5 = /(?![=]|[/]|[>]|[<]|[+]|[-]|[=])(\s*)(==)(\s*)(?![=]|[>])/gm;
+    const rules6 = /(?![=]|[/]|[>]|[<]|[+]|[-]|[=])(\s*)(=)(\s*)(?![=]|[>])/gm;
 
-    // 2-2. unequal sign
+    /* // 2-2. unequal sign
     const rules7 = /(?<!((=)|(\/)|(>)|(<)|(\+)|(-)).*?)(\s*)(! ===)(\s*)(?!((=)|(>)).*?)/gm;
     const rules8 = /(?<!((=)|(\/)|(>)|(<)|(\+)|(-)).*?)(\s*)(! ==)(\s*)(?!((=)|(>)).*?)/gm;
     const rules9 = /(?<!((=)|(\/)|(>)|(<)|(\+)|(-)).*?)(\s*)(! =)(\s*)(?!((=)|(>)).*?)/gm; */
@@ -50,21 +50,16 @@ class Js implements Lang {
     .replace(rules1, (match, ...groups) => {
       return ``;
     })
-
-
-    /* .replace(rules4, (match, ...groups) => {
-      const { p9 } = (groups as any).pop();
-      return ` ${p9} `;
+    .replace(rules4, (match, p1, p2) => {
+      return ` ${p2} `;
     })
-    .replace(rules5, (match, ...groups) => {
-      const { p9 } = (groups as any).pop();
-      return ` ${p9} `;
+    .replace(rules5, (match, p1, p2) => {
+      return ` ${p2} `;
     })
-    .replace(rules6, (match, ...groups) => {
-      const { p9 } = (groups as any).pop();
-      return ` ${p9} `;
+    .replace(rules6, (match, p1, p2) => {
+      return ` ${p2} `;
     })
-
+    /*
     .replace(rules7, (match, ...groups) => {
       const { p9 } = (groups as any).pop();
       return ` ${p9} `;
