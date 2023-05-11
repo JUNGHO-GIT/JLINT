@@ -24,39 +24,39 @@ class Java implements Lang {
     }
 
     // 1. remove comments
-    const rulesOne = /(\/\/)(.*?)((-)|(=))(.*)/gm;
-    const rulesTwo = /(\/\/)(.*)(end)/gm;
-    const rulesThree = /(\/\/)(\s*?)(\*)(.*)(\*)/gm;
+    const rules1 = /(\/\/)(.*?)((-)|(=))(.*)/gm;
+    const rules2 = /(\/\/)(.*)(end)/gm;
+    const rules3 = /(\/\/)(\s*?)(\*)(.*)(\*)/gm;
 
     // 2. equal sign
-    const rulesFour = /(?<!=|\/)(\s*)(===)(\s*)(?!=|>)/gm;
-    const rulesFive = /(?<!=|\/)(\s*)(==)(\s*)(?!=|>)/gm;
-    const rulesSix = /(?<!=|\/)(\s*)(=)(\s*)(?!=|>)/gm;
-    const rulesSeven = /(\s*)(! =)(\s*)/gm;
+    const rules4 = /(?<!((=)|(\/)).*?)(\s*)(===)(\s*)(?!((=)|(>)).*?)/gm;
+    const rules5 = /(?<!((=)|(\/)).*?)(\s*)(==)(\s*)(?!((=)|(>)).*?)/gm;
+    const rules6 = /(?<!((=)|(\/)).*?)(\s*)(=)(\s*)(?!((=)|(>)).*?)/gm;
+    const rules7 = /(?<!((=)|(\/)).*?)(\s*)(\s*)(! =)(\s*)(?!((=)|(>)).*?)/gm;
+
+    // 3. operators
+    const rules8 = /(?<!=|\/)(\s*)(\+)(\s*)/gm;
+    const rules9 = /(?!((<)|(=)|(\/))|(-))(\s*)(-)(\s*)(?!((-)|(>)))/gm;
+    const rules10 = /(?<!=|\/)(\s*)(\*)(?!;|\/)/gm;
+    const rules11 = /(?<!=|\/)(\s*)(%)(\s*)/gm;
+    const rules12 = /(?<!=|\/)(\s*)(&&)(\s*)/gm;
+    const rules13 = /(?<!=|\/)(\s*)(\|\|)(\s*)/gm;
 
     // 3. replace
     const result = lodash.chain(data)
-    .replace(rulesOne, (match, p1, p2, p3, p4) => {
-      return ``;
-    })
-    .replace(rulesTwo, (match, p1, p2, p3) => {
-      return ``;
-    })
-    .replace(rulesThree, (match, p1, p2, p3, p4, p5) => {
-      return ``;
-    })
-    .replace(rulesFour, (match, p1, p2, p3) => {
-      return ` ${p2} `;
-    })
-    .replace(rulesFive, (match, p1, p2, p3) => {
-      return ` ${p2} `;
-    })
-    .replace(rulesSix, (match, p1, p2, p3) => {
-      return ` ${p2} `;
-    })
-    .replace(rulesSeven, (match, p1, p2, p3) => {
-      return ` != `;
-    })
+    .replace(rules1, (match, p1, p2, p3, p4) =>  ``)
+    .replace(rules2, (match, p1, p2, p3) =>  ``)
+    .replace(rules3, (match, p1, p2, p3, p4, p5) =>  ``)
+    .replace(rules4, (match, p1, p2, p3) =>  ` ${p2} `)
+    .replace(rules5, (match, p1, p2, p3) =>  ` ${p2} `)
+    .replace(rules6, (match, p1, p2, p3) =>  ` ${p2} `)
+    .replace(rules7, (match, p1, p2, p3) =>  ` != `)
+    .replace(rules8, (match, p1, p2, p3) =>  ` ${p2} `)
+    .replace(rules9, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) =>  ` ${p7} `)
+    .replace(rules10, (match, p1, p2, p3) =>  ` ${p2} `)
+    .replace(rules11, (match, p1, p2, p3) =>  ` ${p2} `)
+    .replace(rules12, (match, p1, p2, p3) =>  ` ${p2} `)
+    .replace(rules13, (match, p1, p2, p3) =>  ` ${p2} `)
     .value();
 
     // 4. write

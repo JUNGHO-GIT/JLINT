@@ -1,6 +1,6 @@
 {
-  "name": "jlint",
-  "version": "1.0.0",
+  "name": "JLINT",
+  "version": " 1.0",
   "scripts": {
     "go": "ts-node src/core/index.ts"
   },
