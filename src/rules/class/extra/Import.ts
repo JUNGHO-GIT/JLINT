@@ -1,17 +1,13 @@
 import fs from "fs";
 import path from "path";
 import lodash from "lodash";
-import { Extra } from "../../interface/Extra.ts";
-import ReadContents from "../../class/common/ReadContents";
+import {Extra} from "../../interface/Extra.ts";
+import ReadContents from "../common/ReadContents";
 
 class Import implements Extra {
 
-  // constructor ---------------------------------------------------------------------------------->
-  constructor() {
-    this.main();
-  }
-
-  // 0. path -------------------------------------------------------------------------------------->
+  // 0. resource ---------------------------------------------------------------------------------->
+  constructor() {this.main();}
   private filePath = process.argv[2];
   private fileName = path.basename(__filename);
   private fileExt = path.extname(this.filePath);
@@ -29,6 +25,7 @@ class Import implements Extra {
 
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
+
     const data = this.data();
     if (data instanceof Error) {
       return data;

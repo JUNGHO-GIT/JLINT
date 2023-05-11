@@ -1,8 +1,10 @@
+import fs from "fs";
 import path from "path";
+import lodash from "lodash";
 
 class Controller {
 
-  // 0. path -------------------------------------------------------------------------------------->
+  // 0. resource ---------------------------------------------------------------------------------->
   [index: string]: any;
   private filePath = process.argv[2];
   private fileName = path.basename(__filename);
@@ -14,7 +16,7 @@ class Controller {
     const commonTitle
     = "common";
     const commonArray = [
-      "ReadTitle", "CopyFile", "ReadContents", "Recognize", "RemoveComments"
+      "ReadTitle", "CopyFile", "ReadContents"
     ];
     const commonImport = commonArray.map((item) => {
       return require(`../rules/class/${commonTitle}/${item}`).default;
@@ -24,12 +26,32 @@ class Controller {
     return commonInit.map((item) => item.output()).join("");
   }
 
-  // 2. components -------------------------------------------------------------------------------->
+  // 2. lang -------------------------------------------------------------------------------------->
+  public lang() {
+    const langTitle
+    = "lang";
+    const langArray = [
+      ".java", ".ts", ".js", ".css", ".html"
+    ];
+
+    const langIndex = langArray.indexOf(this.fileExt);
+    if (langIndex !== -1) {
+      const langClass = langArray[langIndex].slice(1, 2).toUpperCase() + langArray[langIndex].slice(2).toLowerCase();
+      const langImport = require(`../rules/class/${langTitle}/${langClass}`).default;
+      const langInstance = new langImport();
+      return langInstance.output();
+    }
+    else {
+      return console.warn("extension is not supported");
+    }
+  }
+
+  // 3. components -------------------------------------------------------------------------------->
   public components() {
     const componentsTitle
     = "components";
     const componentsArray = [
-      "Equal", "Comma", "Quote", "Semicolon", "Brackets", "Operators"
+      "Comma", "Quote", "Semicolon", "Brackets", "Operators"
     ];
     const componentsImport = componentsArray.map((item) => {
       return require(`../rules/class/${componentsTitle}/${item}`).default;
@@ -37,26 +59,6 @@ class Controller {
     const componentsInit = componentsArray.map((item, index) => new componentsImport[index]());
 
     return componentsInit.map((item) => item.output()).join("");
-  }
-
-  // 3. lang -------------------------------------------------------------------------------------->
-  public lang() {
-    const langTitle = "lang";
-    const langArray = [
-      ".java", ".ts", ".js", ".css"
-    ];
-
-    const langIndex = langArray.indexOf(this.fileExt);
-    if (langIndex !== -1) {
-      const langClass = langArray[langIndex].slice(1).toUpperCase();
-      const langImport = require(`../rules/class/${langTitle}/${langClass}`).default;
-      const langInstance = new langImport();
-
-      return langInstance.output();
-    }
-    else {
-      return "file extension is not supported";
-    }
   }
 
   // 4. syntax  ----------------------------------------------------------------------------------->
@@ -74,7 +76,7 @@ class Controller {
     return syntaxInit.map((item) => item.output()).join("");
   }
 
-  // 5. extra ----------------------------------------------------------------------------------->
+  // 5. extra ------------------------------------------------------------------------------------->
   public extra() {
     const extraTitle
     = "extra";

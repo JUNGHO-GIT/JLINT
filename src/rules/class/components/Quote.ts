@@ -1,21 +1,17 @@
 import fs from "fs";
 import path from "path";
 import lodash from "lodash";
-import ReadContents from "../../class/common/ReadContents";
+import ReadContents from "../common/ReadContents";
 import {Components} from "../../interface/Components";
 
 class Quote implements Components {
 
-  // constructor ---------------------------------------------------------------------------------->
-  constructor() {
-    this.main();
-  }
-
-  // 0. path -------------------------------------------------------------------------------------->
+  // 0. resource ---------------------------------------------------------------------------------->
+  constructor() {this.main();}
   private filePath = process.argv[2];
   private fileName = path.basename(__filename);
   private fileExt = path.extname(this.filePath);
-  private copyPath = this.filePath.slice(0,-this.fileExt.length) + "-2" + this.fileExt;
+  private copyPath = this.filePath.slice(0, -this.fileExt.length) + "-2" + this.fileExt;
 
   // 1. data -------------------------------------------------------------------------------------->
   public data(): string | Error {
@@ -29,6 +25,7 @@ class Quote implements Components {
 
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
+
     const data = this.data();
     if (data instanceof Error) {
       return data;

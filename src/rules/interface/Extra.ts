@@ -3,4 +3,4 @@ interface Extra {
   main(): string | Error;
   output(): void;
 }
-export { Extra };
+export {Extra };

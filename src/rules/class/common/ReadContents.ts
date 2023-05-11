@@ -5,13 +5,8 @@ import {Common} from "../../interface/Common";
 
 class ReadContents implements Common {
 
-  // constructor ---------------------------------------------------------------------------------->
-  constructor() {
-    this.main();
-  }
-
-  // 0. path -------------------------------------------------------------------------------------->
-  [index: string]: any;
+  // 0. resource ---------------------------------------------------------------------------------->
+  constructor() {this.main();}
   private filePath = process.argv[2];
   private fileName = path.basename(__filename);
   private fileExt = path.extname(this.filePath);

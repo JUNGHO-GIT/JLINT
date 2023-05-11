@@ -6,12 +6,8 @@ import {Common} from "../../interface/Common";
 
 class CopyFile implements Common {
 
-  // constructor ---------------------------------------------------------------------------------->
-  constructor() {
-    this.main();
-  }
-
-  // 0. path -------------------------------------------------------------------------------------->
+  // 0. resource ---------------------------------------------------------------------------------->
+  constructor() {this.main();}
   private filePath = process.argv[2];
   private fileName = path.basename(__filename);
   private fileExt = path.extname(this.filePath);

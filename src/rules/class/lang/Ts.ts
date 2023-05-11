@@ -1,17 +1,14 @@
 import fs from "fs";
 import path from "path";
+import lodash from "lodash";
 import prettier from "prettier";
 import {Lang} from "../../interface/Lang";
-import ReadContents from "../../class/common/ReadContents";
+import ReadContents from "../common/ReadContents";
 
 class Ts implements Lang {
 
-  // constructor ---------------------------------------------------------------------------------->
-  constructor() {
-    this.main();
-  }
-
-  // 0. path -------------------------------------------------------------------------------------->
+  // 0. resource ---------------------------------------------------------------------------------->
+  constructor() {this.main();}
   private filePath = process.argv[2];
   private fileName = path.basename(__filename);
   private fileExt = path.extname(this.filePath);
@@ -19,12 +16,30 @@ class Ts implements Lang {
 
   // 1. data -------------------------------------------------------------------------------------->
   public data(): string | Error {
-    try {
-      return new ReadContents().main().toString();
+
+    const data = new ReadContents().main();
+    if (data instanceof Error) {
+      return data;
     }
-    catch (err) {
-      return new Error(`파일내용을 읽을 수 없습니다. \n`);
-    }
+
+    const rulesOne = /(\/\/)(.*?)((-)|(=))(.*)/gm;
+    const rulesTwo = /(\/\/)(.*)(end)/gm;
+    const rulesThree = /(\/\/)(\s*?)(\*)(.*)(\*)/gm;
+
+    const result = lodash.chain(data)
+    .replace(rulesOne, (match, p1, p2, p3, p4) => {
+      return ``;
+    })
+    .replace(rulesTwo, (match, p1, p2, p3) => {
+      return ``;
+    })
+    .replace(rulesThree, (match, p1, p2, p3, p4, p5) => {
+      return ``;
+    })
+    .value();
+
+    fs.writeFileSync(this.copyPath, result);
+    return result;
   }
 
   // 2. main -------------------------------------------------------------------------------------->
