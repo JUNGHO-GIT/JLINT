@@ -1,7 +1,6 @@
 import fs from "fs";
 import path from "path";
 import lodash from "lodash";
-
 class Controller {
 
   // 0. resource ---------------------------------------------------------------------------------->
@@ -13,6 +12,7 @@ class Controller {
 
   // 1. common ------------------------------------------------------------------------------------>
   public common() {
+
     const commonTitle
     = "common";
     const commonArray = [

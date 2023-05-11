@@ -17,6 +17,7 @@ class Html implements Lang {
   // 1. data -------------------------------------------------------------------------------------->
   public data(): string | Error {
 
+    // 0. data
     const data = new ReadContents().main();
     if (data instanceof Error) {
       return data;
@@ -26,13 +27,16 @@ class Html implements Lang {
     const rulesOne = /(\/\/)(.*?)((-)|(=))(.*)/gm;
     const rulesTwo = /(\/\/)(.*)(end)/gm;
     const rulesThree = /(\/\/)(\s*?)(\*)(.*)(\*)/gm;
+
+    // 2. equal sign
     const rulesFour = /(?<!=|\/)(\s*)(===)(\s*)(?!=|>)/gm;
     const rulesFive = /(?<!=|\/)(\s*)(==)(\s*)(?!=|>)/gm;
     const rulesSix = /(?<!=|\/)(\s*)(=)(\s*)(?!=|>)/gm;
     const rulesSeven = /(\s*)(! =)(\s*)/gm;
 
+    // 3. replace
     const result = lodash.chain(data)
-    .replace(rulesOne, (match, p1, p2, p3, p4) => {
+    /* .replace(rulesOne, (match, p1, p2, p3, p4) => {
       return ``;
     })
     .replace(rulesTwo, (match, p1, p2, p3) => {
@@ -52,9 +56,10 @@ class Html implements Lang {
     })
     .replace(rulesSeven, (match, p1, p2, p3) => {
       return ` != `;
-    })
+    }) */
     .value();
 
+    // 4. write
     fs.writeFileSync(this.copyPath, result);
     return result;
   }

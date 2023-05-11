@@ -17,15 +17,24 @@ class Java implements Lang {
   // 1. data -------------------------------------------------------------------------------------->
   public data(): string | Error {
 
+    // 0. data
     const data = new ReadContents().main();
     if (data instanceof Error) {
       return data;
     }
 
+    // 1. remove comments
     const rulesOne = /(\/\/)(.*?)((-)|(=))(.*)/gm;
     const rulesTwo = /(\/\/)(.*)(end)/gm;
     const rulesThree = /(\/\/)(\s*?)(\*)(.*)(\*)/gm;
 
+    // 2. equal sign
+    const rulesFour = /(?<!=|\/)(\s*)(===)(\s*)(?!=|>)/gm;
+    const rulesFive = /(?<!=|\/)(\s*)(==)(\s*)(?!=|>)/gm;
+    const rulesSix = /(?<!=|\/)(\s*)(=)(\s*)(?!=|>)/gm;
+    const rulesSeven = /(\s*)(! =)(\s*)/gm;
+
+    // 3. replace
     const result = lodash.chain(data)
     .replace(rulesOne, (match, p1, p2, p3, p4) => {
       return ``;
@@ -36,8 +45,21 @@ class Java implements Lang {
     .replace(rulesThree, (match, p1, p2, p3, p4, p5) => {
       return ``;
     })
+    .replace(rulesFour, (match, p1, p2, p3) => {
+      return ` ${p2} `;
+    })
+    .replace(rulesFive, (match, p1, p2, p3) => {
+      return ` ${p2} `;
+    })
+    .replace(rulesSix, (match, p1, p2, p3) => {
+      return ` ${p2} `;
+    })
+    .replace(rulesSeven, (match, p1, p2, p3) => {
+      return ` != `;
+    })
     .value();
 
+    // 4. write
     fs.writeFileSync(this.copyPath, result);
     return result;
   }
