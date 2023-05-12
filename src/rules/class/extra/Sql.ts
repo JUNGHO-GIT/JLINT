@@ -27,9 +27,7 @@ class Sql implements Extra {
   public main(): string | Error {
 
     const data = this.data();
-    if (data instanceof Error) {
-      return data;
-    }
+    if (data instanceof Error) {return data;}
 
     const rulesOne = /(\s*)(\s*)(=)(\s*)(\?)(\s*)/gm;
     const rulesTwo = /(\s*)(\s*)(=)(\s*)(NOW)(\s*)/gm;
@@ -47,7 +45,7 @@ class Sql implements Extra {
     })
     .value();
 
-    fs.writeFileSync(this.copyPath, result);
+    fs.writeFileSync(this.copyPath, result, "utf8");
     return result;
   }
 

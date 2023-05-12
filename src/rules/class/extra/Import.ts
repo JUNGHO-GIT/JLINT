@@ -27,9 +27,7 @@ class Import implements Extra {
   public main(): string | Error {
 
     const data = this.data();
-    if (data instanceof Error) {
-      return data;
-    }
+    if (data instanceof Error) {return data;}
 
     const rulesOne = /(\s*)(;)(\s*)(\n?)(\s*)(import)/gm;
     const rulesTwo = /(\s*)(package)(\s*)([\s\S]*?)(;)(\n)(\s*)(import)/gm;

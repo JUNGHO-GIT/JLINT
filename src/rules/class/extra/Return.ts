@@ -27,15 +27,13 @@ class Return implements Extra {
   public main(): string | Error {
 
     const data = this.data();
-    if (data instanceof Error) {
-      return data;
-    }
+    if (data instanceof Error) {return data;}
 
     const rulesOne = /(?<=^.\s*)(return)(\s*?)(\S*?)(\s*)(\n)(\s*)(\})/gm;
     const rulesTwo = /(\s*)(;)(\s*)(\n+)(\s*)(\n+)(\s*)(^.*?)/gm;
     const rulesThree = /(^\s*)(public|private)(\s*?)([\s\S]*?)(@?)(\s*)([\s\S]|(\n+)?)(\s*)(\))(\s*)(\{)/gm;
 
-    const result = lodash.chain(this.data())
+    const result = lodash.chain(data)
     .replace(rulesOne, (match, p1, p2, p3, p4, p5, p6, p7) => {
       return `${p1} ${p3}\n${p6}${p7}`;
     })

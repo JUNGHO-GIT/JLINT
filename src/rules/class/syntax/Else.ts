@@ -27,9 +27,7 @@ class Else implements Syntax {
   public main(): string | Error {
 
     const data = this.data();
-    if (data instanceof Error) {
-      return data;
-    }
+    if (data instanceof Error) {return data;}
 
     const rulesOne
     = /(^.*)(\})(\n?)(\s*)(else)(\s*)(\{)(\s*?)(.*)(\s*)(?<=\})/gm;
@@ -50,7 +48,7 @@ class Else implements Syntax {
     })
     .value();
 
-    fs.writeFileSync(this.copyPath, result);
+    fs.writeFileSync(this.copyPath, result, "utf8");
     return result;
   }
 

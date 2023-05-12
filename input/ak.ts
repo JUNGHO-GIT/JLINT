@@ -19,9 +19,7 @@ class Html implements Lang {
 
     // 0. data
     const data = new ReadContents().main();
-    if (data instanceof Error) {
-      return data;
-    }
+    if (data instanceof Error) {return data;}
 
     // 1. remove comments
     const rules1 = /(\/\/)(.*?)((-)|(=))(.*)/gm;
@@ -60,7 +58,7 @@ class Html implements Lang {
     .value();
 
     // 4. write
-    fs.writeFileSync(this.copyPath, result);
+    fs.writeFileSync(this.copyPath, result, "utf8");
     return result;
   }
 
@@ -68,9 +66,7 @@ class Html implements Lang {
   public main(): string | Error {
 
     const data = this.data();
-    if (data instanceof Error) {
-      return data;
-    }
+    if (data instanceof Error) {return data;}
 
     const formattedCode = prettier.format(data, {
       parser: "html",

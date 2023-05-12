@@ -27,9 +27,7 @@ class If implements Syntax {
   public main(): string | Error {
 
     const data = this.data();
-    if (data instanceof Error) {
-      return data;
-    }
+    if (data instanceof Error) {return data;}
 
     const rulesOne = /(\b)(if)(\()/gm;
 
@@ -39,7 +37,7 @@ class If implements Syntax {
     })
     .value();
 
-    fs.writeFileSync(this.copyPath, result);
+    fs.writeFileSync(this.copyPath, result, "utf8");
     return result;
   }
 

@@ -27,9 +27,7 @@ class Finally implements Syntax {
   public main(): string | Error {
 
     const data = this.data();
-    if (data instanceof Error) {
-      return data;
-    }
+    if (data instanceof Error) {return data;}
 
     const rulesOne = /(^.*)(.*)(\})(\n)(\s*)(finally)(\s*)(\{)(\})/gm;
     const rulesTwo = /(^.*)(.*)(\})(\n)(\s*)(finally)(\s*)(\{)/gm;
@@ -47,7 +45,7 @@ class Finally implements Syntax {
     })
     .value();
 
-    fs.writeFileSync(this.copyPath, result);
+    fs.writeFileSync(this.copyPath, result, "utf8");
     return result;
 
   }

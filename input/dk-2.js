@@ -3,15 +3,13 @@
       return function () {
         return fn.apply(me, arguments);
       };
-    }, indexOf =
-      [].indexOf ||
-      function (item) {
-        for (var i = 0, l = this.length;
-      i < l; i++) {
-          if (i in this && this[i] === item) return i;
-        }
-        return -1;
-      };
+    },
+    indexOf = [].indexOf ||   function (item) {
+      for (var i = 0, l = this.length; i < l; i++) {
+        if (i in this && this[i] === item) return i;
+      }
+      return -1;
+    };
   Util = (function () {
     function Util() {}
 
@@ -42,12 +40,10 @@
       if (document.createEvent != null) {
         customEvent = document.createEvent("CustomEvent");
         customEvent.initCustomEvent(event, bubble, cancel, detail);
-      }
-      else if (document.createEventObject != null) {
+      } else if (document.createEventObject != null) {
         customEvent = document.createEventObject();
         customEvent.eventType = event;
-      }
-      else {
+      } else {
         customEvent.eventName = event;
       }
       return customEvent;
@@ -55,41 +51,34 @@
     Util.prototype.emitEvent = function (elem, event) {
       if (elem.dispatchEvent != null) {
         return elem.dispatchEvent(event);
-      }
-      else if (event in (elem != null)) {
+      } else if (event in (elem != null)) {
         return elem[event]();
-      }
-      else if ("on" + event in (elem != null)) {
+      } else if ("on" + event in (elem != null)) {
         return elem["on" + event]();
       }
     };
     Util.prototype.addEvent = function (elem, event, fn) {
       if (elem.addEventListener != null) {
         return elem.addEventListener(event, fn, false);
-      }
-      else if (elem.attachEvent != null) {
+      } else if (elem.attachEvent != null) {
         return elem.attachEvent("on" + event, fn);
-      }
-      else {
+      } else {
         return (elem[event] = fn);
       }
     };
     Util.prototype.removeEvent = function (elem, event, fn) {
       if (elem.removeEventListener != null) {
         return elem.removeEventListener(event, fn, false);
-      }
-      else if (elem.detachEvent != null) {
+      } else if (elem.detachEvent != null) {
         return elem.detachEvent("on" + event, fn);
-      }
-      else {
+      } else {
         return delete elem[event];
       }
     };
     Util.prototype.innerHeight = function () {
       if ("innerHeight" in window) {
         return window.innerHeight;
-      }
-      else {
+      } else {
         return document.documentElement.clientHeight;
       }
     };
@@ -107,8 +96,7 @@
       WeakMap.prototype.get = function (key) {
         var i, item, j, len, ref;
         ref = this.keys;
-        for (i = j = 0, len = ref.length;
-          j < len; i = ++j) {
+        for (i = j = 0, len = ref.length; j < len; i = ++j) {
           item = ref[i];
           if (item === key) {
             return this.values[i];
@@ -118,12 +106,11 @@
       WeakMap.prototype.set = function (key, value) {
         var i, item, j, len, ref;
         ref = this.keys;
-        for (i = j = 0, len = ref.length;
-          j < len; i = ++j) {
+        for (i = j = 0, len = ref.length; j < len; i = ++j) {
           item = ref[i];
           if (item === key) {
             this.values[i] = value;
-            return ;
+            return;
           }
         }
         this.keys.push(key);
@@ -166,9 +153,18 @@
       };
       return this;
     };
+  getComputedStyleRX = /(\-([a-z]) {1})/g;
   this.WOW = (function () {
     WOW.prototype.defaults = {
-      boxClass: "wow", animateClass: "animated", offset: 0, mobile: true, live: true, callback: null, scrollContainer: null, };
+      boxClass: "wow",
+      animateClass: "animated",
+      offset: 0,
+      mobile: true,
+      live: true,
+      callback: null,
+      scrollContainer: null,
+    };
+
     function WOW(options) {
       if (options == null) {
         options = {};
@@ -191,8 +187,7 @@
       this.element = window.document.documentElement;
       if ((ref = document.readyState) === "interactive" || ref === "complete") {
         this.start();
-      }
-      else {
+      } else {
         this.util().addEvent(document, "DOMContentLoaded", this.start);
       }
       return (this.finished = []);
@@ -223,8 +218,7 @@
       if (this.boxes.length) {
         if (this.disabled()) {
           this.resetStyle();
-        }
-        else {
+        } else {
           ref = this.boxes;
           for (j = 0, len = ref.length; j < len; j++) {
             box = ref[j];
@@ -243,8 +237,7 @@
             return function (records) {
               var k, len1, node, record, results;
               results = [];
-              for (k = 0, len1 = records.length;
-                k < len1; k++) {
+              for (k = 0, len1 = records.length; k < len1; k++) {
                 record = records[k];
                 results.push(
                   function () {
@@ -261,7 +254,9 @@
               return results;
             };
           })(this), ).observe(document.body, {
-          childList: true, subtree: true, });
+          childList: true,
+          subtree: true,
+        });
       }
     };
     WOW.prototype.stop = function () {
@@ -283,7 +278,7 @@
         element = this.element;
       }
       if (element.nodeType !== 1) {
-        return ;
+        return;
       }
       element = element.parentNode || element;
       ref = element.querySelectorAll("." + this.config.boxClass);
@@ -295,13 +290,11 @@
           this.all.push(box);
           if (this.stopped || this.disabled()) {
             this.resetStyle();
-          }
-          else {
+          } else {
             this.applyStyle(box, true);
           }
           results.push((this.scrolled = true));
-        }
-        else {
+        } else {
           results.push(void 0);
         }
       }
@@ -325,20 +318,22 @@
       duration = box.getAttribute("data-wow-duration");
       delay = box.getAttribute("data-wow-delay");
       iteration = box.getAttribute("data-wow-iteration");
-      return this.animate(
-        (function (_this) {
-          return function () {
-            return _this.customStyle(box, hidden, duration, delay, iteration);
-          };
-        })(this), );
+      return (
+        this.anima &&
+        te(
+          (function (_this) {
+            return function () {
+              return _this.customStyle(box, hidden, duration, delay, iteration);
+            };
+          })(this), )
+      );
     };
     WOW.prototype.animate = (function () {
       if ("requestAnimationFrame" in window) {
         return function (callback) {
           return window.requestAnimationFrame(callback);
         };
-      }
-      else {
+      } else {
         return function (callback) {
           return callback();
         };
@@ -368,18 +363,22 @@
       box.style.visibility = hidden ? "hidden" : "visible";
       if (duration) {
         this.vendorSet(box.style, {
-          animationDuration: duration, });
+          animationDuration: duration,
+        });
       }
       if (delay) {
         this.vendorSet(box.style, {
-          animationDelay: delay, });
+          animationDelay: delay,
+        });
       }
       if (iteration) {
         this.vendorSet(box.style, {
-          animationIterationCount: iteration, });
+          animationIterationCount: iteration,
+        });
       }
       this.vendorSet(box.style, {
-        animationName: hidden ? "none" : this.cachedAnimationName(box), });
+        animationName: hidden ? "none" : this.cachedAnimationName(box),
+      });
       return box;
     };
     WOW.prototype.vendors = ["moz", "webkit"];
@@ -408,8 +407,7 @@
       style = getComputedStyle(elem);
       result = style.getPropertyCSSValue(property);
       ref = this.vendors;
-      for (j = 0, len = ref.length;
-        j < len; j++) {
+      for (j = 0, len = ref.length; j < len; j++) {
         vendor = ref[j];
         result = result || style.getPropertyCSSValue("-" + vendor + "-" + property);
       }
@@ -419,14 +417,12 @@
       var animationName, error;
       try {
         animationName = this.vendorCSS(box, "animation-name").cssText;
-      }
-      catch (error) {
+      } catch (error) {
         animationName = getComputedStyle(box).getPropertyValue("animation-name");
       }
       if (animationName === "none") {
         return "";
-      }
-      else {
+      } else {
         return animationName;
       }
     };
@@ -474,7 +470,7 @@
       while ((element = element.offsetParent)) {
         top += element.offsetTop;
       }
-      return top;
+      return ++top;
     };
     WOW.prototype.isVisible = function (box) {
       var bottom, offset, top, viewBottom, viewTop;

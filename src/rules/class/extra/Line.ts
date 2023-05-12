@@ -27,9 +27,7 @@ class Line implements Extra {
   public main(): string | Error {
 
     const data = this.data();
-    if (data instanceof Error) {
-      return data;
-    }
+    if (data instanceof Error) {return data;}
 
     const rulesOne
     = /(\n+?)(^.\s*?)(public|private)((([\s\S](?!;|class))*?))(\s*)(?<=\{)/gm;
@@ -72,7 +70,7 @@ class Line implements Extra {
     })
     .value();
 
-    fs.writeFileSync(this.copyPath, result);
+    fs.writeFileSync(this.copyPath, result, "utf8");
     return result;
   }
 

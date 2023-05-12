@@ -26,14 +26,14 @@ public class MemberController {
   @Autowired
   private SqlSession sqlSession;
 
-  //자동 setter 작업
+
 
   @RequestMapping("/insertForm")
   public String insertForm() {
     return ".main.member.insertForm";
   }
 
-  //팝업창
+
   @RequestMapping("/agree_TemsofUse.do")
   public String popup1(HttpSession session) {
     return "/popup/agree_TemsofUse";
@@ -281,7 +281,7 @@ public class MemberController {
     HashMap<String, String> map = new HashMap<String, String>();
 
     map.put("member_id", search_tel_id);
-    map.put("member_name", search_tel_name);((?<!((1)|(2))).*?)
+    map.put("member_name", search_tel_name);
     map.put("member_tel", search_tel_number);
 
     MemberDTO dto = sqlSession.selectOne("member.searchPw", map);

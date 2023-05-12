@@ -27,9 +27,7 @@ class Brackets implements Components {
   public main(): string | Error {
 
     const data = this.data();
-    if (data instanceof Error) {
-      return data;
-    }
+    if (data instanceof Error) {return data;}
 
     const rulesOne = /(\))(\{)/gm;
 
@@ -39,7 +37,7 @@ class Brackets implements Components {
     })
     .value();
 
-    fs.writeFileSync(this.copyPath, result);
+    fs.writeFileSync(this.copyPath, result, "utf8");
     return result;
 
   }
