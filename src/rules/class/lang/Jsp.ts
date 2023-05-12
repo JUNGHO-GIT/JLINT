@@ -5,7 +5,7 @@ import prettier from "prettier";
 import {Lang} from "../../interface/Lang";
 import ReadContents from "../common/ReadContents";
 
-class Html implements Lang {
+class Java implements Lang {
 
   // 0. resource ---------------------------------------------------------------------------------->
   constructor() {this.main();}
@@ -21,40 +21,27 @@ class Html implements Lang {
     const data = new ReadContents().main();
     if (data instanceof Error) {return data;}
 
-    // 1. remove comments
-    const rules1 = /(\/\/)(.*?)((-)|(=))(.*)/gm;
-    const rules2 = /(\/\/)(.*)(end)/gm;
-    const rules3 = /(\/\/)(\s*?)(\*)(.*)(\*)/gm;
+    // 1. front, space, back
+    const frontReg = "(?<=[^!-~]|[;(){}<>])";
+    const spaceReg = "(\\s*)";
+    const backReg = "(?:[\s\S]*)";
 
-    // 2. equal sign
-    const rules4 = /((?<!(=)|(\/)).*?)(\s*)(=)(\s*)(?!(=)|(>)).?)/gm;
-    const rules5 = /(?<!=|\/)(\s*)(==)(\s*)(?!=|>)/gm;
-    const rules6 = /(?<!=|\/)(\s*)(=)(\s*)(?!=|>)/gm;
-    const rules7 = /(\s*)(! =)(\s*)/gm;
+    // 2-1. comments, contents
+    const commentsReg   = "(?:(\\/\\/|\\/\\*|^\\*|<!--|<%--).*)";
+    const contentsReg = "(===|==|=|!===|!==|!=|&&|<=|>=|\\+\\+|\\+-)";
 
-    // 3. operators
-    const rules8 = /(?<!=|\/)(\s*)(\+)(\s*)/gm;
-    const rules9 = /(?!((<)|(=)|(\/))|(-))(\s*)(-)(\s*)(?!((-)|(>)))/gm;
-    const rules10 = /(?<!=|\/)(\s*)(\*)(?!;|\/)/gm;
-    const rules11 = /(?<!=|\/)(\s*)(%)(\s*)/gm;
-    const rules12 = /(?<!=|\/)(\s*)(&&)(\s*)/gm;
-    const rules13 = /(?<!=|\/)(\s*)(\|\|)(\s*)/gm;
+    // 2-3. rules
+    const commentsRules = new RegExp(frontReg + spaceReg + commentsReg + spaceReg + backReg, "gm");
+    const contentsRules = new RegExp(frontReg + spaceReg + contentsReg + spaceReg + backReg, "gm");
 
     // 3. replace
     const result = lodash.chain(data)
-        /* .replace(rules1, (match, p1, p2, p3, p4) =>  ``)
-        .replace(rules2, (match, p1, p2, p3) =>  ``)
-        .replace(rules3, (match, p1, p2, p3, p4, p5) =>  ``)
-        .replace(rules4, (match, p1, p2, p3) =>  ` ${p2} `)
-        .replace(rules5, (match, p1, p2, p3) =>  ` ${p2} `)
-        .replace(rules6, (match, p1, p2, p3) =>  ` ${p2} `)
-        .replace(rules7, (match, p1, p2, p3) =>  ` != `)
-        .replace(rules8, (match, p1, p2, p3) =>  ` ${p2} `)
-        .replace(rules9, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) =>  ` ${p7} `)
-        .replace(rules10, (match, p1, p2, p3) =>  ` ${p2} `)
-        .replace(rules11, (match, p1, p2, p3) =>  ` ${p2} `)
-        .replace(rules12, (match, p1, p2, p3) =>  ` ${p2} `)
-        .replace(rules13, (match, p1, p2, p3) =>  ` ${p2} `) */
+    .replace(commentsRules, (match, p1, p2, p3) => {
+      return ``;
+    })
+    .replace(contentsRules, (match, p1, p2, p3) => {
+      return ` ${p2} `;
+    })
     .value();
 
     // 4. write
@@ -65,12 +52,13 @@ class Html implements Lang {
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
 
+    // 0. data
     const data = this.data();
     if (data instanceof Error) {return data;}
 
     const formattedCode = prettier.format(data, {
       parser: "html",
-      printWidth: 150,
+      printWidth: 1000,
       tabWidth: 2,
       useTabs: false,
       semi: true,
@@ -107,4 +95,4 @@ class Html implements Lang {
   }
 }
 
-export default Html;
+export default Java;

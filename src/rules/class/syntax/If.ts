@@ -26,6 +26,7 @@ class If implements Syntax {
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
 
+    // 0. data
     const data = this.data();
     if (data instanceof Error) {return data;}
 

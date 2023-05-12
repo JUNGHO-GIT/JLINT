@@ -31,7 +31,7 @@ class Controller {
     const langTitle
     = "lang";
     const langArray = [
-      ".java", ".ts", ".js", ".css", ".html"
+      ".java", ".ts", ".js", ".css", ".html", ".jsp"
     ];
 
     const langIndex = langArray.indexOf(this.fileExt);
@@ -42,7 +42,7 @@ class Controller {
       return langInstance.output();
     }
     else {
-      return console.warn("extension is not supported");
+      return console.log("_____________________\n" + this.fileExt + " is not supported.\n_____________________\n");
     }
   }
 

@@ -40,8 +40,6 @@ public class MemberController {
     return "/popup/agree_Privacy_popup";
   }
 
-  //------------------
-  //아이디 중복 체크
   // ---------------------------------------------------------------------------------------------->
   @RequestMapping (value = "idCheck.do", method = RequestMethod.POST)
   public String idCheck (HttpServletRequest request, Model model) {
@@ -53,12 +51,8 @@ public class MemberController {
     }
 
     model.addAttribute("check", check);
-    return "/member/idCheck"; //뷰 리턴
+    return "/member/idCheck";
   }
-
-  //============================================================
-
-  //회원가입
 
   // ---------------------------------------------------------------------------------------------->
   @RequestMapping (value = "insertPro.do", method = RequestMethod.POST)
@@ -67,20 +61,11 @@ public class MemberController {
     return ".main.layout";
   }
 
-  //---------------------------
-  //로그인 폼
-
   // ---------------------------------------------------------------------------------------------->
   @RequestMapping ("/loginForm.do")
   public String loginForm (@CookieValue (value = "rememberMemberId", required = false) String checkbox, Model model) {
-    //---------------------------------
-
     return ".main.member.loginForm";
   }
-
-  //----------------------------
-
-  //loginPro.do
 
   // ---------------------------------------------------------------------------------------------->
   @RequestMapping (value = "loginPro.do", method = RequestMethod.POST)
@@ -92,48 +77,29 @@ public class MemberController {
     map.put("member_id", member_id);
     map.put("member_pw", member_pw);
     MemberDTO dto = sqlSession.selectOne("member.selectLogin", map);
-  //쿠키에 아이디 집어넣기 ------------------------------------
-
     Cookie cookie = new Cookie("member_id", member_id);
     System.out.println("checkbox");
     if (checkbox != null) {
-      //체크박스 여부에 따라 쿠키 넣기말기 정하기
-
       response.addCookie(cookie);
     }
     else {
-      // 체크박스 체크 해제되었을 때
-      // 쿠키 유효시간 0으로 해서 브라우저에서 삭제하게 한다.
       cookie.setMaxAge(0);
       response.addCookie(cookie);
     }
 
     if (dto == null) {
       System.out.println("존재하지 않는 계정입니다.");
-    //return "/member/loginForm";
       return ".main.member.loginForm";
     }
-
-    //로그인 성공
     model.addAttribute("dto", dto);
     return ".main.member.loginSuccess";
-  } //loginPro-end
-
-  //--------------------------
-
-  //-----------------------------
-
-  //로그아웃
+  }
 
   // ---------------------------------------------------------------------------------------------->
   @RequestMapping ("/logOut.do")
   public String logOut () {
     return ".main.member.logOut";
   }
-
-  //----------------
-
-  //업데이트 창 form
 
   // ---------------------------------------------------------------------------------------------->
   @RequestMapping (value = "updateMember.do", method = RequestMethod.POST)
@@ -144,22 +110,12 @@ public class MemberController {
     return ".main.member.updateMember";
   }
 
-  //---
-
-  //DB글 수정
-
   // ---------------------------------------------------------------------------------------------->
   @RequestMapping (value = "updatePro.do", method = RequestMethod.POST)
   public String updatePro (@ModelAttribute ("memberDTO") MemberDTO memberDTO, Model model, HttpServletRequest request) {
-    sqlSession.update("member.updateMember", memberDTO); //DB를 수정
-
-    //return ".main.layout";
+    sqlSession.update("member.updateMember", memberDTO);
     return ".main.member.updateSuccess";
   }
-
-  //----
-
-  //회원탈퇴
 
   // ---------------------------------------------------------------------------------------------->
   @RequestMapping (value = "deleteForm.do", method = RequestMethod.POST)
@@ -168,8 +124,6 @@ public class MemberController {
     model.addAttribute("member_id", member_id);
     return ".main.member.deleteForm";
   }
-
-  //회원탈퇴 DB
 
   // ---------------------------------------------------------------------------------------------->
   @RequestMapping (value = "deletePro.do", method = RequestMethod.POST)
@@ -185,27 +139,17 @@ public class MemberController {
     return ".main.member.logOut";
   }
 
-  //-----------------------
-
-  //아이디 비밀번호 찾기 메인창
-
   // ---------------------------------------------------------------------------------------------->
   @RequestMapping ("/search_main")
   public String search_main () {
     return ".main.member.search_main";
   }
 
-  //------------------------
-
-  //아이디 찾기 창
-
   // ---------------------------------------------------------------------------------------------->
   @RequestMapping ("/search_id")
   public String search_id() {
     return ".main.member.search_id";
   }
-
-  //------------------------
 
   // ---------------------------------------------------------------------------------------------->
   @RequestMapping (value = "search_id_pro", method = RequestMethod.POST)
@@ -222,10 +166,6 @@ public class MemberController {
     return ".main.member.search_result_id";
   }
 
-  //------------------------
-
-  //비밀번호 찾기 창
-
   // ---------------------------------------------------------------------------------------------->
   @RequestMapping ("/search_pwd")
   public String search_pwdForm() {
@@ -241,14 +181,9 @@ public class MemberController {
     return ".main.member.search_pwd_next";
   }
 
-  //비밀번호2 찾기 창
-
   // ---------------------------------------------------------------------------------------------->
   @RequestMapping ("/search_pwd_next")
   public String search_pwd_nextForm(HttpServletRequest request, Model model) {
-    //위의 아이디정보를 받아서
-    //아래의 Pro에게 아이디와 전화번호함께뭐시깽이를 넘겨줘야해
-
     String search_tel_name = request.getParameter("search_tel_name");
     String search_tel_number = request.getParameter("search_tel_number");
     String search_tel_id = request.getParameter("search_tel_id");
@@ -260,4 +195,4 @@ public class MemberController {
     model.addAttribute("dto", dto);
     return ".main.member.search_result_pwd";
   }
-} //memberController-end
+}

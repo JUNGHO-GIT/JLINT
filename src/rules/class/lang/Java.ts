@@ -21,25 +21,26 @@ class Java implements Lang {
     const data = new ReadContents().main();
     if (data instanceof Error) {return data;}
 
-    // 1. front, back
-    const frontEx = "(?![@!?#$%^&=_;,'][\"][\\+][\\*][\\/\\/][\\[\\]<>{}])";
-    const backEx = "(?<![@!?#$%^&=_;,'][\"][\\+][\\*][\\/\\/][\\[\\]<>{}])";
+    // 1. front, space, back
+    const frontReg = "(?<=(\\s*)|[^!-~]|[;]|[(){}<>])";
+    const spaceReg = "(\\s*)";
+    const backReg = "(?<=[\\s\\S]*)";
 
     // 2-1. comments, contents
-    const javaCmt   = "(\\s*)(?:(\\/\\/).*)(\\s*)";
-    const contents = "(\\s*)(===|==|=|!===|!==|!=|&&|<=|\\+\\+|\\+-|>=)(\\s*)";
+    const commentsReg   = "(\\/\\/|\\/\\*|^\\*|\\*\\/|<!--|<%--)(.*)";
+    const contentsReg = "(===|==|=|!===|!==|!=|&&|<=|>=|\\+\\+|\\+-|\\+=|-=)";
 
     // 2-3. rules
-    const commentRules = new RegExp(frontEx + javaCmt + backEx, "gm");
-    const contentsRules = new RegExp(frontEx + contents + backEx, "gm");
+    const commentsRules = new RegExp(frontReg + spaceReg + commentsReg + spaceReg + backReg, "gm");
+    const contentsRules = new RegExp(frontReg + spaceReg + contentsReg + spaceReg + backReg, "gm");
 
     // 3. replace
     const result = lodash.chain(data)
-    .replace(commentRules, (match, p1, p2, p3) => {
+    .replace(commentsRules, (match, p1, p2, p3, p4) => {
       return ``;
     })
-    .replace(contentsRules, (match, p1, p2, p3) => {
-      return ` ${p2} `;
+    .replace(contentsRules, (match, p1, p2, p3, p4) => {
+      return ` ${p3} `;
     })
     .value();
 
@@ -51,6 +52,7 @@ class Java implements Lang {
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
 
+    // 0. data
     const data = this.data();
     if (data instanceof Error) {return data;}
 

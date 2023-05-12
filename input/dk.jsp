@@ -2,8 +2,6 @@
                                                             pageEncoding="UTF-8"%>
                                                         <%@ include file="/header/header.jsp" %>
                                                         <%--inputForm.jsp --%>
-
-
                                                         <link rel="stylesheet" type="text/css"
                                                           href="${ctxpath}/css/inputForm_css.css">
 
@@ -11,8 +9,6 @@
                                                         <head>
                                                           <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
                                                           <title>Insert title here</title>
-
-
 
 
                                                           <script src="//code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -63,8 +59,6 @@
 
                                                               }//else-end
                                                             }//idCheck()-end
-
-
                                                             function aa(){
                                                               if($('#idck').val()=='false'){
                                                                 alert("id중복 체크 하세요");
@@ -78,7 +72,7 @@
 
                                                           <h2>회원가입</h2>
                                                           <form name="inputForm" method="post" action="${ctxpath}/member/inputPro.do" onSubmit="return check2()">
-                                                          <table  class = "dataTable">
+                                                          <table>
                                                             <tr>
                                                               <td>ID</td>
                                                               <td>

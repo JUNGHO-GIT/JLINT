@@ -76,7 +76,7 @@ public class MemberController {
   //---------------------------
   //로그인 폼
 
-  @RequestMapping("/loginForm.do")
+  @RequestMapping("/loginForm.do") // asdf
   public String loginForm(
     @CookieValue(value = "rememberMemberId", required = false) String checkbox,
     Model model

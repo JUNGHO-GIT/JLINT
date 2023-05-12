@@ -19,28 +19,30 @@ class Css implements Lang {
 
     // 0. data
     const data = new ReadContents().main();
-    if (data instanceof Error) {return data;}
+    if (data instanceof Error) {
+      return data;
+    }
 
-    // 1. front, back
-    const frontEx = "(?![@!?#$%^&=_;,'][\"][\\+][\\*][\\/\\/][\\[\\]<>{}])";
-    const backEx = "(?<![@!?#$%^&=_;,'][\"][\\+][\\*][\\/\\/][\\[\\]<>{}])";
+    // 1. regex rules
+    const frontRegex = `(?![!@#$%^&*+=-_;,]['"][\\/\\/][\\\\\\][{}\\[\\]<>])`;
+    const commentsRegex = `(\\s*)(\\s*\\/\\/[\\s\\S]*)(\\s*)`;
+    const contentRegex = `(\\s*)(===|==|=|!===|!==|!=|\\|\\||&&|<=|\\+\\+|\\+-|>=)(\\s*)`;
+    const backRegex = `(?<![!@#$%^&*+=-_;,]['"][\\/\\/][\\\\\\][{}\\[\\]<>])`;
 
-    // 2-1. comments, contents
-    const javaCmt   = "(\\s*)(?:(\\/\\/).*)(\\s*)";
-    const contents = "(\\s*)(===|==|=|!===|!==|!=|&&|<=|\\+\\+|\\+-|>=)(\\s*)";
+    // 2. remove comment
+    const rules1 = new RegExp("/" + frontRegex + commentsRegex + backRegex + "/", "gm");
 
-    // 2-3. rules
-    const commentRules = new RegExp(frontEx + javaCmt + backEx, "gm");
-    const contentsRules = new RegExp(frontEx + contents + backEx, "gm");
+    // 3. operators
+    const rules2 = new RegExp("/" + frontRegex + contentRegex + backRegex + "/", "gm");
 
-    // 3. replace
+    // 4. replace
     const result = lodash.chain(data)
-    .replace(commentRules, (match, p1, p2, p3) => {return ``;})
-    .replace(contentsRules, (match, p1, p2, p3) => {return ` ${p2} `;})
+    .replace(rules1, (match, p1, p2, p3) => {return ``;})
+    .replace(rules2, (match, p1, p2, p3) => {return ` ${p2} `;})
     .value();
 
-    // 4. write
-    fs.writeFileSync(this.copyPath, result, "utf8");
+    // 5. write
+    fs.writeFileSync(this.copyPath, result);
     return result;
   }
 
@@ -48,7 +50,9 @@ class Css implements Lang {
   public main(): string | Error {
 
     const data = this.data();
-    if (data instanceof Error) {return data;}
+    if (data instanceof Error) {
+      return data;
+    }
 
     const formattedCode = prettier.format(data, {
       parser: "css",
