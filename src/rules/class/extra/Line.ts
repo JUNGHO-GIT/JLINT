@@ -1,5 +1,5 @@
 import fs from "fs";
-import path from "path";
+import path, {join} from "path";
 import lodash from "lodash";
 import {Extra} from "../../interface/Extra";
 import ReadContents from "../common/ReadContents";
@@ -31,24 +31,26 @@ class Line implements Extra {
     if (data instanceof Error) {return data;}
 
     const rulesOne
-    = /(\n+?)(^.\s*?)(public|private)((([\s\S](?!;|class))*?))(\s*)(?<=\{)/gm;
+    = /(\n+)(^.\s*)(public|private|function)((([\s\S](?!;|class))*?))(\s*)(?<=\{)/gm;
     const rulesTwo
-    = /(\s*?)(public|private)(\s*)([\s\S]*?)(\s*)(\()(\s*)([\s\S]*?)(\s*)(\))(\s*)(([\s\S]*?)?)(\s*?)(\{)/gm;
+    = /(\s*?)(public|private|function)(\s*)([\s\S]*?)(\s*)(\()(\s*)([\s\S]*?)(\s*)(\))(\s*)(([\s\S]*?)?)(\s*?)(\{)/gm;
     const rulesThree
     = /(\s*?)(ception)(\{)/gm;
     const rulesFour
     = /(\n+)(^.)(\s*)(\})(\s*)(\n)(\s*)(\/\/)/gm;
     const rulesFive
-    = /(^.\s*?)(@)(.*)(\n+)(\s*)(\/\/.*?>)(\n+)(\s+)(public|private)((([\s\S](?!;|class))*?))(\s*)(?<=\{)/gm;
+    = /(^.\s*?)(@)(.*)(\n+)(\s*)(\/\/.*?>)(\n+)(\s+)(public|private|function)((([\s\S](?!;|class))*?))(\s*)(?<=\{)/gm;
     const rulesSix
     = /(^\s*?)(import)([\s\S]*?)((;)|(\n+)?)(\s?)(\/\/)([\s\S]*?)(\n+?)(?=import)/gm;
     const rulesSeven
     = /(^\s*?)(import)([\s\S]*?)(;)(\s*)(\n*)(^\s*?)(@)(\s*)(\S*)/gm;
+    const rulesEight
+    = /(>)(\n*)(?:\})(?:\n*)(function)/gm;
 
     const result = lodash.chain(this.data())
-
     .replace(rulesOne, (match, p1, p2, p3, p4, p5, p6, p7) => {
-      const insetLine = "// " + "-".repeat(96 - p2.length) + ">";
+      const spaceSize = lodash.size(p2);
+      const insetLine = "// " + "-".repeat(96 - spaceSize) + ">";
       return `\n${p2}${insetLine}\n${p2}${p3}${p4}${p7}`;
     })
     .replace(rulesTwo, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15) => {
@@ -68,6 +70,9 @@ class Line implements Extra {
     })
     .replace(rulesSeven, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) => {
       return `${p1}${p2}${p3}${p4}\n\n${p8}${p10}`;
+    })
+    .replace(rulesEight, (match, p1, p2, p3, p4) => {
+      return `${p1}${p2}${p3}`;
     })
     .value();
 
