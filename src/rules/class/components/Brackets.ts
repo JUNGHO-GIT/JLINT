@@ -32,7 +32,7 @@ class Brackets implements Components {
 
     const rulesOne = /(\))(\{)/gm;
 
-    const const result =lodash.chain(data)
+    const result =lodash.chain(data)
     .replace(rulesOne, (match, p1, p2) => {
       return `${p1} ${p2}`;
     })

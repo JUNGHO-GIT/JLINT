@@ -32,7 +32,7 @@ class Quote implements Components {
 
     const rulesOne = /(')/gm;
 
-    const const result =lodash.chain(data)
+    const  result =lodash.chain(data)
     .replace(rulesOne, (match, p1) => {
       return `"`;
     })

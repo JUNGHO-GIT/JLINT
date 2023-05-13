@@ -32,7 +32,7 @@ class Try implements Syntax {
 
     const rulesOne = /(\s*)(try)(\s*)(\{)/gm;
 
-    const const result =lodash.chain(data)
+    const  result =lodash.chain(data)
 
     .replace(rulesOne, (match, p1, p2, p3, p4) => {
       return `${p1}${p2} ${p4}`;
