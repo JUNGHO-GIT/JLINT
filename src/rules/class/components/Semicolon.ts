@@ -32,13 +32,13 @@ class Semicolon implements Components {
 
     const rulesOne = /(^\s*)([\s\S]*?)(\s*)(;)(\s*)(?!(\n)|(\/\/)|( \/\/)|(\})|(;))(\s*)/gm;
 
-    const result = lodash.chain(this.data())
+    const result = lodash.chain(data)
     .replace(rulesOne, (match, p1, p2, p3, p4, p5) => {
       return `${p1}${p2}${p4}\n${p1}${p5}`;
     })
     .value();
 
-    fs.writeFileSync(this.copyPath, result, "utf8");
+    fs.writeFileSync(this.filePath, result, "utf8");
     return result;
   }
 

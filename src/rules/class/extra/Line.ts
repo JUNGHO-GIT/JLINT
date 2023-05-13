@@ -1,6 +1,6 @@
-import fs from "fs";
-import path, {join} from "path";
-import lodash from "lodash";
+import * as fs from "fs";
+import * as path from "path";
+import * as lodash from "lodash";
 import {Extra} from "../../interface/Extra";
 import ReadContents from "../common/ReadContents";
 
@@ -16,7 +16,7 @@ class Line implements Extra {
   // 1. data -------------------------------------------------------------------------------------->
   public data(): string | Error {
     try {
-      return new ReadContents().main().toString();
+      return new ReadContents().main();
     }
     catch (err) {
       return new Error(`파일내용을 읽을 수 없습니다. \n`);
@@ -31,7 +31,7 @@ class Line implements Extra {
     if (data instanceof Error) {return data;}
 
     const rulesOne
-    = /(\n+)(^.\s*)(public|private|function)((([\s\S](?!;|class))*?))(\s*)(?<=\{)/gm;
+    = /(?<=\n+)(^.\s*)(public|private|function)((([\s\S](?!;|class))*?))(\s*)(?<=\{)/gm;
     const rulesTwo
     = /(\s*?)(public|private|function)(\s*)([\s\S]*?)(\s*)(\()(\s*)([\s\S]*?)(\s*)(\))(\s*)(([\s\S]*?)?)(\s*?)(\{)/gm;
     const rulesThree
@@ -47,11 +47,11 @@ class Line implements Extra {
     const rulesEight
     = /(>)(\n*)(?:\})(?:\n*)(function)/gm;
 
-    const result = lodash.chain(this.data())
-    .replace(rulesOne, (match, p1, p2, p3, p4, p5, p6, p7) => {
-      const spaceSize = lodash.size(p2);
-      const insetLine = "// " + "-".repeat(96 - spaceSize) + ">";
-      return `\n${p2}${insetLine}\n${p2}${p3}${p4}${p7}`;
+    const result = lodash.chain(data)
+    .replace(rulesOne, (match, p1, p2, p3, p4, p5, p6) => {
+      const spaceSize = 100 - (lodash.size(p1) + lodash.size(`// `) + lodash.size(`>`));
+      const insetLine = `// ` + `-`.repeat(spaceSize) + `>`;
+      return `\n${p1}${insetLine}\n${p1}${p2}${p3}${p6}`;
     })
     .replace(rulesTwo, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15) => {
       return `${p1}${p2} ${p4} ${p6}${p8}${p10} ${p12} ${p15}`;
@@ -72,11 +72,11 @@ class Line implements Extra {
       return `${p1}${p2}${p3}${p4}\n\n${p8}${p10}`;
     })
     .replace(rulesEight, (match, p1, p2, p3, p4) => {
-      return `${p1}${p2}${p3}`;
+      return `${p1}\n${p3}`;
     })
     .value();
 
-    fs.writeFileSync(this.copyPath, result, "utf8");
+    fs.writeFileSync(this.filePath, result, "utf8");
     return result;
   }
 

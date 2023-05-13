@@ -40,7 +40,7 @@ class Ts implements Lang {
     .value();
 
     // 4. write
-    fs.writeFileSync(this.copyPath, result, "utf8");
+    fs.writeFileSync(this.filePath, result, "utf8");
     return result;
   }
 
@@ -75,7 +75,7 @@ class Ts implements Lang {
       embeddedLanguageFormatting: "auto"
     });
 
-    fs.writeFileSync(this.copyPath, formattedCode, 'utf8');
+    fs.writeFileSync(this.filePath, formattedCode, 'utf8');
 
     return formattedCode;
   }

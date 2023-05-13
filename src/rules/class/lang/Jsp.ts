@@ -40,7 +40,7 @@ class Java implements Lang {
     .value();
 
     // 4. write
-    fs.writeFileSync(this.copyPath, result, "utf8");
+    fs.writeFileSync(this.filePath, result, "utf8");
     return result;
   }
 
@@ -74,7 +74,7 @@ class Java implements Lang {
       endOfLine: "lf",
       embeddedLanguageFormatting: "auto"
     });
-    fs.writeFileSync(this.copyPath, formattedCode, "utf8");
+    fs.writeFileSync(this.filePath, formattedCode, "utf8");
 
     return formattedCode;
   }

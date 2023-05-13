@@ -35,7 +35,7 @@ class Import implements Extra {
     const rulesThree = /(\s*)(\))(\s+)(;)/gm;
     const rulesFour = /(\s*)(@)(\s*)([\s\S]*?)(\s*)(\()/gm;
 
-    const result = lodash.chain(this.data())
+    const result = const result = lodash.chain(data)
     .replace(rulesOne, (match, p1, p2, p3, p4, p5, p6) => {
       return `${p2}\n${p6}`;
     })
@@ -50,7 +50,7 @@ class Import implements Extra {
     })
     .value();
 
-    fs.writeFileSync(this.copyPath, result, "utf8");
+    fs.writeFileSync(this.filePath, result, "utf8");
     return result;
   }
 

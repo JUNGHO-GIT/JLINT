@@ -37,7 +37,7 @@ class Else implements Syntax {
     const rulesThree
     = /(^.*)(.*)(\})(\s*)(else)(\s*)(\{)/gm;
 
-    const result = lodash.chain(this.data())
+    const result = const result = lodash.chain(data)
     .replace(rulesOne, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) => {
       return `${p1}${p2}${p3}${p4}${p5} ${p7}\n${p1}${p8}${p9}${p10}\n${p1}${p9}`
     })
@@ -49,7 +49,7 @@ class Else implements Syntax {
     })
     .value();
 
-    fs.writeFileSync(this.copyPath, result, "utf8");
+    fs.writeFileSync(this.filePath, result, "utf8");
     return result;
   }
 

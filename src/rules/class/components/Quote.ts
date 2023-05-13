@@ -32,13 +32,13 @@ class Quote implements Components {
 
     const rulesOne = /(')/gm;
 
-    const result = lodash.chain(this.data())
+    const result = const result = lodash.chain(data)
     .replace(rulesOne, (match, p1) => {
       return `"`;
     })
     .value();
 
-    fs.writeFileSync(this.copyPath, result, "utf8");
+    fs.writeFileSync(this.filePath, result, "utf8");
     return result;
   }
 

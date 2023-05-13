@@ -34,7 +34,7 @@ class Catch implements Syntax {
     const resultTwo = /(^.*)(.*)(\})(\n)(\s*)(catch)(\s*)(\()/gm;
     const resultThree = /(^.*)(.*)(\})(\s*)(catch)(\s*)(\()/gm;
 
-    const result = lodash.chain(this.data())
+    const result = const result = lodash.chain(data)
     .replace(resultOne, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9) => {
       return `${p1}${p2}\n${p4}${p5} ${p7}${p8}${p9}`
     })
@@ -46,7 +46,7 @@ class Catch implements Syntax {
     })
     .value();
 
-    fs.writeFileSync(this.copyPath, result, "utf8");
+    fs.writeFileSync(this.filePath, result, "utf8");
     return result;
 
   }

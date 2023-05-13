@@ -16,7 +16,7 @@ class ReadContents implements Common {
   public data(): string | Error {
     try {
       // 1. 파일 내용 읽기
-      const content = fs.readFileSync(this.copyPath, "utf8").toString();
+      const content = fs.readFileSync(this.filePath, "utf8").toString();
 
       // 2. 들여쓰기 변경
       const updateContent = content.split("\n").map(line => {
@@ -30,7 +30,7 @@ class ReadContents implements Common {
       }).join("\n");
 
       // 3. 파일 내용 쓰기
-      fs.writeFileSync(this.copyPath, updateContent, "utf8");
+      fs.writeFileSync(this.filePath, updateContent, "utf8");
 
       // 4. 결과 반환
       return updateContent;

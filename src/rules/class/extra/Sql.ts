@@ -34,7 +34,7 @@ class Sql implements Extra {
     const rulesTwo = /(\s*)(\s*)(=)(\s*)(NOW)(\s*)/gm;
     const rulesThree = /(\s*)(\s*)(=)(\s*)(now)(\s*)/gm;
 
-    const result = lodash.chain(this.data())
+    const result = const result = lodash.chain(data)
     .replace(rulesOne, (match, p1, p2, p3, p4, p5) => {
       return `${p2}${p4}${p5}`;
     })
@@ -46,7 +46,7 @@ class Sql implements Extra {
     })
     .value();
 
-    fs.writeFileSync(this.copyPath, result, "utf8");
+    fs.writeFileSync(this.filePath, result, "utf8");
     return result;
   }
 

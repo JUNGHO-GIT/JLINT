@@ -40,7 +40,7 @@ class Java implements Lang {
     .value();
 
     // 4. write
-    fs.writeFileSync(this.copyPath, result, "utf8");
+    fs.writeFileSync(this.filePath, result, "utf8");
     return result;
   }
 
@@ -53,7 +53,7 @@ class Java implements Lang {
 
     const formattedCode = prettier.format(data, {
       parser: "java",
-      printWidth: 1000,
+      printWidth: 102,
       tabWidth: 2,
       useTabs: false,
       semi: true,
@@ -65,7 +65,7 @@ class Java implements Lang {
       jsxBracketSameLine: false,
       arrowParens: "always",
       rangeStart: 0,
-      rangeEnd: Infinity,
+      rangeEnd : 1000000,
       requirePragma: false,
       insertPragma: false,
       proseWrap: "preserve",
@@ -74,7 +74,7 @@ class Java implements Lang {
       endOfLine: "lf",
       embeddedLanguageFormatting: "auto"
     });
-    fs.writeFileSync(this.copyPath, formattedCode, "utf8");
+    fs.writeFileSync(this.filePath, formattedCode, "utf8");
 
     return formattedCode;
   }

@@ -40,7 +40,7 @@ class Html implements Lang {
     .value();
 
     // 4. write
-    fs.writeFileSync(this.copyPath, result, "utf8");
+    fs.writeFileSync(this.filePath, result, "utf8");
     return result;
   }
 
@@ -53,7 +53,7 @@ class Html implements Lang {
 
     const formattedCode = prettier.format(data, {
       parser: "html",
-      printWidth: 150,
+      printWidth: 102,
       tabWidth: 2,
       useTabs: false,
       semi: true,
@@ -65,16 +65,20 @@ class Html implements Lang {
       jsxBracketSameLine: false,
       arrowParens: "always",
       rangeStart: 0,
-      rangeEnd: Infinity,
+      rangeEnd : 1000000,
       requirePragma: false,
       insertPragma: false,
       proseWrap: "preserve",
       htmlWhitespaceSensitivity: "css",
       vueIndentScriptAndStyle: true,
       endOfLine: "lf",
-      embeddedLanguageFormatting: "auto"
+      embeddedLanguageFormatting: "auto",
+      __embeddedInHtml: true,
+      bracketSameLine: false,
+      parentParser: "none",
+      singleAttributePerLine: false,
     });
-    fs.writeFileSync(this.copyPath, formattedCode, "utf8");
+    fs.writeFileSync(this.filePath, formattedCode, "utf8");
 
     return formattedCode;
   }
