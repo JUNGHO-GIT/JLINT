@@ -35,7 +35,7 @@ class Import implements Extra {
     const rulesThree = /(\s*)(\))(\s+)(;)/gm;
     const rulesFour = /(\s*)(@)(\s*)([\s\S]*?)(\s*)(\()/gm;
 
-    const result = const result = lodash.chain(data)
+    const const result =lodash.chain(data)
     .replace(rulesOne, (match, p1, p2, p3, p4, p5, p6) => {
       return `${p2}\n${p6}`;
     })

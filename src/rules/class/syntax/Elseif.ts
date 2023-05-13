@@ -34,7 +34,7 @@ class Elseif implements Syntax {
     const rulesTwo = /(^.*)(.*)(\})(\n)(\s*)(else if)(\s*)(\()/gm;
     const rulesThree = /(^.*)(.*)(\})(\s*)(else if)(\s*)(\()/gm;
 
-    const result = const result = lodash.chain(data)
+    const const result =lodash.chain(data)
     .replace(rulesOne, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9) => {
       return `${p1}${p2}${p3}${p4}${p5}${p6} ${p8}\n${p1}${p9}`;
     })

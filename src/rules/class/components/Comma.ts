@@ -32,7 +32,7 @@ class Comma implements Components {
 
     const rulesOne = /(\s*)(,)(\s*)/gm;
 
-    const result = const result = lodash.chain(data)
+    const result = lodash.chain(data)
     .replace(rulesOne, (match, p1, p2, p3) => {
       return `${p2} `;
     })

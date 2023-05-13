@@ -34,7 +34,7 @@ class Finally implements Syntax {
     const rulesTwo = /(^.*)(.*)(\})(\n)(\s*)(finally)(\s*)(\{)/gm;
     const rulesThree = /(^.*)(.*)(\})(\s*)(finally)(\s*)(\{)/gm;
 
-    const result = const result = lodash.chain(data)
+    const const result =lodash.chain(data)
     .replace(new RegExp(rulesOne, "gm"), (match, p1, p2, p3, p4, p5, p6, p7, p8, p9) => {
       return `${p1}${p2}${p3}${p4}${p5}${p6} ${p8}\n${p1}${p9}`
     })

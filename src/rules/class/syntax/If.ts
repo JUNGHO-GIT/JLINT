@@ -32,7 +32,7 @@ class If implements Syntax {
 
     const rulesOne = /(\b)(if)(\()/gm;
 
-    const result = const result = lodash.chain(data)
+    const const result =lodash.chain(data)
     .replace(rulesOne, (match, p1, p2, p3) => {
       return `${p2} (`;
     })
