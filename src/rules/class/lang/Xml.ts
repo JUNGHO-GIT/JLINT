@@ -1,11 +1,11 @@
 import fs from "fs";
 import path from "path";
 import lodash from "lodash";
-import prettier from "prettier";
+import xmlFormat from "xml-formatter";
 import {Lang} from "../../interface/Lang";
 import ReadContents from "../common/ReadContents";
 
-class Css implements Lang {
+class Xml implements Lang {
 
   // 0. resource ---------------------------------------------------------------------------------->
   constructor() {this.main();}
@@ -18,8 +18,10 @@ class Css implements Lang {
   public data(): string | Error {
 
     // 0. data
-    const data = new ReadContents().main();
-    if (data instanceof Error) {return data;}
+    const data:any = new ReadContents().main().toString();
+    if (data instanceof Error) {
+      return data;
+    }
 
     const rulesOne
     = /(?<=[^!-~]|[;]|[(){}<>])(\/\/|\/\*|^\*|\*\/|<!--|<%--)(.*)(?<=[\s\S]*)/gm;
@@ -32,11 +34,9 @@ class Css implements Lang {
     .replace(rulesOne, (match, p1, p2, p3) => {
       return ``;
     })
-    /*
     .replace(rulesTwo, (match, p1, p2, p3, p4, p5) => {
       return ` ${p3} `;
     })
-    */
     .value();
 
     // 4. write
@@ -47,37 +47,25 @@ class Css implements Lang {
   // 2. main -------------------------------------------------------------------------------------->
   public main(): string | Error {
 
-    const data = this.data();
+    // 0. data
+    const data:any = this.data();
     if (data instanceof Error) {
       return data;
     }
 
-    const formattedCode = prettier.format(data, {
-      parser: "css",
-      printWidth: 1000,
-      tabWidth: 2,
-      useTabs: false,
-      semi: true,
-      singleQuote: false,
-      quoteProps: "as-needed",
-      jsxSingleQuote: false,
-      trailingComma: "all",
-      bracketSpacing: true,
-      jsxBracketSameLine: false,
-      arrowParens: "always",
-      rangeStart: 0,
-      rangeEnd: 10000,
-      requirePragma: false,
-      insertPragma: false,
-      proseWrap: "preserve",
-      htmlWhitespaceSensitivity: "css",
-      vueIndentScriptAndStyle: true,
-      endOfLine: "lf",
-      embeddedLanguageFormatting: "auto"
+    // xml format
+    const format = xmlFormat(data, {
+      indentation: "  ",
+      collapseContent: false,
+      lineSeparator: "\n",
+      whiteSpaceAtEndOfSelfclosingTag: false,
+      filter: (node) => node.type !== "Comment",
+      throwOnFailure: false,
     });
-    fs.writeFileSync(this.filePath, formattedCode, "utf8");
 
-    return formattedCode;
+    // 1. write
+    fs.writeFileSync(this.filePath, format, "utf8");
+    return format;
   }
 
   // 3. output ------------------------------------------------------------------------------------>
@@ -85,10 +73,10 @@ class Css implements Lang {
     try {
       return console.log("_____________________\n" + this.fileName + "  실행");
     }
-    catch (err) {
+    catch(err) {
       return console.log(new Error());
     }
   }
 }
 
-export default Css;
+export default Xml;

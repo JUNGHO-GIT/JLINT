@@ -21,13 +21,11 @@ class Java implements Lang {
     const data = new ReadContents().main();
     if (data instanceof Error) {return data;}
 
-    const rulesOne = new RegExp (
-      "(?<=[^!-~]|[;]|[(){}<>])(\\/\\/|\\/\\*|^\\*|\\*\\/|<!--|<%--)(.*)(?<=[\\s\\S]*)", "gm"
-    );
+    const rulesOne
+    = /(?<=[^!-~]|[;]|[(){}<>])(\/\/|\/\*|^\*|\*\/|<!--|<%--)(.*)(?<=[\s\S]*)/gm;
 
-    const rulesTwo = new RegExp (
-      "(?<!([<]|[\"'].*))(\s*)(===|==|=|!===|!==|!=|&&|<=|>=|=>|\\+\\+|\\+-|\\+=|-=|\\+|-|[*])(\s*)(?!(.*[\\/>]|[>]))", "gm"
-    );
+    const rulesTwo
+    = /(?<!([<]|["'].*))(\s*)(===|==|=|!===|!==|!=|&&|<=|>=|=>|\+\+|\+-|\+=|-=|\+|-|[*])(\s*)(?!(.*[\/>]|[>]))/gm;
 
     // 3. replace
     const result = lodash.chain(data)
@@ -53,7 +51,7 @@ class Java implements Lang {
 
     const formattedCode = prettier.format(data, {
       parser: "java",
-      printWidth: 102,
+      printWidth: 1000,
       tabWidth: 2,
       useTabs: false,
       semi: true,
@@ -65,7 +63,7 @@ class Java implements Lang {
       jsxBracketSameLine: false,
       arrowParens: "always",
       rangeStart: 0,
-      rangeEnd : 1000000,
+      rangeEnd : 10000,
       requirePragma: false,
       insertPragma: false,
       proseWrap: "preserve",

@@ -30,10 +30,14 @@ class Line implements Extra {
     const data = this.data();
     if (data instanceof Error) {return data;}
 
-    const rulesOne
+    // general tags
+    const rulesOne1
     = /(?<=\n+)(^.\s*)(public|private|function)((([\s\S](?!;|class))*?))(\s*)(?<=\{)/gm;
+    // XML tags
+    const rulesOne2
+    = /(?<=\n|^)(\s*)(<(?!\/|(\?xml)|(!DOC)|[^>]*--)[^>]*>)/gm;
     const rulesTwo
-    = /(\s*?)(public|private|function)(\s*)([\s\S]*?)(\s*)(\()(\s*)([\s\S]*?)(\s*)(\))(\s*)(([\s\S]*?)?)(\s*?)(\{)/gm;
+    = /(\s*?)(public|private|function)(\s*)([\s\S]*?)(\s*)(\()(\s*)([\s\S]*?)(\s*)(\))(\s*)(([\s\S]*?))(\s*?)(\{)/gm;
     const rulesThree
     = /(\s*?)(ception)(\{)/gm;
     const rulesFour
@@ -48,10 +52,15 @@ class Line implements Extra {
     = /(>)(\n*)(?:\})(?:\n*)(function)/gm;
 
     const result = lodash.chain(data)
-    .replace(rulesOne, (match, p1, p2, p3, p4, p5, p6) => {
+    .replace(rulesOne1, (match, p1, p2, p3, p4, p5, p6) => {
       const spaceSize = 100 - (lodash.size(p1) + lodash.size(`// `) + lodash.size(`>`));
       const insetLine = `// ` + `-`.repeat(spaceSize) + `>`;
       return `\n${p1}${insetLine}\n${p1}${p2}${p3}${p6}`;
+    })
+    .replace(rulesOne2, (match, p1, p2) => {
+      const spaceSize = 100 - (lodash.size(p1) + lodash.size(`<!-- `) + lodash.size(` -->`));
+      const insetLine = `<!-- ` + `=`.repeat(spaceSize) + ` -->`;
+      return `\n${p1}${insetLine}\n${p1}${p2}`;
     })
     .replace(rulesTwo, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15) => {
       return `${p1}${p2} ${p4} ${p6}${p8}${p10} ${p12} ${p15}`;

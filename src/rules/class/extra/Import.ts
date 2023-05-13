@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import lodash from "lodash";
-import {Extra} from "../../interface/Extra.ts";
+import {Extra} from "../../interface/Extra";
 import ReadContents from "../common/ReadContents";
 
 class Import implements Extra {

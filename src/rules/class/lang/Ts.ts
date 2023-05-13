@@ -21,13 +21,11 @@ class Ts implements Lang {
     const data = new ReadContents().main();
     if (data instanceof Error) {return data;}
 
-    const rulesOne = new RegExp (
-      "(?<=[^!-~]|[;]|[(){}<>])(\\/\\/|\\/\\*|^\\*|\\*\\/|<!--|<%--)(.*)(?<=[\\s\\S]*)", "gm"
-    );
+    const rulesOne
+    = /(?<=[^!-~]|[;]|[(){}<>])(\/\/|\/\*|^\*|\*\/|<!--|<%--)(.*)(?<=[\s\S]*)/gm;
 
-    const rulesTwo = new RegExp (
-      "(?<!([<]|[\"'].*))(\s*)(===|==|=|!===|!==|!=|&&|<=|>=|=>|\\+\\+|\\+-|\\+=|-=|\\+|-|[*])(\s*)(?!(.*[\\/>]|[>]))", "gm"
-    );
+    const rulesTwo
+    = /(?<!([<]|["'].*))(\s*)(===|==|=|!===|!==|!=|&&|<=|>=|=>|\+\+|\+-|\+=|-=|\+|-|[*])(\s*)(?!(.*[\/>]|[>]))/gm;
 
     // 3. replace
     const result = lodash.chain(data)
@@ -65,7 +63,7 @@ class Ts implements Lang {
       jsxBracketSameLine: false,
       arrowParens: "always",
       rangeStart: 0,
-      rangeEnd: Infinity,
+      rangeEnd: 10000,
       requirePragma: false,
       insertPragma: false,
       proseWrap: "preserve",

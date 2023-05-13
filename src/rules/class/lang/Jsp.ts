@@ -5,7 +5,7 @@ import prettier from "prettier";
 import {Lang} from "../../interface/Lang";
 import ReadContents from "../common/ReadContents";
 
-class Java implements Lang {
+class Jsp implements Lang {
 
   // 0. resource ---------------------------------------------------------------------------------->
   constructor() {this.main();}
@@ -21,13 +21,11 @@ class Java implements Lang {
     const data = new ReadContents().main();
     if (data instanceof Error) {return data;}
 
-    const rulesOne = new RegExp (
-      "(?<=[^!-~]|[;]|[(){}<>])(\\/\\/|\\/\\*|^\\*|\\*\\/|<!--|<%--)(.*)(?<=[\\s\\S]*)", "gm"
-    );
+    const rulesOne
+    = /(?<=[^!-~]|[;]|[(){}<>])(\/\/|\/\*|^\*|\*\/|<!--|<%--)(.*)(?<=[\s\S]*)/gm;
 
-    const rulesTwo = new RegExp (
-      "(?<!([<]|[\"'].*))(\s*)(===|==|=|!===|!==|!=|&&|<=|>=|=>|\\+\\+|\\+-|\\+=|-=|\\+|-|[*])(\s*)(?!(.*[\\/>]|[>]))", "gm"
-    );
+    const rulesTwo
+    = /(?<!([<]|["'].*))(\s*)(===|==|=|!===|!==|!=|&&|<=|>=|=>|\+\+|\+-|\+=|-=|\+|-|[*])(\s*)(?!(.*[\/>]|[>]))/gm;
 
     // 3. replace
     const result = lodash.chain(data)
@@ -65,7 +63,7 @@ class Java implements Lang {
       jsxBracketSameLine: false,
       arrowParens: "always",
       rangeStart: 0,
-      rangeEnd: Infinity,
+      rangeEnd: 10000,
       requirePragma: false,
       insertPragma: false,
       proseWrap: "preserve",
@@ -90,4 +88,4 @@ class Java implements Lang {
   }
 }
 
-export default Java;
+export default Jsp;
