@@ -21,25 +21,20 @@ class Java implements Lang {
     const data = new ReadContents().main();
     if (data instanceof Error) {return data;}
 
-    // 1. front, space, back
-    const frontReg = "(?<=(\\s*)|[^!-~]|[;]|[(){}<>])";
-    const spaceReg = "(\\s*)";
-    const backReg = "(?<=[\\s\\S]*)";
+    const rulesOne = new RegExp (
+      "(?<=[^!-~]|[;]|[(){}<>])(\\/\\/|\\/\\*|^\\*|\\*\\/|<!--|<%--)(.*)(?<=[\\s\\S]*)", "gm"
+    );
 
-    // 2-1. comments, contents
-    const commentsReg   = "(\\/\\/|\\/\\*|^\\*|\\*\\/|<!--|<%--)(.*)";
-    const contentsReg = "(===|==|=|!===|!==|!=|&&|<=|>=|\\+\\+|\\+-|\\+=|-=)";
-
-    // 2-3. rules
-    const commentsRules = new RegExp(frontReg + spaceReg + commentsReg + spaceReg + backReg, "gm");
-    const contentsRules = new RegExp(frontReg + spaceReg + contentsReg + spaceReg + backReg, "gm");
+    const rulesTwo = new RegExp (
+      "(?<!([<]|[\"'].*))(\s*)(===|==|=|!===|!==|!=|&&|<=|>=|=>|\\+\\+|\\+-|\\+=|-=|\\+|-|[*])(\s*)(?!(.*[\\/>]|[>]))", "gm"
+    );
 
     // 3. replace
     const result = lodash.chain(data)
-    .replace(commentsRules, (match, p1, p2, p3, p4) => {
+    .replace(rulesOne, (match, p1, p2, p3) => {
       return ``;
     })
-    .replace(contentsRules, (match, p1, p2, p3, p4) => {
+    .replace(rulesTwo, (match, p1, p2, p3, p4, p5) => {
       return ` ${p3} `;
     })
     .value();

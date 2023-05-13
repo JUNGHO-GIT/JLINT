@@ -19,30 +19,32 @@ class Css implements Lang {
 
     // 0. data
     const data = new ReadContents().main();
-    if (data instanceof Error) {
-      return data;
-    }
+    if (data instanceof Error) {return data;}
 
-    // 1. regex rules
-    const frontRegex = `(?![!@#$%^&*+=-_;,]['"][\\/\\/][\\\\\\][{}\\[\\]<>])`;
-    const commentsRegex = `(\\s*)(\\s*\\/\\/[\\s\\S]*)(\\s*)`;
-    const contentRegex = `(\\s*)(===|==|=|!===|!==|!=|\\|\\||&&|<=|\\+\\+|\\+-|>=)(\\s*)`;
-    const backRegex = `(?<![!@#$%^&*+=-_;,]['"][\\/\\/][\\\\\\][{}\\[\\]<>])`;
+    const rulesOne = new RegExp (
+      "(?<=[^!-~]|[;]|[(){}<>])(\\/\\/|\\/\\*|^\\*|\\*\\/|<!--|<%--)(.*)(?<=[\\s\\S]*)", "gm"
+    );
 
-    // 2. remove comment
-    const rules1 = new RegExp("/" + frontRegex + commentsRegex + backRegex + "/", "gm");
+   /*
+   const rulesTwo = new RegExp (
+      "(?<!([<]|[\"'].*))(\\s*)(===|==|=|!===|!==|!=|&&|<=|>=|=>|\\+\\+|\\+-|\\+=|-=|\\+|-|[*])(\\s*)(?!(.*[\\/>]|[>]))", "gm"
+    );
+    */
 
-    // 3. operators
-    const rules2 = new RegExp("/" + frontRegex + contentRegex + backRegex + "/", "gm");
-
-    // 4. replace
+    // 3. replace
     const result = lodash.chain(data)
-    .replace(rules1, (match, p1, p2, p3) => {return ``;})
-    .replace(rules2, (match, p1, p2, p3) => {return ` ${p2} `;})
+    .replace(rulesOne, (match, p1, p2, p3) => {
+      return ``;
+    })
+    /*
+    .replace(rulesTwo, (match, p1, p2, p3, p4, p5) => {
+      return ` ${p3} `;
+    })
+    */
     .value();
 
-    // 5. write
-    fs.writeFileSync(this.copyPath, result);
+    // 4. write
+    fs.writeFileSync(this.copyPath, result, "utf8");
     return result;
   }
 
