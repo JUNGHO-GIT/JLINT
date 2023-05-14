@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const lodash = require("lodash");
 const vscode = require("vscode");
 class Controller {
     // 0. resource ---------------------------------------------------------------------------------->
@@ -14,10 +13,9 @@ class Controller {
         if (this.fileExt) {
             const langIndex = langArray.indexOf(this.fileExt);
             if (langIndex !== -1) {
-                const langClass = lodash.capitalize(langArray[langIndex]);
+                const langClass = langArray[langIndex].charAt(0).toUpperCase() + langArray[langIndex].slice(1);
                 const langImport = require(`../rules/${langTitle}/${langClass}`).default;
-                const langInstance = new langImport();
-                return langInstance.output();
+                return new langImport().output();
             }
             else {
                 return console.log("_____________________\n" + this.fileExt + " is not supported.");

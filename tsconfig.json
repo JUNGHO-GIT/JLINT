@@ -3,9 +3,7 @@
 		"module": "commonjs",
 		"target": "ESNext",
 		"outDir": "out",
-		"lib": ["ESNext", "DOM", "DOM.Iterable", "ScriptHost"],
 		"sourceMap": true,
 		"rootDir": "src",
-		"strict": true
 	}
 }

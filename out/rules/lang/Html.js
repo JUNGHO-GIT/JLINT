@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require("fs");
 const path = require("path");
-const lodash = require("lodash");
 const vscode = require("vscode");
 const prettier = require("prettier");
 const Contents_1 = require("../../core/Contents");
@@ -14,19 +13,7 @@ class Html {
     // 1. data -------------------------------------------------------------------------------------->
     data() {
         if (this.filePath) {
-            const data = new Contents_1.default().data();
-            const rulesOne = /(?<=[^!-~]|[;]|[(){}<>])(\/\/|\/\*|^\*|\*\/|<!--|<%--)(.*)(?<=[\s\S]*)/gm;
-            const rulesTwo = /(?<!([<]|["'].*))(\s*)(===|==|=|!===|!==|!=|&&|<=|>=|=>|\+\+|\+-|\+=|-=|\+|-|[*])(\s*)(?!(.*[\/>]|[>]))/gm;
-            const result = lodash.chain(data)
-                .replace(rulesOne, (match, p1, p2, p3) => {
-                return ``;
-            })
-                .replace(rulesTwo, (match, p1, p2, p3, p4, p5) => {
-                return ` ${p3} `;
-            })
-                .value();
-            fs.writeFileSync(this.filePath, result);
-            return result;
+            return new Contents_1.default().data();
         }
         else {
             return new Error("파일 경로를 찾을 수 없습니다.");
@@ -53,20 +40,20 @@ class Html {
                 jsxBracketSameLine: false,
                 arrowParens: "always",
                 rangeStart: 0,
-                rangeEnd: 10000,
+                rangeEnd: Infinity,
                 requirePragma: false,
                 insertPragma: false,
                 proseWrap: "preserve",
                 htmlWhitespaceSensitivity: "css",
                 vueIndentScriptAndStyle: true,
                 endOfLine: "lf",
-                embeddedLanguageFormatting: "auto",
+                embeddedLanguageFormatting: "off",
                 bracketSameLine: false,
                 parentParser: "none",
                 singleAttributePerLine: false,
             });
             if (this.filePath) {
-                fs.writeFileSync(this.filePath, formattedCode);
+                fs.writeFileSync(this.filePath, formattedCode, "utf8");
             }
             return formattedCode;
         }
