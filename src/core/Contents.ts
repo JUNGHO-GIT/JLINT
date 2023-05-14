@@ -1,6 +1,6 @@
-import * as fs from "fs";
-import * as vscode from "vscode";
-import * as stripeComments from "strip-comments";
+import fs from "fs";
+import vscode from "vscode";
+import stripComments from "strip-comments";
 
 class Contents {
 
@@ -16,8 +16,8 @@ class Contents {
       // 1. 파일 내용 읽기
       const content = fs.readFileSync(this.filePath, "utf8");
 
-      // 2. 주석제거하고 동기화 하기
-      const commentsData = stripeComments(content);
+     // 2. 주석제거하고 동기화 하기
+      const commentsData = stripComments(content).toString();
 
       // 2. 들여쓰기 변경
       const updateContent = commentsData.split("\n").map(line => {

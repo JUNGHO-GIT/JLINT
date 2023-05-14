@@ -1,15 +1,18 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const fs = require("fs");
-const path = require("path");
-const lodash = require("lodash");
-const vscode = require("vscode");
-const Contents_1 = require("../../core/Contents");
+const fs_1 = __importDefault(require("fs"));
+const path_1 = __importDefault(require("path"));
+const lodash_1 = __importDefault(require("lodash"));
+const vscode_1 = __importDefault(require("vscode"));
+const Contents_1 = __importDefault(require("../../core/Contents"));
 class Return {
     // 0. resource ---------------------------------------------------------------------------------->
     constructor() { this.main(); }
-    activePath = path.basename(__filename);
-    filePath = vscode.window.activeTextEditor?.document.uri.fsPath;
+    activePath = path_1.default.basename(__filename);
+    filePath = vscode_1.default.window.activeTextEditor?.document.uri.fsPath;
     // 1. data -------------------------------------------------------------------------------------->
     data() {
         return new Contents_1.default().data();
@@ -21,7 +24,7 @@ class Return {
             const rulesOne = /(?<=^.\s*)(return)(\s*?)(\S*?)(\s*)(\n)(\s*)(\})/gm;
             const rulesTwo = /(\s*)(;)(\s*)(\n+)(\s*)(\n+)(\s*)(^.*?)/gm;
             const rulesThree = /(^\s*)(public|private)(\s*?)([\s\S]*?)(@?)(\s*)([\s\S]|(\n+)?)(\s*)(\))(\s*)(\{)/gm;
-            const result = lodash.chain(data)
+            const result = lodash_1.default.chain(data)
                 .replace(rulesOne, (match, p1, p2, p3, p4, p5, p6, p7) => {
                 return `${p1} ${p3}\n${p6}${p7}`;
             })
@@ -32,7 +35,7 @@ class Return {
                 return `${p1}${p2}${p3}${p4}${p5}${p6}${p7}${p10} ${p12}`;
             })
                 .value();
-            fs.writeFileSync(this.filePath, result);
+            fs_1.default.writeFileSync(this.filePath, result, "utf8");
             return result;
         }
         else {
@@ -41,7 +44,8 @@ class Return {
     }
     // 3. output ------------------------------------------------------------------------------------>
     output() {
-        return console.log("_____________________\n" + this.activePath + "  실행");
+        console.log("_____________________\n" + this.activePath + "  실행");
+        return this.main();
     }
 }
 exports.default = Return;

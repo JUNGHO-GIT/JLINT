@@ -1,7 +1,7 @@
-import * as fs from "fs";
-import * as path from "path";
-import * as lodash from "lodash";
-import * as vscode from "vscode";
+import fs from "fs";
+import path from "path";
+import lodash from "lodash";
+import vscode from "vscode";
 import Contents from "../../core/Contents";
 
 class If {
@@ -22,13 +22,13 @@ class If {
       const data = this.data();
 
       const rulesOne = /(\b)(if)(\()/gm;
-      const  result =lodash.chain(data)
+      const result = lodash.chain(data)
       .replace(rulesOne, (match, p1, p2, p3) => {
         return `${p2} (`;
       })
       .value();
 
-      fs.writeFileSync(this.filePath, result);
+      fs.writeFileSync(this.filePath, result, "utf8");
       return result;
     }
     else {
@@ -38,7 +38,8 @@ class If {
 
   // 3. output ------------------------------------------------------------------------------------>
   public output() {
-    return console.log("_____________________\n" + this.activePath + "  실행");
+    console.log("_____________________\n" + this.activePath + "  실행");
+    return this.main();
   }
 }
 

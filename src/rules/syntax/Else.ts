@@ -1,7 +1,7 @@
-import * as fs from "fs";
-import * as path from "path";
-import * as lodash from "lodash";
-import * as vscode from "vscode";
+import fs from "fs";
+import path from "path";
+import lodash from "lodash";
+import vscode from "vscode";
 import Contents from "../../core/Contents";
 
 class Else {
@@ -28,7 +28,7 @@ class Else {
       const rulesThree
       = /(^.*)(.*)(\})(\s*)(else)(\s*)(\{)/gm;
 
-      const  result =lodash.chain(data)
+      const result = lodash.chain(data)
       .replace(rulesOne, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) => {
         return `${p1}${p2}${p3}${p4}${p5} ${p7}\n${p1}${p8}${p9}${p10}\n${p1}${p9}`;
       })
@@ -40,7 +40,7 @@ class Else {
       })
       .value();
 
-      fs.writeFileSync(this.filePath, result);
+      fs.writeFileSync(this.filePath, result, "utf8");
       return result;
     }
     else {
@@ -50,7 +50,8 @@ class Else {
 
   // 3. output ------------------------------------------------------------------------------------>
   public output() {
-    return console.log("_____________________\n" + this.activePath + "  실행");
+    console.log("_____________________\n" + this.activePath + "  실행");
+    return this.main();
   }
 }
 

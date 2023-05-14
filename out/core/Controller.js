@@ -1,9 +1,12 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const vscode = require("vscode");
+const vscode_1 = __importDefault(require("vscode"));
 class Controller {
     // 0. resource ---------------------------------------------------------------------------------->
-    fileExt = vscode.window.activeTextEditor?.document.languageId;
+    fileExt = vscode_1.default.window.activeTextEditor?.document.languageId || "";
     // 1. lang -------------------------------------------------------------------------------------->
     lang() {
         const langTitle = "lang";
@@ -15,6 +18,7 @@ class Controller {
             if (langIndex !== -1) {
                 const langClass = langArray[langIndex].charAt(0).toUpperCase() + langArray[langIndex].slice(1);
                 const langImport = require(`../rules/${langTitle}/${langClass}`).default;
+                console.log("_____________________\n" + this.fileExt + " 실행");
                 return new langImport().output();
             }
             else {
@@ -22,7 +26,7 @@ class Controller {
             }
         }
     }
-    // 2. components -------------------------------------------------------------------------------->
+    // 1. components -------------------------------------------------------------------------------->
     components() {
         const componentsTitle = "components";
         const componentsArray = [
@@ -57,10 +61,6 @@ class Controller {
         });
         const extraInit = extraArray.map((item, index) => new extraImport[index]());
         return extraInit.map((item) => item.output()).join("");
-    }
-    // 5. main -------------------------------------------------------------------------------------->
-    main() {
-        return this.lang() + this.components() + this.syntax() + this.extra();
     }
 }
 exports.default = Controller;

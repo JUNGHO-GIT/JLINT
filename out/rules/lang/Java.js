@@ -1,15 +1,18 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const fs = require("fs");
-const path = require("path");
-const vscode = require("vscode");
-const prettier = require("prettier");
-const Contents_1 = require("../../core/Contents");
+const fs_1 = __importDefault(require("fs"));
+const path_1 = __importDefault(require("path"));
+const vscode_1 = __importDefault(require("vscode"));
+const prettier_1 = __importDefault(require("prettier"));
+const Contents_1 = __importDefault(require("../../core/Contents"));
 class Java {
     // 0. resource ---------------------------------------------------------------------------------->
     constructor() { this.main(); }
-    activePath = path.basename(__filename);
-    filePath = vscode.window.activeTextEditor?.document.uri.fsPath;
+    activePath = path_1.default.basename(__filename);
+    filePath = vscode_1.default.window.activeTextEditor?.document.uri.fsPath;
     // 1. data -------------------------------------------------------------------------------------->
     data() {
         if (this.filePath) {
@@ -26,13 +29,11 @@ class Java {
             return data;
         }
         else {
-            const formattedCode = prettier.format(data, {
+            const formattedCode = prettier_1.default.format(data, {
                 parser: "java",
-                printWidth: 1000,
+                printWidth: 300,
                 tabWidth: 2,
                 useTabs: false,
-                semi: true,
-                singleQuote: false,
                 quoteProps: "as-needed",
                 jsxSingleQuote: false,
                 trailingComma: "all",
@@ -40,7 +41,7 @@ class Java {
                 jsxBracketSameLine: false,
                 arrowParens: "always",
                 rangeStart: 0,
-                rangeEnd: 10000,
+                rangeEnd: Infinity,
                 requirePragma: false,
                 insertPragma: false,
                 proseWrap: "preserve",
@@ -48,17 +49,20 @@ class Java {
                 vueIndentScriptAndStyle: true,
                 endOfLine: "lf",
                 embeddedLanguageFormatting: "off",
+                bracketSameLine: false,
+                parentParser: "none",
                 singleAttributePerLine: false,
             });
             if (this.filePath) {
-                fs.writeFileSync(this.filePath, formattedCode, "utf8");
+                fs_1.default.writeFileSync(this.filePath, formattedCode, "utf8");
             }
             return formattedCode;
         }
     }
     // 3. output ------------------------------------------------------------------------------------>
     output() {
-        return console.log("_____________________\n" + this.activePath + "  실행");
+        console.log("_____________________\n" + this.activePath + "  실행");
+        return this.main();
     }
 }
 exports.default = Java;

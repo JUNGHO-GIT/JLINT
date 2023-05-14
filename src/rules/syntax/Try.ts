@@ -1,7 +1,7 @@
-import * as fs from "fs";
-import * as path from "path";
-import * as lodash from "lodash";
-import * as vscode from "vscode";
+import fs from "fs";
+import path from "path";
+import lodash from "lodash";
+import vscode from "vscode";
 import Contents from "../../core/Contents";
 
 class Try {
@@ -22,15 +22,15 @@ class Try {
       const data = this.data();
 
       const rulesOne = /(\s*)(try)(\s*)(\{)/gm;
-      const  result =lodash.chain(data)
+      const result = lodash.chain(data)
 
       .replace(rulesOne, (match, p1, p2, p3, p4) => {
         return `${p1}${p2} ${p4}`;
       })
       .value();
 
-      fs.writeFileSync(this.filePath, result);
-        return result;
+      fs.writeFileSync(this.filePath, result, "utf8");
+      return result;
     }
     else {
       return new Error("파일 경로를 찾을 수 없습니다.");
@@ -39,7 +39,8 @@ class Try {
 
   // 3. output ------------------------------------------------------------------------------------>
   public output() {
-    return console.log("_____________________\n" + this.activePath + "  실행");
+    console.log("_____________________\n" + this.activePath + "  실행");
+    return this.main();
   }
 }
 

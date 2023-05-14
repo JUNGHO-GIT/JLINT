@@ -1,9 +1,9 @@
-import * as vscode from "vscode";
+import vscode from "vscode";
 
 class Controller {
 
   // 0. resource ---------------------------------------------------------------------------------->
-  private fileExt = vscode.window.activeTextEditor?.document.languageId;
+  private fileExt = vscode.window.activeTextEditor?.document.languageId || "";
 
   // 1. lang -------------------------------------------------------------------------------------->
   public lang() {
@@ -19,6 +19,7 @@ class Controller {
 
         const langClass = langArray[langIndex].charAt(0).toUpperCase() + langArray[langIndex].slice(1);
         const langImport = require(`../rules/${langTitle}/${langClass}`).default;
+        console.log("_____________________\n" + this.fileExt + " 실행");
         return new langImport().output();
       }
       else {
@@ -27,7 +28,7 @@ class Controller {
     }
   }
 
-  // 2. components -------------------------------------------------------------------------------->
+  // 1. components -------------------------------------------------------------------------------->
   public components() {
     const componentsTitle
     = "components";
@@ -41,7 +42,6 @@ class Controller {
 
     return componentsInit.map((item) => item.output()).join("");
   }
-
 
   // 3. syntax  ----------------------------------------------------------------------------------->
   public syntax() {
@@ -71,11 +71,6 @@ class Controller {
     const extraInit = extraArray.map((item, index) => new extraImport[index]());
 
     return extraInit.map((item) => item.output()).join("");
-  }
-
-  // 5. main -------------------------------------------------------------------------------------->
-  public main() {
-    return this.lang() + this.components() + this.syntax() + this.extra();
   }
 }
 

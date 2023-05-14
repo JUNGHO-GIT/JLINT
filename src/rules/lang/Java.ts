@@ -1,7 +1,7 @@
-import * as fs from "fs";
-import * as path from "path";
-import * as vscode from "vscode";
-import * as prettier from "prettier";
+import fs from "fs";
+import path from "path";
+import vscode from "vscode";
+import prettier from "prettier";
 import Contents from "../../core/Contents";
 
 class Java {
@@ -30,11 +30,9 @@ class Java {
     else {
       const formattedCode = prettier.format(data, {
         parser: "java",
-        printWidth: 1000,
+        printWidth: 300,
         tabWidth: 2,
         useTabs: false,
-        semi: true,
-        singleQuote: false,
         quoteProps: "as-needed",
         jsxSingleQuote: false,
         trailingComma: "all",
@@ -42,7 +40,7 @@ class Java {
         jsxBracketSameLine: false,
         arrowParens: "always",
         rangeStart: 0,
-        rangeEnd : 10000,
+        rangeEnd: Infinity,
         requirePragma: false,
         insertPragma: false,
         proseWrap: "preserve",
@@ -50,6 +48,8 @@ class Java {
         vueIndentScriptAndStyle: true,
         endOfLine: "lf",
         embeddedLanguageFormatting: "off",
+        bracketSameLine: false,
+        parentParser: "none",
         singleAttributePerLine: false,
       });
       if(this.filePath) {
@@ -61,7 +61,8 @@ class Java {
 
   // 3. output ------------------------------------------------------------------------------------>
   public output() {
-    return console.log("_____________________\n" + this.activePath + "  실행");
+    console.log("_____________________\n" + this.activePath + "  실행");
+    return this.main();
   }
 }
 
