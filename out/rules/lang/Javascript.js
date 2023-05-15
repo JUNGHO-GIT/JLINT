@@ -16,7 +16,7 @@ class Javascript {
     // 1. data -------------------------------------------------------------------------------------->
     data() {
         if (this.filePath) {
-            return new Contents_1.default().data();
+            return new Contents_1.default().main();
         }
         else {
             return new Error("파일 경로를 찾을 수 없습니다.");
@@ -61,8 +61,7 @@ class Javascript {
     }
     // 3. output ------------------------------------------------------------------------------------>
     output() {
-        console.log("_____________________\n" + this.activePath + "  실행");
-        return this.main();
+        return console.log("_____________________\n" + this.activePath + "  실행");
     }
 }
 exports.default = Javascript;

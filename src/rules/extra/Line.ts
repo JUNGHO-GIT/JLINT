@@ -13,7 +13,7 @@ class Line {
 
   // 1. data -------------------------------------------------------------------------------------->
   public data() {
-    return new Contents().data();
+    return new Contents().main();
   }
 
   // 2. main -------------------------------------------------------------------------------------->
@@ -21,8 +21,10 @@ class Line {
     if (this.filePath) {
       const data = this.data();
 
+      const rulesZero
+      = /^(\s*\/\/ --.*){2}(\n*)(^\s*)(public|private|function)(.*)/gm;
       const rulesOne
-      = /(\n*)(\s*)(?=\n*)(^\s*)(public|private|function)(([\s\S](?!;|class))*?)(\s*)(?<=\{)/gm;
+      = /^(?!\/\/--)(\n*)(\s*)(?=\n*)(^\s*)(public|private|function)(([\s\S](?!;|class))*?)(\s*)(?<=\{)/gm;
       const rulesTwo
       = /(\s*?)(public|private|function)(\s*)([\s\S]*?)(\s*)(\()(\s*)([\s\S]*?)(\s*)(\))(\s*)(([\s\S]*?))(\s*?)(\{)/gm;
       const rulesThree
@@ -39,6 +41,9 @@ class Line {
       = /(>)(\n*)(?:\})(?:\n*)(function)/gm;
 
       const result = lodash.chain(data)
+      .replace(rulesZero, (match, p1, p2, p3, p4, p5) => {
+        return `${p2}${p3}${p4}${p5}`;
+      })
       .replace(rulesOne, (match, p1, p2, p3, p4, p5, p6) => {
         const spaceSize = 100 - (lodash.size(p3) + lodash.size(`// `) + lodash.size(`>`));
         const insetLine = `// ` + `-`.repeat(spaceSize) + `>`;
@@ -78,8 +83,7 @@ class Line {
 
   // 3. output ------------------------------------------------------------------------------------>
   public output() {
-    console.log("_____________________\n" + this.activePath + "  실행");
-    return this.main();
+    return console.log("_____________________\n" + this.activePath + "  실행");
   }
 }
 

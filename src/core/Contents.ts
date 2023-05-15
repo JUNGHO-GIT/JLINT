@@ -1,4 +1,5 @@
 import fs from "fs";
+import path from "path";
 import vscode from "vscode";
 import stripComments from "strip-comments";
 
@@ -6,8 +7,8 @@ class Contents {
 
   // 0. resource ---------------------------------------------------------------------------------->
   constructor() {this.data();}
+  private activePath = path.basename(__filename);
   private filePath = vscode.window.activeTextEditor?.document.uri.fsPath;
-  private fileName = vscode.window.activeTextEditor?.document.fileName;
   private fileExt = vscode.window.activeTextEditor?.document.languageId || "";
 
   // 1. data -------------------------------------------------------------------------------------->
@@ -21,6 +22,10 @@ class Contents {
         case "typescript": language = "typescript";
         break;
         case "html": language = "html";
+        break;
+        case "json": language = "json";
+        break;
+        case "jsp" : language = "html";
         break;
         case "css": language = "css";
         break;
@@ -68,7 +73,7 @@ class Contents {
 
   // 2. output ------------------------------------------------------------------------------------>
   public output() {
-    return console.log("_____________________\n" + this.fileName + "  실행");
+    return console.log("_____________________\n" + this.activePath + "  실행");
   }
 }
 

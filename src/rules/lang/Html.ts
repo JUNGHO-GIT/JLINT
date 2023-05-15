@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import vscode from "vscode";
 import prettier from "prettier";
+import { load } from "cheerio";
 import Contents from "../../core/Contents";
 
 class Html {
@@ -12,9 +13,27 @@ class Html {
   private filePath = vscode.window.activeTextEditor?.document.uri.fsPath;
 
   // 1. data -------------------------------------------------------------------------------------->
-  public data() {
+  public data(tags: string[]) {
     if (this.filePath) {
-      return new Contents().data();
+      const data = new Contents().main();
+
+      const $ = load(data, {
+        decodeEntities: true,
+        xmlMode: true,
+      });
+
+      tags.forEach((tag) => {
+        $(tag).each((_index, element) => {
+          const tagName = $(element).prop("tagName").toLowerCase();
+          const startComment = `<!-- ${tagName} -->`;
+          const endComment = `<!-- /.${tagName} -->`;
+
+          $(element).before(startComment);
+          $(element).after(endComment);
+        });
+      });
+
+      return $.html();
     }
     else {
       return new Error("파일 경로를 찾을 수 없습니다.");
@@ -23,12 +42,14 @@ class Html {
 
   // 2. main -------------------------------------------------------------------------------------->
   public main() {
-    const data = this.data();
-    if (data instanceof Error) {
-      return data;
+    const tagsToComment = ["section", "main", "header", "footer"];
+    const updatedHtml = this.data(tagsToComment);
+
+    if (updatedHtml instanceof Error) {
+      return updatedHtml;
     }
     else {
-      const formattedCode = prettier.format(data, {
+      const formattedCode = prettier.format(updatedHtml, {
         parser: "html",
         printWidth: 300,
         tabWidth: 2,
@@ -61,8 +82,7 @@ class Html {
 
   // 3. output ------------------------------------------------------------------------------------>
   public output() {
-    console.log("_____________________\n" + this.activePath + "  실행");
-    return this.main();
+    return console.log("_____________________\n" + this.activePath + "  실행");
   }
 }
 

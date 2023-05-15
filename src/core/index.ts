@@ -2,10 +2,11 @@ import Controller from './Controller';
 
 class Main {
   public main() {
-    new Controller().components()
-    + new Controller().lang()
-    + new Controller().syntax()
-    + new Controller().extra();
+    const controllerInstance = new Controller();
+    controllerInstance.components();
+    controllerInstance.lang();
+    controllerInstance.syntax();
+    controllerInstance.extra();
   }
 }
 new Main().main();

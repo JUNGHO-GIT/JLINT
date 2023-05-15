@@ -15,13 +15,14 @@ class Line {
     filePath = vscode_1.default.window.activeTextEditor?.document.uri.fsPath;
     // 1. data -------------------------------------------------------------------------------------->
     data() {
-        return new Contents_1.default().data();
+        return new Contents_1.default().main();
     }
     // 2. main -------------------------------------------------------------------------------------->
     main() {
         if (this.filePath) {
             const data = this.data();
-            const rulesOne = /(\n*)(\s*)(?=\n*)(^\s*)(public|private|function)(([\s\S](?!;|class))*?)(\s*)(?<=\{)/gm;
+            const rulesZero = /^(\s*\/\/ --.*){2}(\n*)(^\s*)(public|private|function)(.*)/gm;
+            const rulesOne = /^(?!\/\/--)(\n*)(\s*)(?=\n*)(^\s*)(public|private|function)(([\s\S](?!;|class))*?)(\s*)(?<=\{)/gm;
             const rulesTwo = /(\s*?)(public|private|function)(\s*)([\s\S]*?)(\s*)(\()(\s*)([\s\S]*?)(\s*)(\))(\s*)(([\s\S]*?))(\s*?)(\{)/gm;
             const rulesThree = /(\s*?)(ception)(\{)/gm;
             const rulesFour = /(\n+)(^.)(\s*)(\})(\s*)(\n)(\s*)(\/\/)/gm;
@@ -30,6 +31,9 @@ class Line {
             const rulesSeven = /(^\s*?)(import)([\s\S]*?)(;)(\s*)(\n*)(^\s*?)(@)(\s*)(\S*)/gm;
             const rulesEight = /(>)(\n*)(?:\})(?:\n*)(function)/gm;
             const result = lodash_1.default.chain(data)
+                .replace(rulesZero, (match, p1, p2, p3, p4, p5) => {
+                return `${p2}${p3}${p4}${p5}`;
+            })
                 .replace(rulesOne, (match, p1, p2, p3, p4, p5, p6) => {
                 const spaceSize = 100 - (lodash_1.default.size(p3) + lodash_1.default.size(`// `) + lodash_1.default.size(`>`));
                 const insetLine = `// ` + `-`.repeat(spaceSize) + `>`;
@@ -66,8 +70,7 @@ class Line {
     }
     // 3. output ------------------------------------------------------------------------------------>
     output() {
-        console.log("_____________________\n" + this.activePath + "  실행");
-        return this.main();
+        return console.log("_____________________\n" + this.activePath + "  실행");
     }
 }
 exports.default = Line;

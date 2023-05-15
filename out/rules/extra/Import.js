@@ -15,7 +15,7 @@ class Import {
     filePath = vscode_1.default.window.activeTextEditor?.document.uri.fsPath;
     // 1. data -------------------------------------------------------------------------------------->
     data() {
-        return new Contents_1.default().data();
+        return new Contents_1.default().main();
     }
     // 2. main -------------------------------------------------------------------------------------->
     main() {
@@ -48,8 +48,7 @@ class Import {
     }
     // 3. output ------------------------------------------------------------------------------------>
     output() {
-        console.log("_____________________\n" + this.activePath + "  실행");
-        return this.main();
+        return console.log("_____________________\n" + this.activePath + "  실행");
     }
 }
 exports.default = Import;

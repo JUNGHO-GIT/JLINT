@@ -7,6 +7,7 @@ const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const vscode_1 = __importDefault(require("vscode"));
 const prettier_1 = __importDefault(require("prettier"));
+const cheerio_1 = require("cheerio");
 const Contents_1 = __importDefault(require("../../core/Contents"));
 class Html {
     // 0. resource ---------------------------------------------------------------------------------->
@@ -14,9 +15,23 @@ class Html {
     activePath = path_1.default.basename(__filename);
     filePath = vscode_1.default.window.activeTextEditor?.document.uri.fsPath;
     // 1. data -------------------------------------------------------------------------------------->
-    data() {
+    data(tags) {
         if (this.filePath) {
-            return new Contents_1.default().data();
+            const data = new Contents_1.default().main();
+            const $ = (0, cheerio_1.load)(data, {
+                decodeEntities: true,
+                xmlMode: true,
+            });
+            tags.forEach((tag) => {
+                $(tag).each((_index, element) => {
+                    const tagName = $(element).prop("tagName").toLowerCase();
+                    const startComment = `<!-- ${tagName} -->`;
+                    const endComment = `<!-- /.${tagName} -->`;
+                    $(element).before(startComment);
+                    $(element).after(endComment);
+                });
+            });
+            return $.html();
         }
         else {
             return new Error("파일 경로를 찾을 수 없습니다.");
@@ -24,12 +39,13 @@ class Html {
     }
     // 2. main -------------------------------------------------------------------------------------->
     main() {
-        const data = this.data();
-        if (data instanceof Error) {
-            return data;
+        const tagsToComment = ["section", "main", "header", "footer"];
+        const updatedHtml = this.data(tagsToComment);
+        if (updatedHtml instanceof Error) {
+            return updatedHtml;
         }
         else {
-            const formattedCode = prettier_1.default.format(data, {
+            const formattedCode = prettier_1.default.format(updatedHtml, {
                 parser: "html",
                 printWidth: 300,
                 tabWidth: 2,
@@ -61,8 +77,7 @@ class Html {
     }
     // 3. output ------------------------------------------------------------------------------------>
     output() {
-        console.log("_____________________\n" + this.activePath + "  실행");
-        return this.main();
+        return console.log("_____________________\n" + this.activePath + "  실행");
     }
 }
 exports.default = Html;

@@ -4,13 +4,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = __importDefault(require("fs"));
+const path_1 = __importDefault(require("path"));
 const vscode_1 = __importDefault(require("vscode"));
 const strip_comments_1 = __importDefault(require("strip-comments"));
 class Contents {
     // 0. resource ---------------------------------------------------------------------------------->
     constructor() { this.data(); }
+    activePath = path_1.default.basename(__filename);
     filePath = vscode_1.default.window.activeTextEditor?.document.uri.fsPath;
-    fileName = vscode_1.default.window.activeTextEditor?.document.fileName;
     fileExt = vscode_1.default.window.activeTextEditor?.document.languageId || "";
     // 1. data -------------------------------------------------------------------------------------->
     data() {
@@ -25,6 +26,12 @@ class Contents {
                     language = "typescript";
                     break;
                 case "html":
+                    language = "html";
+                    break;
+                case "json":
+                    language = "json";
+                    break;
+                case "jsp":
                     language = "html";
                     break;
                 case "css":
@@ -73,7 +80,7 @@ class Contents {
     }
     // 2. output ------------------------------------------------------------------------------------>
     output() {
-        return console.log("_____________________\n" + this.fileName + "  실행");
+        return console.log("_____________________\n" + this.activePath + "  실행");
     }
 }
 exports.default = Contents;

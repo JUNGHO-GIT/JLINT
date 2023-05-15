@@ -13,9 +13,7 @@
     "vscode": "^1.78.0"
   },
   "main": "./out/extension.js",
-  "activationEvents": [
-    "onCommand:extension.JLINT"
-  ],
+  "activationEvents": [],
   "categories": [
     "Formatters",
     "Linters"
@@ -51,6 +49,7 @@
     "minimatch": "^3.0.4",
     "prettier": "^2.8.8",
     "prettier-plugin-java": "^2.1.0",
+    "prettier-plugin-jsp": "^1.0.13",
     "prettier-plugin-xml": "^0.1.0",
     "strip-comments": "^2.0.1"
   },
@@ -63,6 +62,7 @@
     "@types/strip-comments": "^2.0.1",
     "@types/vscode": "^1.78.0",
     "@vscode/test-electron": "^2.3.0",
+    "cheerio": "^1.0.0-rc.12",
     "eslint": "^8.39.0",
     "glob": "^8.1.0",
     "htmlparser2": "^9.0.0",

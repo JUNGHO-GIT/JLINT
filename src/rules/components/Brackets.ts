@@ -10,7 +10,7 @@ class Brackets {
   constructor() {this.main();}
   private activePath = path.basename(__filename);
   private filePath = vscode.window.activeTextEditor?.document.uri.fsPath;
-  private contents = new Contents().data();
+  private contents = new Contents().main();
 
   // 1. main -------------------------------------------------------------------------------------->
   public main() {
@@ -34,8 +34,7 @@ class Brackets {
 
   // 2. output ------------------------------------------------------------------------------------>
   public output() {
-    console.log("_____________________\n" + this.activePath + "  실행");
-    return this.main();
+    return console.log("_____________________\n" + this.activePath + "  실행");
   }
 }
 

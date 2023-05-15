@@ -14,7 +14,7 @@ class Java {
   // 1. data -------------------------------------------------------------------------------------->
   public data() {
     if (this.filePath) {
-      return new Contents().data();
+      return new Contents().main();
     }
     else {
       return new Error("파일 경로를 찾을 수 없습니다.");
@@ -61,8 +61,7 @@ class Java {
 
   // 3. output ------------------------------------------------------------------------------------>
   public output() {
-    console.log("_____________________\n" + this.activePath + "  실행");
-    return this.main();
+    return console.log("_____________________\n" + this.activePath + "  실행");
   }
 }
 
