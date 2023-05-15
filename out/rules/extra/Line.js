@@ -7,7 +7,7 @@ const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const lodash_1 = __importDefault(require("lodash"));
 const vscode_1 = __importDefault(require("vscode"));
-const Contents_1 = __importDefault(require("../../core/Contents"));
+const Contents_1 = __importDefault(require("../common/Contents"));
 class Line {
     // 0. resource ---------------------------------------------------------------------------------->
     constructor() { this.main(); }
@@ -15,12 +15,12 @@ class Line {
     filePath = vscode_1.default.window.activeTextEditor?.document.uri.fsPath;
     // 1. data -------------------------------------------------------------------------------------->
     data() {
-        return new Contents_1.default().main();
+        return new Contents_1.default().main().toString();
     }
     // 2. main -------------------------------------------------------------------------------------->
     main() {
+        const data = this.data();
         if (this.filePath) {
-            const data = this.data();
             const rulesZero = /^(\s*\/\/ --.*){2}(\n*)(^\s*)(public|private|function)(.*)/gm;
             const rulesOne = /^(?!\/\/--)(\n*)(\s*)(?=\n*)(^\s*)(public|private|function)(([\s\S](?!;|class))*?)(\s*)(?<=\{)/gm;
             const rulesTwo = /(\s*?)(public|private|function)(\s*)([\s\S]*?)(\s*)(\()(\s*)([\s\S]*?)(\s*)(\))(\s*)(([\s\S]*?))(\s*?)(\{)/gm;

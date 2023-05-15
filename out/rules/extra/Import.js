@@ -7,7 +7,7 @@ const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const lodash_1 = __importDefault(require("lodash"));
 const vscode_1 = __importDefault(require("vscode"));
-const Contents_1 = __importDefault(require("../../core/Contents"));
+const Contents_1 = __importDefault(require("../common/Contents"));
 class Import {
     // 0. resource ---------------------------------------------------------------------------------->
     constructor() { this.main(); }
@@ -15,12 +15,12 @@ class Import {
     filePath = vscode_1.default.window.activeTextEditor?.document.uri.fsPath;
     // 1. data -------------------------------------------------------------------------------------->
     data() {
-        return new Contents_1.default().main();
+        return new Contents_1.default().main().toString();
     }
     // 2. main -------------------------------------------------------------------------------------->
     main() {
+        const data = this.data();
         if (this.filePath) {
-            const data = this.data();
             const rulesOne = /(\s*)(;)(\s*)(\n?)(\s*)(import)/gm;
             const rulesTwo = /(\s*)(package)(\s*)([\s\S]*?)(;)(\n)(\s*)(import)/gm;
             const rulesThree = /(\s*)(\))(\s+)(;)/gm;

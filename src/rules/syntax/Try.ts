@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import lodash from "lodash";
 import vscode from "vscode";
-import Contents from "../../core/Contents";
+import Contents from "../common/Contents";
 
 class Try {
 
@@ -13,13 +13,14 @@ class Try {
 
   // 1. data -------------------------------------------------------------------------------------->
   public data() {
-    return new Contents().main();
+    return new Contents().main().toString();
   }
 
   // 2. main -------------------------------------------------------------------------------------->
   public main() {
+    const data = this.data();
+
     if (this.filePath) {
-      const data = this.data();
 
       const rulesOne = /(\s*)(try)(\s*)(\{)/gm;
       const result = lodash.chain(data)

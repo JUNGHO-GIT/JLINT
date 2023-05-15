@@ -7,17 +7,20 @@ const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const lodash_1 = __importDefault(require("lodash"));
 const vscode_1 = __importDefault(require("vscode"));
-const Contents_1 = __importDefault(require("../../core/Contents"));
+const Contents_1 = __importDefault(require("../common/Contents"));
 class Brackets {
     // 0. resource ---------------------------------------------------------------------------------->
     constructor() { this.main(); }
     activePath = path_1.default.basename(__filename);
     filePath = vscode_1.default.window.activeTextEditor?.document.uri.fsPath;
-    contents = new Contents_1.default().main();
-    // 1. main -------------------------------------------------------------------------------------->
+    // 1. data -------------------------------------------------------------------------------------->
+    data() {
+        return new Contents_1.default().main().toString();
+    }
+    // 2. main -------------------------------------------------------------------------------------->
     main() {
+        const data = this.data();
         if (this.filePath) {
-            const data = this.contents;
             const rulesOne = /(\))(\{)/gm;
             const result = lodash_1.default.chain(data)
                 .replace(rulesOne, (match, p1, p2) => {

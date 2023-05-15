@@ -1,8 +1,10 @@
 import fs from "fs";
 import path from "path";
 import vscode from "vscode";
+import {load} from "cheerio";
 import prettier from "prettier";
-import Contents from "../../core/Contents";
+import stripComments from "strip-comments";
+import Contents from "../common/Contents";
 
 class Xml {
 
@@ -13,32 +15,48 @@ class Xml {
 
   // 1. data -------------------------------------------------------------------------------------->
   public data() {
-    if (this.filePath) {
-      return new Contents().main();
-    }
-    else {
-      return new Error("파일 경로를 찾을 수 없습니다.");
-    }
+    const data = new Contents().main().toString();
+
+    // 1. remove comments
+    const result = stripComments(data, {
+      preserveNewlines: false,
+      keepProtected: false,
+      block: true,
+      line: true,
+      language : "xml"
+    });
+
+    // 2. cheerio setting
+    const $ = load(result, {
+      decodeEntities: true,
+      xmlMode: true,
+      quirksMode: false,
+      lowerCaseTags: false,
+      lowerCaseAttributeNames: false,
+      recognizeCDATA: true,
+      recognizeSelfClosing: false,
+    });
+
+    fs.writeFileSync(this.filePath, $.html(), "utf8");
+    return $.html();
   }
 
   // 2. main -------------------------------------------------------------------------------------->
   public main() {
-
     const data = this.data();
-    if (data instanceof Error) {
-      return data;
-    }
-    else {
+
+    if (this.filePath) {
       const formattedCode = prettier.format(data, {
         parser: "xml",
-        printWidth: 300,
+        printWidth: 1000,
+        singleQuote: false,
         tabWidth: 2,
         useTabs: false,
         quoteProps: "as-needed",
         jsxSingleQuote: false,
         trailingComma: "all",
-        bracketSpacing: true,
-        jsxBracketSameLine: false,
+        bracketSpacing: false,
+        jsxBracketSameLine: true,
         arrowParens: "always",
         rangeStart: 0,
         rangeEnd: Infinity,
@@ -48,14 +66,13 @@ class Xml {
         htmlWhitespaceSensitivity: "css",
         vueIndentScriptAndStyle: true,
         endOfLine: "lf",
-        embeddedLanguageFormatting: "off",
+        embeddedLanguageFormatting: "auto",
         bracketSameLine: false,
         parentParser: "none",
-        singleAttributePerLine: false,
+        singleAttributePerLine: false
       });
-      if(this.filePath) {
-        fs.writeFileSync(this.filePath, formattedCode, "utf8");
-      }
+
+      fs.writeFileSync(this.filePath, formattedCode, "utf8");
       return formattedCode;
     }
   }

@@ -7,7 +7,19 @@ const vscode_1 = __importDefault(require("vscode"));
 class Controller {
     // 0. resource ---------------------------------------------------------------------------------->
     fileExt = vscode_1.default.window.activeTextEditor?.document.languageId || "";
-    // 1. lang -------------------------------------------------------------------------------------->
+    // 1. common ------------------------------------------------------------------------------------>
+    common() {
+        const commonTitle = "common";
+        const commonArray = [
+            "Contents"
+        ];
+        const commonImport = commonArray.map((item) => {
+            return require(`../rules/${commonTitle}/${item}`).default;
+        });
+        const commonInit = commonArray.map((item, index) => new commonImport[index]());
+        return commonInit.map((item) => item.output()).join("");
+    }
+    // 2. lang -------------------------------------------------------------------------------------->
     lang() {
         const langTitle = "lang";
         const langArray = [
@@ -18,15 +30,15 @@ class Controller {
             if (langIndex !== -1) {
                 const langClass = langArray[langIndex].charAt(0).toUpperCase() + langArray[langIndex].slice(1);
                 const langImport = require(`../rules/${langTitle}/${langClass}`).default;
-                console.log("_____________________\n" + this.fileExt + " 실행");
+                console.log("_____________________\n" + this.fileExt + " 파일 지원 가능 !!! ");
                 return new langImport().output();
             }
             else {
-                return console.log("_____________________\n" + this.fileExt + " is not supported.");
+                return console.log("_____________________\n" + this.fileExt + " 파일 지원 불가능 !!! ");
             }
         }
     }
-    // 1. components -------------------------------------------------------------------------------->
+    // 2. components -------------------------------------------------------------------------------->
     components() {
         const componentsTitle = "components";
         const componentsArray = [

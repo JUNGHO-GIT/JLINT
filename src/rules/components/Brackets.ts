@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import lodash from "lodash";
 import vscode from "vscode";
-import Contents from "../../core/Contents";
+import Contents from "../common/Contents";
 
 class Brackets {
 
@@ -10,13 +10,18 @@ class Brackets {
   constructor() {this.main();}
   private activePath = path.basename(__filename);
   private filePath = vscode.window.activeTextEditor?.document.uri.fsPath;
-  private contents = new Contents().main();
 
-  // 1. main -------------------------------------------------------------------------------------->
+  // 1. data -------------------------------------------------------------------------------------->
+  public data() {
+    return new Contents().main().toString();
+  }
+
+  // 2. main -------------------------------------------------------------------------------------->
   public main() {
+    const data = this.data();
 
     if (this.filePath) {
-      const data = this.contents;
+
       const rulesOne = /(\))(\{)/gm;
 
       const result =lodash.chain(data)

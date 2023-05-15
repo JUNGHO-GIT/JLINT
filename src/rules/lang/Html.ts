@@ -1,9 +1,10 @@
 import fs from "fs";
 import path from "path";
 import vscode from "vscode";
+import {load} from "cheerio";
 import prettier from "prettier";
-import { load } from "cheerio";
-import Contents from "../../core/Contents";
+import stripComments from "strip-comments";
+import Contents from "../common/Contents";
 
 class Html {
 
@@ -13,52 +14,75 @@ class Html {
   private filePath = vscode.window.activeTextEditor?.document.uri.fsPath;
 
   // 1. data -------------------------------------------------------------------------------------->
-  public data(tags: string[]) {
-    if (this.filePath) {
-      const data = new Contents().main();
+  public data() {
+    const data = new Contents().main().toString();
 
-      const $ = load(data, {
-        decodeEntities: true,
-        xmlMode: true,
+    // 1. remove comments
+    const result = stripComments(data, {
+      preserveNewlines: false,
+      keepProtected: false,
+      block: true,
+      line: true,
+      language : "html"
+    });
+
+    // 2. cheerio setting
+    const $ = load(result, {
+      decodeEntities: true,
+      xmlMode: false,
+      quirksMode: false,
+      lowerCaseTags: false,
+      lowerCaseAttributeNames: false,
+      recognizeCDATA: true,
+      recognizeSelfClosing: false,
+    });
+
+    // 2-1. comments list
+    const tagsArray = [
+      "section", "main", "header", "footer", "nav", "table", "form",
+      "div[class*=container]", "div[class*=row]", "div[class*=col]"
+    ];
+
+    // 2-2. insert comments
+    tagsArray.forEach((tag) => {
+      let tagParam = tag;
+      if (tag === "div[class*=container]") {
+        tagParam = "container";
+      }
+      if (tag === "div[class*=row]") {
+        tagParam = "row";
+      }
+      if (tag === "div[class*=col]") {
+        tagParam = "col";
+      }
+      $(tag).each(function() {
+        if (!$(this).prev().is(`:contains(<!-- ${tagParam} -->)`) && !$(this).next().is(`:contains(<!-- /.${tagParam} -->)`)) {
+          $(this).before(`<!-- ${tagParam} -->`);
+          $(this).after(`<!-- /.${tagParam} -->`);
+        }
       });
+    });
 
-      tags.forEach((tag) => {
-        $(tag).each((_index, element) => {
-          const tagName = $(element).prop("tagName").toLowerCase();
-          const startComment = `<!-- ${tagName} -->`;
-          const endComment = `<!-- /.${tagName} -->`;
-
-          $(element).before(startComment);
-          $(element).after(endComment);
-        });
-      });
-
-      return $.html();
-    }
-    else {
-      return new Error("파일 경로를 찾을 수 없습니다.");
-    }
+    fs.writeFileSync(this.filePath, $.html(), "utf8");
+    return $.html();
   }
 
   // 2. main -------------------------------------------------------------------------------------->
   public main() {
-    const tagsToComment = ["section", "main", "header", "footer"];
-    const updatedHtml = this.data(tagsToComment);
+    const data = this.data();
 
-    if (updatedHtml instanceof Error) {
-      return updatedHtml;
-    }
-    else {
-      const formattedCode = prettier.format(updatedHtml, {
-        parser: "html",
-        printWidth: 300,
+    if (this.filePath) {
+      const formattedCode = prettier.format(data, {
+        parser: "vue",
+        singleQuote: false,
+        printWidth: 1000,
         tabWidth: 2,
         useTabs: false,
         quoteProps: "as-needed",
         jsxSingleQuote: false,
         trailingComma: "all",
-        bracketSpacing: true,
-        jsxBracketSameLine: false,
+        bracketSpacing: false,
+        jsxBracketSameLine: true,
         arrowParens: "always",
         rangeStart: 0,
         rangeEnd: Infinity,
@@ -68,14 +92,13 @@ class Html {
         htmlWhitespaceSensitivity: "css",
         vueIndentScriptAndStyle: true,
         endOfLine: "lf",
-        embeddedLanguageFormatting: "off",
+        embeddedLanguageFormatting: "auto",
         bracketSameLine: false,
         parentParser: "none",
-        singleAttributePerLine: false,
+        singleAttributePerLine: false
       });
-      if(this.filePath) {
-        fs.writeFileSync(this.filePath, formattedCode, "utf8");
-      }
+
+      fs.writeFileSync(this.filePath, formattedCode, "utf8");
       return formattedCode;
     }
   }
