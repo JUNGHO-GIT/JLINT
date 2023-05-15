@@ -11,14 +11,51 @@ class Contents {
     constructor() { this.data(); }
     filePath = vscode_1.default.window.activeTextEditor?.document.uri.fsPath;
     fileName = vscode_1.default.window.activeTextEditor?.document.fileName;
+    fileExt = vscode_1.default.window.activeTextEditor?.document.languageId || "";
     // 1. data -------------------------------------------------------------------------------------->
     data() {
         if (this.filePath) {
-            // 1. 파일 내용 읽기
             const content = fs_1.default.readFileSync(this.filePath, "utf8");
-            // 2. 주석제거하고 동기화 하기
-            const commentsData = (0, strip_comments_1.default)(content).toString();
-            // 2. 들여쓰기 변경
+            let language;
+            switch (this.fileExt) {
+                case "javascript":
+                    language = "javascript";
+                    break;
+                case "typescript":
+                    language = "typescript";
+                    break;
+                case "html":
+                    language = "html";
+                    break;
+                case "css":
+                    language = "css";
+                    break;
+                case "java":
+                    language = "java";
+                    break;
+                case "xml":
+                    language = "xml";
+                    break;
+                default:
+                    console.log("지원되지 않는 파일 형식입니다.");
+                    return "";
+            }
+            const result = (0, strip_comments_1.default)(content, {
+                preserveNewlines: false,
+                block: true,
+                line: true,
+                language,
+            });
+            return result;
+        }
+        else {
+            return "파일이 존재하지 않습니다.";
+        }
+    }
+    // 2. main -------------------------------------------------------------------------------------->
+    main() {
+        if (this.filePath) {
+            const commentsData = this.data();
             const updateContent = commentsData.split("\n").map(line => {
                 const indentMatch = line.match(/^(\s+)/);
                 if (indentMatch) {

@@ -8,18 +8,47 @@ class Contents {
   constructor() {this.data();}
   private filePath = vscode.window.activeTextEditor?.document.uri.fsPath;
   private fileName = vscode.window.activeTextEditor?.document.fileName;
+  private fileExt = vscode.window.activeTextEditor?.document.languageId || "";
 
   // 1. data -------------------------------------------------------------------------------------->
   public data() {
-    if(this.filePath) {
-
-      // 1. 파일 내용 읽기
+    if (this.filePath) {
       const content = fs.readFileSync(this.filePath, "utf8");
+      let language: string;
+      switch (this.fileExt) {
+        case "javascript": language = "javascript";
+        break;
+        case "typescript": language = "typescript";
+        break;
+        case "html": language = "html";
+        break;
+        case "css": language = "css";
+        break;
+        case "java": language = "java";
+        break;
+        case "xml": language = "xml";
+        break;
+        default: console.log("지원되지 않는 파일 형식입니다.");
+        return "";
+      }
+      const result = stripComments(content, {
+        preserveNewlines: false,
+        block: true,
+        line: true,
+        language,
+      });
 
-     // 2. 주석제거하고 동기화 하기
-      const commentsData = stripComments(content).toString();
+      return result;
+    }
+    else {
+      return "파일이 존재하지 않습니다.";
+    }
+  }
 
-      // 2. 들여쓰기 변경
+  // 2. main -------------------------------------------------------------------------------------->
+  public main() {
+    if(this.filePath) {
+      const commentsData = this.data();
       const updateContent = commentsData.split("\n").map(line => {
         const indentMatch = line.match(/^(\s+)/);
         if (indentMatch) {

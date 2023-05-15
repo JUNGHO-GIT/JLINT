@@ -8,6 +8,5 @@ class Main {
     + new Controller().extra();
   }
 }
-
 new Main().main();
 export default Main;
