@@ -22,10 +22,10 @@ class Line {
         const data = this.data();
         if (this.filePath) {
             // 1-1. front comments regex ---------------------------------------------------------------->
-            const rulesTwo = /^(?!\/\/--)(?:\n*)(\s*)(public|private|function|class)(?:(\s*.*))(\s*?)/gm;
+            const rulesTwo = /^(?!\/\/--)(?:\n*)(\s*)((public|private|function|class)\s+)(?:(\s*.*))(\s*?)/gm;
             const rulesThree = /^(?!\/\/--)(?:\n*)(\s*)(const\s+\w+\s*=\s*\(.*?\)\s*=>\s*\{)(\s*?)/gm;
             const rulesFour = /^(?!\/\/--)(?:\n*)(\s*)(const\s+\w+\s*=\s*\[)(\s*?)/gm;
-            const rulesFive = /^^(?!\/\/--)(?:\n*)(\s*)(useEffect\s*\(\s*\(\s*.*?\)\s*=>\s*\{)(\s*?)/gm;
+            const rulesFive = /^(?!\/\/--)(?:\n*)(\s*)(useEffect\s*\(\s*\(\s*.*?\)\s*=>\s*\{)(\s*?)/gm;
             const rulesSix = /^(?!\/\/--)(?:\n*)(\s*)(return\s*.*?\s*[<])(\s*?)/gm;
             // 1-2. back comments regex ----------------------------------------------------------------->
             const rulesOneDot = /(\s*?)(public|private|function)(\s*)([\s\S]*?)(\s*)(\()(\s*)([\s\S]*?)(\s*)(\))(\s*)(([\s\S]*?))(\s*?)(\{)/gm;
