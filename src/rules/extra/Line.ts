@@ -23,14 +23,16 @@ class Line {
     if (this.filePath) {
 
       // 1-1. front comments regex ---------------------------------------------------------------->
-      const rulesOne
-      = /^(\s*\/\/ --.*){2}(\n*)(^\s*)(public|private|function)(.*)/gm;
       const rulesTwo
-      = /^(?!\/\/--)(\n*)(\s*)(?:\n*)(^\s*)(public|private|function)(([\s\S](?!;|class))*?)(\s*)(?<=\{)/gm;
+      = /^(?!\/\/--)(?:\n*)(\s*)(public|private|function|class)(?:(\s*.*))(\s*?)/gm;
       const rulesThree
-      = /^(?!\/\/--)(\s*)(const\s+\w+\s*=\s*\(.*?\)\s*=>\s*\{)(\s*)/gm;
+      = /^(?!\/\/--)(?:\n*)(\s*)(const\s+\w+\s*=\s*\(.*?\)\s*=>\s*\{)(\s*?)/gm;
       const rulesFour
-      = /^(?!\/\/--)(\s*)(const\s+\w+\s*=\s*\[)(\s*)/gm;
+      = /^(?!\/\/--)(?:\n*)(\s*)(const\s+\w+\s*=\s*\[)(\s*?)/gm;
+      const rulesFive
+      = /^(?!\/\/--)(?:\n*)(\s*)(useEffect\s*\(\s*\(\s*\(\s*\(.*?\)\s*=>\s*\{)(\s*?)/gm;
+      const rulesSix
+      = /^(?!\/\/--)(?:\n*)(\s*)(return\s*.*?\s*[<])(\s*?)/gm;
 
       // 1-2. back comments regex ----------------------------------------------------------------->
       const rulesOneDot
@@ -47,16 +49,15 @@ class Line {
       = /(^\s*?)(import)([\s\S]*?)(;)(\s*)(\n*)(^\s*?)(@)(\s*)(\S*)/gm;
       const rulesSevenDot
       = /(>)(\n*)(?:\})(?:\n*)(function)/gm;
+      const rulesEightDot
+      = /^(\s*\/\/ --.*){2}(\n*)(^\s*)(public|private|function)(.*)/gm;
 
       // 2-1. front comments replace -------------------------------------------------------------->
       const result = lodash.chain(data)
-      .replace(rulesOne, (match, p1, p2, p3, p4, p5) => {
-        return `${p2}${p3}${p4}${p5}`;
-      })
-      .replace(rulesTwo, (match, p1, p2, p3, p4, p5, p6) => {
-        const spaceSize = 100 - (lodash.size(p3) + lodash.size(`// `) + lodash.size(`>`));
+      .replace(rulesTwo, (match, p1, p2, p3) => {
+        const spaceSize = 100 - (lodash.size(p1) + lodash.size(`// `) + lodash.size(`>`));
         const insetLine = `// ` + `-`.repeat(spaceSize) + `>`;
-        return `\n${p3}${insetLine}\n${p3}${p4}${p5}`;
+        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
       })
       .replace(rulesThree, (match, p1, p2, p3) => {
         const spaceSize = 100 - (lodash.size(p1) + lodash.size(`// `) + lodash.size(`>`));
@@ -64,6 +65,16 @@ class Line {
         return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
       })
       .replace(rulesFour, (match, p1, p2, p3) => {
+        const spaceSize = 100 - (lodash.size(p1) + lodash.size(`// `) + lodash.size(`>`));
+        const insetLine = `// ` + `-`.repeat(spaceSize) + `>`;
+        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+      })
+      .replace(rulesFive, (match, p1, p2, p3) => {
+        const spaceSize = 100 - (lodash.size(p1) + lodash.size(`// `) + lodash.size(`>`));
+        const insetLine = `// ` + `-`.repeat(spaceSize) + `>`;
+        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+      })
+      .replace(rulesSix, (match, p1, p2, p3) => {
         const spaceSize = 100 - (lodash.size(p1) + lodash.size(`// `) + lodash.size(`>`));
         const insetLine = `// ` + `-`.repeat(spaceSize) + `>`;
         return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
@@ -90,6 +101,9 @@ class Line {
       })
       .replace(rulesSevenDot, (match, p1, p2, p3, p4) => {
         return `${p1}\n${p3}`;
+      })
+      .replace(rulesEightDot, (match, p1, p2, p3, p4, p5) => {
+        return `${p2}${p3}${p4}${p5}`;
       })
       .value();
 

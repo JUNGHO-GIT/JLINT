@@ -42,7 +42,7 @@ class Controller {
     components() {
         const componentsTitle = "components";
         const componentsArray = [
-            /* "Comma",  */ "Quote", "Semicolon", "Brackets"
+            "Quote", "Brackets", /* "Comma","Semicolon" */
         ];
         const componentsImport = componentsArray.map((item) => {
             return require(`../rules/${componentsTitle}/${item}`).default;
