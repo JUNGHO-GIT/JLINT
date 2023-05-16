@@ -1,7 +1,6 @@
 import fs from "fs";
 import path from "path";
 import vscode from "vscode";
-import {load} from "cheerio";
 import prettier from "prettier";
 import stripComments from "strip-comments";
 import Contents from "../common/Contents";
@@ -23,7 +22,7 @@ class Javascript {
       keepProtected: false,
       block: true,
       line: true,
-      language : "javascript"
+      language: "javascript",
     });
 
     fs.writeFileSync(this.filePath, result, "utf8");
@@ -56,9 +55,9 @@ class Javascript {
         vueIndentScriptAndStyle: true,
         endOfLine: "lf",
         embeddedLanguageFormatting: "auto",
-        bracketSameLine: false,
+        bracketSameLine: true,
         parentParser: "none",
-        singleAttributePerLine: false
+        singleAttributePerLine: false,
       });
 
       fs.writeFileSync(this.filePath, formattedCode, "utf8");

@@ -38,7 +38,7 @@ class Html {
         });
         // 2-1. comments list
         const tagsArray = [
-            "section", "main", "header", "footer", "nav", "table", "form",
+            "head", "body", "section", "main", "header", "footer", "nav", "table", "form",
             "div[class*=container]", "div[class*=row]", "div[class*=col]"
         ];
         // 2-2. insert comments

@@ -43,6 +43,7 @@
     "vsce": "vsce package"
   },
   "dependencies": {
+    "@babel/core": "^7.21.8",
     "cheerio": "^1.0.0-rc.12",
     "fast-xml-parser": "^4.2.2",
     "glob": "^10.2.3",

@@ -23,7 +23,7 @@ class Javascript {
             keepProtected: false,
             block: true,
             line: true,
-            language: "javascript"
+            language: "javascript",
         });
         fs_1.default.writeFileSync(this.filePath, result, "utf8");
         return result;
@@ -53,9 +53,9 @@ class Javascript {
                 vueIndentScriptAndStyle: true,
                 endOfLine: "lf",
                 embeddedLanguageFormatting: "auto",
-                bracketSameLine: false,
+                bracketSameLine: true,
                 parentParser: "none",
-                singleAttributePerLine: false
+                singleAttributePerLine: false,
             });
             fs_1.default.writeFileSync(this.filePath, formattedCode, "utf8");
             return formattedCode;

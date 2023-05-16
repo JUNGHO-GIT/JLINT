@@ -25,7 +25,7 @@ class Controller {
     const langTitle
     = "lang";
     const langArray = [
-      "java", "javascript", "typescript", "html", "css", "xml", "jsp"
+      "java", "javascript", "typescript",  "html", "css", "xml", "jsp"
     ];
 
     if(this.fileExt) {
@@ -48,7 +48,7 @@ class Controller {
     const componentsTitle
     = "components";
     const componentsArray = [
-      "Comma", "Quote", "Semicolon", "Brackets"
+      /* "Comma",  */"Quote", "Semicolon", "Brackets"
     ];
     const componentsImport = componentsArray.map((item) => {
       return require(`../rules/${componentsTitle}/${item}`).default;
