@@ -22,7 +22,7 @@ class Quote {
 
     if (this.filePath) {
 
-      const rulesOne = /(')/gm;
+      const rulesOne = /(?<!["])(')(?!["])/gm;
       const rulesTwo = /"window\.location\.href="/gm;
       const rulesThree = /"location\.href="/gm;
       const rulesFour = /"location="/gm;

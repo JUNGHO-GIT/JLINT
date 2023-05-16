@@ -21,8 +21,7 @@ class Javascript {
       preserveNewlines: false,
       keepProtected: false,
       block: true,
-      line: true,
-      language: "javascript",
+      line: true
     });
 
     fs.writeFileSync(this.filePath, result, "utf8");

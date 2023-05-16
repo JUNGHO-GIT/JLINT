@@ -30,7 +30,7 @@ class Line {
       const rulesFour
       = /^(?!\/\/--)(?:\n*)(\s*)(const\s+\w+\s*=\s*\[)(\s*?)/gm;
       const rulesFive
-      = /^(?!\/\/--)(?:\n*)(\s*)(useEffect\s*\(\s*\(\s*\(\s*\(.*?\)\s*=>\s*\{)(\s*?)/gm;
+      = /^^(?!\/\/--)(?:\n*)(\s*)(useEffect\s*\(\s*\(\s*.*?\)\s*=>\s*\{)(\s*?)/gm;
       const rulesSix
       = /^(?!\/\/--)(?:\n*)(\s*)(return\s*.*?\s*[<])(\s*?)/gm;
 

@@ -1,0 +1,27 @@
+{
+  "name": "prettier-plugin-jsp",
+  "description": "Format JSP using Prettier",
+  "version": "1.0.13",
+  "main": "plugin.js",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/IlanFrumer/prettier-plugin-jsp"
+  },
+  "keywords": [
+    "prettier",
+    "jsp"
+  ],
+  "peerDependencies": {
+    "prettier": "^2.7.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.0.3",
+    "jest": "^29.0.3",
+    "prettier": "^2.7.1"
+  },
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch"
+  }
+}
