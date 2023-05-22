@@ -8,7 +8,7 @@ const path_1 = __importDefault(require("path"));
 const lodash_1 = __importDefault(require("lodash"));
 const vscode_1 = __importDefault(require("vscode"));
 const Contents_1 = __importDefault(require("../common/Contents"));
-class Sql {
+class LineBreak {
     // 0. resource ---------------------------------------------------------------------------------->
     constructor() { this.main(); }
     activePath = path_1.default.basename(__filename);
@@ -21,18 +21,10 @@ class Sql {
     main() {
         const data = this.data();
         if (this.filePath) {
-            const rulesOne = /(\s*)(\s*)(=)(\s*)(\?)(\s*)/gm;
-            const rulesTwo = /(\s*)(\s*)(=)(\s*)(NOW)(\s*)/gm;
-            const rulesThree = /(\s*)(\s*)(=)(\s*)(now)(\s*)/gm;
+            const rulesOne = /(?:\n*)(\s*)(<\/body>)(\s*?)/gm;
             const result = lodash_1.default.chain(data)
-                .replace(rulesOne, (match, p1, p2, p3, p4, p5) => {
-                return `${p2}${p4}${p5}`;
-            })
-                .replace(rulesTwo, (match, p1, p2, p3, p4, p5) => {
-                return `${p2}${p4}${p5}`;
-            })
-                .replace(rulesThree, (match, p1, p2, p3, p4, p5) => {
-                return `${p2}${p4}${p5}`;
+                .replace(rulesOne, (match, p1, p2, p3) => {
+                return `\n\n${p1}${p2}${p3}`;
             })
                 .value();
             fs_1.default.writeFileSync(this.filePath, result, "utf8");
@@ -44,5 +36,5 @@ class Sql {
         return console.log("_____________________\n" + this.activePath + "  실행");
     }
 }
-exports.default = Sql;
-//# sourceMappingURL=Sql.js.map
+exports.default = LineBreak;
+//# sourceMappingURL=LineBreak.js.map

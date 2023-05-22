@@ -33,9 +33,7 @@ class Try {
       fs.writeFileSync(this.filePath, result, "utf8");
       return result;
     }
-    else {
-      return new Error("파일 경로를 찾을 수 없습니다.");
-    }
+
   }
 
   // 3. output ------------------------------------------------------------------------------------>

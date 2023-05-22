@@ -18,48 +18,27 @@ class Html {
     // 1. data -------------------------------------------------------------------------------------->
     data() {
         const data = new Contents_1.default().main().toString();
+        // extract head content
+        const headStart = data.indexOf("<head>") + "<head>".length;
+        const headEnd = data.indexOf("</head>") + "</head>".length;
+        const headContent = data.slice(headStart, headEnd);
+        // remove head content
+        const withoutHead = data.replace(headContent, "");
         // 1. remove comments
-        const result = (0, strip_comments_1.default)(data, {
-            preserveNewlines: false,
-            keepProtected: false,
+        const result = (0, strip_comments_1.default)(withoutHead, {
+            preserveNewlines: true,
+            keepProtected: true,
             block: true,
             line: true,
             language: "html"
         });
-        // 2. cheerio setting
-        const $ = (0, cheerio_1.load)(result, {
-            decodeEntities: true,
-            xmlMode: false,
-            quirksMode: false,
-            lowerCaseTags: false,
-            lowerCaseAttributeNames: false,
-            recognizeCDATA: true,
-            recognizeSelfClosing: false,
-        });
-        // 2-1. comments list
-        const tagsArray = [
-            "head", "body", "section", "main", "header", "footer", "nav", "table", "form",
-            "div[class*=container]", "div[class*=row]", "div[class*=col]"
-        ];
-        // 2-2. insert comments
-        tagsArray.forEach((tag) => {
-            let tagParam = tag;
-            if (tag === "div[class*=container]") {
-                tagParam = "container";
-            }
-            if (tag === "div[class*=row]") {
-                tagParam = "row";
-            }
-            if (tag === "div[class*=col]") {
-                tagParam = "col";
-            }
-            $(tag).each(function () {
-                if (!$(this).prev().is(`:contains(<!-- ${tagParam} -->)`) && !$(this).next().is(`:contains(<!-- /.${tagParam} -->)`)) {
-                    $(this).before(`<!-- ${tagParam} -->`);
-                    $(this).after(`<!-- /.${tagParam} -->`);
-                }
-            });
-        });
+        // 2. cheerio
+        const $ = (0, cheerio_1.load)(result);
+        // replace head content
+        if (headContent.length > 0) {
+            $("head").html(headContent);
+        }
+        // 3. return
         fs_1.default.writeFileSync(this.filePath, $.html(), "utf8");
         return $.html();
     }

@@ -17,52 +17,32 @@ class Html {
   public data() {
     const data = new Contents().main().toString();
 
+    // extract head content
+    const headStart = data.indexOf("<head>") + "<head>".length;
+    const headEnd = data.indexOf("</head>") + "</head>".length;
+    const headContent = data.slice(headStart, headEnd);
+
+    // remove head content
+    const withoutHead = data.replace(headContent, "");
+
     // 1. remove comments
-    const result = stripComments(data, {
-      preserveNewlines: false,
-      keepProtected: false,
+    const result = stripComments(withoutHead, {
+      preserveNewlines: true,
+      keepProtected: true,
       block: true,
       line: true,
-      language : "html"
+      language: "html"
     });
 
-    // 2. cheerio setting
-    const $ = load(result, {
-      decodeEntities: true,
-      xmlMode: false,
-      quirksMode: false,
-      lowerCaseTags: false,
-      lowerCaseAttributeNames: false,
-      recognizeCDATA: true,
-      recognizeSelfClosing: false,
-    });
+    // 2. cheerio
+    const $ = load(result);
 
-    // 2-1. comments list
-    const tagsArray = [
-      "head", "body", "section", "main", "header", "footer", "nav", "table", "form",
-      "div[class*=container]", "div[class*=row]", "div[class*=col]"
-    ];
+    // replace head content
+    if (headContent.length > 0) {
+      $("head").html(headContent);
+    }
 
-    // 2-2. insert comments
-    tagsArray.forEach((tag) => {
-      let tagParam = tag;
-      if (tag === "div[class*=container]") {
-        tagParam = "container";
-      }
-      if (tag === "div[class*=row]") {
-        tagParam = "row";
-      }
-      if (tag === "div[class*=col]") {
-        tagParam = "col";
-      }
-      $(tag).each(function() {
-        if (!$(this).prev().is(`:contains(<!-- ${tagParam} -->)`) && !$(this).next().is(`:contains(<!-- /.${tagParam} -->)`)) {
-          $(this).before(`<!-- ${tagParam} -->`);
-          $(this).after(`<!-- /.${tagParam} -->`);
-        }
-      });
-    });
-
+    // 3. return
     fs.writeFileSync(this.filePath, $.html(), "utf8");
     return $.html();
   }
@@ -101,6 +81,7 @@ class Html {
       fs.writeFileSync(this.filePath, formattedCode, "utf8");
       return formattedCode;
     }
+
   }
 
   // 3. output ------------------------------------------------------------------------------------>

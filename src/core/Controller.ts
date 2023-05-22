@@ -10,7 +10,7 @@ class Controller {
     const commonTitle
     = "common";
     const commonArray = [
-      "Contents"
+      "Contents", "Tags"
     ];
     const commonImport = commonArray.map((item) => {
       return require(`../rules/${commonTitle}/${item}`).default;
@@ -19,6 +19,7 @@ class Controller {
 
     return commonInit.map((item) => item.output()).join("");
   }
+
 
   // 2. lang -------------------------------------------------------------------------------------->
   public lang() {
@@ -48,7 +49,7 @@ class Controller {
     const componentsTitle
     = "components";
     const componentsArray = [
-      "Quote", "Brackets", /* "Comma","Semicolon" */
+      "Brackets", /*"Quote", "Comma", "Semicolon" */
     ];
     const componentsImport = componentsArray.map((item) => {
       return require(`../rules/${componentsTitle}/${item}`).default;
@@ -78,7 +79,7 @@ class Controller {
     const extraTitle
     = "extra";
     const extraArray = [
-      "Sql",  "Return", "Import", "Line"
+      "Sql",  "Return", "Import", "Line", "LineBreak"
     ];
     const extraImport = extraArray.map((item) => {
       return require(`../rules/${extraTitle}/${item}`).default;

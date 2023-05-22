@@ -17,63 +17,40 @@ class Jsp {
   public data() {
     const data = new Contents().main().toString();
 
+    // extract head content
+    const headStart = data.indexOf("<head>") + "<head>".length;
+    const headEnd = data.indexOf("</head>") + "</head>".length;
+    let headContent: string = "";
+    headContent.length > 0 ? data.slice(headStart, headEnd) : headContent = "";
+
+    // remove head content
+    const withoutHead = data.replace(headContent, "");
+
     // 1. remove comments
-    const result = stripComments(data, {
-      preserveNewlines: false,
-      keepProtected: false,
+    const result = stripComments(withoutHead, {
+      preserveNewlines: true,
+      keepProtected: true,
       block: true,
       line: true,
-      language : "html"
+      language: "html"
     });
 
-    // 2. add comment
-    const $ = load(result, {
-      decodeEntities: true,
-      xmlMode: false,
-      quirksMode: false,
-      lowerCaseTags: false,
-      lowerCaseAttributeNames: false,
-      recognizeCDATA: true,
-      recognizeSelfClosing: false,
-    });
+    // 2. cheerio
+    const $ = load(result);
 
-    // 2-1. comments list
-    const tagsArray = [
-      "head", "body", "section", "main", "header", "footer", "nav", "table", "form",
-      "div[class*=container]", "div[class*=row]", "div[class*=col]"
-    ];
-
-    // 2-2. insert comments
-    tagsArray.forEach((tag) => {
-      let tagParam = tag;
-      if (tag === "div[class*=container]") {
-        tagParam = "container";
-      }
-      if (tag === "div[class*=row]") {
-        tagParam = "row";
-      }
-      if (tag === "div[class*=col]") {
-        tagParam = "col";
-      }
-      $(tag).each(function() {
-        if (
-          !$(this).prev().is(`:contains(<!-- ${tagParam} -->)`) &&
-          !$(this).next().is(`:contains(<!-- /.${tagParam} -->)`)
-        ) {
-            $(this).before(`<!-- ${tagParam} -->`);
-            $(this).after(`<!-- /.${tagParam} -->`);
-          }
-        }
-      );
-    });
+    // replace head content
+    if (headContent.length > 0) {
+      $("head").html(headContent);
+    }
 
     // 3. jsp byproduct
-    const jspRegex3 = /(&lt; %|&lt;%)/gm;
-    const jspRegex4 = /(%& gt;|%&gt;)/gm;
+    const jspRegex1 = /(&lt; %|&lt;%)/gm;
+    const jspRegex2 = /(%& gt;|%&gt;)/gm;
 
-    const replaceData = $.html()
-    .replace(jspRegex3, "<%")
-    .replace(jspRegex4, "%>")
+    const replaceData = result
+    .replace(jspRegex1, `<%`)
+    .replace(jspRegex2, `%>`)
+    .valueOf();
 
     fs.writeFileSync(this.filePath, replaceData, "utf8");
 
@@ -106,9 +83,9 @@ class Jsp {
         vueIndentScriptAndStyle: true,
         endOfLine: "lf",
         embeddedLanguageFormatting: "auto",
-        bracketSameLine: false,
+        bracketSameLine: true,
         parentParser: "none",
-        singleAttributePerLine: false
+        singleAttributePerLine: false,
       });
 
       fs.writeFileSync(this.filePath, formattedCode, "utf8");

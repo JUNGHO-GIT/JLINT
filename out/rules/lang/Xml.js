@@ -20,21 +20,16 @@ class Xml {
         const data = new Contents_1.default().main().toString();
         // 1. remove comments
         const result = (0, strip_comments_1.default)(data, {
-            preserveNewlines: false,
-            keepProtected: false,
+            preserveNewlines: true,
+            keepProtected: true,
             block: true,
             line: true,
             language: "xml"
         });
         // 2. cheerio setting
         const $ = (0, cheerio_1.load)(result, {
-            decodeEntities: true,
             xmlMode: true,
-            quirksMode: false,
-            lowerCaseTags: false,
-            lowerCaseAttributeNames: false,
-            recognizeCDATA: true,
-            recognizeSelfClosing: false,
+            xml: true,
         });
         fs_1.default.writeFileSync(this.filePath, $.html(), "utf8");
         return $.html();

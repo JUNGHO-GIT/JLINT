@@ -2,9 +2,9 @@ import fs from "fs";
 import path from "path";
 import lodash from "lodash";
 import vscode from "vscode";
-import Contents from "../common/Contents";
+import Contents from "./Contents";
 
-class Else {
+class Tags {
 
   // 0. resource ---------------------------------------------------------------------------------->
   constructor() {this.main();}
@@ -18,26 +18,15 @@ class Else {
 
   // 2. main -------------------------------------------------------------------------------------->
   public main() {
-    const data = this.data();
+    let data = this.data();
 
     if (this.filePath) {
 
-      const rulesOne
-      = /(^.*)(\})(\n?)(\s*)(else)(\s*)(\{)(\s*?)(.*)(\s*)(?<=\})/gm;
-      const rulesTwo
-      = /(^.*)(.*)(\})(\n)(\s*)(else)(\s*)(\{)/gm;
-      const rulesThree
-      = /(^.*)(.*)(\})(\s*)(else)(\s*)(\{)/gm;
+      const rulesOne = /(<)(area|base|br|col|command|embed|hr|img|input|keygen|link|meta|param|source|track|wbr)(\s*)(.*?)(?<!\/)(>)/gm;
 
-      const result = lodash.chain(data)
-      .replace(rulesOne, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) => {
-        return `${p1}${p2}${p3}${p4}${p5} ${p7}\n${p1}${p8}${p9}${p10}\n${p1}${p9}`;
-      })
-      .replace(rulesTwo, (match, p1, p2, p3, p4, p5, p6, p7, p8) => {
-        return `${p1}${p3}\n${p1}${p6} ${p8}`;
-      })
-      .replace(rulesThree, (match, p1, p2, p3, p4, p5, p6, p7) => {
-        return `${p1}${p3}\n${p1}${p5} ${p7}`;
+      const result =lodash.chain(data)
+      .replace(rulesOne, (match, p1, p2, p3, p4, p5) => {
+        return `${p1}${p2}${p3}${p4}/>`;
       })
       .value();
 
@@ -46,11 +35,10 @@ class Else {
     }
 
   }
-
   // 3. output ------------------------------------------------------------------------------------>
   public output() {
     return console.log("_____________________\n" + this.activePath + "  실행");
   }
 }
 
-export default Else;
+export default Tags;

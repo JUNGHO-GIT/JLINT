@@ -19,8 +19,8 @@ class Javascript {
         const data = new Contents_1.default().main().toString();
         // 1. remove comments
         const result = (0, strip_comments_1.default)(data, {
-            preserveNewlines: false,
-            keepProtected: false,
+            preserveNewlines: true,
+            keepProtected: true,
             block: true,
             line: true
         });

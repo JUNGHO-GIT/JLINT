@@ -1,7 +1,6 @@
 import fs from "fs";
 import path from "path";
 import vscode from "vscode";
-import {load} from "cheerio";
 import prettier from "prettier";
 import stripComments from "strip-comments";
 import Contents from "../common/Contents";
@@ -19,8 +18,8 @@ class Java {
 
     // 1. remove comments
     const result = stripComments(data, {
-      preserveNewlines: false,
-      keepProtected: false,
+      preserveNewlines: true,
+      keepProtected: true,
       block: true,
       line: true,
       language: "java"
@@ -64,6 +63,7 @@ class Java {
       fs.writeFileSync(this.filePath, formattedCode, "utf8");
       return formattedCode;
     }
+
   }
 
   // 3. output ------------------------------------------------------------------------------------>

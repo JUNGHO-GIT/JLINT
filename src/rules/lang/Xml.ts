@@ -19,8 +19,8 @@ class Xml {
 
     // 1. remove comments
     const result = stripComments(data, {
-      preserveNewlines: false,
-      keepProtected: false,
+      preserveNewlines: true,
+      keepProtected: true,
       block: true,
       line: true,
       language : "xml"
@@ -28,13 +28,8 @@ class Xml {
 
     // 2. cheerio setting
     const $ = load(result, {
-      decodeEntities: true,
       xmlMode: true,
-      quirksMode: false,
-      lowerCaseTags: false,
-      lowerCaseAttributeNames: false,
-      recognizeCDATA: true,
-      recognizeSelfClosing: false,
+      xml: true,
     });
 
     fs.writeFileSync(this.filePath, $.html(), "utf8");
@@ -75,6 +70,7 @@ class Xml {
       fs.writeFileSync(this.filePath, formattedCode, "utf8");
       return formattedCode;
     }
+
   }
 
   // 3. output ------------------------------------------------------------------------------------>

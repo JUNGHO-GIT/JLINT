@@ -22,48 +22,18 @@ class Quote {
 
     if (this.filePath) {
 
-      const rulesOne = /(?<!["])(')(?!["])/gm;
-      const rulesTwo = /"window\.location\.href="/gm;
-      const rulesThree = /"location\.href="/gm;
-      const rulesFour = /"location="/gm;
-      const rulesFive = /"href="/gm;
-      const rulesSix = /(\b)(")(")/gm;
-      const rulesSeven = /(")(")(\b)/gm;
-      const rulesEight = /(\}|\)|\])(")(")/gm;
+      const rulesOne = /(?<!(?:(?:\\['])|(?:['"'])|(?:["'"])))(\s*)(')(\s*)(?!(?:(?:\\['])|(?:['"'])|(?:["'"])))/gm;
 
       const result =lodash.chain(data)
-      .replace(rulesOne, (match, p1) => {
-        return `"`;
-      })
-      .replace(rulesTwo, (match, p1) => {
-        return `"window.location.href='`;
-      })
-      .replace(rulesThree, (match, p1) => {
-        return `"location.href='`;
-      })
-      .replace(rulesFour, (match, p1) => {
-        return `"location='`;
-      })
-      .replace(rulesFive, (match, p1) => {
-        return `"href='`;
-      })
-      .replace(rulesSix, (match, p1, p2, p3) => {
-        return `${p1}'${p3}`;
-      })
-      .replace(rulesSeven, (match, p1, p2, p3) => {
-        return `${p1}'${p3}`;
-      })
-      .replace(rulesEight, (match, p1, p2, p3) => {
-        return `${p1}'${p3}`;
+      .replace(rulesOne, (match, p1, p2, p3) => {
+        return `${p1}"${p3}`;
       })
       .value();
 
       fs.writeFileSync(this.filePath, result, "utf8");
       return result;
     }
-    else {
-      return new Error("파일 경로를 찾을 수 없습니다.");
-    }
+
   }
 
   // 3. output ------------------------------------------------------------------------------------>

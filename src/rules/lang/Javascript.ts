@@ -18,8 +18,8 @@ class Javascript {
 
     // 1. remove comments
     const result = stripComments(data, {
-      preserveNewlines: false,
-      keepProtected: false,
+      preserveNewlines: true,
+      keepProtected: true,
       block: true,
       line: true
     });
@@ -62,6 +62,7 @@ class Javascript {
       fs.writeFileSync(this.filePath, formattedCode, "utf8");
       return formattedCode;
     }
+
   }
 
   // 3. output ------------------------------------------------------------------------------------>
