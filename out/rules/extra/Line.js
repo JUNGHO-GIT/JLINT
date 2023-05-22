@@ -22,7 +22,7 @@ class Line {
         const data = this.data();
         if (this.filePath) {
             // 1-1. front comments regex ---------------------------------------------------------------->
-            const rulesTwo = /^(?!\/\/--)(?:\n*)(\s*)((public|private|function|class)\s+)(?:(\s*.*))(\s*?)/gm;
+            const rulesTwo = /^(?!\/\/--)(?!.*\bclassName\b)(?:\n*)(\s*)(public|private|function|class)(?:(\s*.*))(\s*?)/gm;
             const rulesThree = /^(?!\/\/--)(?:\n*)(\s*)(const\s+\w+\s*=\s*\(.*?\)\s*=>\s*\{)(\s*?)/gm;
             const rulesFour = /^(?!\/\/--)(?:\n*)(\s*)(const\s+\w+\s*=\s*\[)(\s*?)/gm;
             const rulesFive = /^(?!\/\/--)(?:\n*)(\s*)(useEffect\s*\(\s*\(\s*.*?\)\s*=>\s*\{)(\s*?)/gm;
