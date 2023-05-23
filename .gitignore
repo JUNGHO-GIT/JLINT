@@ -3,9 +3,11 @@
 /build/
 /classes/
 /*.class
+out/
 
 # node
 node_modules/
+*.vsix
 
 # Log files
 /logs/
