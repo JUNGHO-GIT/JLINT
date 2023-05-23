@@ -13,6 +13,7 @@ class Line {
     constructor() { this.main(); }
     activePath = path_1.default.basename(__filename);
     filePath = vscode_1.default.window.activeTextEditor?.document.uri.fsPath;
+    fileExt = vscode_1.default.window.activeTextEditor?.document.languageId || "";
     // 1. data -------------------------------------------------------------------------------------->
     data() {
         return new Contents_1.default().main().toString();
@@ -57,7 +58,7 @@ class Line {
     // 4-5. html ------------------------------------------------------------------------------------>
     html() {
         let data = this.data();
-        if (this.filePath) {
+        if (this.filePath && this.fileExt === "html" || this.fileExt === "jsp") {
             const rules1 = /^(?!\/\/--)(?:\n*)(\s*)([<]head\s*.*\s*[>])(\s*?)/gm;
             const rules2 = /^(?!\/\/--)(?:\n*)(\s*)([<]body\s*.*\s*[>])(\s*?)/gm;
             const rules3 = /^(?!\/\/--)(?:\n*)(\s*)([<]header\s*.*\s*[>])(\s*?)/gm;

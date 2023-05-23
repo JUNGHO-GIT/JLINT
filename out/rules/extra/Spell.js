@@ -13,6 +13,7 @@ class Spell {
     constructor() { this.main(); }
     activePath = path_1.default.basename(__filename);
     filePath = vscode_1.default.window.activeTextEditor?.document.uri.fsPath;
+    fileExt = vscode_1.default.window.activeTextEditor?.document.languageId || "";
     // 1. data -------------------------------------------------------------------------------------->
     data() {
         return new Contents_1.default().main().toString();
