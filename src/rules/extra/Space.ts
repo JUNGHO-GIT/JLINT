@@ -65,8 +65,6 @@ class Space {
       const rules2
       = /(\s*)(@)(\s*)([\s\S]*?)(\s*)(\()/gm;
       const rules3
-      = /(^\s*)(public|private)(\s*?)([\s\S]*?)(@?)(\s*)([\s\S]|(\n+)?)(\s*)(\))(\s*)(\{)/gm;
-      const rules4
       = /(\s*?)(ception)(\{)/gm;
 
       let result = lodash.chain(data)
@@ -76,10 +74,7 @@ class Space {
       .replace(rules2, (match, p1, p2, p3, p4, p5, p6) => {
         return `${p1}${p2}${p4} ${p6}`;
       })
-      .replace(rules3, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12) => {
-        return `${p1}${p2}${p3}${p4}${p5}${p6}${p7}${p10} ${p12}`;
-      })
-      .replace(rules4, (match, p1, p2, p3) => {
+      .replace(rules3, (match, p1, p2, p3) => {
         return `${p2} ${p3}`;
       })
       .value();

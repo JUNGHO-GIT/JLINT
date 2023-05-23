@@ -36,7 +36,6 @@ class Java {
                 parser: "java",
                 singleQuote: false,
                 semi: true,
-                plugins: ["prettier-plugin-java"],
                 tabWidth: 2,
                 printWidth: 1000,
                 useTabs: false,

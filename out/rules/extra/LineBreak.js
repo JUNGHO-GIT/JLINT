@@ -64,6 +64,8 @@ class LineBreak {
             const rules5 = /(\n+)(^.)(\s*)(\})(\s*)(\n)(\s*)(\/\/)/gm;
             const rules6 = /(^\s*?)(import)([\s\S]*?)((;)|(\n+)?)(\s?)(\/\/)([\s\S]*?)(\n+?)(?=import)/gm;
             const rules7 = /(^\s*?)(import)([\s\S]*?)(;)(\s*)(\n*)(^\s*?)(@)(\s*)(\S*)/gm;
+            const rules8 = /(^\s*)(public|private)(\s*)([\s\S]*?)(\s*)(\{)(\n*)(\s*)(.*)/gm;
+            const rules9 = /(.*?)(\n*)(.*?)(\n*)(?<=^.\s*)(return)(\s*?)(\S*?)(\s*)(\n)(\s*)(\})/gm;
             let result = lodash_1.default.chain(data)
                 .replace(rules1, (match, p1, p2, p3, p4, p5, p6) => {
                 return `${p2}\n${p6}`;
@@ -85,6 +87,12 @@ class LineBreak {
             })
                 .replace(rules7, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) => {
                 return `${p1}${p2}${p3}${p4}\n\n${p8}${p10}`;
+            })
+                .replace(rules8, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9) => {
+                return `${p1}${p2}${p3}${p4}${p5}${p6}\n\n${p8}${p9}`;
+            })
+                .replace(rules9, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) => {
+                return `${p1}\n\n${p3}${p4}${p5}${p6}${p7}${p8}${p9}${p10}${p11}`;
             })
                 .value();
             fs_1.default.writeFileSync(this.filePath, result, "utf8");
