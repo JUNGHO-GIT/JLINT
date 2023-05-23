@@ -27,9 +27,9 @@
 
   - Before
 
-    <img src="1.png" alt="1" width="500" height="150"/>
+    <img src="4.png" alt="1" width="500" height="150"/>
 
   - After
 
-    <img src="2.png" alt="2" width="500" height="250"/>
+    <img src="5.png" alt="2" width="500" height="250"/>
 
