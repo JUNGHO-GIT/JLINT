@@ -1,6 +1,4 @@
-# 🚀 JLINT
-
-## ✨ Features
+# ✨ JLINT
 
 ### 📚 Multiple Language Support
 
@@ -28,8 +26,10 @@
     understand the code structure and identify errors.
 
   - Before
-     ![1](1.png)
+
+    <img src="1.png" alt="1" width="500" height="150"/>
 
   - After
-     ![2](2.png)
+
+    <img src="2.png" alt="2" width="500" height="250"/>
 

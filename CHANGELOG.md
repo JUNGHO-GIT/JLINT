@@ -1,6 +1,6 @@
 # 📝 Changelog
 
-## [1.0.0] - 2023.05.23
+## [1.0.0] - 2023.05.18
 
 ### ✨ Added
 
@@ -18,3 +18,15 @@
 
       Implementation of the command `extension.JLINT`  which can be triggered using the keybinding
       `alt+shift+f` when the text editor is in focus.
+
+<br>
+
+## [1.0.1] - 2023.05.23
+
+### 🐛 Fixed
+
+<br>
+
+## [1.0.2] - 2023.05.23
+
+### 🐛 Fixed
