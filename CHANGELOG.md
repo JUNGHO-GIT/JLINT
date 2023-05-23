@@ -37,3 +37,10 @@
 
 ### 🐛 Fixed
   - fixed jsx and tsx file formatting issue
+
+<br>
+
+## [1.0.3] - 2023.05.23
+
+### 🐛 Fixed
+  - fixed line break issue

@@ -138,10 +138,15 @@ class LineBreak {
 
       const rules1
       = /(?:\n*)(\s*)(<\/body>)(\s*?)/gm;
+      const rules2
+      = /(.*?)(\n*)(\s*)(\/\/ -.*>)/gm;
 
       let result = lodash.chain(data)
       .replace(rules1, (match, p1, p2, p3) => {
         return `\n\n${p1}${p2}${p3}`;
+      })
+      .replace(rules2, (match, p1, p2, p3, p4) => {
+        return `${p1}\n\n${p3}${p4}`;
       })
       .value();
 
