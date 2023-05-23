@@ -8,8 +8,8 @@ class Main {
     main() {
         new Controller_1.default().common()
             + new Controller_1.default().lang()
-            + new Controller_1.default().components()
             + new Controller_1.default().syntax()
+            + new Controller_1.default().logic()
             + new Controller_1.default().extra();
     }
 }

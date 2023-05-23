@@ -38,23 +38,11 @@ class Controller {
             }
         }
     }
-    // 2. components -------------------------------------------------------------------------------->
-    components() {
-        const componentsTitle = "components";
-        const componentsArray = [
-            "Brackets", /*"Quote", "Comma", "Semicolon" */
-        ];
-        const componentsImport = componentsArray.map((item) => {
-            return require(`../rules/${componentsTitle}/${item}`).default;
-        });
-        const componentsInit = componentsArray.map((item, index) => new componentsImport[index]());
-        return componentsInit.map((item) => item.output()).join("");
-    }
-    // 3. syntax  ----------------------------------------------------------------------------------->
+    // 2. syntax  ----------------------------------------------------------------------------------->
     syntax() {
         const syntaxTitle = "syntax";
         const syntaxArray = [
-            "If", "Else", "Elseif", "Try", "Catch", "Finally"
+            "Brackets", /*"Quote", "Comma", "Semicolon" */
         ];
         const syntaxImport = syntaxArray.map((item) => {
             return require(`../rules/${syntaxTitle}/${item}`).default;
@@ -62,11 +50,23 @@ class Controller {
         const syntaxInit = syntaxArray.map((item, index) => new syntaxImport[index]());
         return syntaxInit.map((item) => item.output()).join("");
     }
+    // 3. logic ------------------------------------------------------------------------------------->
+    logic() {
+        const logicTitle = "logic";
+        const logicArray = [
+            "If", "Else", "Elseif", "Try", "Catch", "Finally"
+        ];
+        const logicImport = logicArray.map((item) => {
+            return require(`../rules/${logicTitle}/${item}`).default;
+        });
+        const logicInit = logicArray.map((item, index) => new logicImport[index]());
+        return logicInit.map((item) => item.output()).join("");
+    }
     // 4. extra ------------------------------------------------------------------------------------->
     extra() {
         const extraTitle = "extra";
         const extraArray = [
-            "Sql", "Return", "Import", "Line", "LineBreak"
+            "Line", "LineBreak", "Space", "Spell",
         ];
         const extraImport = extraArray.map((item) => {
             return require(`../rules/${extraTitle}/${item}`).default;

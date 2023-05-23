@@ -35,8 +35,10 @@ class Java {
             const formattedCode = prettier_1.default.format(data, {
                 parser: "java",
                 singleQuote: false,
-                printWidth: 1000,
+                semi: true,
+                plugins: ["prettier-plugin-java"],
                 tabWidth: 2,
+                printWidth: 1000,
                 useTabs: false,
                 quoteProps: "as-needed",
                 jsxSingleQuote: false,

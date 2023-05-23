@@ -18,169 +18,113 @@ class Line {
 
   // 2. main -------------------------------------------------------------------------------------->
   public main() {
-    const data = this.data();
-
-    if (this.filePath) {
-
-      // 1-1. front comments regex ---------------------------------------------------------------->
-      const rulesTwo
-      = /^(?!\/\/--)(?!(?:.*\bclassName\b)|(?:.*class=".*"))(?:\n*)(\s*)(public|private|function|class)(?:(\s*.*))(\s*?)/gm;
-      const rulesThree
-      = /^(?!\/\/--)(?:\n*)(\s*)(const\s+\w+\s*=\s*\(.*?\)\s*=>\s*\{)(\s*?)/gm;
-      const rulesFour
-      = /^(?!\/\/--)(?:\n*)(\s*)(const\s+\w+\s*=\s*\[)(\s*?)/gm;
-      const rulesFive
-      = /^(?!\/\/--)(?:\n*)(\s*)(useEffect\s*\(\s*\(\s*.*?\)\s*=>\s*\{)(\s*?)/gm;
-      const rulesSix
-      = /^(?!\/\/--)(?:\n*)(\s*)(return\s*.*?\s*[<])(\s*?)/gm;
-      const rulesSeven
-      = /^(?!\/\/--)(?:\n*)(\s*)([<]head\s*.*\s*[>])(\s*?)/gm;
-      const rulesEight
-      = /^(?!\/\/--)(?:\n*)(\s*)([<]body\s*.*\s*[>])(\s*?)/gm;
-      const rulesNine
-      = /^(?!\/\/--)(?:\n*)(\s*)([<]header\s*.*\s*[>])(\s*?)/gm;
-      const rulesTen
-      = /^(?!\/\/--)(?:\n*)(\s*)([<]main\s*.*\s*[>])(\s*?)/gm;
-      const rulesEleven
-      = /^(?!\/\/--)(?:\n*)(\s*)([<]footer\s*.*\s*[>])(\s*?)/gm;
-      const rulesTwelve
-      = /^(?!\/\/--)(?:\n*)(\s*)([<]section\s*.*\s*[>])(\s*?)/gm;
-      const rulesThirteen
-      = /^(?!\/\/--)(?:\n*)(\s*)([<]table\s*.*\s*[>])(\s*?)/gm;
-      const rulesFourteen
-      = /^(?!\/\/--)(?:\n*)(\s*)([<]form\s*.*\s*[>])(\s*?)/gm;
-      const rulesFifteen
-      = /^(?!\/\/--)(?:\n*)(\s*)([<]div class="row\s*.*\s*[>])(\s*?)/gm;
-
-
-      // 1-2. back comments regex ----------------------------------------------------------------->
-      const rulesOneDot
-      = /(\s*?)(public|private|function)(\s*)([\s\S]*?)(\s*)(\()(\s*)([\s\S]*?)(\s*)(\))(\s*)(([\s\S]*?))(\s*?)(\{)/gm;
-      const rulesTwoDot
-      = /(\s*?)(ception)(\{)/gm;
-      const rulesThreeDot
-      = /(\n+)(^.)(\s*)(\})(\s*)(\n)(\s*)(\/\/)/gm;
-      const rulesFourDot
-      = /(^.\s*?)(@)(.*)(\n+)(\s*)(\/\/.*?>)(\n+)(\s+)(public|private|function)((([\s\S](?!;|class))*?))(\s*)(?<=\{)/gm;
-      const rulesFiveDot
-      = /(^\s*?)(import)([\s\S]*?)((;)|(\n+)?)(\s?)(\/\/)([\s\S]*?)(\n+?)(?=import)/gm;
-      const rulesSixDot
-      = /(^\s*?)(import)([\s\S]*?)(;)(\s*)(\n*)(^\s*?)(@)(\s*)(\S*)/gm;
-      const rulesSevenDot
-      = /(>)(\n*)(?:\})(?:\n*)(function)/gm;
-      const rulesEightDot
-      = /^(\s*\/\/ --.*){2}(\n*)(^\s*)(public|private|function)(.*)/gm;
-
-      // 2-1. front comments replace -------------------------------------------------------------->
-      const result = lodash.chain(data)
-      .replace(rulesTwo, (match, p1, p2, p3) => {
-        const spaceSize = 100 - (lodash.size(p1) + lodash.size(`// `) + lodash.size(`>`));
-        const insetLine = `// ` + `-`.repeat(spaceSize) + `>`;
-        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
-      })
-      .replace(rulesThree, (match, p1, p2, p3) => {
-        const spaceSize = 100 - (lodash.size(p1) + lodash.size(`// `) + lodash.size(`>`));
-        const insetLine = `// ` + `-`.repeat(spaceSize) + `>`;
-        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
-      })
-      .replace(rulesFour, (match, p1, p2, p3) => {
-        const spaceSize = 100 - (lodash.size(p1) + lodash.size(`// `) + lodash.size(`>`));
-        const insetLine = `// ` + `-`.repeat(spaceSize) + `>`;
-        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
-      })
-      .replace(rulesFive, (match, p1, p2, p3) => {
-        const spaceSize = 100 - (lodash.size(p1) + lodash.size(`// `) + lodash.size(`>`));
-        const insetLine = `// ` + `-`.repeat(spaceSize) + `>`;
-        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
-      })
-      .replace(rulesSix, (match, p1, p2, p3) => {
-        const spaceSize = 100 - (lodash.size(p1) + lodash.size(`// `) + lodash.size(`>`));
-        const insetLine = `// ` + `-`.repeat(spaceSize) + `>`;
-        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
-      })
-      .replace(rulesSeven, (match, p1, p2, p3) => {
-        const spaceSize = 100 - (lodash.size(p1) + lodash.size(`<!--`) + lodash.size(`-->`));
-        const insetLine = `<!--` + `-`.repeat(spaceSize) + `-->`;
-        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
-      })
-      .replace(rulesEight, (match, p1, p2, p3) => {
-        const spaceSize = 100 - (lodash.size(p1) + lodash.size(`<!--`) + lodash.size(`-->`));
-        const insetLine = `<!--` + `-`.repeat(spaceSize) + `-->`;
-        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
-      })
-      .replace(rulesNine, (match, p1, p2, p3) => {
-        const spaceSize = 100 - (lodash.size(p1) + lodash.size(`<!--`) + lodash.size(`-->`));
-        const insetLine = `<!--` + `-`.repeat(spaceSize) + `-->`;
-        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
-      })
-      .replace(rulesTen, (match, p1, p2, p3) => {
-        const spaceSize = 100 - (lodash.size(p1) + lodash.size(`<!--`) + lodash.size(`-->`));
-        const insetLine = `<!--` + `-`.repeat(spaceSize) + `-->`;
-        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
-      })
-      .replace(rulesEleven, (match, p1, p2, p3) => {
-        const spaceSize = 100 - (lodash.size(p1) + lodash.size(`<!--`) + lodash.size(`-->`));
-        const insetLine = `<!--` + `-`.repeat(spaceSize) + `-->`;
-        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
-      })
-      .replace(rulesTwelve, (match, p1, p2, p3) => {
-        const spaceSize = 100 - (lodash.size(p1) + lodash.size(`<!--`) + lodash.size(`-->`));
-        const insetLine = `<!--` + `-`.repeat(spaceSize) + `-->`;
-        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
-      })
-      .replace(rulesThirteen, (match, p1, p2, p3) => {
-        const spaceSize = 100 - (lodash.size(p1) + lodash.size(`<!--`) + lodash.size(`-->`));
-        const insetLine = `<!--` + `-`.repeat(spaceSize) + `-->`;
-        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
-      })
-      .replace(rulesFourteen, (match, p1, p2, p3) => {
-        const spaceSize = 100 - (lodash.size(p1) + lodash.size(`<!--`) + lodash.size(`-->`));
-        const insetLine = `<!--` + `-`.repeat(spaceSize) + `-->`;
-        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
-      })
-      .replace(rulesFifteen, (match, p1, p2, p3) => {
-        const spaceSize = 100 - (lodash.size(p1) + lodash.size(`<!--`) + lodash.size(`-->`));
-        const insetLine = `<!--` + `-`.repeat(spaceSize) + `-->`;
-        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
-      })
-
-      // 2-2. back comments replace --------------------------------------------------------------->
-      .replace(rulesOneDot, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15) => {
-        return `${p1}${p2} ${p4} ${p6}${p8}${p10} ${p12} ${p15}`;
-      })
-      .replace(rulesTwoDot, (match, p1, p2, p3) => {
-        return `${p2} ${p3}`;
-      })
-      .replace(rulesThreeDot, (match, p1, p2, p3, p4, p5, p6, p7, p8) => {
-        return `${p1}${p2}${p3}${p4}\n\n${p7}${p8}`;
-      })
-      .replace(rulesFourDot, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12) => {
-        return `${p5}${p6}\n${p5}${p2}${p3}\n${p8}${p9}${p10}`;
-      })
-      .replace(rulesFiveDot, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9) => {
-        return `${p1}${p2}${p3}${p4}\n`;
-      })
-      .replace(rulesSixDot, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) => {
-        return `${p1}${p2}${p3}${p4}\n\n${p8}${p10}`;
-      })
-      .replace(rulesSevenDot, (match, p1, p2, p3, p4) => {
-        return `${p1}\n${p3}`;
-      })
-      .replace(rulesEightDot, (match, p1, p2, p3, p4, p5) => {
-        return `${p2}${p3}${p4}${p5}`;
-      })
-      .value();
-
-      fs.writeFileSync(this.filePath, result, "utf8");
-      return result;
-    }
-
+    return this.ts() + this.html();
   }
 
   // 3. output ------------------------------------------------------------------------------------>
   public output() {
     return console.log("_____________________\n" + this.activePath + "  실행");
   }
+
+  // 4-1. js -------------------------------------------------------------------------------------->
+  public js() {}
+
+  // 4-2. ts -------------------------------------------------------------------------------------->
+  public ts() {
+    let data = this.data();
+
+    if (this.filePath) {
+
+      const rules1
+      = /^(?!\/\/--)(?!(?:.*\bclassName\b)|(?:.*class=".*"))(?:\n*)(\s*)(public|private|function|class)(?:(\s*.*))(\s*?)/gm;
+      const rules2
+      = /^(?!\/\/--)(?:\n*)(\s*)(const\s+\w+\s*=\s*\(.*?\)\s*=>\s*\{)(\s*?)/gm;
+      const rules3
+      = /^(?!\/\/--)(?:\n*)(\s*)(const\s+\w+\s*=\s*\[)(\s*?)/gm;
+      const rules4
+      = /^(?!\/\/--)(?:\n*)(\s*)(useEffect\s*\(\s*\(\s*.*?\)\s*=>\s*\{)(\s*?)/gm;
+      const rules5
+      = /^(?!\/\/--)(?:\n*)(\s*)(return\s*.*?\s*[<])(\s*?)/gm;
+
+      let result = lodash.chain(data);
+
+      for (let i = 1; i <= 5; i++) {
+        const rule = eval(`rules${i}`);
+        result = result.replace(rule, (match, p1, p2, p3) => {
+          const spaceSize = 100 - (p1.length + `// `.length + `>`.length);
+          const insetLine = `// ` + '-'.repeat(spaceSize) + `>`;
+          return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+        });
+      }
+
+      const finalResult = result.value();
+
+      fs.writeFileSync(this.filePath, finalResult, "utf8");
+      return finalResult;
+    }
+  }
+
+  // 4-3. java ------------------------------------------------------------------------------------>
+  public java() {}
+
+  // 4-4. jsp ------------------------------------------------------------------------------------->
+  public jsp() {}
+
+  // 4-5. html ------------------------------------------------------------------------------------>
+  public html() {
+    let data = this.data();
+
+    if (this.filePath) {
+
+      const rules1
+      = /^(?!\/\/--)(?:\n*)(\s*)([<]head\s*.*\s*[>])(\s*?)/gm;
+      const rules2
+      = /^(?!\/\/--)(?:\n*)(\s*)([<]body\s*.*\s*[>])(\s*?)/gm;
+      const rules3
+      = /^(?!\/\/--)(?:\n*)(\s*)([<]header\s*.*\s*[>])(\s*?)/gm;
+      const rules4
+      = /^(?!\/\/--)(?:\n*)(\s*)([<]main\s*.*\s*[>])(\s*?)/gm;
+      const rules5
+      = /^(?!\/\/--)(?:\n*)(\s*)([<]footer\s*.*\s*[>])(\s*?)/gm;
+      const rules6
+      = /^(?!\/\/--)(?:\n*)(\s*)([<]section\s*.*\s*[>])(\s*?)/gm;
+      const rules7
+      = /^(?!\/\/--)(?:\n*)(\s*)([<]table\s*.*\s*[>])(\s*?)/gm;
+      const rules8
+      = /^(?!\/\/--)(?:\n*)(\s*)([<]form\s*.*\s*[>])(\s*?)/gm;
+      const rules9
+      = /^(?!\/\/--)(?:\n*)(\s*)([<]div class="row\s*.*\s*[>])(\s*?)/gm;
+
+      let result = lodash.chain(data);
+
+      for (let i = 1; i <= 9; i++) {
+        const rule = eval(`rules${i}`);
+        result = result.replace(rule, (match, p1, p2, p3) => {
+          const spaceSize = 100 - (lodash.size(p1) + lodash.size(`<!--`) + lodash.size(`-->`));
+          const insetLine = `<!--` + `-`.repeat(spaceSize) + `-->`;
+          return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+        });
+      }
+
+      const finalResult = result.value();
+
+      fs.writeFileSync(this.filePath, finalResult, "utf8");
+      return finalResult;
+    }
+  }
+
+  // 4-6. css ------------------------------------------------------------------------------------->
+  public css() {}
+
+  // 4-7. xml ------------------------------------------------------------------------------------->
+  public xml() {}
+
+  // 4-8. json ------------------------------------------------------------------------------------>
+  public json() {}
+
+  // 4-9. sql ------------------------------------------------------------------------------------->
+  public sql() {}
+
 }
 
 export default Line;

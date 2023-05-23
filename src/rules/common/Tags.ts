@@ -21,19 +21,23 @@ class Tags {
     let data = this.data();
 
     if (this.filePath) {
-
-      const rulesOne = /(<)(area|base|br|col|command|embed|hr|img|input|keygen|link|meta|param|source|track|wbr)(\s*)(.*?)(?<!\/)(>)/gm;
+      const rules1 =
+      /(<)(area|base|br|col|command|embed|hr|img|input|keygen|link|meta|param|source|track|wbr)(\s*)(.*?)(\/>)(\s*)/gm;
+      const rules2
+      = /(<)(area|base|br|col|command|embed|hr|img|input|keygen|link|meta|param|source|track|wbr)(\s*)(.*?)(?!\/)(>)(\s*)/gm;
 
       const result =lodash.chain(data)
-      .replace(rulesOne, (match, p1, p2, p3, p4, p5) => {
-        return `${p1}${p2}${p3}${p4}/>`;
+      .replace(rules1, (match, p1, p2, p3, p4, p5, p6) => {
+        return `${p1}${p2}${p3}${p4}>${p6}`;
+      })
+      .replace(rules2, (match, p1, p2, p3, p4, p5, p6) => {
+        return `${p1}${p2}${p3}${p4}/>${p6}`;
       })
       .value();
 
       fs.writeFileSync(this.filePath, result, "utf8");
       return result;
     }
-
   }
   // 3. output ------------------------------------------------------------------------------------>
   public output() {

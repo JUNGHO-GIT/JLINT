@@ -37,8 +37,10 @@ class Java {
       const formattedCode = prettier.format(data, {
         parser: "java",
         singleQuote: false,
-        printWidth: 1000,
+        semi: true,
+        plugins : ["prettier-plugin-java"],
         tabWidth: 2,
+        printWidth: 1000,
         useTabs: false,
         quoteProps: "as-needed",
         jsxSingleQuote: false,
@@ -63,7 +65,6 @@ class Java {
       fs.writeFileSync(this.filePath, formattedCode, "utf8");
       return formattedCode;
     }
-
   }
 
   // 3. output ------------------------------------------------------------------------------------>

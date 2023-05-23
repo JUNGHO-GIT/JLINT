@@ -12,4 +12,5 @@ function activate(context) {
     }));
 }
 exports.activate = activate;
+;
 //# sourceMappingURL=extension.js.map

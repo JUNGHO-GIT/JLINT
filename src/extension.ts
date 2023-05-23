@@ -7,4 +7,4 @@ export function activate (context: vscode.ExtensionContext)  {
       new Main().main();
     }
   ));
-}
+};
