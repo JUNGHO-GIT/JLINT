@@ -23,7 +23,7 @@ class Controller {
     lang() {
         const langTitle = "lang";
         const langArray = [
-            "java", "javascript", "typescript", "html", "css", "xml", "jsp"
+            "javascript", "typescript", "java", "jsp", "html", "css", "xml", "json"
         ];
         if (this.fileExt) {
             const langIndex = langArray.indexOf(this.fileExt);

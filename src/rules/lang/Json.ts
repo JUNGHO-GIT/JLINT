@@ -2,10 +2,9 @@ import fs from "fs";
 import path from "path";
 import vscode from "vscode";
 import prettier from "prettier";
-import stripComments from "strip-comments";
 import Contents from "../common/Contents";
 
-class Css {
+class Json {
 
   // 0. resource ---------------------------------------------------------------------------------->
   constructor() {this.main();}
@@ -16,17 +15,8 @@ class Css {
   public data() {
     const data = new Contents().main().toString();
 
-    // 1. remove comments
-    const result = stripComments(data, {
-      preserveNewlines: true,
-      keepProtected: true,
-      block: true,
-      line: true,
-      language : "css"
-    });
-
-    fs.writeFileSync(this.filePath, result, "utf8");
-    return result;
+    fs.writeFileSync(this.filePath, data, "utf8");
+    return data;
   }
 
   // 2. main -------------------------------------------------------------------------------------->
@@ -35,10 +25,11 @@ class Css {
 
     if (this.filePath) {
       const formattedCode = prettier.format(data, {
-        parser: "css",
+        parser: "json",
         singleQuote: false,
-        printWidth: 1000,
+        semi: true,
         tabWidth: 2,
+        printWidth: 100,
         useTabs: false,
         quoteProps: "as-needed",
         jsxSingleQuote: false,
@@ -71,4 +62,4 @@ class Css {
   }
 }
 
-export default Css;
+export default Json;
