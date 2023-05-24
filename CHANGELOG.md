@@ -44,3 +44,10 @@
 
 ### 🐛 Fixed
   - fixed line break issue
+
+<br>
+
+## [1.0.5] - 2023.05.24
+
+### ✨ Added
+  - add img to readme
