@@ -26,6 +26,7 @@ class Xml {
     });
 
     fs.writeFileSync(this.filePath, result, "utf8");
+
     return result;
   }
 

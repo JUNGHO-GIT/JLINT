@@ -18,9 +18,7 @@ class Spell {
   }
 
   // 2. main -------------------------------------------------------------------------------------->
-  public main() {
-    return this.sql();
-  }
+  public main() {}
 
   // 3. output ------------------------------------------------------------------------------------>
   public output() {
@@ -52,33 +50,7 @@ class Spell {
   public json() {}
 
   // 4-9. sql ------------------------------------------------------------------------------------->
-  public sql() {
-    let data = this.data();
-
-    if (this.filePath) {
-
-      const rules1
-      = /(\s*)(\s*)(=)(\s*)(\?)(\s*)/gm;
-      const rules2
-      = /(\s*)(\s*)(=)(\s*)(NOW)(\s*)/gm;
-      const rules3
-      = /(\s*)(\s*)(=)(\s*)(now)(\s*)/gm;
-
-      let result =lodash.chain(data);
-
-      for (let i = 1; i <= 3; i++) {
-        const rule = eval(`rules${i}`);
-        result = result.replace(rule, (match, p1, p2, p3, p4, p5, p6) => {
-          return `${p2}${p4}${p5}`;
-        });
-      }
-
-      const finalResult = result.value();
-
-      fs.writeFileSync(this.filePath, finalResult, "utf8");
-      return finalResult;
-    }
-  }
+  public sql() {}
 }
 
 export default Spell;

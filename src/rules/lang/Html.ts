@@ -17,7 +17,7 @@ class Html {
   public data() {
     const data = new Contents().main().toString();
 
-    // extract head content (unique value of "html")
+    // extract head content ("html")
     const headStart = data.indexOf("<head>") + "<head>".length;
     const headEnd = data.indexOf("</head>") + "</head>".length;
     const headContent = data.slice(headStart, headEnd);

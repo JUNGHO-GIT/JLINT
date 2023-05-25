@@ -17,7 +17,7 @@ class Jsp {
   public data() {
     const data = new Contents().main().toString();
 
-    // extract head content (unique value of "jsp")
+    // extract head content ("jsp")
     const headStart = data.indexOf("<head>") + "<head>".length;
     const headEnd = data.indexOf("</head>") + "</head>".length;
     let headContent: string = "";

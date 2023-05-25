@@ -61,14 +61,14 @@
 
 <br>
 
-## [1.0.8] - 2023.05.24
+## [1.0.8] - 2023.05.25
 
 ### 🐛 Fixed
   - fixed particular file formatting issue
 
 <br>
 
-## [1.0.9] - 2023.05.24
+## [1.1.0] - 2023.05.26
 
 ### 🐛 Fixed
   - fixed xml file formatting issue

@@ -79,7 +79,7 @@ class Controller {
     const extraTitle
     = "extra";
     const extraArray = [
-      "Line", "LineBreak", "Space", "Spell",
+      "Line", "LineBreak", "Space", /* "Spell", */
     ];
     const extraImport = extraArray.map((item) => {
       return require(`../rules/${extraTitle}/${item}`).default;

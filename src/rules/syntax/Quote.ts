@@ -24,7 +24,7 @@ class Quote {
 
       const rules1 = /(?<!(?:(?:\\['])|(?:['"'])|(?:["'"])))(\s*)(')(\s*)(?!(?:(?:\\['])|(?:['"'])|(?:["'"])))/gm;
 
-      const result =lodash.chain(data)
+      const result = lodash.chain(data)
       .replace(rules1, (match, p1, p2, p3) => {
         return `${p1}"${p3}`;
       })
