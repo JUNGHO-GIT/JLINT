@@ -1,7 +1,6 @@
 import fs from "fs";
 import path from "path";
 import vscode from "vscode";
-import {load} from "cheerio";
 import prettier from "prettier";
 import stripComments from "strip-comments";
 import Contents from "../common/Contents";
@@ -23,17 +22,11 @@ class Xml {
       keepProtected: true,
       block: true,
       line: true,
-      language : "xml"
+      language: "xml"
     });
 
-    // 2. cheerio setting
-    const $ = load(result, {
-      xmlMode: true,
-      xml: true,
-    });
-
-    fs.writeFileSync(this.filePath, $.html(), "utf8");
-    return $.html();
+    fs.writeFileSync(this.filePath, result, "utf8");
+    return result;
   }
 
   // 2. main -------------------------------------------------------------------------------------->

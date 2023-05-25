@@ -65,3 +65,10 @@
 
 ### 🐛 Fixed
   - fixed particular file formatting issue
+
+<br>
+
+## [1.0.9] - 2023.05.24
+
+### 🐛 Fixed
+  - fixed xml file formatting issue

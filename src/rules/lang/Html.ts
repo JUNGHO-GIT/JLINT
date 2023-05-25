@@ -17,7 +17,7 @@ class Html {
   public data() {
     const data = new Contents().main().toString();
 
-    // extract head content
+    // extract head content (unique value of "html")
     const headStart = data.indexOf("<head>") + "<head>".length;
     const headEnd = data.indexOf("</head>") + "</head>".length;
     const headContent = data.slice(headStart, headEnd);
@@ -44,6 +44,7 @@ class Html {
 
     // 3. return
     fs.writeFileSync(this.filePath, $.html(), "utf8");
+
     return $.html();
   }
 

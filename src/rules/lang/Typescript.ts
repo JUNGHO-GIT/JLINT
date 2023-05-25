@@ -22,7 +22,7 @@ class Typescript {
       keepProtected: true,
       block: true,
       line: true,
-      language : "typescript"
+      language: "typescript"
     });
 
     fs.writeFileSync(this.filePath, result, "utf8");

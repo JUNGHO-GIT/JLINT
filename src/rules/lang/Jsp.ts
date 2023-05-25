@@ -17,7 +17,7 @@ class Jsp {
   public data() {
     const data = new Contents().main().toString();
 
-    // extract head content
+    // extract head content (unique value of "jsp")
     const headStart = data.indexOf("<head>") + "<head>".length;
     const headEnd = data.indexOf("</head>") + "</head>".length;
     let headContent: string = "";
@@ -48,8 +48,8 @@ class Jsp {
     const jspRegex2 = /(%& gt;|%&gt;)/gm;
 
     const replaceData = result
-    .replace(jspRegex1, `<%`)
-    .replace(jspRegex2, `%>`)
+    .replace(jspRegex1, "<%")
+    .replace(jspRegex2, "%>")
     .valueOf();
 
     fs.writeFileSync(this.filePath, replaceData, "utf8");
