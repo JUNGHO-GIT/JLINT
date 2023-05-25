@@ -4,7 +4,7 @@
   "publisher": "JUNGHO",
   "icon": "JLINT.png",
   "license": "Apache-2.0",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Universal Language formatter and linter",
   "main": "./out/extension.js",
   "repository": {
@@ -84,7 +84,6 @@
     "eslint": "^8.39.0",
     "glob": "^8.1.0",
     "mocha": "^10.2.0",
-    "prettier-plugin-java": "^2.1.0",
     "typescript": "^5.0.4"
   }
 }
