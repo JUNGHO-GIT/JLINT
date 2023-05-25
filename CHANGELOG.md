@@ -52,11 +52,16 @@
 ### ✨ Added
   - add img to readme
 
-  <br>
+<br>
 
 ## [1.0.6] - 2023.05.24
 
 ### 🐛 Fixed
   - fixed image size issue
 
-  <br>
+<br>
+
+## [1.0.7] - 2023.05.24
+
+### 🐛 Fixed
+  - fixed particular file formatting issue
