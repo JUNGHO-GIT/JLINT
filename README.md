@@ -27,7 +27,7 @@
 
   - Before
 
-    <img src="3.png" alt="1" width="500" height="150"/>
+    <img src="3.png" alt="1" width="500" height="250"/>
 
   - After
 
