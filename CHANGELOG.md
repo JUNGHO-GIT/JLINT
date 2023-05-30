@@ -81,3 +81,10 @@
   - add error occurred message modal
   - using modal to display error messages. This makes it easier to
     identify errors.
+
+<br/>
+
+## [1.1.2] - 2023.05.30
+
+### 🐛 Fixed
+  - fixed react native formatting issue

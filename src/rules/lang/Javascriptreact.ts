@@ -5,7 +5,7 @@ import prettier from "prettier";
 import stripComments from "strip-comments";
 import Contents from "../common/Contents";
 
-class Typescript {
+class Javascript {
 
   // 0. resource ---------------------------------------------------------------------------------->
   constructor() {this.main();}
@@ -22,7 +22,7 @@ class Typescript {
       keepProtected: true,
       block: true,
       line: true,
-      language: "javascript",
+      language: "javascript"
     });
 
     fs.writeFileSync(this.filePath, result, "utf8");
@@ -34,7 +34,7 @@ class Typescript {
     const data = this.data();
 
     const prettierOptions: any = {
-      parser: "babel-ts",
+      parser: "babel-flow",
       singleQuote: false,
       printWidth: 1000,
       tabWidth: 2,
@@ -85,4 +85,4 @@ class Typescript {
   }
 }
 
-export default Typescript;
+export default Javascript;

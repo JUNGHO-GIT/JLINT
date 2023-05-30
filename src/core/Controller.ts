@@ -25,7 +25,7 @@ class Controller {
     const langTitle
     = "lang";
     const langArray = [
-      "javascript", "typescript", "java", "jsp",  "html", "css", "xml", "json"
+      "javascript", "javascriptreact", "typescript", "typescriptreact", "java", "jsp",  "html", "css", "xml", "json"
     ];
 
     if(this.fileExt) {

@@ -26,7 +26,7 @@ class InsertLine {
   public JsTs() {
     let data = this.data();
 
-    if (this.filePath && this.fileExt === "javascript" || this.fileExt === "typescript") {
+    if (this.filePath && this.fileExt === "javascript" || this.fileExt === "javascriptreact" || this.fileExt === "typescript" || this.fileExt === "typescriptreact") {
 
       const rules1
       = /^(?!\/\/--)(?!(?:.*\bclassName\b)|(?:.*class=".*"))(?:\n*)(\s*)(public|private|function|class)(?:(\s*.*))(\s*?)/gm;
