@@ -27,9 +27,16 @@
 
   - Before
 
-    <img src="2.png" alt="2" width="500" height="300"/>
+    <img src="./src/assets/image/1.png" width="400" height="300"/>
 
   - After
 
-    <img src="3.png" alt="3" width="500" height="300"/>
+    <img src="./src/assets/image/2.png" width="400" height="300"/>
 
+### 💡 Error Message Modal
+  - JLINT uses a modal to display error messages. This makes it easier to
+    identify errors.
+
+  - Example
+
+    <img src="./src/assets/image/3.png" width="400" height="300"/>

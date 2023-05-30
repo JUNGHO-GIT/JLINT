@@ -33,37 +33,50 @@ class Javascript {
   public main() {
     const data = this.data();
 
+    const prettierOptions: any = {
+      parser: "babel-flow",
+      singleQuote: false,
+      printWidth: 1000,
+      tabWidth: 2,
+      useTabs: false,
+      quoteProps: "as-needed",
+      jsxSingleQuote: false,
+      trailingComma: "all",
+      bracketSpacing: false,
+      jsxBracketSameLine: true,
+      arrowParens: "always",
+      rangeStart: 0,
+      rangeEnd: Infinity,
+      requirePragma: false,
+      insertPragma: false,
+      proseWrap: "preserve",
+      htmlWhitespaceSensitivity: "css",
+      vueIndentScriptAndStyle: true,
+      endOfLine: "lf",
+      embeddedLanguageFormatting: "auto",
+      bracketSameLine: true,
+      parentParser: "none",
+      singleAttributePerLine: false,
+    };
+
     if (this.filePath) {
-      const formattedCode = prettier.format(data, {
-        parser: "babel-flow",
-        printWidth: 1000,
-        singleQuote: false,
-        tabWidth: 2,
-        useTabs: false,
-        quoteProps: "as-needed",
-        jsxSingleQuote: false,
-        trailingComma: "all",
-        bracketSpacing: false,
-        jsxBracketSameLine: true,
-        arrowParens: "always",
-        rangeStart: 0,
-        rangeEnd: Infinity,
-        requirePragma: false,
-        insertPragma: false,
-        proseWrap: "preserve",
-        htmlWhitespaceSensitivity: "css",
-        vueIndentScriptAndStyle: true,
-        endOfLine: "lf",
-        embeddedLanguageFormatting: "auto",
-        bracketSameLine: true,
-        parentParser: "none",
-        singleAttributePerLine: false,
-      });
+      try {
+        const prettierCode = prettier.format(data, prettierOptions);
+        fs.writeFileSync(this.filePath, prettierCode, "utf8");
+        return prettierCode;
+      }
+      catch (error) {
+        const message = `${error.message}`;
+        const msg = message.toString();
 
-      fs.writeFileSync(this.filePath, formattedCode, "utf8");
-      return formattedCode;
+        const msgRegex = /([\n\s\S]*)(\s*)(https)(.*?)([(])(.*?)([)])([\n\s\S]*)/gm;
+        const msgRegexReplace = `[JLINT]\n\n Error Line : $5$6$7\n$8`;
+        const msgResult = msg.replace(msgRegex, msgRegexReplace);
+
+        vscode.window.showInformationMessage(msgResult, {modal: true});
+        throw error;
+      }
     }
-
   }
 
   // 3. output ------------------------------------------------------------------------------------>

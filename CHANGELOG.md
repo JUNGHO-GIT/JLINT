@@ -19,56 +19,65 @@
       Implementation of the command `extension.JLINT`  which can be triggered using the keybinding
       `alt+shift+f` when the text editor is in focus.
 
-<br>
+<br/>
 
 ## [1.0.1] - 2023.05.23
 
 ### 🐛 Fixed
 
-<br>
+<br/>
 
 ## [1.0.2] - 2023.05.23
 
 ### 🐛 Fixed
 
-<br>
+<br/>
 
 ## [1.0.2] - 2023.05.23
 
 ### 🐛 Fixed
   - fixed jsx and tsx file formatting issue
 
-<br>
+<br/>
 
 ## [1.0.3] - 2023.05.23
 
 ### 🐛 Fixed
   - fixed line break issue
 
-<br>
+<br/>
 
 ## [1.0.5] - 2023.05.24
 
 ### ✨ Added
   - add img to readme
 
-<br>
+<br/>
 
 ## [1.0.6] - 2023.05.24
 
 ### 🐛 Fixed
   - fixed image size issue
 
-<br>
+<br/>
 
 ## [1.0.8] - 2023.05.25
 
 ### 🐛 Fixed
   - fixed particular file formatting issue
 
-<br>
+<br/>
 
 ## [1.1.0] - 2023.05.26
 
 ### 🐛 Fixed
   - fixed xml file formatting issue
+
+<br/>
+
+## [1.1.1] - 2023.05.30
+
+### ✨ Added
+  - add error occurred message modal
+  - using modal to display error messages. This makes it easier to
+    identify errors.

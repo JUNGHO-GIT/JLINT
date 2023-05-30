@@ -4,7 +4,7 @@ import lodash from "lodash";
 import vscode from "vscode";
 import Contents from "../common/Contents";
 
-class LineBreak {
+class SpellCheck {
 
   // 0. resource ---------------------------------------------------------------------------------->
   constructor() {this.main();}
@@ -29,11 +29,11 @@ class LineBreak {
     if (this.filePath && this.fileExt === "javascript" || this.fileExt === "typescript") {
 
       const rules1
-      = /(>)(\n*)(?:\})(?:\n*)(function)/gm;
+      = /(\s*)(\/\/)(\s*)(--.*?)(>)(\s*)(\n)(\s*)(\/\/)(\s*)(--.*?)(>)([\s\S])/gm;
 
       let result = lodash.chain(data)
-      .replace(rules1, (match, p1, p2, p3) => {
-        return `${p1}\n${p3}`;
+      .replace(rules1, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13) => {
+        return `${p1}${p2}${p3}${p4}${p5}${p13}`;
       })
       .value();
 
@@ -49,56 +49,21 @@ class LineBreak {
     if (this.filePath && this.fileExt === "java") {
 
       const rules1
-      = /(\s*)(;)(\s*)(\n?)(\s*)(import)/gm;
+      = /(\s*)(\/\/)(\s*)(--.*?)(>)(\s*)(\n)(\s*)(\/\/)(\s*)(--.*?)(>)([\s\S])/gm;
       const rules2
-      = /(\s*)(package)(\s*)([\s\S]*?)(;)(\n)(\s*)(import)/gm;
+      = /(^\n*)(^\s*?)(@.*?\n.*)(\s*)(\/\/\s*--.*?>)(\n)(\s*)(.*)/gm;
       const rules3
-      = /(?<=^.\s*)(return)(\s*?)(\S*?)(\s*)(\n)(\s*)(\})/gm;
-      const rules4
-      = /(\s*)(;)(\s*)(\n+)(\s*)(\n+)(\s*)(^.*?)/gm;
-      const rules5
-      = /(\n+)(^.)(\s*)(\})(\s*)(\n)(\s*)(\/\/)/gm;
-      const rules6
-      = /(^\s*?)(import)([\s\S]*?)((;)|(\n+)?)(\s?)(\/\/)([\s\S]*?)(\n+?)(?=import)/gm;
-      const rules7
-      = /(^\s*?)(import)([\s\S]*?)(;)(\s*)(\n*)(^\s*?)(@)(\s*)(\S*)/gm;
-      const rules8
-      = /(^\s*)(public|private)(\s*)([\s\S]*?)(\s*)(\{)(\n*)(\s*)(.*)/gm;
-      const rules9
-      = /(.*?)(\n*)(.*?)(\n*)(?<=^.\s*)(return)(\s*?)(\S*?)(\s*)(\n)(\s*)(\})/gm;
-      const rules10
-      = /(import.*)(;)(\n*)(\/\/ --)/gm;
+      = /(^\s*)(\/\/\s+--.*?>)(\n)(^\s*?)(@.*?)(\n+)(\s*)(.*)/gm;
 
       let result = lodash.chain(data)
-      .replace(rules1, (match, p1, p2, p3, p4, p5, p6) => {
-        return `${p2}\n${p6}`;
+      .replace(rules1, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13) => {
+        return `${p1}${p2}${p3}${p4}${p5}${p13}`;
       })
       .replace(rules2, (match, p1, p2, p3, p4, p5, p6, p7, p8) => {
-        return `${p2} ${p4}${p5}${p6}\n${p8}`;
+        return `${p4}${p5}\n${p2}${p3}\n${p7}${p8}`;
       })
-      .replace(rules3, (match, p1, p2, p3, p4, p5, p6, p7) => {
-        return `${p1} ${p3}\n${p6}${p7}`;
-      })
-      .replace(rules4, (match, p1, p2, p3, p4, p5, p6, p7, p8) => {
-        return `${p2}\n${p7}${p8}`;
-      })
-      .replace(rules5, (match, p1, p2, p3, p4, p5, p6, p7, p8) => {
-        return `${p1}${p2}${p3}${p4}\n\n${p7}${p8}`;
-      })
-      .replace(rules6, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9) => {
-        return `${p1}${p2}${p3}${p4}\n`;
-      })
-      .replace(rules7, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) => {
-        return `${p1}${p2}${p3}${p4}\n\n${p8}${p10}`;
-      })
-      .replace(rules8, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9) => {
-        return `${p1}${p2}${p3}${p4}${p5}${p6}\n\n${p8}${p9}`;
-      })
-      .replace(rules9, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) => {
-        return `${p1}\n\n${p3}${p4}${p5}${p6}${p7}${p8}${p9}${p10}${p11}`;
-      })
-      .replace(rules10, (match, p1, p2, p3, p4) => {
-        return `${p1}${p2}\n\n${p4}`;
+      .replace(rules3, (match, p1, p2, p3, p4, p5, p6, p7, p8) => {
+        return `${p1}${p2}${p3}${p4}${p5}\n${p7}${p8}`;
       })
       .value();
 
@@ -114,16 +79,11 @@ class LineBreak {
     if (this.filePath && this.fileExt === "html" || this.fileExt === "jsp") {
 
       const rules1
-      = /(?:\n*)(\s*)(<\/body>)(\s*?)/gm;
-      const rules2
-      = /(.*?)(\n*)(\s*)(\/\/ -.*>)/gm;
+      = /(\s*)(<!)(--.*?)(>)(\s*)(\n)(\s*)(<!)(--.*?)(>)([\s\S])/gm;
 
       let result = lodash.chain(data)
-      .replace(rules1, (match, p1, p2, p3) => {
-        return `\n\n${p1}${p2}${p3}`;
-      })
-      .replace(rules2, (match, p1, p2, p3, p4) => {
-        return `${p1}\n\n${p3}${p4}`;
+      .replace(rules1, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) => {
+        return `${p1}${p2}${p3}${p4}${p11}`;
       })
       .value();
 
@@ -151,4 +111,4 @@ class LineBreak {
 
 }
 
-export default LineBreak;
+export default SpellCheck;

@@ -4,7 +4,7 @@ import lodash from "lodash";
 import vscode from "vscode";
 import Contents from "../common/Contents";
 
-class Line {
+class InsertLine {
 
   // 0. resource ---------------------------------------------------------------------------------->
   constructor() {this.main();}
@@ -19,22 +19,14 @@ class Line {
 
   // 2. main -------------------------------------------------------------------------------------->
   public main() {
-    return this.ts() + this.html();
+    return this.JsTs() + this.Java() + this.HtmlJsp();
   }
 
-  // 3. output ------------------------------------------------------------------------------------>
-  public output() {
-    return console.log("_____________________\n" + this.activePath + "  실행");
-  }
-
-  // 4-1. js -------------------------------------------------------------------------------------->
-  public js() {}
-
-  // 4-2. ts -------------------------------------------------------------------------------------->
-  public ts() {
+  // 3-1. JsTs ------------------------------------------------------------------------------------>
+  public JsTs() {
     let data = this.data();
 
-    if (this.filePath) {
+    if (this.filePath && this.fileExt === "javascript" || this.fileExt === "typescript") {
 
       const rules1
       = /^(?!\/\/--)(?!(?:.*\bclassName\b)|(?:.*class=".*"))(?:\n*)(\s*)(public|private|function|class)(?:(\s*.*))(\s*?)/gm;
@@ -65,14 +57,37 @@ class Line {
     }
   }
 
-  // 4-3. java ------------------------------------------------------------------------------------>
-  public java() {}
+  // 3-2. Java ------------------------------------------------------------------------------------>
+  public Java() {
+    let data = this.data();
 
-  // 4-4. jsp ------------------------------------------------------------------------------------->
-  public jsp() {}
+    if (this.filePath && this.fileExt === "java") {
 
-  // 4-5. html ------------------------------------------------------------------------------------>
-  public html() {
+      const rules1
+      = /^(?!\/\/--)(?!(?:.*\bclassName\b)|(?:.*class=".*"))(?:\n*)(\s*)(public|private|function|class)(?:(\s*.*))(\s*?)/gm;
+      const rules2
+      = /^(?!\/\/--)(?:\n*)(\s*)(return\s*.*?\s*[<])(\s*?)/gm;
+
+      let result = lodash.chain(data);
+
+      for (let i = 1; i <= 2; i++) {
+        const rule = eval(`rules${i}`);
+        result = result.replace(rule, (match, p1, p2, p3) => {
+          const spaceSize = 100 - (p1.length + `// `.length + `>`.length);
+          const insetLine = `// ` + '-'.repeat(spaceSize) + `>`;
+          return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+        });
+      }
+
+      const finalResult = result.value();
+
+      fs.writeFileSync(this.filePath, finalResult, "utf8");
+      return finalResult;
+    }
+  }
+
+  // 3-3. HtmlJsp --------------------------------------------------------------------------------->
+  public HtmlJsp() {
     let data = this.data();
 
     if (this.filePath && this.fileExt === "html" || this.fileExt === "jsp") {
@@ -114,18 +129,22 @@ class Line {
     }
   }
 
-  // 4-6. css ------------------------------------------------------------------------------------->
-  public css() {}
+  // 3-4. Css ------------------------------------------------------------------------------------->
+  public Css() {}
 
-  // 4-7. xml ------------------------------------------------------------------------------------->
-  public xml() {}
+  // 3-5. Xml ------------------------------------------------------------------------------------->
+  public Xml() {}
 
-  // 4-8. json ------------------------------------------------------------------------------------>
-  public json() {}
+  // 3-6. Json ------------------------------------------------------------------------------------>
+  public Json() {}
 
-  // 4-9. sql ------------------------------------------------------------------------------------->
-  public sql() {}
+  // 3-7. Sql ------------------------------------------------------------------------------------->
+  public Sql() {}
 
+  // 4. output ------------------------------------------------------------------------------------>
+  public output() {
+    return console.log("_____________________\n" + this.activePath + "  실행");
+  }
 }
 
-export default Line;
+export default InsertLine;

@@ -20,7 +20,6 @@ class Controller {
     return commonInit.map((item) => item.output()).join("");
   }
 
-
   // 2. lang -------------------------------------------------------------------------------------->
   public lang() {
     const langTitle
@@ -79,7 +78,7 @@ class Controller {
     const extraTitle
     = "extra";
     const extraArray = [
-      "Line", "LineBreak", "Space", /* "Spell", */
+      "InsertLine", "SpellCheck", "LineBreak", "Space",
     ];
     const extraImport = extraArray.map((item) => {
       return require(`../rules/${extraTitle}/${item}`).default;
