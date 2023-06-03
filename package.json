@@ -4,7 +4,7 @@
   "publisher": "JUNGHO",
   "icon": "icon.png",
   "license": "Apache-2.0",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "Universal Language formatter and linter",
   "main": "./out/extension.js",
   "repository": {
@@ -17,6 +17,7 @@
     "npm": ">=7.0.0"
   },
   "activationEvents": [
+    "onCommand:extension.JLINT",
     "onLanguage:javascript",
     "onLanguage:javascriptreact",
     "onLanguage:typescript",
@@ -26,8 +27,7 @@
     "onLanguage:html",
     "onLanguage:css",
     "onLanguage:xml",
-    "onLanguage:json",
-    "onCommand:extension.JLINT"
+    "onLanguage:json"
   ],
   "categories": [
     "Formatters",
@@ -48,7 +48,22 @@
         "key": "alt+shift+f",
         "when": "editorTextFocus"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "JLINT",
+      "properties": {
+        "JLINT.RemoveComments": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable or disable the remove comments"
+        },
+        "JLINT.InsertLine" : {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable or disable the insert 'Comment vertical line'"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

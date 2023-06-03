@@ -13,10 +13,7 @@ class Json {
 
   // 1. data -------------------------------------------------------------------------------------->
   public data() {
-    const data = new Contents().main().toString();
-
-    fs.writeFileSync(this.filePath, data, "utf8");
-    return data;
+    return new Contents().main().toString();
   }
 
   // 2. main -------------------------------------------------------------------------------------->

@@ -88,3 +88,14 @@
 
 ### 🐛 Fixed
   - fixed react native formatting issue
+
+<br/>
+
+## [1.1.3] - 2023.06.04
+
+### 🛠️ Customization
+  - Customize JLINT through user settings in your code editor.
+
+  - `JLINT.RemoveComments`: Enable or disable removal of comments from your code
+  - `JLINT.InsertLine`: Enable or disable insertion of a 'Comment Vertical Line' to
+    visually separate code blocks.

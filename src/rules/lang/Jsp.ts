@@ -3,7 +3,6 @@ import path from "path";
 import vscode from "vscode";
 import {load} from "cheerio";
 import prettier from "prettier";
-import stripComments from "strip-comments";
 import Contents from "../common/Contents";
 
 class Jsp {
@@ -17,37 +16,38 @@ class Jsp {
   public data() {
     const data = new Contents().main().toString();
 
-    // extract head content ("jsp")
-    const headStart = data.indexOf("<head>") + "<head>".length;
-    const headEnd = data.indexOf("</head>") + "</head>".length;
-    let headContent: string = "";
-    headContent.length > 0 ? data.slice(headStart, headEnd) : headContent = "";
+    // 1. check if head tags exist
+    const headStartIndex = data.indexOf("<head>");
+    const headEndIndex = data.indexOf("</head>");
 
-    // remove head content
-    const withoutHead = data.replace(headContent, "");
+    let headContent: string = '';
+    let withoutHead: string = data;
 
-    // 1. remove comments
-    const result = stripComments(withoutHead, {
-      preserveNewlines: true,
-      keepProtected: true,
-      block: true,
-      line: true,
-      language: "html"
-    });
+    if (headStartIndex !== -1 && headEndIndex !== -1) {
+      // head tags exist, extract head content
+      const headStart = headStartIndex + "<head>".length;
+      const headEnd = headEndIndex;
+      headContent = data.slice(headStart, headEnd);
 
-    // 2. cheerio
-    const $ = load(result);
-
-    // replace head content
-    if (headContent.length > 0) {
-      $("head").html(headContent);
+      // remove head content
+      withoutHead = data.replace(headContent, "");
     }
 
-    // 3. jsp byproduct
+    // 2. cheerio
+    const $ = load(withoutHead);
+    let html = $.html();
+
+    // 3. replace head content
+    if (headContent.length > 0) {
+      $("head").html(headContent);
+      html = $.html();
+    }
+
+    // 4. jsp byproduct
     const jspRegex1 = /(&lt; %|&lt;%)/gm;
     const jspRegex2 = /(%& gt;|%&gt;)/gm;
 
-    const replaceData = result
+    const replaceData = html
     .replace(jspRegex1, "<%")
     .replace(jspRegex2, "%>")
     .valueOf();

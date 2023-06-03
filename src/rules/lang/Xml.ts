@@ -2,7 +2,6 @@ import fs from "fs";
 import path from "path";
 import vscode from "vscode";
 import prettier from "prettier";
-import stripComments from "strip-comments";
 import Contents from "../common/Contents";
 
 class Xml {
@@ -14,20 +13,7 @@ class Xml {
 
   // 1. data -------------------------------------------------------------------------------------->
   public data() {
-    const data = new Contents().main().toString();
-
-    // 1. remove comments
-    const result = stripComments(data, {
-      preserveNewlines: true,
-      keepProtected: true,
-      block: true,
-      line: true,
-      language: "xml"
-    });
-
-    fs.writeFileSync(this.filePath, result, "utf8");
-
-    return result;
+    return new Contents().main().toString();
   }
 
   // 2. main -------------------------------------------------------------------------------------->

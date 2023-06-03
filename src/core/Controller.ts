@@ -6,84 +6,118 @@ class Controller {
   private fileExt = vscode.window.activeTextEditor?.document.languageId || "";
 
   // 1. common ------------------------------------------------------------------------------------>
-  public common() {
+  public common(paramArray: string[]) {
+
+    // if commonArray1 has paramArray's element, remove it. and create new array "commonArray2"
+
     const commonTitle
     = "common";
-    const commonArray = [
-      "Contents", "Tags"
+
+    const commonArray1 = [
+      "Contents", "Tags", "RemoveComments"
     ];
-    const commonImport = commonArray.map((item) => {
+
+    const commonArray2 = commonArray1.filter((item) => !paramArray.includes(item));
+
+    const commonImport = commonArray2.map((item) => {
       return require(`../rules/${commonTitle}/${item}`).default;
     });
-    const commonInit = commonArray.map((item, index) => new commonImport[index]());
+    const commonInit = commonArray2.map((item, index) => new commonImport[index]());
 
     return commonInit.map((item) => item.output()).join("");
   }
 
   // 2. lang -------------------------------------------------------------------------------------->
-  public lang() {
+  public lang(paramArray: string[]) {
+
+    // if langArray1 has paramArray's element, remove it. and create new array "langArray2"
+
     const langTitle
     = "lang";
-    const langArray = [
+
+    const langArray1 = [
       "javascript", "javascriptreact", "typescript", "typescriptreact", "java", "jsp",  "html", "css", "xml", "json"
     ];
 
+    const langArray2 = langArray1.filter((item) => !paramArray.includes(item));
+
     if(this.fileExt) {
-      const langIndex = langArray.indexOf(this.fileExt);
+      const langIndex = langArray2.indexOf(this.fileExt);
       if (langIndex !== -1) {
 
-        const langClass = langArray[langIndex].charAt(0).toUpperCase() + langArray[langIndex].slice(1);
+        const langClass = langArray2[langIndex].charAt(0).toUpperCase() + langArray2[langIndex].slice(1);
         const langImport = require(`../rules/${langTitle}/${langClass}`).default;
-        console.log("_____________________\n" + this.fileExt + " 파일 지원 가능 !!! ");
+        console.log("_____________________\n" + this.fileExt + " 파일 지원 O ");
         return new langImport().output();
       }
       else {
-        return console.log("_____________________\n" + this.fileExt + " 파일 지원 불가능 !!! ");
+        return console.log("_____________________\n" + this.fileExt + " 파일 지원 X ");
       }
     }
   }
 
   // 2. syntax  ----------------------------------------------------------------------------------->
-  public syntax() {
+  public syntax(paramArray: string[]) {
+
+    // if syntaxArray1 has paramArray's element, remove it. and create new array "syntaxArray2"
+
     const syntaxTitle
     = "syntax";
-    const syntaxArray = [
+
+    const syntaxArray1 = [
       "Brackets", /*"Quote", "Comma", "Semicolon" */
     ];
-    const syntaxImport = syntaxArray.map((item) => {
+
+    const syntaxArray2 = syntaxArray1.filter((item) => !paramArray.includes(item));
+
+    const syntaxImport = syntaxArray2.map((item) => {
       return require(`../rules/${syntaxTitle}/${item}`).default;
     });
-    const syntaxInit = syntaxArray.map((item, index) => new syntaxImport[index]());
+    const syntaxInit = syntaxArray2.map((item, index) => new syntaxImport[index]());
 
     return syntaxInit.map((item) => item.output()).join("");
   }
 
   // 3. logic ------------------------------------------------------------------------------------->
-  public logic() {
+  public logic(paramArray: string[]) {
+
+    // if logicArray1 has paramArray's element, remove it. and create new array "logicArray2"
+
     const logicTitle
     = "logic";
-    const logicArray = [
+
+    const logicArray1 = [
       "If", "Else", "Elseif", "Try", "Catch", "Finally"
     ];
-    const logicImport = logicArray.map((item) => {
+
+    const logicArray2 = logicArray1.filter((item) => !paramArray.includes(item));
+
+    const logicImport = logicArray2.map((item) => {
       return require(`../rules/${logicTitle}/${item}`).default;
     });
-    const logicInit = logicArray.map((item, index) => new logicImport[index]());
+    const logicInit = logicArray2.map((item, index) => new logicImport[index]());
 
     return logicInit.map((item) => item.output()).join("");
   }
 
   // 4. extra ------------------------------------------------------------------------------------->
-  public extra() {
+  public extra(paramArray: string[]) {
+
+    // if extraArray1 has paramArray's element, remove it. and create new array "extraArray2"
+
     const extraTitle
     = "extra";
-    const extraArray = [
+
+    const extraArray1 = [
       "InsertLine", "SpellCheck", "LineBreak", "Space",
     ];
-    const extraImport = extraArray.map((item) => {
+
+    const extraArray2 = extraArray1.filter((item) => !paramArray.includes(item));
+
+    const extraImport = extraArray2.map((item) => {
       return require(`../rules/${extraTitle}/${item}`).default;
     });
-    const extraInit = extraArray.map((item, index) => new extraImport[index]());
+    const extraInit = extraArray2.map((item, index) => new extraImport[index]());
 
     return extraInit.map((item) => item.output()).join("");
   }

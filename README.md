@@ -40,3 +40,10 @@
   - Example
 
     <img src="./src/assets/image/3.png" width="400" height="300"/>
+
+### 🛠️ Customization
+  - Customize JLINT through user settings in your code editor.
+
+  - `JLINT.RemoveComments`: Enable or disable removal of comments from your code
+  - `JLINT.InsertLine`: Enable or disable insertion of a 'Comment Vertical Line' to
+    visually separate code blocks.
