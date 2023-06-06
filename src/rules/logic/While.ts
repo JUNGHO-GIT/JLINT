@@ -4,7 +4,7 @@ import lodash from "lodash";
 import vscode from "vscode";
 import Contents from "../common/Contents";
 
-class Else {
+class While {
 
   // 0. resource ---------------------------------------------------------------------------------->
   constructor() {this.main();}
@@ -23,16 +23,11 @@ class Else {
     if (this.filePath) {
 
       const rules1
-      = /(^.*)(\})(\s*)(\n*?)(\s*)(else if)(\s*)(\()(?:\s*)([\s\S]*?)(?:\s*)(\))(\s*)(\{)(?:\s*)([\s\S]*?)(?:\s*)(\})(?:\s*)/gm;
-      const rules2
-      = /(^.*)(\})(\s*)(\n*?)(\s*)(else)(\s*)(\{)(?:\s*)([\s\S]*?)(?:\s*)(\})(?:\s*)(.*)/gm;
+      = /(^.*)(\s*)(\n*?)(^\s*)(while)(\s*)(\()(?:\s*)([\s\S]*?)(?:\s*)(\))(\s*)(\{)(?:\s*)([\s\S]*?)(?:\s*)(\})(?:\s*)(.*)/gm;
 
       const result = lodash.chain(data)
       .replace(rules1, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14) => {
-        return `${p1}${p2}\n${p1}${p6} ${p8}${p9}${p10} ${p12}\n${p1}\t${p13}\n${p1}${p14}`;
-      })
-      .replace(rules2, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) => {
-        return `${p1}${p2}\n${p1}${p6} ${p8}\n${p1}\t${p9}\n${p1}${p10}\n${p1}${p11}`;
+        return `${p1}${p2}${p3}${p4}${p5} ${p7}${p8}${p9} ${p11}\n${p4}\t${p12}\n${p4}${p13}\n${p4}${p14}`;
       })
       .value();
 
@@ -47,4 +42,4 @@ class Else {
   }
 }
 
-export default Else;
+export default While;

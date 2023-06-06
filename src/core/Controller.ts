@@ -8,13 +8,11 @@ class Controller {
   // 1. common ------------------------------------------------------------------------------------>
   public common(paramArray: string[]) {
 
-    // if commonArray1 has paramArray's element, remove it. and create new array "commonArray2"
-
     const commonTitle
     = "common";
 
     const commonArray1 = [
-      "Contents", "Tags", "RemoveComments"
+      "Contents", "SingleTags", "RemoveComments"
     ];
 
     const commonArray2 = commonArray1.filter((item) => !paramArray.includes(item));
@@ -29,8 +27,6 @@ class Controller {
 
   // 2. lang -------------------------------------------------------------------------------------->
   public lang(paramArray: string[]) {
-
-    // if langArray1 has paramArray's element, remove it. and create new array "langArray2"
 
     const langTitle
     = "lang";
@@ -47,11 +43,11 @@ class Controller {
 
         const langClass = langArray2[langIndex].charAt(0).toUpperCase() + langArray2[langIndex].slice(1);
         const langImport = require(`../rules/${langTitle}/${langClass}`).default;
-        console.log("_____________________\n" + this.fileExt + " 파일 지원 O ");
+        console.log("_____________________\n" + this.fileExt + " 파일 지원 가능 ");
         return new langImport().output();
       }
       else {
-        return console.log("_____________________\n" + this.fileExt + " 파일 지원 X ");
+        return console.log("_____________________\n" + this.fileExt + " 파일 지원 불가능 ");
       }
     }
   }
@@ -59,13 +55,11 @@ class Controller {
   // 2. syntax  ----------------------------------------------------------------------------------->
   public syntax(paramArray: string[]) {
 
-    // if syntaxArray1 has paramArray's element, remove it. and create new array "syntaxArray2"
-
     const syntaxTitle
     = "syntax";
 
     const syntaxArray1 = [
-      "Brackets", /*"Quote", "Comma", "Semicolon" */
+      "Brackets"
     ];
 
     const syntaxArray2 = syntaxArray1.filter((item) => !paramArray.includes(item));
@@ -81,13 +75,11 @@ class Controller {
   // 3. logic ------------------------------------------------------------------------------------->
   public logic(paramArray: string[]) {
 
-    // if logicArray1 has paramArray's element, remove it. and create new array "logicArray2"
-
     const logicTitle
     = "logic";
 
     const logicArray1 = [
-      "If", "Else", "Elseif", "Try", "Catch", "Finally"
+      "If", "Else", "Try", "Catch", "Finally", "While"
     ];
 
     const logicArray2 = logicArray1.filter((item) => !paramArray.includes(item));
@@ -102,8 +94,6 @@ class Controller {
 
   // 4. extra ------------------------------------------------------------------------------------->
   public extra(paramArray: string[]) {
-
-    // if extraArray1 has paramArray's element, remove it. and create new array "extraArray2"
 
     const extraTitle
     = "extra";

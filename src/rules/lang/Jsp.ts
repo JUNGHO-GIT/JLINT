@@ -20,41 +20,59 @@ class Jsp {
     const headStartIndex = data.indexOf("<head>");
     const headEndIndex = data.indexOf("</head>");
 
-    let headContent: string = '';
+    let headContent: string = "";
     let withoutHead: string = data;
 
-    if (headStartIndex !== -1 && headEndIndex !== -1) {
-      // head tags exist, extract head content
-      const headStart = headStartIndex + "<head>".length;
-      const headEnd = headEndIndex;
-      headContent = data.slice(headStart, headEnd);
-
-      // remove head content
-      withoutHead = data.replace(headContent, "");
-    }
-
-    // 2. cheerio
-    const $ = load(withoutHead);
-    let html = $.html();
-
-    // 3. replace head content
-    if (headContent.length > 0) {
-      $("head").html(headContent);
-      html = $.html();
-    }
-
-    // 4. jsp byproduct
     const jspRegex1 = /(&lt; %|&lt;%)/gm;
     const jspRegex2 = /(%& gt;|%&gt;)/gm;
 
-    const replaceData = html
-    .replace(jspRegex1, "<%")
-    .replace(jspRegex2, "%>")
-    .valueOf();
+    /*
+    * <head> is existed.
+    */
+    if (headStartIndex !== -1 && headEndIndex !== -1) {
 
-    fs.writeFileSync(this.filePath, replaceData, "utf8");
+      const headStart = headStartIndex + "<head>".length;
+      const headEnd = headEndIndex;
 
-    return replaceData;
+      headContent = data.slice(headStart, headEnd);
+      withoutHead = data.replace(headContent, "");
+
+      // 1. cheerio
+      let $ = load(withoutHead);
+      let html = $.html();
+
+      // 2. replace head content
+      if (headContent.length > 0) {
+        $("head").html(headContent);
+        html = $.html();
+      }
+
+      // 3. replace html tag to jsp
+      const replaceData = html
+      .replace(jspRegex1, "<%")
+      .replace(jspRegex2, "%>")
+      .valueOf();
+
+      fs.writeFileSync(this.filePath, replaceData, "utf8");
+
+      return replaceData;
+    }
+
+    /*
+    * <head> is not existed.
+    */
+    else if (headStartIndex <= 0 && headEndIndex <= 0) {
+
+      // 3. replace html tag to jsp
+      const replaceData = data
+      .replace(jspRegex1, "<%")
+      .replace(jspRegex2, "%>")
+      .valueOf();
+
+      fs.writeFileSync(this.filePath, replaceData, "utf8");
+
+      return replaceData;
+    }
   }
 
   // 2. main -------------------------------------------------------------------------------------->

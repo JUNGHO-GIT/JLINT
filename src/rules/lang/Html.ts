@@ -20,7 +20,7 @@ class Html {
     const headStartIndex = data.indexOf("<head>");
     const headEndIndex = data.indexOf("</head>");
 
-    let headContent: string = '';
+    let headContent: string = "";
     let withoutHead: string = data;
 
     if (headStartIndex !== -1 && headEndIndex !== -1) {

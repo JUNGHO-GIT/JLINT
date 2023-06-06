@@ -24,14 +24,14 @@ class LineBreak {
 
   // 3-1. JsTs ------------------------------------------------------------------------------------>
   public JsTs() {
-    let data = this.data();
+    const data = this.data();
 
     if (this.filePath && this.fileExt === "javascript" || this.fileExt === "javascriptreact" || this.fileExt === "typescript" || this.fileExt === "typescriptreact") {
 
       const rules1
       = /(>)(\n*)(?:\})(?:\n*)(function)/gm;
 
-      let result = lodash.chain(data)
+      const result = lodash.chain(data)
       .replace(rules1, (match, p1, p2, p3) => {
         return `${p1}\n${p3}`;
       })
@@ -44,60 +44,55 @@ class LineBreak {
 
   // 3-2. Java ------------------------------------------------------------------------------------>
   public Java() {
-    let data = this.data();
+    const data = this.data();
 
     if (this.filePath && this.fileExt === "java") {
 
       const rules1
-      = /(\s*)(;)(\s*)(\n?)(\s*)(import)/gm;
+      = /(?<!package.*)(\s*)(;)(\s*)(\n?)(\s*)(import)/gm;
       const rules2
-      = /(\s*)(package)(\s*)([\s\S]*?)(;)(\n)(\s*)(import)/gm;
-      const rules3
       = /(?<=^.\s*)(return)(\s*?)(\S*?)(\s*)(\n)(\s*)(\})/gm;
+      const rules3
+      = /(?<!package.*)(\s*)(;)(\s*)(\n+)(\s*)(\n+)(\s*)(^.*?)/gm;
       const rules4
-      = /(\s*)(;)(\s*)(\n+)(\s*)(\n+)(\s*)(^.*?)/gm;
-      const rules5
       = /(\n+)(^.)(\s*)(\})(\s*)(\n)(\s*)(\/\/)/gm;
-      const rules6
+      const rules5
       = /(^\s*?)(import)([\s\S]*?)((;)|(\n+)?)(\s?)(\/\/)([\s\S]*?)(\n+?)(?=import)/gm;
-      const rules7
+      const rules6
       = /(^\s*?)(import)([\s\S]*?)(;)(\s*)(\n*)(^\s*?)(@)(\s*)(\S*)/gm;
-      const rules8
+      const rules7
       = /(^\s*)(public|private)(\s*)([\s\S]*?)(\s*)(\{)(\n*)(\s*)(.*)/gm;
-      const rules9
+      const rules8
       = /(.*?)(\n*)(.*?)(\n*)(?<=^.\s*)(return)(\s*?)(\S*?)(\s*)(\n)(\s*)(\})/gm;
-      const rules10
+      const rules9
       = /(import.*)(;)(\n*)(\/\/ --)/gm;
 
-      let result = lodash.chain(data)
+      const result = lodash.chain(data)
       .replace(rules1, (match, p1, p2, p3, p4, p5, p6) => {
         return `${p2}\n${p6}`;
       })
-      .replace(rules2, (match, p1, p2, p3, p4, p5, p6, p7, p8) => {
-        return `${p2} ${p4}${p5}${p6}\n${p8}`;
-      })
-      .replace(rules3, (match, p1, p2, p3, p4, p5, p6, p7) => {
+      .replace(rules2, (match, p1, p2, p3, p4, p5, p6, p7) => {
         return `${p1} ${p3}\n${p6}${p7}`;
       })
-      .replace(rules4, (match, p1, p2, p3, p4, p5, p6, p7, p8) => {
+      .replace(rules3, (match, p1, p2, p3, p4, p5, p6, p7, p8) => {
         return `${p2}\n${p7}${p8}`;
       })
-      .replace(rules5, (match, p1, p2, p3, p4, p5, p6, p7, p8) => {
+      .replace(rules4, (match, p1, p2, p3, p4, p5, p6, p7, p8) => {
         return `${p1}${p2}${p3}${p4}\n\n${p7}${p8}`;
       })
-      .replace(rules6, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9) => {
+      .replace(rules5, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9) => {
         return `${p1}${p2}${p3}${p4}\n`;
       })
-      .replace(rules7, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) => {
+      .replace(rules6, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) => {
         return `${p1}${p2}${p3}${p4}\n\n${p8}${p10}`;
       })
-      .replace(rules8, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9) => {
+      .replace(rules7, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9) => {
         return `${p1}${p2}${p3}${p4}${p5}${p6}\n\n${p8}${p9}`;
       })
-      .replace(rules9, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) => {
+      .replace(rules8, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) => {
         return `${p1}\n\n${p3}${p4}${p5}${p6}${p7}${p8}${p9}${p10}${p11}`;
       })
-      .replace(rules10, (match, p1, p2, p3, p4) => {
+      .replace(rules9, (match, p1, p2, p3, p4) => {
         return `${p1}${p2}\n\n${p4}`;
       })
       .value();
@@ -109,7 +104,7 @@ class LineBreak {
 
   // 3-3. HtmlJsp --------------------------------------------------------------------------------->
   public HtmlJsp() {
-    let data = this.data();
+    const data = this.data();
 
     if (this.filePath && this.fileExt === "html" || this.fileExt === "jsp") {
 
@@ -118,7 +113,7 @@ class LineBreak {
       const rules2
       = /(.*?)(\n*)(\s*)(\/\/ -.*>)/gm;
 
-      let result = lodash.chain(data)
+      const result = lodash.chain(data)
       .replace(rules1, (match, p1, p2, p3) => {
         return `\n\n${p1}${p2}${p3}`;
       })

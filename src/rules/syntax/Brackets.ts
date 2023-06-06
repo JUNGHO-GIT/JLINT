@@ -29,6 +29,7 @@ class Brackets {
         return `${p1} ${p2}`;
       })
       .value();
+
       fs.writeFileSync(this.filePath, result, "utf8");
       return result;
     }

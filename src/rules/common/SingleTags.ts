@@ -2,14 +2,15 @@ import fs from "fs";
 import path from "path";
 import lodash from "lodash";
 import vscode from "vscode";
-import Contents from "../common/Contents";
+import Contents from "./Contents";
 
-class Elseif {
+class Tags {
 
   // 0. resource ---------------------------------------------------------------------------------->
   constructor() {this.main();}
   private activePath = path.basename(__filename);
   private filePath = vscode.window.activeTextEditor?.document.uri.fsPath;
+  private fileExt = vscode.window.activeTextEditor?.document.languageId || "";
 
   // 1. data -------------------------------------------------------------------------------------->
   public data() {
@@ -22,32 +23,31 @@ class Elseif {
 
     if (this.filePath) {
 
-      const rules1 = /(^.*)(.*)(\})(\n)(\s*)(else if)(\s*)(\()(\))/gm;
-      const rules2 = /(^.*)(.*)(\})(\n)(\s*)(else if)(\s*)(\()/gm;
-      const rules3 = /(^.*)(.*)(\})(\s*)(else if)(\s*)(\()/gm;
+      // 1. except only xml file
+      if(this.fileExt === "xml") {
+        fs.writeFileSync(this.filePath, data, "utf8");
+        return data;
+      }
+      // 2. allow other files
+      if(this.fileExt !== "xml") {
+        const rules1
+        = /(<)(area|base|br|col|command|embed|hr|img|input|keygen|link|meta|param|source|track|wbr)(\s*)([\n\s\S]*?)(\s*)(?<!=)(\/>)/gm;
 
-      const result = lodash.chain(data)
-      .replace(rules1, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9) => {
-        return `${p1}${p2}${p3}${p4}${p5}${p6} ${p8}\n${p1}${p9}`;
-      })
-      .replace(rules2, (match, p1, p2, p3, p4, p5, p6, p7, p8) => {
-        return `${p1}${p3}\n${p1}${p6} ${p8}`;
-      })
-      .replace(rules3, (match, p1, p2, p3, p4, p5, p6, p7) => {
-        return `${p1}${p3}\n${p1}${p5} ${p7}`;
-      })
-      .value();
+        const result = lodash.chain(data)
+        .replace(rules1, (match, p1, p2, p3, p4, p5, p6) => {
+          return `${p1}${p2}${p3}${p4}${p5}/>`;
+        })
+        .value();
 
-      fs.writeFileSync(this.filePath, result, "utf8");
-      return result;
+        fs.writeFileSync(this.filePath, result, "utf8");
+        return result;
+      }
     }
-
   }
-
   // 3. output ------------------------------------------------------------------------------------>
   public output() {
     return console.log("_____________________\n" + this.activePath + "  실행");
   }
 }
 
-export default Elseif;
+export default Tags;

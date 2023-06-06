@@ -3,6 +3,7 @@ import path from "path";
 import stripComments from "strip-comments";
 import vscode from "vscode";
 import Contents from "./Contents";
+import lodash from "lodash";
 
 class RemoveComments {
 
@@ -19,35 +20,58 @@ class RemoveComments {
 
   // 2. main -------------------------------------------------------------------------------------->
   public main() {
-    let data = this.data();
+    const data = this.data();
 
     if (this.filePath) {
 
-      const langArray = [
-        "javascript", "javascriptreact", "typescript", "typescriptreact", "java", "jsp",  "html", "css", "xml", "json"
-      ];
-
-      // 파일 확장자에 따른 언어 옵션 선택
-      let languageOption = this.fileExt; // 기본값 설정
-
-      // langArray 안에 fileExt가 있다면 해당 확장자를 사용
-      if (langArray.includes(this.fileExt)) {
+      // 1. language option
+      let languageOption: string;
+      if (this.fileExt == "jsp") {
+        languageOption = "html";
+      }
+      else if (this.fileExt == "javascriptreact") {
+        languageOption = "javascript";
+      }
+      else if (this.fileExt == "typescriptreact") {
+        languageOption = "typescript";
+      }
+      else {
         languageOption = this.fileExt;
       }
 
-      // 1. remove comments
-      const result = stripComments(data, {
+      // 2. `http://` -> `httpp`
+      const pattern1 = /("|')(\s*)(http:\/\/)([\n\s\S]*?)("|')/gm;
+
+      const tmpResult1 = lodash.chain(data)
+      .replace(pattern1, (match, p1, p2, p3, p4, p5) => {
+        return `${p1}${p2}httpp${p4}${p5}`;
+      })
+      .value();
+
+      // 2. remove comments
+      const tmpResult2 = stripComments(tmpResult1, {
         preserveNewlines: true,
         keepProtected: true,
         block: true,
         line: true,
-        language: languageOption // 변수를 사용
+        language: languageOption
       });
 
+      // 3. `httpp` -> `http://`
+      const pattern2 = /("|')(\s*)(httpp)([\n\s\S]*?)("|')/gm;
+
+      const result = lodash.chain(tmpResult2)
+      .replace(pattern2, (match, p1, p2, p3, p4, p5) => {
+        return `${p1}${p2}http://${p4}${p5}`;
+      })
+      .value();
+
+      // 3. save file
       fs.writeFileSync(this.filePath, result, "utf8");
       return result;
     }
   }
+
   // 3. output ------------------------------------------------------------------------------------>
   public output() {
     return console.log("_____________________\n" + this.activePath + "  실행");

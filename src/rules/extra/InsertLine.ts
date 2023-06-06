@@ -24,7 +24,7 @@ class InsertLine {
 
   // 3-1. JsTs ------------------------------------------------------------------------------------>
   public JsTs() {
-    let data = this.data();
+    const data = this.data();
 
     if (this.filePath && this.fileExt === "javascript" || this.fileExt === "javascriptreact" || this.fileExt === "typescript" || this.fileExt === "typescriptreact") {
 
@@ -59,18 +59,16 @@ class InsertLine {
 
   // 3-2. Java ------------------------------------------------------------------------------------>
   public Java() {
-    let data = this.data();
+    const data = this.data();
 
     if (this.filePath && this.fileExt === "java") {
 
       const rules1
       = /^(?!\/\/--)(?!(?:.*\bclassName\b)|(?:.*class=".*"))(?:\n*)(\s*)(public|private|function|class)(?:(\s*.*))(\s*?)/gm;
-      const rules2
-      = /^(?!\/\/--)(?:\n*)(\s*)(return\s*.*?\s*[<])(\s*?)/gm;
 
       let result = lodash.chain(data);
 
-      for (let i = 1; i <= 2; i++) {
+      for (let i = 1; i <= 1; i++) {
         const rule = eval(`rules${i}`);
         result = result.replace(rule, (match, p1, p2, p3) => {
           const spaceSize = 100 - (p1.length + `// `.length + `>`.length);
@@ -88,7 +86,7 @@ class InsertLine {
 
   // 3-3. HtmlJsp --------------------------------------------------------------------------------->
   public HtmlJsp() {
-    let data = this.data();
+    const data = this.data();
 
     if (this.filePath && this.fileExt === "html" || this.fileExt === "jsp") {
 

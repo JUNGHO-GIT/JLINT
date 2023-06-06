@@ -24,7 +24,7 @@ class Space {
 
   // 3-1. JsTs ------------------------------------------------------------------------------------>
   public JsTs() {
-    let data = this.data();
+    const data = this.data();
 
     if (this.filePath && this.fileExt === "javascript" || this.fileExt === "javascriptreact" || this.fileExt === "typescript" || this.fileExt === "typescriptreact") {
 
@@ -33,7 +33,7 @@ class Space {
       const rules2
       = /^(\s*\/\/ --.*){2}(\n*)(^\s*)(public|private|function)(.*)/gm;
 
-      let result = lodash.chain(data)
+      const result = lodash.chain(data)
       .replace(rules1, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15) => {
         return `${p1}${p2} ${p4} ${p6}${p8}${p10} ${p12} ${p15}`;
       })
@@ -49,7 +49,7 @@ class Space {
 
   // 3-2. Java ------------------------------------------------------------------------------------>
   public Java() {
-    let data = this.data();
+    const data = this.data();
 
     if (this.filePath && this.fileExt === "java") {
 
@@ -60,7 +60,7 @@ class Space {
       const rules3
       = /(\s*?)(ception)(\{)/gm;
 
-      let result = lodash.chain(data)
+      const result = lodash.chain(data)
       .replace(rules1, (match, p1, p2, p3, p4) => {
         return `${p1}${p2}${p4}`;
       })
@@ -79,7 +79,7 @@ class Space {
 
   // 3-3. HtmlJsp --------------------------------------------------------------------------------->
   public HtmlJsp() {
-    let data = this.data();
+    const data = this.data();
 
     if (this.filePath && this.fileExt === "html" || this.fileExt === "jsp") {
 
@@ -88,7 +88,7 @@ class Space {
       const rules2
       = /(<%@)(\s*)(taglib)/gm;
 
-      let result = lodash.chain(data)
+      const result = lodash.chain(data)
       .replace(rules1, (match, p1, p2, p3) => {
         return `${p1} ${p3}`;
       })

@@ -22,19 +22,12 @@ class Finally {
 
     if (this.filePath) {
 
-      const rules1 = /(^.*)(.*)(\})(\n)(\s*)(finally)(\s*)(\{)(\})/gm;
-      const rules2 = /(^.*)(.*)(\})(\n)(\s*)(finally)(\s*)(\{)/gm;
-      const rules3 = /(^.*)(.*)(\})(\s*)(finally)(\s*)(\{)/gm;
+      const rules1
+      = /(^.*)(\})(\s*)(\n*?)(\s*)(finally)(\s*)(\{)(?:\s*)([\s\S]*?)(?:\s*)(\})(?:\s*)(.*)/gm;
 
       const result = lodash.chain(data)
-      .replace(rules1, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9) => {
-        return `${p1}${p2}${p3}${p4}${p5}${p6} ${p8}\n${p1}${p9}`;
-      })
-      .replace(rules2, (match, p1, p2, p3, p4, p5, p6, p7, p8) => {
-        return `${p1}${p3}\n${p1}${p6} ${p8}`;
-      })
-      .replace(rules3, (match, p1, p2, p3, p4, p5, p6, p7) => {
-        return `${p1}${p3}\n${p1}${p5} ${p7}`;
+      .replace(rules1, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) => {
+        return `${p1}${p2}\n${p1}${p6} ${p8}\n${p1}\t${p9}\n${p1}${p10}\n${p1}${p11}`;
       })
       .value();
 

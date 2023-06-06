@@ -22,26 +22,18 @@ class Catch {
 
     if (this.filePath) {
 
-      const rules1 = /(^.*)(\})(\n+)(\s*)(catch)(\s*)(\()(.*)(\))/gm;
-      const rules2 = /(^.*)(.*)(\})(\n)(\s*)(catch)(\s*)(\()/gm;
-      const rules3 = /(^.*)(.*)(\})(\s*)(catch)(\s*)(\()/gm;
+      const rules1
+      = /(^.*)(\})(\s*)(\n*?)(\s*)(catch)(\s*)(\()(?:\s*)([\s\S]*?)(?:\s*)(\))(\s*)(\{)(?:\s*)([\s\S]*?)(?:\s*)(\})(?:\s*)(.*)/gm;
 
       const result = lodash.chain(data)
-      .replace(rules1, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9) => {
-        return `${p1}${p2}\n${p4}${p5} ${p7}${p8}${p9}`;
-      })
-      .replace(rules2, (match, p1, p2, p3, p4, p5, p6, p7, p8) => {
-        return `${p1}${p3}\n${p1}${p6} ${p8}`;
-      })
-      .replace(rules3, (match, p1, p2, p3, p4, p5, p6, p7) => {
-        return `${p1}${p3}\n${p1}${p5} ${p7}`;
+      .replace(rules1, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15) => {
+        return `${p1}${p2}\n${p1}${p6} ${p8}${p9}${p10} ${p12}\n${p1}\t${p13}\n${p1}${p14}\n${p1}${p15}`;
       })
       .value();
 
       fs.writeFileSync(this.filePath, result, "utf8");
       return result;
     }
-
   }
 
   // 3. output ------------------------------------------------------------------------------------>

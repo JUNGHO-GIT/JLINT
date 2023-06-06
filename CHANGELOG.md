@@ -99,3 +99,10 @@
   - `JLINT.RemoveComments`: Enable or disable removal of comments from your code
   - `JLINT.InsertLine`: Enable or disable insertion of a 'Comment Vertical Line' to
     visually separate code blocks.
+
+<br/>
+
+## [1.1.4] - 2023.05.30
+
+### 🐛 Fixed
+  - fixed syntax rules error issue
