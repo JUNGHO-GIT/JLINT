@@ -7,7 +7,7 @@
 - JSX
 - TSX
 - Java
-- JSP (+ Thymeleaf)
+- JSP
 - HTML
 - CSS
 - JSON

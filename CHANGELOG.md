@@ -106,3 +106,10 @@
 
 ### 🐛 Fixed
   - fixed syntax rules error issue
+
+<br/>
+
+## [1.1.5] - 2023.06.09
+
+### 🐛 Fixed
+  - fixed else-if and else spacing issue
