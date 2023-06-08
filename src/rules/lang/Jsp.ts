@@ -117,7 +117,7 @@ class Jsp {
         const msg = message.toString();
 
         const msgRegex = /([\n\s\S]*)(\s*)(https)(.*?)([(])(.*?)([)])([\n\s\S]*)/gm;
-        const msgRegexReplace = `[JLINT]\n\n[  Error Line : $5$6$7 ]\n\n$8`;
+        const msgRegexReplace = `[JLINTER]\n\n[  Error Line : $5$6$7 ]\n\n$8`;
         const msgResult = msg.replace(msgRegex, msgRegexReplace);
 
         vscode.window.showInformationMessage(msgResult, {modal: true});

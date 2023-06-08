@@ -4,7 +4,7 @@
 
 ### ✨ Added
 
-- 🚀 Initial release of JLINT
+- 🚀 Initial release of JLINTER
 
       a universal language formatter and linter extension for Visual Studio Code
 
@@ -16,7 +16,7 @@
 
 - 🎨 Command
 
-      Implementation of the command `extension.JLINT`  which can be triggered using the keybinding
+      Implementation of the command `extension.JLINTER`  which can be triggered using the keybinding
       `alt+shift+f` when the text editor is in focus.
 
 <br/>
@@ -94,10 +94,10 @@
 ## [1.1.3] - 2023.06.04
 
 ### 🛠️ Customization
-  - Customize JLINT through user settings in your code editor.
+  - Customize JLINTER through user settings in your code editor.
 
-  - `JLINT.RemoveComments`: Enable or disable removal of comments from your code
-  - `JLINT.InsertLine`: Enable or disable insertion of a 'Comment Vertical Line' to
+  - `JLINTER.RemoveComments`: Enable or disable removal of comments from your code
+  - `JLINTER.InsertLine`: Enable or disable insertion of a 'Comment Vertical Line' to
     visually separate code blocks.
 
 <br/>

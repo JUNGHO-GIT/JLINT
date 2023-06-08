@@ -1,6 +1,6 @@
 {
-  "name": "JLINT",
-  "displayName": "JLINT",
+  "name": "JLINTER",
+  "displayName": "JLINTER",
   "publisher": "JUNGHO",
   "icon": "icon.png",
   "license": "Apache-2.0",
@@ -9,7 +9,7 @@
   "main": "./out/extension.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/JUNGHO-GIT/JLINT.git"
+    "url": "https://github.com/JUNGHO-GIT/JLINTER.git"
   },
   "engines": {
     "vscode": "^1.78.0",
@@ -17,7 +17,7 @@
     "npm": ">=7.0.0"
   },
   "activationEvents": [
-    "onCommand:extension.JLINT",
+    "onCommand:extension.JLINTER",
     "onLanguage:javascript",
     "onLanguage:javascriptreact",
     "onLanguage:typescript",
@@ -38,26 +38,26 @@
   "contributes": {
     "commands": [
       {
-        "command": "extension.JLINT",
-        "title": "JLINT"
+        "command": "extension.JLINTER",
+        "title": "JLINTER"
       }
     ],
     "keybindings": [
       {
-        "command": "extension.JLINT",
+        "command": "extension.JLINTER",
         "key": "alt+shift+f",
         "when": "editorTextFocus"
       }
     ],
     "configuration": {
-      "title": "JLINT",
+      "title": "JLINTER",
       "properties": {
-        "JLINT.RemoveComments": {
+        "JLINTER.RemoveComments": {
           "type": "boolean",
           "default": true,
           "description": "Enable or disable the remove comments"
         },
-        "JLINT.InsertLine" : {
+        "JLINTER.InsertLine" : {
           "type": "boolean",
           "default": true,
           "description": "Enable or disable the insert 'Comment vertical line'"
