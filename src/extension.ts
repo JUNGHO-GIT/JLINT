@@ -8,7 +8,7 @@ const activate = (context: vscode.ExtensionContext) => {
     let paramArray: string[] = [];
 
     // access configuration parameters
-    const config = vscode.workspace.getConfiguration("JLINTER");
+    const config = vscode.workspace.getConfiguration("JLINT");
 
     // settings parameters
     const removeComments = config.get("RemoveComments");
@@ -22,7 +22,7 @@ const activate = (context: vscode.ExtensionContext) => {
     }
 
     context.subscriptions.push(
-      vscode.commands.registerCommand("extension.JLINTER", () =>  {
+      vscode.commands.registerCommand("extension.JLINT", () =>  {
         new Main().main(paramArray);
       })
     );

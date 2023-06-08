@@ -58,7 +58,7 @@ class Java {
         const msg = message.toString();
 
         const msgRegex = /(.*Sad sad panda.*)(line.*?)([!]\n.*?found -->)(.*?)(<--!\n*.*$)/gm;
-        const msgRegexReplace = `[JLINTER]\n\nError Line\t=\t(  $2  )\nError Site\t=\t(  $4  )`;
+        const msgRegexReplace = `[JLINT]\n\nError Line\t=\t(  $2  )\nError Site\t=\t(  $4  )`;
         const msgResult = msg.replace(msgRegex, msgRegexReplace);
 
         vscode.window.showInformationMessage(msgResult, {modal: true});
