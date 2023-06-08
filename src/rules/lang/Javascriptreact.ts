@@ -43,7 +43,6 @@ class Javascriptreact {
       embeddedLanguageFormatting: "auto",
       bracketSameLine: true,
       parentParser: "none",
-      __embeddedInHtml: false,
       semi: true,
       singleAttributePerLine: false,
     };

@@ -75,6 +75,7 @@ class Html {
       embeddedLanguageFormatting: "auto",
       bracketSameLine: true,
       parentParser: "none",
+      semi: true,
       singleAttributePerLine: false,
     };
 

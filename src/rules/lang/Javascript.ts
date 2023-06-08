@@ -43,6 +43,7 @@ class Javascript {
       embeddedLanguageFormatting: "auto",
       bracketSameLine: true,
       parentParser: "none",
+      semi: true,
       singleAttributePerLine: false,
     };
 
