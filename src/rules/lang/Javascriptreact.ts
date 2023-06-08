@@ -4,7 +4,7 @@ import vscode from "vscode";
 import prettier from "prettier";
 import Contents from "../common/Contents";
 
-class Javascript {
+class Javascriptreact {
 
   // 0. resource ---------------------------------------------------------------------------------->
   constructor() {this.main();}
@@ -43,6 +43,8 @@ class Javascript {
       embeddedLanguageFormatting: "auto",
       bracketSameLine: true,
       parentParser: "none",
+      __embeddedInHtml: false,
+      semi: true,
       singleAttributePerLine: false,
     };
 
@@ -72,4 +74,4 @@ class Javascript {
   }
 }
 
-export default Javascript;
+export default Javascriptreact;

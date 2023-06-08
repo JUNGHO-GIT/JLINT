@@ -79,7 +79,7 @@ class Controller {
     = "logic";
 
     const logicArray1 = [
-      "If", "Else", "Try", "Catch", "Finally", "While"
+      "IfElse", "TryCatch"
     ];
 
     const logicArray2 = logicArray1.filter((item) => !paramArray.includes(item));

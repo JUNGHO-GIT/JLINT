@@ -4,7 +4,7 @@ import vscode from "vscode";
 import prettier from "prettier";
 import Contents from "../common/Contents";
 
-class Typescript {
+class Typescriptreact {
 
   // 0. resource ---------------------------------------------------------------------------------->
   constructor() {this.main();}
@@ -72,4 +72,4 @@ class Typescript {
   }
 }
 
-export default Typescript;
+export default Typescriptreact;
