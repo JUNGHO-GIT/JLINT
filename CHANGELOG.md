@@ -113,3 +113,10 @@
 
 ### 🐛 Fixed
   - fixed else-if and else spacing issue
+
+<br/>
+
+## [1.1.6] - 2023.06.09
+
+### 🐛 Fixed
+  - fixed json, jsonc lang format issue

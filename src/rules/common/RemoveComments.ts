@@ -29,11 +29,17 @@ class RemoveComments {
       if (this.fileExt == "jsp") {
         languageOption = "html";
       }
-      else if (this.fileExt == "javascriptreact") {
+      else if (this.fileExt == "javascriptreact" || "jsx") {
         languageOption = "javascript";
       }
-      else if (this.fileExt == "typescriptreact") {
+      else if (this.fileExt == "typescriptreact" || "tsx") {
         languageOption = "typescript";
+      }
+      else if (this.fileExt == "vue") {
+        languageOption = "html";
+      }
+      else if (this.fileExt == "json" || "jsonc") {
+        languageOption = "javascript";
       }
       else {
         languageOption = this.fileExt;
