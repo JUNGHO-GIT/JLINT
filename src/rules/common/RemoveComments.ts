@@ -47,10 +47,22 @@ class RemoveComments {
 
       // 2. `http://` -> `httpp`
       const pattern1 = /("|')(\s*)(http:\/\/)([\n\s\S]*?)("|')/gm;
+      const pattern2 = /("|')(\s*)(https:\/\/)([\n\s\S]*?)("|')/gm;
+      const pattern3 = /("|')(\s*)(@\{http:\/\/)([\n\s\S]*?)("|')/gm;
+      const pattern4 = /("|')(\s*)(@\{https:\/\/)([\n\s\S]*?)("|')/gm;
 
       const tmpResult1 = lodash.chain(data)
       .replace(pattern1, (match, p1, p2, p3, p4, p5) => {
         return `${p1}${p2}httpp${p4}${p5}`;
+      })
+      .replace(pattern2, (match, p1, p2, p3, p4, p5) => {
+        return `${p1}${p2}httpps${p4}${p5}`;
+      })
+      .replace(pattern3, (match, p1, p2, p3, p4, p5) => {
+        return `${p1}${p2}@{httpp${p4}${p5}`;
+      })
+      .replace(pattern4, (match, p1, p2, p3, p4, p5) => {
+        return `${p1}${p2}@{httpps${p4}${p5}`;
       })
       .value();
 
@@ -64,15 +76,27 @@ class RemoveComments {
       });
 
       // 3. `httpp` -> `http://`
-      const pattern2 = /("|')(\s*)(httpp)([\n\s\S]*?)("|')/gm;
+      const pattern1Re = /("|')(\s*)(httpp)([\n\s\S]*?)("|')/gm;
+      const pattern2Re = /("|')(\s*)(httpps)([\n\s\S]*?)("|')/gm;
+      const pattern3Re = /("|')(\s*)(@\{httpp)([\n\s\S]*?)("|')/gm;
+      const pattern4Re = /("|')(\s*)(@\{httpps)([\n\s\S]*?)("|')/gm;
 
       const result = lodash.chain(tmpResult2)
-      .replace(pattern2, (match, p1, p2, p3, p4, p5) => {
+      .replace(pattern1Re, (match, p1, p2, p3, p4, p5) => {
         return `${p1}${p2}http://${p4}${p5}`;
+      })
+      .replace(pattern2Re, (match, p1, p2, p3, p4, p5) => {
+        return `${p1}${p2}https://${p4}${p5}`;
+      })
+      .replace(pattern3Re, (match, p1, p2, p3, p4, p5) => {
+        return `${p1}${p2}@{http://${p4}${p5}`;
+      })
+      .replace(pattern4Re, (match, p1, p2, p3, p4, p5) => {
+        return `${p1}${p2}@{https://${p4}${p5}`;
       })
       .value();
 
-      // 3. save file
+      // 4. save file
       fs.writeFileSync(this.filePath, result, "utf8");
       return result;
     }

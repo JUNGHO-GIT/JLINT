@@ -120,3 +120,11 @@
 
 ### 🐛 Fixed
   - fixed json, jsonc lang format issue
+
+<br/>
+
+## [1.1.7] - 2023.06.16
+
+### 🐛 Fixed
+  - fixed language select issue on save
+
