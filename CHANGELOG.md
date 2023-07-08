@@ -128,3 +128,11 @@
 ### 🐛 Fixed
   - fixed language select issue on save
 
+<br/>
+
+## [1.1.8] - 2023.07.08
+
+### 🐛 Fixed
+  - fixed remove comments issue
+
+

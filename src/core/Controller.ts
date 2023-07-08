@@ -40,7 +40,6 @@ class Controller {
     if(this.fileExt) {
       const langIndex = langArray2.indexOf(this.fileExt);
       if (langIndex !== -1) {
-
         const langClass = langArray2[langIndex].charAt(0).toUpperCase() + langArray2[langIndex].slice(1);
         const langImport = require(`../rules/${langTitle}/${langClass}`).default;
         console.log("_____________________\n" + this.fileExt + " 파일 지원 가능 ");
