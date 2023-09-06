@@ -4,7 +4,7 @@ import * as vscode from "vscode";
 import prettier from "prettier";
 import Contents from "../common/Contents";
 
-class Java {
+export default class Java {
 
   // 0. resource ---------------------------------------------------------------------------------->
   constructor() {this.main();}
@@ -46,24 +46,21 @@ class Java {
       semi: true,
       singleAttributePerLine: false,
     };
+    try {
+      const prettierCode = prettier.format(data, prettierOptions);
+      fs.writeFileSync(this.filePath, prettierCode, "utf8");
+      return prettierCode;
+    }
+    catch (error) {
+      const message = `${error.message}`;
+      const msg = message.toString();
 
-    if (this.filePath) {
-      try {
-        const prettierCode = prettier.format(data, prettierOptions);
-        fs.writeFileSync(this.filePath, prettierCode, "utf8");
-        return prettierCode;
-      }
-      catch (error) {
-        const message = `${error.message}`;
-        const msg = message.toString();
+      const msgRegex = /(.*Sad sad panda.*)(line.*?)([!]\n.*?found -->)(.*?)(<--!\n*.*$)/gm;
+      const msgRegexReplace = `[JLINT]\n\nError Line\t=\t(  $2  )\nError Site\t=\t(  $4  )`;
+      const msgResult = msg.replace(msgRegex, msgRegexReplace);
 
-        const msgRegex = /(.*Sad sad panda.*)(line.*?)([!]\n.*?found -->)(.*?)(<--!\n*.*$)/gm;
-        const msgRegexReplace = `[JLINT]\n\nError Line\t=\t(  $2  )\nError Site\t=\t(  $4  )`;
-        const msgResult = msg.replace(msgRegex, msgRegexReplace);
-
-        vscode.window.showInformationMessage(msgResult, {modal: true});
-        throw error;
-      }
+      vscode.window.showInformationMessage(msgResult, {modal: true});
+      throw error;
     }
   }
 
@@ -72,5 +69,3 @@ class Java {
     return console.log("_____________________\n" + this.activePath + "  실행");
   }
 }
-
-export default Java;

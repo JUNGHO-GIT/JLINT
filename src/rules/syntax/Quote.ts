@@ -4,7 +4,7 @@ import lodash from "lodash";
 import * as vscode from "vscode";
 import Contents from "../common/Contents";
 
-class Quote {
+export default class Quote {
 
   // 0. resource ---------------------------------------------------------------------------------->
   constructor() {this.main();}
@@ -20,20 +20,17 @@ class Quote {
   public main() {
     const data = this.data();
 
-    if (this.filePath) {
+    const rules1
+    = /(?<!(?:(?:\\['])|(?:['"'])|(?:["'"])))(\s*)(')(\s*)(?!(?:(?:\\['])|(?:['"'])|(?:["'"])))/gm;
 
-      const rules1 = /(?<!(?:(?:\\['])|(?:['"'])|(?:["'"])))(\s*)(')(\s*)(?!(?:(?:\\['])|(?:['"'])|(?:["'"])))/gm;
+    const result = lodash.chain(data)
+    .replace(rules1, (match, p1, p2, p3) => {
+      return `${p1}"${p3}`;
+    })
+    .value();
 
-      const result = lodash.chain(data)
-      .replace(rules1, (match, p1, p2, p3) => {
-        return `${p1}"${p3}`;
-      })
-      .value();
-
-      fs.writeFileSync(this.filePath, result, "utf8");
-      return result;
-    }
-
+    fs.writeFileSync(this.filePath, result, "utf8");
+    return result;
   }
 
   // 3. output ------------------------------------------------------------------------------------>
@@ -41,5 +38,3 @@ class Quote {
     return console.log("_____________________\n" + this.activePath + "  실행");
   }
 }
-
-export default Quote;

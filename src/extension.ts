@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import Main from "./core/index";
 
-const activate = (context: vscode.ExtensionContext) => {
+export const activate = (context: vscode.ExtensionContext) => {
 
   const configuration = () => {
 
@@ -29,5 +29,3 @@ const activate = (context: vscode.ExtensionContext) => {
   };
   configuration();
 };
-
-export { activate };

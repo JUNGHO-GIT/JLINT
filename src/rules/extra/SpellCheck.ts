@@ -4,7 +4,7 @@ import lodash from "lodash";
 import * as vscode from "vscode";
 import Contents from "../common/Contents";
 
-class SpellCheck {
+export default class SpellCheck {
 
   // 0. resource ---------------------------------------------------------------------------------->
   constructor() {this.main();}
@@ -108,7 +108,4 @@ class SpellCheck {
   public output() {
     return console.log("_____________________\n" + this.activePath + "  실행");
   }
-
 }
-
-export default SpellCheck;

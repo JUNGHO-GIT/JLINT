@@ -4,7 +4,7 @@ import lodash from "lodash";
 import * as vscode from "vscode";
 import Contents from "../common/Contents";
 
-class Brackets {
+export default class Brackets {
 
   // 0. resource ---------------------------------------------------------------------------------->
   constructor() {this.main();}
@@ -20,19 +20,16 @@ class Brackets {
   public main() {
     const data = this.data();
 
-    if (this.filePath) {
+    const rules1 = /(\))(\{)/gm;
 
-      const rules1 = /(\))(\{)/gm;
+    const result =lodash.chain(data)
+    .replace(rules1, (match, p1, p2) => {
+      return `${p1} ${p2}`;
+    })
+    .value();
 
-      const result =lodash.chain(data)
-      .replace(rules1, (match, p1, p2) => {
-        return `${p1} ${p2}`;
-      })
-      .value();
-
-      fs.writeFileSync(this.filePath, result, "utf8");
-      return result;
-    }
+    fs.writeFileSync(this.filePath, result, "utf8");
+    return result;
   }
 
   // 2. output ------------------------------------------------------------------------------------>
@@ -40,5 +37,3 @@ class Brackets {
     return console.log("_____________________\n" + this.activePath + "  실행");
   }
 }
-
-export default Brackets;

@@ -4,7 +4,7 @@ import lodash from "lodash";
 import * as vscode from "vscode";
 import Contents from "../common/Contents";
 
-class LineBreak {
+export default class LineBreak {
 
   // 0. resource ---------------------------------------------------------------------------------->
   constructor() {this.main();}
@@ -143,7 +143,4 @@ class LineBreak {
   public output() {
     return console.log("_____________________\n" + this.activePath + "  실행");
   }
-
 }
-
-export default LineBreak;

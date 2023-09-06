@@ -5,7 +5,7 @@ import {load} from "cheerio";
 import prettier from "prettier";
 import Contents from "../common/Contents";
 
-class Html {
+export default class Html {
 
   // 0. resource ---------------------------------------------------------------------------------->
   constructor() {this.main();}
@@ -78,24 +78,21 @@ class Html {
       semi: true,
       singleAttributePerLine: false,
     };
+    try {
+      const prettierCode = prettier.format(data, prettierOptions);
+      fs.writeFileSync(this.filePath, prettierCode, "utf8");
+      return prettierCode;
+    }
+    catch (error) {
+      const message = `${error.message}`;
+      const msg = message.toString();
 
-    if (this.filePath) {
-      try {
-        const prettierCode = prettier.format(data, prettierOptions);
-        fs.writeFileSync(this.filePath, prettierCode, "utf8");
-        return prettierCode;
-      }
-      catch (error) {
-        const message = `${error.message}`;
-        const msg = message.toString();
+      const msgRegex = /([\n\s\S]*)(\s*)(https)(.*?)([(])(.*?)([)])([\n\s\S]*)/gm;
+      const msgRegexReplace = `[JLINT]\n\n Error Line : $5$6$7 \n$8`;
+      const msgResult = msg.replace(msgRegex, msgRegexReplace);
 
-        const msgRegex = /([\n\s\S]*)(\s*)(https)(.*?)([(])(.*?)([)])([\n\s\S]*)/gm;
-        const msgRegexReplace = `[JLINT]\n\n Error Line : $5$6$7 \n$8`;
-        const msgResult = msg.replace(msgRegex, msgRegexReplace);
-
-        vscode.window.showInformationMessage(msgResult, {modal: true});
-        throw error;
-      }
+      vscode.window.showInformationMessage(msgResult, {modal: true});
+      throw error;
     }
   }
 
@@ -104,5 +101,3 @@ class Html {
     return console.log("_____________________\n" + this.activePath + "  실행");
   }
 }
-
-export default Html;

@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 
-class Controller {
+export default class Controller {
 
   // 0. resource ---------------------------------------------------------------------------------->
   private fileExt = vscode.window.activeTextEditor?.document.languageId || "";
@@ -111,5 +111,3 @@ class Controller {
     return extraInit.map((item) => item.output()).join("");
   }
 }
-
-export default Controller;

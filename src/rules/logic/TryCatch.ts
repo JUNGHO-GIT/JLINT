@@ -4,7 +4,7 @@ import lodash from "lodash";
 import * as vscode from "vscode";
 import Contents from "../common/Contents";
 
-class TryCatch {
+export default class TryCatch {
 
   // 0. resource ---------------------------------------------------------------------------------->
   constructor() {this.main();}
@@ -20,36 +20,33 @@ class TryCatch {
   public main() {
     const data = this.data();
 
-    if (this.filePath) {
+    const rules1
+    = /(\b)(try)(?:\s*)(\{)/gm;
+    const rules2
+    = /(.*?)(?<=\})(\s*)(catch)/gm;
+    const rules3
+    = /(.*?)(?<=\})(\s*)(finally)/gm;
 
-      const rules1
-      = /(\b)(try)(?:\s*)(\{)/gm;
-      const rules2
-      = /(.*?)(?<=\})(\s*)(catch)/gm;
-      const rules3
-      = /(.*?)(?<=\})(\s*)(finally)/gm;
+    const result = lodash.chain(data)
+    .replace(rules1, (match, p1, p2, p3) => {
+      return `${p2} {`;
+    })
+    .replace(rules2, (match, p1, p2, p3) => {
+      const indentSize1 = p1.length - `}`.length;
+      const spaceSize = indentSize1 == -1 ? 0 : indentSize1;
+      const insertSize = " ".repeat(spaceSize);
+      return `${p1}\n${insertSize}catch`;
+    })
+    .replace(rules3, (match, p1, p2, p3) => {
+      const indentSize1 = p1.length - `}`.length;
+      const spaceSize = indentSize1 == -1 ? 0 : indentSize1;
+      const insertSize = " ".repeat(spaceSize);
+      return `${p1}\n${insertSize}finally`;
+    })
+    .value();
 
-      const result = lodash.chain(data)
-      .replace(rules1, (match, p1, p2, p3) => {
-        return `${p2} {`;
-      })
-      .replace(rules2, (match, p1, p2, p3) => {
-        const indentSize1 = p1.length - `}`.length;
-        const spaceSize = indentSize1 == -1 ? 0 : indentSize1;
-        const insertSize = " ".repeat(spaceSize);
-        return `${p1}\n${insertSize}catch`;
-      })
-      .replace(rules3, (match, p1, p2, p3) => {
-        const indentSize1 = p1.length - `}`.length;
-        const spaceSize = indentSize1 == -1 ? 0 : indentSize1;
-        const insertSize = " ".repeat(spaceSize);
-        return `${p1}\n${insertSize}finally`;
-      })
-      .value();
-
-      fs.writeFileSync(this.filePath, result, "utf8");
-      return result;
-    }
+    fs.writeFileSync(this.filePath, result, "utf8");
+    return result;
   }
 
   // 3. output ------------------------------------------------------------------------------------>
@@ -57,5 +54,3 @@ class TryCatch {
     return console.log("_____________________\n" + this.activePath + "  실행");
   }
 }
-
-export default TryCatch;

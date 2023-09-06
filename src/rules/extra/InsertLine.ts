@@ -4,7 +4,7 @@ import lodash from "lodash";
 import * as vscode from "vscode";
 import Contents from "../common/Contents";
 
-class InsertLine {
+export default class InsertLine {
 
   // 0. resource ---------------------------------------------------------------------------------->
   constructor() {this.main();}
@@ -144,5 +144,3 @@ class InsertLine {
     return console.log("_____________________\n" + this.activePath + "  실행");
   }
 }
-
-export default InsertLine;
