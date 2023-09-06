@@ -135,4 +135,11 @@
 ### 🐛 Fixed
   - fixed remove comments issue
 
+<br/>
+
+## [1.1.9] - 2023.09.96
+
+### 🐛 Fixed
+  - fixed stuttering issue
+
 

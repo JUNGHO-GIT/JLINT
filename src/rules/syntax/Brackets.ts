@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import lodash from "lodash";
-import vscode from "vscode";
+import * as vscode from "vscode";
 import Contents from "../common/Contents";
 
 class Brackets {

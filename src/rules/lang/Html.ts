@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import vscode from "vscode";
+import * as vscode from "vscode";
 import {load} from "cheerio";
 import prettier from "prettier";
 import Contents from "../common/Contents";
@@ -53,7 +53,7 @@ class Html {
     const data = this.data();
 
     const prettierOptions: any = {
-      parser: "vue",
+      parser: "html",
       singleQuote: false,
       printWidth: 1000,
       tabWidth: 2,

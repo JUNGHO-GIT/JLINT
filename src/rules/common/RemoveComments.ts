@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import stripComments from "strip-comments";
-import vscode from "vscode";
+import * as vscode from "vscode";
 import Contents from "./Contents";
 import lodash from "lodash";
 
@@ -29,14 +29,17 @@ class RemoveComments {
       if (this.fileExt == "jsp") {
         languageOption = "html";
       }
+      else if (this.fileExt == "html") {
+        languageOption = "html";
+      }
+      else if (this.fileExt == "vue") {
+        languageOption = "html";
+      }
       else if (this.fileExt == "javascriptreact" || "jsx") {
         languageOption = "javascript";
       }
       else if (this.fileExt == "typescriptreact" || "tsx") {
         languageOption = "typescript";
-      }
-      else if (this.fileExt == "vue") {
-        languageOption = "html";
       }
       else if (this.fileExt == "json" || "jsonc") {
         languageOption = "javascript";

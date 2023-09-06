@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import vscode from "vscode";
+import * as vscode from "vscode";
 
 class Contents {
 
