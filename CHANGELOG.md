@@ -137,9 +137,16 @@
 
 <br/>
 
-## [1.1.9] - 2023.09.96
+## [1.1.9] - 2023.09.06
 
 ### 🐛 Fixed
   - fixed stuttering issue
+
+<br />
+
+## [1.2.0] - 2023.09.27
+
+### 🐛 Fixed
+  - fixed insert line issue
 
 

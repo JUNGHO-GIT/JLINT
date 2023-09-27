@@ -20,11 +20,11 @@ export default class Brackets {
   public main() {
     const data = this.data();
 
-    const rules1 = /(\))(\{)/gm;
+    const rules1 = /(\))(\s*)(\{)/gm;
 
     const result =lodash.chain(data)
-    .replace(rules1, (match, p1, p2) => {
-      return `${p1} ${p2}`;
+    .replace(rules1, (match, p1, p2, p3) => {
+      return `${p1} ${p3}`;
     })
     .value();
 
