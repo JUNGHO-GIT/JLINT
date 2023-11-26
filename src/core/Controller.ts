@@ -98,7 +98,7 @@ export default class Controller {
     = "extra";
 
     const extraArray1 = [
-      "InsertLine", "SpellCheck", "LineBreak", "Space",
+      "InsertLine", "LineBreak", "Space", "SpellCheck"
     ];
 
     const extraArray2 = extraArray1.filter((item) => !paramArray.includes(item));

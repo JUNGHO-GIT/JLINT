@@ -156,13 +156,7 @@ export default class LineBreak {
   public Css() {}
 
   // 3-5. Xml ------------------------------------------------------------------------------------->
-  public Xml () {
-    const data = this.data();
-
-    if (this.filePath && this.fileExt === "xml") {
-
-    }
-  }
+  public Xml () {}
 
   // 3-6. Json ------------------------------------------------------------------------------------>
   public Json() {}
