@@ -149,7 +149,7 @@
 ### 🐛 Fixed
   - fixed insert line issue
 
-## [1.2.1] - 2023.11.23
+## [1.2.1] - 2023.11.26
 
 ### 🐛 Fixed
   - fixed xml parsing issue
