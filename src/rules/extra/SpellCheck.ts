@@ -108,10 +108,15 @@ export default class SpellCheck {
 
       const rules1
       = /(\s*)(\/\/)(\s*)(--.*?)(>)(\s*)(\n)(\s*)(\/\/)(\s*)(--.*?)(>)([\s\S])/gm;
+      const rules2
+      = /(\s*)([<]select|[<]update)([\s\S]*?)(?:(?<=[>]))([/][*])(\s*)(.*?[.].*?)(\s*)([*][/])(\s*)([\n\s\S]*?)(\s*)([<][/]select[>]|[<][/]update[>])/gm;
 
       const result = lodash.chain(data)
       .replace(rules1, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13) => {
         return `${p1}${p2}${p3}${p4}${p5}${p13}`;
+      })
+      .replace(rules2, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12) => {
+        return `${p1}${p2}${p3}\n\t\t${p4} ${p6} ${p8}\n\t\t${p10}\n\t${p12}\n`;
       })
       .value();
 
