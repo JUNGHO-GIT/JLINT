@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import * as vscode from "vscode";
-import prettier from "prettier";
+import * as prettier from "prettier";
 import Contents from "../common/Contents";
 
 export default class Javascript {
@@ -17,7 +17,7 @@ export default class Javascript {
   }
 
   // 2. main -------------------------------------------------------------------------------------->
-  public main() {
+  public async main() {
     const data = this.data();
 
     const prettierOptions: any = {
@@ -47,7 +47,7 @@ export default class Javascript {
       singleAttributePerLine: false,
     };
     try {
-      const prettierCode = prettier.format(data, prettierOptions);
+      const prettierCode = await prettier.format(data, prettierOptions);
       fs.writeFileSync(this.filePath, prettierCode, "utf8");
       return prettierCode;
     }

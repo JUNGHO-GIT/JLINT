@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import * as vscode from "vscode";
 import {load} from "cheerio";
-import prettier from "prettier";
+import * as prettier from "prettier";
 import Contents from "../common/Contents";
 
 export default class Jsp {
@@ -76,7 +76,7 @@ export default class Jsp {
   }
 
   // 2. main -------------------------------------------------------------------------------------->
-  public main() {
+  public async main() {
     const data = this.data();
 
     const prettierOptions: any = {
@@ -106,7 +106,7 @@ export default class Jsp {
       singleAttributePerLine: false,
     };
     try {
-      const prettierCode = prettier.format(data, prettierOptions);
+      const prettierCode = await prettier.format(data, prettierOptions);
       fs.writeFileSync(this.filePath, prettierCode, "utf8");
       return prettierCode;
     }

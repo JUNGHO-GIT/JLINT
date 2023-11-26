@@ -149,4 +149,14 @@
 ### 🐛 Fixed
   - fixed insert line issue
 
+## [1.2.1] - 2023.11.23
+
+### 🐛 Fixed
+  - fixed xml parsing issue
+  - fixed broken dependency version issue
+
+### ✨ Added
+  - add 'mybatis' language support for xml file (demo)
+  - add sql linting option
+
 
