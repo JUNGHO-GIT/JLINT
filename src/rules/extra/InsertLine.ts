@@ -26,7 +26,12 @@ export default class InsertLine {
   public JsTs() {
     const data = this.data();
 
-    if (this.filePath && this.fileExt === "javascript" || this.fileExt === "javascriptreact" || this.fileExt === "typescript" || this.fileExt === "typescriptreact") {
+    if (
+      this.filePath && this.fileExt === "javascript" ||
+      this.filePath && this.fileExt === "javascriptreact" ||
+      this.filePath && this.fileExt === "typescript" ||
+      this.filePath && this.fileExt === "typescriptreact"
+    ) {
 
       const rules1
       = /^(?!\/\/--)(?!(?:.*\bclassName\b)|(?:.*class=".*"))(?:\n*)(\s*)(public|private|function|class)(?:(\s*.*))(\s*?)/gm;
@@ -90,7 +95,10 @@ export default class InsertLine {
   public HtmlJsp() {
     const data = this.data();
 
-    if (this.filePath && this.fileExt === "html" || this.fileExt === "jsp") {
+    if (
+      this.filePath && this.fileExt === "html" ||
+      this.filePath && this.fileExt === "jsp"
+    ) {
 
       const rules1
       = /^(?!\/\/--)(?:\n*)(\s*)([<]head\s*.*\s*[>])(\s*?)/gm;

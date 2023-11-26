@@ -65,29 +65,29 @@
     "vsce": "vsce package"
   },
   "dependencies": {
-    "@babel/core": "^7.23.3",
-    "cheerio": "1.0.0-rc.12",
-    "fast-xml-parser": "^4.3.2",
-    "glob": "^10.3.10",
+    "@babel/core": "^7.21.8",
+    "cheerio": "^1.0.0-rc.12",
+    "fast-xml-parser": "^4.2.2",
+    "glob": "^10.2.3",
     "lodash": "^4.17.21",
-    "prettier": "^3.1.0",
-    "prettier-plugin-java": "^2.4.0",
+    "prettier-plugin-java": "^2.1.0",
     "prettier-plugin-jsp": "^1.0.13",
+    "prettier-plugin-sql-cst": "^0.8.3",
     "prettier-plugin-xml": "^0.1.0",
     "strip-comments": "^2.0.1"
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",
-    "@types/lodash": "^4.14.202",
-    "@types/mocha": "^10.0.6",
-    "@types/node": "^20.9.4",
-    "@types/prettier": "^3.0.0",
-    "@types/strip-comments": "^2.0.4",
-    "@types/vscode": "^1.84.2",
-    "@vscode/test-electron": "^2.3.7",
-    "eslint": "^8.54.0",
-    "glob": "^10.3.10",
+    "@types/lodash": "^4.14.194",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^16.11.12",
+    "@types/prettier": "^2.7.2",
+    "@types/strip-comments": "^2.0.1",
+    "@types/vscode": "^1.78.0",
+    "@vscode/test-electron": "^2.3.0",
+    "eslint": "^8.39.0",
+    "glob": "^8.1.0",
     "mocha": "^10.2.0",
-    "typescript": "^5.3.2"
+    "typescript": "^5.0.4"
   }
 }

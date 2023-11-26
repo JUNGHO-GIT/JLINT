@@ -22,18 +22,19 @@ export default class Tags {
     const data = this.data();
 
     // 1. except only xml file
-    if(this.fileExt === "xml") {
+    if (this.fileExt === "xml") {
       fs.writeFileSync(this.filePath, data, "utf8");
       return data;
     }
-    // 2. allow other files
-    if(this.fileExt !== "xml") {
+
+    // 2. html, vue, jsp
+    else {
       const rules1
-      = /(<)(area|base|br|col|command|embed|hr|img|input|keygen|link|meta|param|source|track|wbr)(\s*)([\n\s\S]*?)(\s*)(?<!=)(\/>)/gm;
+      = /(<\s*)(hr|img|link|meta|input)((?:(?!--)[\s\S])*?)(\s*)(?:(?!--)\/?[>])/gm;
 
       const result = lodash.chain(data)
-      .replace(rules1, (match, p1, p2, p3, p4, p5, p6) => {
-        return `${p1}${p2}${p3}${p4}${p5}/>`;
+      .replace(rules1, (match, p1, p2, p3, p4, p5) => {
+        return `<${p2}${p3}${p4} />`;
       })
       .value();
 

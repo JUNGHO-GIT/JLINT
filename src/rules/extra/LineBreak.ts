@@ -19,14 +19,21 @@ export default class LineBreak {
 
   // 2. main -------------------------------------------------------------------------------------->
   public main() {
-    return this.JsTs() + this.Java() + this.HtmlJsp();
+    return this.JsTs() + this.Java()
+    + this.HtmlJsp() + this.Css()
+    + this.Xml() + this.Json() + this.Sql();
   }
 
   // 3-1. JsTs ------------------------------------------------------------------------------------>
   public JsTs() {
     const data = this.data();
 
-    if (this.filePath && this.fileExt === "javascript" || this.fileExt === "javascriptreact" || this.fileExt === "typescript" || this.fileExt === "typescriptreact") {
+    if (
+      this.filePath && this.fileExt === "javascript" ||
+      this.filePath && this.fileExt === "javascriptreact" ||
+      this.filePath && this.fileExt === "typescript" ||
+      this.filePath && this.fileExt === "typescriptreact"
+    ) {
 
       const rules1
       = /(>)(\n*)(?:\})(?:\n*)(function)/gm;
@@ -106,12 +113,23 @@ export default class LineBreak {
   public HtmlJsp() {
     const data = this.data();
 
-    if (this.filePath && this.fileExt === "html" || this.fileExt === "jsp") {
+    if (
+      this.filePath && this.fileExt === "html" ||
+      this.filePath && this.fileExt === "jsp"
+    ) {
 
       const rules1
       = /(?:\n*)(\s*)(<\/body>)(\s*?)/gm;
       const rules2
       = /(.*?)(\n*)(\s*)(\/\/ -.*>)/gm;
+      const rules3
+      = /(\s*)(\/>)(\s*)(\n+)(\s*)(<meta)/gm;
+      const rules4
+      = /(\s*)(\/>)(\s*)(\n+)(\s*)(<link)/gm;
+      const rules5
+      = /(\s*)(\/>)(\s*)(\n+)(\s*)(<script)/gm;
+      const rules6
+      = /(\s*)(script>)(\s*)(\n+)(\s*)(<script)/gm;
 
       const result = lodash.chain(data)
       .replace(rules1, (match, p1, p2, p3) => {
@@ -119,6 +137,18 @@ export default class LineBreak {
       })
       .replace(rules2, (match, p1, p2, p3, p4) => {
         return `${p1}\n\n${p3}${p4}`;
+      })
+      .replace(rules3, (match, p1, p2, p3, p4, p5, p6) => {
+        return `${p1}${p2}\n${p5}${p6}`;
+      })
+      .replace(rules4, (match, p1, p2, p3, p4, p5, p6) => {
+        return `${p1}${p2}\n${p5}${p6}`;
+      })
+      .replace(rules5, (match, p1, p2, p3, p4, p5, p6) => {
+        return `${p1}${p2}\n${p5}${p6}`;
+      })
+      .replace(rules6, (match, p1, p2, p3, p4, p5, p6) => {
+        return `${p1}${p2}\n${p5}${p6}`;
       })
       .value();
 

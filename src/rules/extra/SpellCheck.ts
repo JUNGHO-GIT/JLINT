@@ -18,15 +18,20 @@ export default class SpellCheck {
   }
 
   // 2. main -------------------------------------------------------------------------------------->
-  public main() {
+  public main () {
     return this.JsTs() + this.Java() + this.HtmlJsp();
   }
 
   // 3-1. JsTs ------------------------------------------------------------------------------------>
-  public JsTs() {
+  public JsTs () {
     const data = this.data();
 
-    if (this.filePath && this.fileExt === "javascript" || this.fileExt === "javascriptreact" || this.fileExt === "typescript" || this.fileExt === "typescriptreact") {
+    if (
+      this.filePath && this.fileExt === "javascript" ||
+      this.filePath && this.fileExt === "javascriptreact" ||
+      this.filePath && this.fileExt === "typescript" ||
+      this.filePath && this.fileExt === "typescriptreact"
+    ) {
 
       const rules1
       = /(\s*)(\/\/)(\s*)(--.*?)(>)(\s*)(\n)(\s*)(\/\/)(\s*)(--.*?)(>)([\s\S])/gm;
@@ -43,7 +48,7 @@ export default class SpellCheck {
   }
 
   // 3-2. Java ------------------------------------------------------------------------------------>
-  public Java() {
+  public Java () {
     const data = this.data();
 
     if (this.filePath && this.fileExt === "java") {
@@ -73,10 +78,13 @@ export default class SpellCheck {
   }
 
   // 3-3. HtmlJsp --------------------------------------------------------------------------------->
-  public HtmlJsp() {
+  public HtmlJsp () {
     const data = this.data();
 
-    if (this.filePath && this.fileExt === "html" || this.fileExt === "jsp") {
+    if (
+      this.filePath && this.fileExt === "html" ||
+      this.filePath && this.fileExt === "jsp"
+    ) {
 
       const rules1
       = /(\s*)(<!)(--.*?)(>)(\s*)(\n)(\s*)(<!)(--.*?)(>)([\s\S])/gm;
@@ -93,10 +101,27 @@ export default class SpellCheck {
   }
 
   // 3-4. Css ------------------------------------------------------------------------------------->
-  public Css() {}
+  public Css () {}
 
   // 3-5. Xml ------------------------------------------------------------------------------------->
-  public Xml() {}
+  public Xml () {
+    const data = this.data();
+
+    if (this.filePath && this.fileExt === "xml") {
+
+      const rules1
+      = /(\s*)(\/\/)(\s*)(--.*?)(>)(\s*)(\n)(\s*)(\/\/)(\s*)(--.*?)(>)([\s\S])/gm;
+
+      const result = lodash.chain(data)
+      .replace(rules1, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13) => {
+        return `${p1}${p2}${p3}${p4}${p5}${p13}`;
+      })
+      .value();
+
+      fs.writeFileSync(this.filePath, result, "utf8");
+      return result;
+    }
+  }
 
   // 3-6. Json ------------------------------------------------------------------------------------>
   public Json() {}

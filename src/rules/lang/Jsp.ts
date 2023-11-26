@@ -76,7 +76,7 @@ export default class Jsp {
   }
 
   // 2. main -------------------------------------------------------------------------------------->
-  public async main() {
+  public main() {
     const data = this.data();
 
     const prettierOptions: any = {
@@ -106,7 +106,7 @@ export default class Jsp {
       singleAttributePerLine: false,
     };
     try {
-      const prettierCode = await prettier.format(data, prettierOptions);
+      const prettierCode = prettier.format(data, prettierOptions);
       fs.writeFileSync(this.filePath, prettierCode, "utf8");
       return prettierCode;
     }

@@ -26,7 +26,12 @@ export default class Space {
   public JsTs() {
     const data = this.data();
 
-    if (this.filePath && this.fileExt === "javascript" || this.fileExt === "javascriptreact" || this.fileExt === "typescript" || this.fileExt === "typescriptreact") {
+    if (
+      this.filePath && this.fileExt === "javascript" ||
+      this.filePath && this.fileExt === "javascriptreact" ||
+      this.filePath && this.fileExt === "typescript" ||
+      this.filePath && this.fileExt === "typescriptreact"
+    ) {
 
       const rules1
       = /(\s*?)(public|private|function)(\s*)([\s\S]*?)(\s*)(\()(\s*)([\s\S]*?)(\s*)(\))(\s*)(([\s\S]*?))(\s*?)(\{)/gm;
@@ -81,7 +86,10 @@ export default class Space {
   public HtmlJsp() {
     const data = this.data();
 
-    if (this.filePath && this.fileExt === "html" || this.fileExt === "jsp") {
+    if (
+      this.filePath && this.fileExt === "html" ||
+      this.filePath && this.fileExt === "jsp"
+    ) {
 
       const rules1
       = /(<%@)(\s*)(page)/gm;

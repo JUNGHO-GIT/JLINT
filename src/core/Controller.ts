@@ -12,7 +12,7 @@ export default class Controller {
     = "common";
 
     const commonArray1 = [
-      "Contents", "SingleTags", "RemoveComments"
+      "Contents", "RemoveComments", "SingleTags"
     ];
 
     const commonArray2 = commonArray1.filter((item) => !paramArray.includes(item));

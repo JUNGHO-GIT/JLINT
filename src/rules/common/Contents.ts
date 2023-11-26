@@ -17,6 +17,8 @@ export default class Contents {
   // 2. main -------------------------------------------------------------------------------------->
   public main() {
     const data = this.data();
+
+    // 1. indent 2 spaces
     const updateContent = data.split("\n").map(line => {
       const indentMatch = line.match(/^(\s+)/);
       if (indentMatch) {
