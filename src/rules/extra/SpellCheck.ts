@@ -19,7 +19,7 @@ export default class SpellCheck {
 
   // 2. main -------------------------------------------------------------------------------------->
   public main () {
-    return this.JsTs() + this.Java() + this.HtmlJsp();
+    return this.JsTs() + this.Java() + this.HtmlJsp() + this.Css() + this.Xml() + this.Json() + this.Sql();
   }
 
   // 3-1. JsTs ------------------------------------------------------------------------------------>
@@ -81,10 +81,7 @@ export default class SpellCheck {
   public HtmlJsp () {
     const data = this.data();
 
-    if (
-      this.filePath && this.fileExt === "html" ||
-      this.filePath && this.fileExt === "jsp"
-    ) {
+    if (this.filePath && this.fileExt === "html" || this.filePath && this.fileExt === "jsp") {
 
       const rules1
       = /(\s*)(<!)(--.*?)(>)(\s*)(\n)(\s*)(<!)(--.*?)(>)([\s\S])/gm;

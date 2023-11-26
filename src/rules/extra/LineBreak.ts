@@ -19,9 +19,7 @@ export default class LineBreak {
 
   // 2. main -------------------------------------------------------------------------------------->
   public main() {
-    return this.JsTs() + this.Java()
-    + this.HtmlJsp() + this.Css()
-    + this.Xml() + this.Json() + this.Sql();
+    return this.JsTs() + this.Java() + this.HtmlJsp() + this.Css() + this.Xml() + this.Json() + this.Sql();
   }
 
   // 3-1. JsTs ------------------------------------------------------------------------------------>
@@ -113,10 +111,7 @@ export default class LineBreak {
   public HtmlJsp() {
     const data = this.data();
 
-    if (
-      this.filePath && this.fileExt === "html" ||
-      this.filePath && this.fileExt === "jsp"
-    ) {
+    if (this.filePath && this.fileExt === "html" || this.filePath && this.fileExt === "jsp") {
 
       const rules1
       = /(?:\n*)(\s*)(<\/body>)(\s*?)/gm;
@@ -161,7 +156,13 @@ export default class LineBreak {
   public Css() {}
 
   // 3-5. Xml ------------------------------------------------------------------------------------->
-  public Xml() {}
+  public Xml () {
+    const data = this.data();
+
+    if (this.filePath && this.fileExt === "xml") {
+
+    }
+  }
 
   // 3-6. Json ------------------------------------------------------------------------------------>
   public Json() {}
