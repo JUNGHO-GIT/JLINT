@@ -45,10 +45,12 @@ export default class InsertLine {
       = /^(?!\/\/--)(?:\n*)(\s*)(return\s*.*?\s*[<])(\s*?)/gm;
       const rules6
       = /^(?!\/\/--)(?:\n*)(\s*)(var\s*\S+\s*=\s*function)(?:\n*)(?:(\s*.*))(\s*?)/gm;
+      const rules7
+      = /^(?!\/\/--)(?:\n*)(\s*)([$][(]document[)][.]ready[(]\s*function\s*\(\s*\)\s*\{)(\s*?)/gm;
 
       let result = lodash.chain(data);
 
-      for (let i = 1; i <= 6; i++) {
+      for (let i = 1; i <= 7; i++) {
         const rule = eval(`rules${i}`);
         result = result.replace(rule, (match, p1, p2, p3) => {
           const spaceSize = 100 - (p1.length + `// `.length + `>`.length);

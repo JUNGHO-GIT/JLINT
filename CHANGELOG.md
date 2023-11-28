@@ -159,4 +159,9 @@
   - add 'mybatis' language support for xml file (demo)
   - add sql linting option
 
+## [1.2.2] - 2023.11.28
+
+### 🐛 Fixed
+  - fixed if-elseif-else syntax rules
+  - add bracket to single line 'if' syntax
 

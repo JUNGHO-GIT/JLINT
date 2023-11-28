@@ -34,15 +34,20 @@ export default class Space {
     ) {
 
       const rules1
-      = /(\s*?)(public|private|function)(\s*)([\s\S]*?)(\s*)(\()(\s*)([\s\S]*?)(\s*)(\))(\s*)(([\s\S]*?))(\s*?)(\{)/gm;
+      = /(\s*?)(public|private|function)(\s*)([\s\S]*?)(\s*)(\()(\s*)([\s\S]*?)(\s*)(\))(\s*)([\s\S]*?)(\s*?)(\{)/gm;
       const rules2
+      = /(\s*)(public|private|function)(\s*)(\()([\s\S]*)(\))([\s\S]*)(\{)/gm;
+      const rules3
       = /^(\s*\/\/ --.*){2}(\n*)(^\s*)(public|private|function)(.*)/gm;
 
       const result = lodash.chain(data)
-      .replace(rules1, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15) => {
-        return `${p1}${p2} ${p4} ${p6}${p8}${p10} ${p12} ${p15}`;
+      .replace(rules1, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14) => {
+        return `${p1}${p2} ${p4} ${p6}${p8}${p10} ${p12} ${p14}`;
       })
-      .replace(rules2, (match, p1, p2, p3, p4, p5) => {
+      .replace(rules2, (match, p1, p2, p3, p4, p5, p6, p7, p8) => {
+        return `${p1}${p2} ${p4}${p5}${p6} {`;
+      })
+      .replace(rules3, (match, p1, p2, p3, p4, p5) => {
         return `${p2}${p3}${p4}${p5}`;
       })
       .value();
