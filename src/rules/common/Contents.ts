@@ -11,7 +11,7 @@ export default class Contents {
 
   // 1. data -------------------------------------------------------------------------------------->
   public data() {
-    return fs.readFileSync(this.filePath, "utf8");
+    return vscode.window.activeTextEditor.document.getText();
   }
 
   // 2. main -------------------------------------------------------------------------------------->

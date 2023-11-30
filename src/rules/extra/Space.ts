@@ -116,39 +116,7 @@ export default class Space {
   public Css() {}
 
   // 3-5. Xml ------------------------------------------------------------------------------------->
-  public Xml () {
-    const data = this.data();
-
-    if (this.filePath && this.fileExt === "xml") {
-
-      const rules1
-      = /(\S*)(\s*)(\n)(^\s*)([,])/gm;
-      const rules2
-      = /(\S*)(\s+)([,])(\s+)(\S*)/gm;
-      const rules3
-      = /(\S)([,])(\S)/gm;
-      const rules4
-      = /(\S)([=])(\S)/gm;
-
-      const result = lodash.chain(data)
-      .replace(rules1, (match, p1, p2, p3, p4, p5) => {
-        return `${p1},`;
-      })
-      .replace(rules2, (match, p1, p2, p3, p4, p5) => {
-        return `${p1}, ${p5}`;
-      })
-      .replace(rules3, (match, p1, p2, p3) => {
-        return `${p1}, ${p3}`;
-      })
-      .replace(rules4, (match, p1, p2, p3) => {
-        return `${p1} = ${p3}`;
-      })
-      .value();
-
-      fs.writeFileSync(this.filePath, result, "utf8");
-      return result;
-    }
-  }
+  public Xml () {}
 
   // 3-6. Json ------------------------------------------------------------------------------------>
   public Json() {}
