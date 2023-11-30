@@ -26,21 +26,21 @@ export default class IfElse {
     = /(\s*)([\s\S]*)(\s*)([;])(\s*)(else(?!\s*if))/gm;
 
     const rules33
-    = /(?!\n)^(\s*)(else(?!\s*if))(\s*)((?!{)(.*?)[^}])(?<=;)/gm;
+    = /(?!\n)(^\s*)(else(?!\s*if))(\s*)((?!{)(.*?))[^}](?<=;)/gm;
     const rules3
-    = /(?!\n)^(\s*)[}](\s*)(else(?!\s*if))(\s*)((?!{)(.*?)[^}])(?<=;)/gm;
+    = /(?!\n)(^\s*)[}](\s*)(else(?!\s*if))(\s*)((?!{)(.*?))[^}](?<=;)/gm;
     const rules4
-    = /(?!\n)^(\s*)(if|else if)(\s*)[(]((?:[^()]|[(](?:[^()]|[(][^()]*[)])*[)])*)[)]((?!{)(.*?)[^}])(?<=;)/gm;
+    = /(?!\n)(^\s*)(if|else if)(\s*)[(]((?:[^()]|[(](?:[^()]|[(][^()]*[)])*[)])*)[)]((?!{)(.*?))[^}](?<=;)/gm;
 
     const rules5
     = /(.*?)(?<=[}])(\s*)(\n*)(\s*)(else(?!\s*if))(\s*)([{]\s*)(.*?;)(\s*[}])/gm;
     const rules55
-    = /(?!\n)^(\s*)[}](\s*)(else(?!\s*if))(\s*)/gm;
+    = /(?!\n)(^\s*)[}](\s*)(else(?!\s*if))(\s*)/gm;
 
     const rules6
     = /(.*?)(?<=[}])(\s*)(\n*)(\s*)(else if)(\s*)([(]\s*)([\s\S]*?)(\s*[)])(\s*)([{]\s*)([\s\S]*?;)(\s*[}])/gm;
     const rules66
-    = /(?!\n)^(\s*)[}](\s*)(else if)(\s*)/gm;
+    = /(?!\n)(^\s*)[}](\s*)(else if)(\s*)/gm;
 
     const result = lodash.chain(data)
     .replace(rules1, (match, p1, p2, p3) => {
@@ -56,7 +56,7 @@ export default class IfElse {
     .replace(rules3, (match, p1, p2, p3, p4, p5) => {
       return `${p1}}\n${p1}${p3} {\n${p1}\t${p5};\n${p1}}`;
     })
-    .replace(rules4, (match, p1, p2, p3, p4, p5, p6) => {
+    .replace(rules4, (match, p1, p2, p3, p4, p5) => {
       return `${p1}${p2} (${p4}) {\n${p1}\t${p5};\n${p1}}`;
     })
 
