@@ -2,7 +2,6 @@ import fs from "fs";
 import path from "path";
 import * as vscode from "vscode";
 import * as prettier from "prettier";
-import lodash from "lodash";
 import Contents from "../common/Contents";
 
 export default class Xml {
@@ -18,7 +17,7 @@ export default class Xml {
   }
 
   // 2. main -------------------------------------------------------------------------------------->
-  public main() {
+  public async main() {
     const data = this.data();
 
     const prettierOptions: any = {
@@ -49,7 +48,7 @@ export default class Xml {
     };
     try {
       const prettierCode = prettier.format(data, prettierOptions);
-      fs.writeFileSync(this.filePath, prettierCode, "utf8");
+      fs.writeFileSync(this.filePath, await prettierCode, "utf8");
       return prettierCode;
     }
     catch (error) {

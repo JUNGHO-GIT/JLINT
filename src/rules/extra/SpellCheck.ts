@@ -114,6 +114,8 @@ export default class SpellCheck {
       = /(\n+)(\s*)(select|from|update|set|where|order by|group by|left join|right join)(\s*)/gmi;
       const rules4
       = /(,)(\s*)(\n+)(\s*)(case when|ISNULL|IFNULL)/gmi;
+      const rules5
+      = /(\s*)([<]select|[<]update|[<]insert)(\s*)(id=)(\S*)(\s*)(resultType=)(\S*)(\s*)(parameterType=)(\S*)(\s*)([>])/gm;
 
       const result = lodash.chain(data)
       .replace(rules1, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13) => {
@@ -127,6 +129,9 @@ export default class SpellCheck {
       })
       .replace(rules4, (match, p1, p2, p3, p4, p5) => {
         return `, ${p5}`;
+      })
+      .replace(rules5, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13) => {
+        return `${p1}${p2}${p3}${p4}${p5} ${p10}${p11} ${p7}${p8}${p13}`;
       })
       .value();
 

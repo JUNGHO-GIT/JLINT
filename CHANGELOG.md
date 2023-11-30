@@ -165,3 +165,8 @@
   - fixed if-elseif-else syntax rules
   - add bracket to single line 'if' syntax
 
+## [1.2.3] - 2023.11.30
+
+### ✨ Added
+  - add mybatis sql linting option
+
