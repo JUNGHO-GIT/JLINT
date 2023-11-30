@@ -49,7 +49,7 @@ export default class Html {
   }
 
   // 2. main -------------------------------------------------------------------------------------->
-  public main() {
+  public async main() {
     const data = this.data();
 
     const prettierOptions: any = {
@@ -80,7 +80,7 @@ export default class Html {
     };
     try {
       const prettierCode = prettier.format(data,prettierOptions);
-      fs.writeFileSync(this.filePath, prettierCode, "utf8");
+      fs.writeFileSync(this.filePath, await prettierCode, "utf8");
       return prettierCode;
     }
     catch (error) {
