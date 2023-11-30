@@ -109,7 +109,7 @@ export default class SpellCheck {
       const rules1
       = /(\s*)(\/\/)(\s*)(--.*?)(>)(\s*)(\n)(\s*)(\/\/)(\s*)(--.*?)(>)([\s\S])/gm;
       const rules2
-      = /(^\s*)([<]select|[<]update)([\s\S]*?)(?:(?<=[>]))([/][*])(\s*)(.*?[.].*?)(\s*)([*][/])(\s*)([\n\s\S]*?)(\s*)([<][/]select[>]|[<][/]update[>])/gm;
+      = /(^\s*)([<]select|[<]update)([\s\S]*?)(?<=[>])(\s*)([/][*])(\s*)(.*?[.].*?)(\s*)([*][/])(\s*)([\n\s\S]*?)(\s*)([<][/]select[>]|[<][/]update[>])/gm;
       const rules3
       = /(\n+)(^\s*)(select|from|update|set|where|order by|group by|left join|right join)(\s*)/gmi;
       const rules4
@@ -130,8 +130,9 @@ export default class SpellCheck {
       .replace(rules1, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13) => {
         return `${p1}${p2}${p3}${p4}${p5}${p13}`;
       })
-      .replace(rules2, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12) => {
-        return `${p1}${p2}${p3}\n${p1}\t${p4} ${p6} ${p8}\n${p1}\t${p10}\n${p1}${p12}\n`;
+      .replace(rules2, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13) => {
+        return `${p1}${p2}${p3}\n${p1}\t${p5} ${p7} ${p9}\n${p1}\t${p11}\n${p1}${p13}`;
+        // $1$2$3\n$1\t$5 $7 $9\n$1\t$11\n$1$13
       })
       .replace(rules3, (match, p1, p2, p3, p4) => {
         return `\n\t\t${p3}\n\t\t\t`;
