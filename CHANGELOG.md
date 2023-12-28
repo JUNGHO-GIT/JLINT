@@ -170,3 +170,8 @@
 ### ✨ Added
   - add mybatis sql linting option
 
+## [1.2.6] - 2023.12;29
+
+### 🐛 Fixed
+  - fixed javascript bracket issue
+

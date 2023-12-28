@@ -30,13 +30,13 @@ export default class IfElse {
     const rules4
     = /(?!\n)(^\s*)\}(\s*)(else(?!\s*if))(\s*)((?!{)(.*?))[^}](?<=;)/gm;
     const rules5
-    = /(?!\n)(^\s*)(if|else if)(\s*)[(]((?:[^()]|[(](?:[^()]|[(][^()]*[)])*[)])*)[)]((?!{)(.*?))[^}](?<=;)/gm;
+    = /(?!\n)(^\s*)(if|else if)(\s*)\(((?:[^()]|\((?:[^()]|\([^()]*\))*\))*)\)((?!{)(.*?))[^}](?<=;)/gm;
     const rules6
-    = /(.*?)(?<=\})(\s*)(\n*)(\s*)(else(?!\s*if))(\s*)(\{\s*)(.*?;)(\s*\})/gm;
-    const rules7
     = /(?!\n)(^\s*)(\})(\s*)(else(?!\s*if))(\s*)(\{)/gm;
+    const rules7
+    = /(.*?)(?<=\})(\s*)(\n*)(\s*)(else(?!\s*if))(\s*)(\{\s*)(.*?;)(\s*\})/gm;
     const rules8
-    = /(.*?)(?<=\})(\s*)(\n*)(\s*)(else if)(\s*)([(]\s*)([\s\S]*?)(\s*[)])(\s*)(\{\s*)([\s\S]*?;)(\s*\})/gm;
+    = /(.*?)(?<=\})(\s*)(\n*)(\s*)(else if)(\s*)(\(\s*)([\s\S]*?)(\s*\))(\s*)(\{\s*)([\s\S]*?;)(\s*\})/gm;
     const rules9
     = /(?!\n)(^\s*)\}(\s*)(else if)(\s*)/gm;
 
@@ -56,15 +56,15 @@ export default class IfElse {
     .replace(rules5, (match, p1, p2, p3, p4, p5) => {
       return `${p1}${p2} (${p4}) {\n${p1}\t${p5};\n${p1}}`;
     })
-    .replace(rules6, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9) => {
+    .replace(rules6, (match, p1, p2, p3, p4, p5, p6) => {
+      return `${p1}}\n${p1}${p4} {`;
+    })
+    .replace(rules7, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) => {
       const indentSize1 = p1.length - `}`.length;
       const indentSize2 = p9.length - `}`.length;
       const spaceSize = indentSize1 == -1 ? indentSize2 : indentSize1;
       const insertSize = " ".repeat(spaceSize);
       return `${p1}\n${insertSize}${p5} {\n${insertSize}\t${p8}\n${insertSize}}`;
-    })
-    .replace(rules7, (match, p1, p2, p3, p4, p5, p6) => {
-      return `${p1}}\n${p1}${p4} {`;
     })
     .replace(rules8, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13) => {
       const indentSize1 = p1.length - `}`.length;

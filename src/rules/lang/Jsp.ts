@@ -115,7 +115,7 @@ export default class Jsp {
       const message = `${error.message}`;
       const msg = message.toString();
 
-      const msgRegex = /([\n\s\S]*)(\s*)(https)(.*?)([(])(.*?)([)])([\n\s\S]*)/gm;
+      const msgRegex = /([\n\s\S]*)(\s*)(https)(.*?)(\()(.*?)(\))([\n\s\S]*)/gm;
       const msgRegexReplace = `[JLINT]\n\n[  Error Line : $5$6$7 ]\n\n$8`;
       const msgResult = msg.replace(msgRegex, msgRegexReplace);
 
