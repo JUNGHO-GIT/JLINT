@@ -14,12 +14,19 @@ export default class Space {
 
   // 1. data -------------------------------------------------------------------------------------->
   public data() {
-    return new Contents().main().toString();
+    return new Contents().main();
   }
 
   // 2. main -------------------------------------------------------------------------------------->
   public main() {
-    return this.JsTs() + this.Java() + this.HtmlJsp() + this.Css() + this.Xml() + this.Json() + this.Sql();
+    return this.JsTs()
+    + this.Java()
+    + this.HtmlJsp()
+    + this.Css()
+    + this.Xml()
+    + this.Json()
+    + this.Sql()
+    + this.All();
   }
 
   // 3-1. JsTs ------------------------------------------------------------------------------------>
@@ -27,10 +34,10 @@ export default class Space {
     const data = this.data();
 
     if (
-      this.filePath && this.fileExt === "javascript" ||
-      this.filePath && this.fileExt === "javascriptreact" ||
-      this.filePath && this.fileExt === "typescript" ||
-      this.filePath && this.fileExt === "typescriptreact"
+      this.fileExt === "javascript" ||
+      this.fileExt === "javascriptreact" ||
+      this.fileExt === "typescript" ||
+      this.fileExt === "typescriptreact"
     ) {
 
       const rules1
@@ -61,7 +68,7 @@ export default class Space {
   public Java() {
     const data = this.data();
 
-    if (this.filePath && this.fileExt === "java") {
+    if (this.fileExt === "java") {
 
       const rules1
       = /(\s*)(\))(\s+)(;)/gm;
@@ -91,7 +98,7 @@ export default class Space {
   public HtmlJsp() {
     const data = this.data();
 
-    if (this.filePath && this.fileExt === "html" || this.filePath && this.fileExt === "jsp") {
+    if (this.fileExt === "html" || this.fileExt === "jsp") {
 
       const rules1
       = /(<%@)(\s*)(page)/gm;
@@ -123,6 +130,23 @@ export default class Space {
 
   // 3-7. Sql ------------------------------------------------------------------------------------->
   public Sql() {}
+
+  // 3-8. All ------------------------------------------------------------------------------------->
+  public All () {
+    const data = this.data();
+
+    const rules1
+    = /(\s*?)(public|private|function)(\s*)(\()(\s*)([\s\S]*?)(\s*)(\))(\s*)(\{)/gm;
+
+    const result = lodash.chain(data)
+    .replace(rules1, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) => {
+      return `${p1}${p2} (${p6}) {`;
+    })
+    .value();
+
+    fs.writeFileSync(this.filePath, result, "utf8");
+    return result;
+  }
 
   // 4. output ------------------------------------------------------------------------------------>
   public output() {

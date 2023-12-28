@@ -14,12 +14,19 @@ export default class InsertLine {
 
   // 1. data -------------------------------------------------------------------------------------->
   public data() {
-    return new Contents().main().toString();
+    return new Contents().main();
   }
 
   // 2. main -------------------------------------------------------------------------------------->
   public main() {
-    return this.JsTs() + this.Java() + this.HtmlJsp() + this.Css() + this.Xml() + this.Json() + this.Sql();
+    return this.JsTs()
+    + this.Java()
+    + this.HtmlJsp()
+    + this.Css()
+    + this.Xml()
+    + this.Json()
+    + this.Sql()
+    + this.All();
   }
 
   // 3-1. JsTs ------------------------------------------------------------------------------------>
@@ -27,10 +34,10 @@ export default class InsertLine {
     const data = this.data();
 
     if (
-      this.filePath && this.fileExt === "javascript" ||
-      this.filePath && this.fileExt === "javascriptreact" ||
-      this.filePath && this.fileExt === "typescript" ||
-      this.filePath && this.fileExt === "typescriptreact"
+      this.fileExt === "javascript" ||
+      this.fileExt === "javascriptreact" ||
+      this.fileExt === "typescript" ||
+      this.fileExt === "typescriptreact"
     ) {
 
       const rules1
@@ -70,7 +77,7 @@ export default class InsertLine {
   public Java() {
     const data = this.data();
 
-    if (this.filePath && this.fileExt === "java") {
+    if (this.fileExt === "java") {
 
       const rules1
       = /^(?!\/\/--)(?!(?:.*\bclassName\b)|(?:.*class=".*"))(?:\n*)(\s*)(public|private|function|class)(?:(\s*.*))(\s*?)/gm;
@@ -97,7 +104,7 @@ export default class InsertLine {
   public HtmlJsp() {
     const data = this.data();
 
-    if (this.filePath && this.fileExt === "html" || this.filePath && this.fileExt === "jsp") {
+    if (this.fileExt === "html" || this.fileExt === "jsp") {
 
       const rules1
       = /^(?!\/\/--)(?:\n*)(\s*)([<]head\s*.*\s*[>])(\s*?)/gm;
@@ -147,6 +154,9 @@ export default class InsertLine {
 
   // 3-7. Sql ------------------------------------------------------------------------------------->
   public Sql() {}
+
+  // 3-8. All ------------------------------------------------------------------------------------->
+  public All () {}
 
   // 4. output ------------------------------------------------------------------------------------>
   public output() {

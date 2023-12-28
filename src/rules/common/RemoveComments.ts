@@ -15,7 +15,7 @@ export default class RemoveComments {
 
   // 1. data -------------------------------------------------------------------------------------->
   public data() {
-    return new Contents().main().toString();
+    return new Contents().main();
   }
 
   // 2. main -------------------------------------------------------------------------------------->
@@ -24,19 +24,34 @@ export default class RemoveComments {
 
     // 1. language option
     let languageOption: string;
-    if (this.fileExt === "html" || this.fileExt === "jsp" || this.fileExt === "vue") {
+    if (
+      this.fileExt === "html" ||
+      this.fileExt === "jsp" ||
+      this.fileExt === "vue"
+    ) {
       languageOption = "html";
     }
-    if (this.fileExt === "javascriptreact" || this.fileExt === "jsx") {
+    if (
+      this.fileExt === "javascriptreact" ||
+      this.fileExt === "jsx"
+    ) {
       languageOption = "javascript";
     }
-    if (this.fileExt === "typescriptreact" || this.fileExt === "tsx") {
+    if (
+      this.fileExt === "typescriptreact" ||
+      this.fileExt === "tsx"
+    ) {
       languageOption = "typescript";
     }
-    if (this.fileExt === "json" || this.fileExt === "jsonc") {
+    if (
+      this.fileExt === "json" ||
+      this.fileExt === "jsonc"
+    ) {
       languageOption = "javascript";
     }
-    if (this.fileExt === "xml") {
+    if (
+      this.fileExt === "xml"
+    ) {
       languageOption = "xml";
     }
 

@@ -1,4 +1,4 @@
-import fs from "fs";
+import * as fs from "fs";
 import path from "path";
 import * as vscode from "vscode";
 
@@ -8,10 +8,11 @@ export default class Contents {
   constructor() {this.main();}
   private activePath = path.basename(__filename);
   private filePath = vscode.window.activeTextEditor?.document.uri.fsPath;
+  private fileExt = vscode.window.activeTextEditor?.document.languageId || "";
 
   // 1. data -------------------------------------------------------------------------------------->
   public data() {
-    return vscode.window.activeTextEditor.document.getText();
+    return fs.readFileSync(this.filePath, "utf8");
   }
 
   // 2. main -------------------------------------------------------------------------------------->

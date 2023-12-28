@@ -11,10 +11,11 @@ export default class Html {
   constructor() {this.main();}
   private activePath = path.basename(__filename);
   private filePath = vscode.window.activeTextEditor?.document.uri.fsPath;
+  private fileExt = vscode.window.activeTextEditor?.document.languageId || "";
 
   // 1. data -------------------------------------------------------------------------------------->
   public data() {
-    const data = new Contents().main().toString();
+    const data = new Contents().main();
 
     // 1. check if head tags exist
     const headStartIndex = data.indexOf("<head>");

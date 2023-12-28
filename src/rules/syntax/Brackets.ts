@@ -10,10 +10,11 @@ export default class Brackets {
   constructor() {this.main();}
   private activePath = path.basename(__filename);
   private filePath = vscode.window.activeTextEditor?.document.uri.fsPath;
+  private fileExt = vscode.window.activeTextEditor?.document.languageId || "";
 
   // 1. data -------------------------------------------------------------------------------------->
   public data() {
-    return new Contents().main().toString();
+    return new Contents().main();
   }
 
   // 2. main -------------------------------------------------------------------------------------->
@@ -22,7 +23,7 @@ export default class Brackets {
 
     const rules1 = /(\))(\s*)(\{)/gm;
 
-    const result =lodash.chain(data)
+    const result = lodash.chain(data)
     .replace(rules1, (match, p1, p2, p3) => {
       return `${p1} ${p3}`;
     })
