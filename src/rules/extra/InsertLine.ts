@@ -1,7 +1,7 @@
-import fs from "fs";
-import path from "path";
-import lodash from "lodash";
+import * as fs from "fs";
+import * as path from "path";
 import * as vscode from "vscode";
+import lodash from "lodash";
 import Contents from "../common/Contents";
 
 export default class InsertLine {
@@ -88,7 +88,7 @@ export default class InsertLine {
     if (this.fileExt === "java") {
 
       const rules1
-      = /^(?!\/\/--)(?!(?:.*\bclassName\b)|(?:.*class=".*"))(?:\n*)(\s*)(public|private|function|class)(?:(\s*.*))(\s*?)/gm;
+      = /^(?!\/\/--)(?!(?:.*\bclassName\b)|(?:.*class=".*"))(?:\n*)(\s*)(?!(?:private String gUserNm;)|(?:private String gFileDir;)|(?:private String gWarDir;)|(?:private SqlSession sqlSession;)|(?:public void setTemplate\(JdbcTemplate template\) \{)|(?:private JdbcTemplate template;)|(?:private Utils utils = new Utils\(\);)|(?:private Gson gson = new Gson\(\);))(public|private|function|class)(?:(\s*.*))(\s*?)/gm;
 
       let result = lodash.chain(data);
 

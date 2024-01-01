@@ -1,7 +1,7 @@
-import fs from "fs";
-import path from "path";
-import lodash from "lodash";
+import * as fs from "fs";
+import * as path from "path";
 import * as vscode from "vscode";
+import lodash from "lodash";
 import Contents from "../common/Contents";
 
 export default class IfElse {
@@ -19,6 +19,7 @@ export default class IfElse {
 
   // 2. main -------------------------------------------------------------------------------------->
   public main() {
+
     const data = this.data();
 
     const rules1
@@ -66,14 +67,14 @@ export default class IfElse {
       const insertSize = " ".repeat(spaceSize);
       return `${p1}\n${insertSize}${p5} {\n${insertSize}\t${p8}\n${insertSize}}`;
     })
-    .replace(rules8, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13) => {
+      .replace(rules8, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13) => {
       const indentSize1 = p1.length - `}`.length;
       const indentSize2 = p13.length - `}`.length;
       const spaceSize = indentSize1 == -1 ? indentSize2 : indentSize1;
       const insertSize = " ".repeat(spaceSize);
       return `${p1}\n${insertSize}${p5} (${p8}) {\n${insertSize}\t${p12}\n${insertSize}}`;
     })
-    .replace(rules9, (match, p1, p2, p3, p4) => {
+      .replace(rules9, (match, p1, p2, p3, p4) => {
       return `${p1}}\n${p1}${p3} `;
     })
     .value();

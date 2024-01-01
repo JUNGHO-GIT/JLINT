@@ -4,7 +4,7 @@
   "publisher": "JUNGHO",
   "icon": "icon.png",
   "license": "Apache-2.0",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "Universal Language formatter",
   "main": "./out/extension.js",
   "repository": {

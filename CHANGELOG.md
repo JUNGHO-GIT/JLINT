@@ -175,3 +175,8 @@
 ### 🐛 Fixed
   - fixed javascript bracket issue
 
+  ## [1.2.7] - 2023.12.29
+
+### 🐛 Fixed
+  - fixed javascript bracket issue
+

@@ -1,7 +1,7 @@
-import fs from "fs";
-import path from "path";
-import lodash from "lodash";
+import * as fs from "fs";
+import * as path from "path";
 import * as vscode from "vscode";
+import lodash from "lodash";
 import Contents from "../common/Contents";
 
 export default class Space {
@@ -40,20 +40,33 @@ export default class Space {
       this.fileExt === "typescriptreact"
     ) {
 
-      /* const rules1
+      /*
+      const rules1
       = /(\s*?)(public|private|function)(\s*)([\s\S]*?)(\s*)(\()(\s*)([\s\S]*?)(\s*)(\))(\s*)([\s\S]*?)(\s*?)(\{)/gm;
+      */
+
+      /*
       const rules2
-      = /(\s*)(public|private|function)(\s*)(\()([\s\S]*)(\))([\s\S]*)(\{)/gm; */
+      = /(\s*)(public|private|function)(\s*)(\()([\s\S]*)(\))([\s\S]*)(\{)/gm;
+      */
+
       const rules3
       = /(^\s*\/\/ --.*){2}(\n*)(^\s*)(public|private|function)(.*)/gm;
 
       const result = lodash.chain(data)
-      /* .replace(rules1, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14) => {
+
+      /*
+      .replace(rules1, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14) => {
         return `${p1}${p2} ${p4} ${p6}${p8}${p10} ${p12} ${p14}`;
       })
+      */
+
+      /*
       .replace(rules2, (match, p1, p2, p3, p4, p5, p6, p7, p8) => {
         return `${p1}${p2} ${p4}${p5}${p6} {`;
-      }) */
+      })
+      */
+
       .replace(rules3, (match, p1, p2, p3, p4, p5) => {
         return `${p2}${p3}${p4}${p5}`;
       })
@@ -76,6 +89,8 @@ export default class Space {
       = /(\s*)(@)(\s*)([\s\S]*?)(\s*)(\()/gm;
       const rules3
       = /(\s*?)(ception)(\{)/gm;
+      const rules4
+      = /(\s*)(value|method|produces)(\s*)(=)(\s*)/gm;
 
       const result = lodash.chain(data)
       .replace(rules1, (match, p1, p2, p3, p4) => {
@@ -86,6 +101,9 @@ export default class Space {
       })
       .replace(rules3, (match, p1, p2, p3) => {
         return `${p2} ${p3}`;
+      })
+      .replace(rules4, (match, p1, p2, p3, p4, p5) => {
+        return `${p2}=`;
       })
       .value();
 

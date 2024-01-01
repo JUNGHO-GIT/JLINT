@@ -1,7 +1,7 @@
-import fs from "fs";
-import path from "path";
-import lodash from "lodash";
+import * as fs from "fs";
+import * as path from "path";
 import * as vscode from "vscode";
+import lodash from "lodash";
 import Contents from "../common/Contents";
 
 export default class SpellCheck {
@@ -81,6 +81,8 @@ export default class SpellCheck {
       = /(^\n*)(^\s*?)(@.*?\n.*)(\s*)(\/\/\s*--.*?>)(\n)(\s*)(.*)/gm;
       const rules3
       = /(^\s*)(\/\/\s+--.*?>)(\n)(^\s*?)(@.*?)(\n+)(\s*)(.*)/gm;
+      const rules4
+      = /(^\s*)([@]RequestMapping)(\s*?)(\()(\s*?)/gm;
 
       const result = lodash.chain(data)
       .replace(rules1, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13) => {
@@ -91,6 +93,9 @@ export default class SpellCheck {
       })
       .replace(rules3, (match, p1, p2, p3, p4, p5, p6, p7, p8) => {
         return `${p1}${p2}${p3}${p4}${p5}\n${p7}${p8}`;
+      })
+      .replace(rules4, (match, p1, p2, p3, p4, p5) => {
+        return `${p1}${p2}\n${p1}${p4}`;
       })
       .value();
 

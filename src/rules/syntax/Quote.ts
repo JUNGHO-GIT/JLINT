@@ -1,7 +1,7 @@
-import fs from "fs";
-import path from "path";
-import lodash from "lodash";
+import * as fs from "fs";
+import * as path from "path";
 import * as vscode from "vscode";
+import lodash from "lodash";
 import Contents from "../common/Contents";
 
 export default class Quote {

@@ -1,7 +1,7 @@
-import fs from "fs";
-import path from "path";
-import lodash from "lodash";
+import * as fs from "fs";
+import * as path from "path";
 import * as vscode from "vscode";
+import lodash from "lodash";
 import Contents from "../common/Contents";
 
 export default class LineBreak {
@@ -78,6 +78,8 @@ export default class LineBreak {
       = /(.*?)(\n*)(.*?)(\n*)(?<=^.\s*)(return)(\s*?)(\S*?)(\s*)(\n)(\s*)(\})/gm;
       const rules9
       = /(import.*)(;)(\n*)(\/\/ --)/gm;
+      const rules10
+      = /("\$\{)(\s*)(\n+)(.*)(.dir\}"\))/gm;
 
       const result = lodash.chain(data)
       .replace(rules1, (match, p1, p2, p3, p4, p5, p6) => {
@@ -106,6 +108,9 @@ export default class LineBreak {
       })
       .replace(rules9, (match, p1, p2, p3, p4) => {
         return `${p1}${p2}\n\n${p4}`;
+      })
+      .replace(rules10, (match, p1, p2, p3, p4, p5) => {
+        return `${p1}${p4}${p5}`;
       })
       .value();
 
