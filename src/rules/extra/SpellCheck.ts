@@ -194,7 +194,47 @@ export default class SpellCheck {
   // 3-7. Sql ------------------------------------------------------------------------------------->
   public Sql() {}
 
-  // 3-8. All ------------------------------------------------------------------------------------->
+  // 3-8. Php ------------------------------------------------------------------------------------->
+  public Php() {
+    const data = this.data();
+
+    if (this.fileExt === "php") {
+
+      const rules1
+      = /(\s*)(\/\/)(\s*)(--.*?)(>)(\s*)(\n)(\s*)(\/\/)(\s*)(--.*?)(>)([\s\S])/gm;
+      const rules2
+      = /(^\s*)(type)(\s*?)(:)(\s*?)('|")(post|POST)('|")(\s*?)(,)/gm;
+      const rules3
+      = /(^\s*)(type)(\s*?)(:)(\s*?)('|")(get|GET)('|")(\s*?)(,)/gm;
+      const rules4
+      = /(^\s*)(dataType)(\s*?)(:)(\s*?)('|")(json|JSON)('|")(\s*?)(,)/gm;
+      const rules5
+      = /(\s*)(<!)(--.*?)(>)(\s*)(\n)(\s*)(<!)(--.*?)(>)([\s\S])/gm;
+
+      const result = lodash.chain(data)
+      .replace(rules1, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13) => {
+        return `${p1}${p2}${p3}${p4}${p5}${p13}`;
+      })
+      .replace(rules2, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) => {
+        return `${p1}${p2}: "POST",`;
+      })
+      .replace(rules3, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) => {
+        return `${p1}${p2}: "GET",`;
+      })
+      .replace(rules4, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) => {
+        return `${p1}${p2}: "JSON",`;
+      })
+      .replace(rules1, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) => {
+        return `${p1}${p2}${p3}${p4}${p11}`;
+      })
+      .value();
+
+      fs.writeFileSync(this.filePath, result, "utf8");
+      return result;
+    }
+  }
+
+  // 3-9. All ------------------------------------------------------------------------------------->
   public All () {}
 
   // 4. output ------------------------------------------------------------------------------------>

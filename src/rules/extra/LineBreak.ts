@@ -176,7 +176,57 @@ export default class LineBreak {
   // 3-7. Sql ------------------------------------------------------------------------------------->
   public Sql() {}
 
-  // 3-8. All ------------------------------------------------------------------------------------->
+  // 3-8. Php ------------------------------------------------------------------------------------->
+  public Php() {
+    const data = this.data();
+
+    if (this.fileExt === "php") {
+
+      const rules1
+      = /(>)(\n*)(?:\})(?:\n*)(function)/gm;
+      const rules2
+      = /(?:\n*)(\s*)(<\/body>)(\s*?)/gm;
+      const rules3
+      = /(.*?)(\n*)(\s*)(\/\/ -.*>)/gm;
+      const rules4
+      = /(\s*)(\/>)(\s*)(\n+)(\s*)(<meta)/gm;
+      const rules5
+      = /(\s*)(\/>)(\s*)(\n+)(\s*)(<link)/gm;
+      const rules6
+      = /(\s*)(\/>)(\s*)(\n+)(\s*)(<script)/gm;
+      const rules7
+      = /(\s*)(script>)(\s*)(\n+)(\s*)(<script)/gm;
+
+      const result = lodash.chain(data)
+      .replace(rules1, (match, p1, p2, p3) => {
+        return `${p1}\n${p3}`;
+      })
+      .replace(rules2, (match, p1, p2, p3) => {
+        return `\n\n${p1}${p2}${p3}`;
+      })
+      .replace(rules3, (match, p1, p2, p3, p4) => {
+        return `${p1}\n\n${p3}${p4}`;
+      })
+      .replace(rules4, (match, p1, p2, p3, p4, p5, p6) => {
+        return `${p1}${p2}\n${p5}${p6}`;
+      })
+      .replace(rules5, (match, p1, p2, p3, p4, p5, p6) => {
+        return `${p1}${p2}\n${p5}${p6}`;
+      })
+      .replace(rules6, (match, p1, p2, p3, p4, p5, p6) => {
+        return `${p1}${p2}\n${p5}${p6}`;
+      })
+      .replace(rules7, (match, p1, p2, p3, p4, p5, p6) => {
+        return `${p1}${p2}\n${p5}${p6}`;
+      })
+      .value();
+
+      fs.writeFileSync(this.filePath, result, "utf8");
+      return result;
+    }
+  }
+
+  // 3-9. All ------------------------------------------------------------------------------------->
   public All () {}
 
   // 4. output ------------------------------------------------------------------------------------>

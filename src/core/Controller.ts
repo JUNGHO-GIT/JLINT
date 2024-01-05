@@ -32,7 +32,7 @@ export default class Controller {
     = "lang";
 
     const langArray1 = [
-      "javascript", "javascriptreact", "typescript", "typescriptreact", "java", "jsp",  "html", "css", "xml", "json"
+      "javascript", "javascriptreact", "typescript", "typescriptreact", "java", "jsp",  "html", "css", "xml", "json", "sql", "php"
     ];
 
     const langArray2 = langArray1.filter((item) => !paramArray.includes(item));

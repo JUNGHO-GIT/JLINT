@@ -175,8 +175,13 @@
 ### 🐛 Fixed
   - fixed javascript bracket issue
 
-  ## [1.2.7] - 2023.12.29
+## [1.2.7] - 2023.12.29
 
 ### 🐛 Fixed
   - fixed javascript bracket issue
+
+## [1.2.8] - 2024.01.05
+
+### ✨ Added
+  - add sql and php language option
 
