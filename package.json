@@ -17,7 +17,10 @@
     "npm": ">=7.0.0"
   },
   "activationEvents": [
-    "onCommand:extension.JLINT"
+    "onStartupFinished",
+    "onLanguage:languageId",
+    "onCommand:extension.JLINT",
+    "onFileSystem:file"
   ],
   "categories": [
     "Formatters",
@@ -42,9 +45,14 @@
     "configuration": {
       "title": "JLINT",
       "properties": {
+        "JLINT.RainbowTags": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable or disable the rainbow braces"
+        },
         "JLINT.RemoveComments": {
           "type": "boolean",
-          "default": true,
+          "default": false,
           "description": "Enable or disable the remove comments"
         },
         "JLINT.InsertLine" : {

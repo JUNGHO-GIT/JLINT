@@ -19,7 +19,7 @@ class LineBreak {
 
   // 2. main -------------------------------------------------------------------------------------->
   public main() {
-    return this.JsTs() + this.Java() + this.HtmlJsp();
+    return this.JsTs() + this.Java() + this.HtmlJsp() + this.Css() + this.Xml() + this.Json() + this.Sql();
   }
 
   // 3-1. JsTs ------------------------------------------------------------------------------------>

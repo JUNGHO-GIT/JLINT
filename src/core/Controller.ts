@@ -15,7 +15,15 @@ class Controller {
       "Contents", "SingleTags", "RemoveComments"
     ];
 
-    const commonArray2 = commonArray1.filter((item) => !paramArray.includes(item));
+    let commonArray2 = [];
+    // RemoveComments 가 true인 경우
+    if (paramArray.includes("RemoveComments")) {
+      commonArray2 = ["Contents", "SingleTags", "RemoveComments"];
+    }
+    // RemoveComments 가 false인 경우
+    else {
+      commonArray2 = ["Contents", "SingleTags"];
+    }
 
     const commonImport = commonArray2.map((item) => {
       return require(`../rules/${commonTitle}/${item}`).default;
@@ -35,7 +43,7 @@ class Controller {
       "javascript", "javascriptreact", "typescript", "typescriptreact", "java", "jsp",  "html", "css", "xml", "json"
     ];
 
-    const langArray2 = langArray1.filter((item) => !paramArray.includes(item));
+    const langArray2 = langArray1;
 
     if(this.fileExt) {
       const langIndex = langArray2.indexOf(this.fileExt);
@@ -61,7 +69,7 @@ class Controller {
       "Brackets"
     ];
 
-    const syntaxArray2 = syntaxArray1.filter((item) => !paramArray.includes(item));
+    const syntaxArray2 = syntaxArray1;
 
     const syntaxImport = syntaxArray2.map((item) => {
       return require(`../rules/${syntaxTitle}/${item}`).default;
@@ -81,7 +89,7 @@ class Controller {
       "IfElse", "TryCatch"
     ];
 
-    const logicArray2 = logicArray1.filter((item) => !paramArray.includes(item));
+    const logicArray2 = logicArray1;
 
     const logicImport = logicArray2.map((item) => {
       return require(`../rules/${logicTitle}/${item}`).default;
@@ -101,7 +109,15 @@ class Controller {
       "InsertLine", "SpellCheck", "LineBreak", "Space",
     ];
 
-    const extraArray2 = extraArray1.filter((item) => !paramArray.includes(item));
+    let extraArray2 = [];
+    // InsertLine 가 true인 경우
+    if (paramArray.includes("InsertLine")) {
+      extraArray2 = ["InsertLine", "SpellCheck", "LineBreak", "Space"];
+    }
+    // InsertLine 가 false인 경우
+    else {
+      extraArray2 = ["SpellCheck", "LineBreak", "Space"];
+    }
 
     const extraImport = extraArray2.map((item) => {
       return require(`../rules/${extraTitle}/${item}`).default;
@@ -110,6 +126,35 @@ class Controller {
 
     return extraInit.map((item) => item.output()).join("");
   }
+
+  // 5. wrapup ------------------------------------------------------------------------------------>
+  public wrapup(paramArray: string[]) {
+
+    const wrapupTitle
+    = "wrapup";
+
+    const wrapupArray1 = [
+      "RainbowTags"
+    ];
+
+    let wrapupArray2 = [];
+    // RainbowTags 가 true인 경우
+    if (paramArray.includes("RainbowTags")) {
+      wrapupArray2 = ["RainbowTags"];
+    }
+    // RainbowTags 가 false인 경우
+    else {
+      wrapupArray2 = [];
+    }
+
+    const wrapupImport = wrapupArray2.map((item) => {
+      return require(`../rules/${wrapupTitle}/${item}`).default;
+    });
+    const wrapupInit = wrapupArray2.map((item, index) => new wrapupImport[index]());
+
+    return wrapupInit.map((item) => item.output()).join("");
+  }
+
 }
 
 export default Controller;
