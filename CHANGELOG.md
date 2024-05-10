@@ -135,4 +135,11 @@
 ### 🐛 Fixed
   - fixed remove comments issue
 
+<br/>
+
+## [1.1.9] - 2024.05.10
+
+### 🐛 Fixed
+  - fixed some code issue
+
 
