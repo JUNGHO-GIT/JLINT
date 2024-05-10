@@ -7,17 +7,22 @@ import Contents from "./Contents";
 class Tags {
 
   // 0. resource ---------------------------------------------------------------------------------->
-  constructor() {this.main();}
+  constructor() {this.main()}
   private activePath = path.basename(__filename);
   private filePath = vscode.window.activeTextEditor?.document.uri.fsPath;
   private fileExt = vscode.window.activeTextEditor?.document.languageId || "";
 
-  // 1. data -------------------------------------------------------------------------------------->
+  // 1. output ------------------------------------------------------------------------------------>
+  public output() {
+    return console.log("_____________________\n" + this.activePath + "  실행");
+  }
+
+  // 2. data -------------------------------------------------------------------------------------->
   public data() {
     return new Contents().main().toString();
   }
 
-  // 2. main -------------------------------------------------------------------------------------->
+  // 3. main -------------------------------------------------------------------------------------->
   public main() {
     const data = this.data();
 
@@ -43,10 +48,6 @@ class Tags {
         return result;
       }
     }
-  }
-  // 3. output ------------------------------------------------------------------------------------>
-  public output() {
-    return console.log("_____________________\n" + this.activePath + "  실행");
   }
 }
 

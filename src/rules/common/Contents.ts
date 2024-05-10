@@ -5,11 +5,16 @@ import vscode from "vscode";
 class Contents {
 
   // 0. resource ---------------------------------------------------------------------------------->
-  constructor() {this.main();}
+  constructor() {this.main()}
   private activePath = path.basename(__filename);
   private filePath = vscode.window.activeTextEditor?.document.uri.fsPath;
 
-  // 1. data -------------------------------------------------------------------------------------->
+  // 1. output ------------------------------------------------------------------------------------>
+  public output() {
+    return console.log("_____________________\n" + this.activePath + "  실행");
+  }
+
+  // 2. data -------------------------------------------------------------------------------------->
   public data() {
     if (this.filePath) {
       return fs.readFileSync(this.filePath, "utf8");
@@ -19,7 +24,7 @@ class Contents {
     }
   }
 
-  // 2. main -------------------------------------------------------------------------------------->
+  // 3. main -------------------------------------------------------------------------------------->
   public main() {
     const data = this.data();
 
@@ -37,11 +42,6 @@ class Contents {
       fs.writeFileSync(this.filePath, updateContent, "utf8");
       return updateContent;
     }
-  }
-
-  // 3. output ------------------------------------------------------------------------------------>
-  public output() {
-    return console.log("_____________________\n" + this.activePath + "  실행");
   }
 }
 

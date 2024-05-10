@@ -11,10 +11,6 @@ class Controller {
     const commonTitle
     = "common";
 
-    const commonArray1 = [
-      "Contents", "SingleTags", "RemoveComments"
-    ];
-
     let commonArray2 = [];
     // RemoveComments 가 true인 경우
     if (paramArray.includes("RemoveComments")) {
@@ -39,11 +35,9 @@ class Controller {
     const langTitle
     = "lang";
 
-    const langArray1 = [
+    const langArray2 = [
       "javascript", "javascriptreact", "typescript", "typescriptreact", "java", "jsp",  "html", "css", "xml", "json"
     ];
-
-    const langArray2 = langArray1;
 
     if(this.fileExt) {
       const langIndex = langArray2.indexOf(this.fileExt);
@@ -65,11 +59,9 @@ class Controller {
     const syntaxTitle
     = "syntax";
 
-    const syntaxArray1 = [
+    const syntaxArray2 = [
       "Brackets"
     ];
-
-    const syntaxArray2 = syntaxArray1;
 
     const syntaxImport = syntaxArray2.map((item) => {
       return require(`../rules/${syntaxTitle}/${item}`).default;
@@ -85,11 +77,9 @@ class Controller {
     const logicTitle
     = "logic";
 
-    const logicArray1 = [
+    const logicArray2 = [
       "IfElse", "TryCatch"
     ];
-
-    const logicArray2 = logicArray1;
 
     const logicImport = logicArray2.map((item) => {
       return require(`../rules/${logicTitle}/${item}`).default;
@@ -104,10 +94,6 @@ class Controller {
 
     const extraTitle
     = "extra";
-
-    const extraArray1 = [
-      "InsertLine", "SpellCheck", "LineBreak", "Space",
-    ];
 
     let extraArray2 = [];
     // InsertLine 가 true인 경우
@@ -126,35 +112,6 @@ class Controller {
 
     return extraInit.map((item) => item.output()).join("");
   }
-
-  // 5. wrapup ------------------------------------------------------------------------------------>
-  public wrapup(paramArray: string[]) {
-
-    const wrapupTitle
-    = "wrapup";
-
-    const wrapupArray1 = [
-      "RainbowTags"
-    ];
-
-    let wrapupArray2 = [];
-    // RainbowTags 가 true인 경우
-    if (paramArray.includes("RainbowTags")) {
-      wrapupArray2 = ["RainbowTags"];
-    }
-    // RainbowTags 가 false인 경우
-    else {
-      wrapupArray2 = [];
-    }
-
-    const wrapupImport = wrapupArray2.map((item) => {
-      return require(`../rules/${wrapupTitle}/${item}`).default;
-    });
-    const wrapupInit = wrapupArray2.map((item, index) => new wrapupImport[index]());
-
-    return wrapupInit.map((item) => item.output()).join("");
-  }
-
 }
 
 export default Controller;

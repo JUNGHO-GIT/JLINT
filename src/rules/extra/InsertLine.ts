@@ -7,22 +7,27 @@ import Contents from "../common/Contents";
 class InsertLine {
 
   // 0. resource ---------------------------------------------------------------------------------->
-  constructor() {this.main();}
+  constructor() {this.main()}
   private activePath = path.basename(__filename);
   private filePath = vscode.window.activeTextEditor?.document.uri.fsPath;
   private fileExt = vscode.window.activeTextEditor?.document.languageId || "";
 
-  // 1. data -------------------------------------------------------------------------------------->
+  // 1. output ------------------------------------------------------------------------------------>
+  public output() {
+    return console.log("_____________________\n" + this.activePath + "  실행");
+  }
+
+  // 2. data -------------------------------------------------------------------------------------->
   public data() {
     return new Contents().main().toString();
   }
 
-  // 2. main -------------------------------------------------------------------------------------->
+  // 3. main -------------------------------------------------------------------------------------->
   public main() {
-    return this.JsTs() + this.Java() + this.HtmlJsp() + this.Css() + this.Xml() + this.Json() + this.Sql();
+    return this.JsTs(), this.Java(), this.HtmlJsp(), this.Css(), this.Xml(), this.Json(), this.Sql(), this.output();
   }
 
-  // 3-1. JsTs ------------------------------------------------------------------------------------>
+  // 4-1. JsTs ------------------------------------------------------------------------------------>
   public JsTs() {
     const data = this.data();
 
@@ -57,7 +62,7 @@ class InsertLine {
     }
   }
 
-  // 3-2. Java ------------------------------------------------------------------------------------>
+  // 4-2. Java ------------------------------------------------------------------------------------>
   public Java() {
     const data = this.data();
 
@@ -84,7 +89,7 @@ class InsertLine {
     }
   }
 
-  // 3-3. HtmlJsp --------------------------------------------------------------------------------->
+  // 4-3. HtmlJsp --------------------------------------------------------------------------------->
   public HtmlJsp() {
     const data = this.data();
 
@@ -127,21 +132,40 @@ class InsertLine {
     }
   }
 
-  // 3-4. Css ------------------------------------------------------------------------------------->
-  public Css() {}
+  // 4-4. Css ------------------------------------------------------------------------------------->
+  public Css() {
+    const data = this.data();
 
-  // 3-5. Xml ------------------------------------------------------------------------------------->
-  public Xml() {}
+    if (this.filePath && this.fileExt === "css") {
+      return console.log("_____________________\n" + this.fileExt + "!!!!!!!!!!!!!!!!");
+    }
+  }
 
-  // 3-6. Json ------------------------------------------------------------------------------------>
-  public Json() {}
+  // 4-6. Xml ------------------------------------------------------------------------------------->
+  public Xml() {
+    const data = this.data();
 
-  // 3-7. Sql ------------------------------------------------------------------------------------->
-  public Sql() {}
+    if (this.filePath && this.fileExt === "xml") {
+      return console.log("_____________________\n" + this.fileExt + "!!!!!!!!!!!!!!!!");
+    }
+  }
 
-  // 4. output ------------------------------------------------------------------------------------>
-  public output() {
-    return console.log("_____________________\n" + this.activePath + "  실행");
+  // 4-7. Json ------------------------------------------------------------------------------------>
+  public Json() {
+    const data = this.data();
+
+    if (this.filePath && this.fileExt === "json") {
+      return console.log("_____________________\n" + this.fileExt + "!!!!!!!!!!!!!!!!");
+    }
+  }
+
+  // 4-8. Sql ------------------------------------------------------------------------------------->
+  public Sql() {
+    const data = this.data();
+
+    if (this.filePath && this.fileExt === "sql") {
+      return console.log("_____________________\n" + this.fileExt + "!!!!!!!!!!!!!!!!");
+    }
   }
 }
 
