@@ -27,11 +27,11 @@
 
   - Before
 
-    <img src="./src/assets/image/1.png" width="400" height="300"/>
+    <img src="https://storage.googleapis.com/jungho-bucket/JLINT/IMAGE/main/main3.webp" width="400" height="300"/>
 
   - After
 
-    <img src="./src/assets/image/2.png" width="400" height="300"/>
+    <img src="https://storage.googleapis.com/jungho-bucket/JLINT/IMAGE/main/main4.webp" width="400" height="300"/>
 
 ### 💡 Error Message Modal
   - JLINT uses a modal to display error messages. This makes it easier to
@@ -39,7 +39,7 @@
 
   - Example
 
-    <img src="./src/assets/image/3.png" width="400" height="300"/>
+    <img src="https://storage.googleapis.com/jungho-bucket/JLINT/IMAGE/main/main5.webp" width="400" height="300"/>
 
 ### 🛠️ Customization
   - Customize JLINT through user settings in your code editor.
