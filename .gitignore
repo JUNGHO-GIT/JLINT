@@ -1,24 +1,18 @@
-# Compiled output
-/target/
+# gitignore
+
+/node_modules/
+**/node_modules/
+
 /build/
-/classes/
-/*.class
-/out/
+**/build/
 
-# node
-node_modules/
-package-lock.json
-*.vsix
+/dist/
+**/dist/
 
-# Log files
-/logs/
-*.log
-*.properties
+/.cache/
+**/.cache/
 
-# Gradle specific
-.gradle/
-/build/
-!gradle/wrapper/gradle-wrapper.jar
+client/.cache/
+client/.webpack_cache/
 
-# Spring Boot specific
-/maven-wrapper/
+pakcage-lock.json

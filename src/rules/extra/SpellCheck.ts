@@ -1,33 +1,71 @@
-import fs from "fs";
-import path from "path";
+// SpellCheck.ts
+
+import * as fs from 'fs';
+import * as path from 'path';
 import lodash from "lodash";
-import vscode from "vscode";
+import * as vscode from 'vscode';
 import Contents from "../common/Contents";
 
+// -------------------------------------------------------------------------------------------------
 class SpellCheck {
 
-  // 0. resource ---------------------------------------------------------------------------------->
+  // 0. resource -----------------------------------------------------------------------------------
   constructor() {this.main()}
-  private activePath = path.basename(__filename);
-  private filePath = vscode.window.activeTextEditor?.document.uri.fsPath;
-  private fileExt = vscode.window.activeTextEditor?.document.languageId || "";
+  private activePath = path.basename(__filename) as string;
+  private filePath = vscode.window.activeTextEditor?.document.uri.fsPath as string;
+  private fileExt = vscode.window.activeTextEditor?.document.languageId as string;
 
-  // 1. output ------------------------------------------------------------------------------------>
+  // 1. output -------------------------------------------------------------------------------------
   public output() {
-    return console.log("_____________________\n" + this.activePath + "  실행");
+    if (
+      this.fileExt === "javascript" || this.fileExt === "javascriptreact" ||
+      this.fileExt === "typescript" || this.fileExt === "typescriptreact" ||
+      this.fileExt === "java" ||
+      this.fileExt === "html" || this.fileExt === "jsp"
+    ) {
+      return console.log(`_____________________\nActivated! ('${this.activePath}')`);
+    }
+    else {
+      return console.log(`_____________________\nSpellCheck not supported ('${this.fileExt}')`);
+    }
   }
 
-  // 2. data -------------------------------------------------------------------------------------->
+  // 2. data ---------------------------------------------------------------------------------------
   public data() {
-    return new Contents().main().toString();
+    return new Contents().main().trim();
   }
 
-  // 3. main -------------------------------------------------------------------------------------->
+  // 3. main ---------------------------------------------------------------------------------------
   public main() {
-    return this.JsTs(), this.Java(), this.HtmlJsp(), this.Css(), this.Xml(), this.Json(), this.Sql(), this.output();
+    if (this.fileExt === "javascript" || this.fileExt === "javascriptreact") {
+      return this.JsTs();
+    }
+    if (this.fileExt === "typescript" || this.fileExt === "typescriptreact") {
+      return this.JsTs();
+    }
+    if (this.fileExt === "java") {
+      return this.Java();
+    }
+    if (this.fileExt === "html" || this.fileExt === "jsp") {
+      return this.HtmlJsp();
+    }
+    if (this.fileExt === "css") {
+      return this.Css();
+    }
+    if (this.fileExt === "xml") {
+      return this.Xml();
+    }
+    if (this.fileExt === "json") {
+      return this.Json();
+    }
+    if (this.fileExt === "sql") {
+      return this.Sql();
+    }
+
+    return this.output();
   }
 
-  // 4-1. JsTs ------------------------------------------------------------------------------------>
+  // 4-1. JsTs -------------------------------------------------------------------------------------
   public JsTs() {
     const data = this.data();
 
@@ -47,7 +85,7 @@ class SpellCheck {
     }
   }
 
-  // 4-2. Java ------------------------------------------------------------------------------------>
+  // 4-2. Java -------------------------------------------------------------------------------------
   public Java() {
     const data = this.data();
 
@@ -77,7 +115,7 @@ class SpellCheck {
     }
   }
 
-  // 4-3. HtmlJsp --------------------------------------------------------------------------------->
+  // 4-3. HtmlJsp ----------------------------------------------------------------------------------
   public HtmlJsp() {
     const data = this.data();
 
@@ -97,42 +135,25 @@ class SpellCheck {
     }
   }
 
-  // 4-4. Css ------------------------------------------------------------------------------------->
+  // 4-4. Css --------------------------------------------------------------------------------------
   public Css() {
-    const data = this.data();
-
-    if (this.filePath && this.fileExt === "css") {
-      return console.log("_____________________\n" + this.fileExt + "!!!!!!!!!!!!!!!!");
-    }
+    return;
   }
 
-  // 4-6. Xml ------------------------------------------------------------------------------------->
+  // 4-6. Xml --------------------------------------------------------------------------------------
   public Xml() {
-    const data = this.data();
-
-    if (this.filePath && this.fileExt === "xml") {
-      return console.log("_____________________\n" + this.fileExt + "!!!!!!!!!!!!!!!!");
-    }
+    return;
   }
 
-  // 4-7. Json ------------------------------------------------------------------------------------>
+  // 4-7. Json -------------------------------------------------------------------------------------
   public Json() {
-    const data = this.data();
-
-    if (this.filePath && this.fileExt === "json") {
-      return console.log("_____________________\n" + this.fileExt + "!!!!!!!!!!!!!!!!");
-    }
+    return;
   }
 
-  // 4-8. Sql ------------------------------------------------------------------------------------->
+  // 4-8. Sql --------------------------------------------------------------------------------------
   public Sql() {
-    const data = this.data();
-
-    if (this.filePath && this.fileExt === "sql") {
-      return console.log("_____________________\n" + this.fileExt + "!!!!!!!!!!!!!!!!");
-    }
+    return;
   }
-
 }
 
 export default SpellCheck;

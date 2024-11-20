@@ -42,26 +42,32 @@
     "configuration": {
       "title": "JLINT",
       "properties": {
+        "JLINT.ActivateLint": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable or disable the lint",
+          "scope": "resource"
+        },
         "JLINT.RemoveComments": {
           "type": "boolean",
           "default": false,
-          "description": "Enable or disable the remove comments"
+          "description": "Enable or disable the remove comments",
+          "scope": "resource"
         },
         "JLINT.InsertLine": {
           "type": "boolean",
-          "default": true,
-          "description": "Enable or disable the insert 'Comment vertical line'"
+          "default": false,
+          "description": "Enable or disable the insert 'Comment vertical line'",
+          "scope": "resource"
         }
       }
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "pretest": "npm run compile && npm run lint",
-    "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
+    "watch": "tsc -watch -p .",
+    "compile": "tsc -p .",
+    "npm-clean": "npm cache clean --force",
+    "npm-reset": "powershell -Command \"Remove-Item -Recurse -Force package-lock.json, node_modules; npm install --legacy-peer-deps\"",
     "vsce": "vsce package"
   },
   "dependencies": {
@@ -73,7 +79,6 @@
     "lodash": "^4.17.21",
     "minimatch": "^3.0.4",
     "prettier": "^2.8.8",
-    "prettier-plugin-java": "^2.1.0",
     "prettier-plugin-jsp": "^1.0.13",
     "prettier-plugin-xml": "^0.1.0",
     "strip-comments": "^2.0.1"

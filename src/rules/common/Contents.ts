@@ -1,47 +1,43 @@
-import fs from "fs";
-import path from "path";
-import vscode from "vscode";
+// Contents.ts
 
+import * as fs from 'fs';
+import * as path from 'path';
+import * as vscode from 'vscode';
+
+// -------------------------------------------------------------------------------------------------
 class Contents {
 
-  // 0. resource ---------------------------------------------------------------------------------->
+  // 0. resource -----------------------------------------------------------------------------------
   constructor() {this.main()}
-  private activePath = path.basename(__filename);
-  private filePath = vscode.window.activeTextEditor?.document.uri.fsPath;
+  private activePath = path.basename(__filename) as string;
+  private filePath = vscode.window.activeTextEditor?.document.uri.fsPath as string;
 
-  // 1. output ------------------------------------------------------------------------------------>
+  // 1. output -------------------------------------------------------------------------------------
   public output() {
-    return console.log("_____________________\n" + this.activePath + "  실행");
+    return console.log(`_____________________\nActivated! ('${this.activePath}')`);
   }
 
-  // 2. data -------------------------------------------------------------------------------------->
+  // 2. data ---------------------------------------------------------------------------------------
   public data() {
-    if (this.filePath) {
-      return fs.readFileSync(this.filePath, "utf8");
-    }
-    else {
-      return "파일이 존재하지 않습니다.";
-    }
+    return fs.readFileSync(this.filePath, "utf8");
   }
 
-  // 3. main -------------------------------------------------------------------------------------->
+  // 3. main ---------------------------------------------------------------------------------------
   public main() {
     const data = this.data();
 
-    if(this.filePath) {
-      const updateContent = data.split("\n").map(line => {
-        const indentMatch = line.match(/^(\s+)/);
-        if (indentMatch) {
-          const spaces = indentMatch[1].length;
-          const newIndent = Math.ceil(spaces / 2) * 2;
-          return line.replace(/^(\s+)/, " ".repeat(newIndent));
-        }
-        return line;
-      }).join("\n");
+    const updateContent = data.split("\n").map(line => {
+      const indentMatch = line.match(/^(\s+)/);
+      if (indentMatch) {
+        const spaces = indentMatch[1].length;
+        const newIndent = Math.ceil(spaces / 2) * 2;
+        return line.replace(/^(\s+)/, " ".repeat(newIndent));
+      }
+      return line;
+    }).join("\n");
 
-      fs.writeFileSync(this.filePath, updateContent, "utf8");
-      return updateContent;
-    }
+    fs.writeFileSync(this.filePath, updateContent, "utf8");
+    return updateContent;
   }
 }
 

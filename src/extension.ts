@@ -1,31 +1,35 @@
 // extensions.ts
 
-import vscode from "vscode";
-import Main from "./core/index";
+import * as vscode from "vscode";
+import Main from "./core/Main";
 
+// -------------------------------------------------------------------------------------------------
 const activate = (context: vscode.ExtensionContext) => {
 
-  let paramArray: string[] = [];
+  // 0. check if the extension is activated
+  console.log(`"JLINT" is now active!`);
 
-  // access configuration parameters
+  // 1. access configuration parameters
   const config = vscode.workspace.getConfiguration("JLINT");
 
-  // settings parameters
-  const removeComments = config.get("RemoveComments") as boolean;
-  const insertLine = config.get("InsertLine") as boolean;
+  // 0. configuration Parameters
+  const confParam = {
+    ActivateLint: false,
+    RemoveComments: false,
+    InsertLine: false
+  };
 
-  // push parameters to array
-  if (removeComments === true) {
-    paramArray.push("RemoveComments");
-  }
-  if (insertLine === true) {
-    paramArray.push("InsertLine");
-  }
+  Object.assign(confParam, {
+    ActivateLint: config.get("ActivateLint") === true ? true : false,
+    RemoveComments: config.get("RemoveComments") === true ? true : false,
+    InsertLine: config.get("InsertLine") === true ? true : false
+  });
 
+  // 4. register command
   context.subscriptions.push(
     vscode.commands.registerCommand("extension.JLINT", () =>  {
-      console.log("JLINT: Command activated");
-      new Main().main(paramArray);
+      const main = new Main();
+      main.main(confParam);
     })
   );
 };

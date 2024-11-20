@@ -1,19 +1,28 @@
-import vscode from "vscode";
+// Controller.ts
 
+import * as vscode from 'vscode';
+
+// -------------------------------------------------------------------------------------------------
+declare type ConfProps = {
+  ActivateLint: boolean,
+  RemoveComments: boolean,
+  InsertLine: boolean
+};
+
+// -------------------------------------------------------------------------------------------------
 class Controller {
 
   // 0. resource ---------------------------------------------------------------------------------->
-  private fileExt = vscode.window.activeTextEditor?.document.languageId || "";
+  private fileExt = vscode.window.activeTextEditor?.document.languageId as string;
 
   // 1. common ------------------------------------------------------------------------------------>
-  public common(paramArray: string[]) {
+  public common(conf: ConfProps) {
 
-    const commonTitle
-    = "common";
-
+    let commonTitle = "common"
     let commonArray2 = [];
+
     // RemoveComments 가 true인 경우
-    if (paramArray.includes("RemoveComments")) {
+    if (conf.RemoveComments) {
       commonArray2 = ["Contents", "SingleTags", "RemoveComments"];
     }
     // RemoveComments 가 false인 경우
@@ -30,74 +39,83 @@ class Controller {
   }
 
   // 2. lang -------------------------------------------------------------------------------------->
-  public lang(paramArray: string[]) {
+  public lang(conf: ConfProps) {
 
-    const langTitle
-    = "lang";
-
-    const langArray2 = [
+    let langTitle = "lang";
+    let langArray2 = [
       "javascript", "javascriptreact", "typescript", "typescriptreact", "java", "jsp",  "html", "css", "xml", "json"
     ];
 
-    if(this.fileExt) {
+    // ActivateLint 가 true인 경우
+    if (conf.ActivateLint) {
       const langIndex = langArray2.indexOf(this.fileExt);
-      if (langIndex !== -1) {
-        const langClass = langArray2[langIndex].charAt(0).toUpperCase() + langArray2[langIndex].slice(1);
-        const langImport = require(`../rules/${langTitle}/${langClass}`).default;
-        console.log("_____________________\n" + this.fileExt + " 파일 지원 가능 ");
-        return new langImport().output();
-      }
-      else {
-        return console.log("_____________________\n" + this.fileExt + " 파일 지원 불가능 ");
-      }
+      const langClass = langArray2[langIndex].charAt(0).toUpperCase() + langArray2[langIndex].slice(1);
+      const langImport = require(`../rules/${langTitle}/${langClass}`).default;
+
+      return new langImport().output();
+    }
+    // ActivateLint 가 false인 경우
+    else {
+      return console.log(`_____________________\nActivateLint is false ('lang')`);
     }
   }
 
   // 2. syntax  ----------------------------------------------------------------------------------->
-  public syntax(paramArray: string[]) {
+  public syntax(conf: ConfProps) {
 
-    const syntaxTitle
-    = "syntax";
-
-    const syntaxArray2 = [
+    let syntaxTitle = "syntax";
+    let syntaxArray2 = [
       "Brackets"
     ];
 
-    const syntaxImport = syntaxArray2.map((item) => {
-      return require(`../rules/${syntaxTitle}/${item}`).default;
-    });
-    const syntaxInit = syntaxArray2.map((item, index) => new syntaxImport[index]());
+    // ActivateLint 가 true인 경우
+    if (conf.ActivateLint) {
+      const syntaxImport = syntaxArray2.map((item) => {
+        return require(`../rules/${syntaxTitle}/${item}`).default;
+      });
+      const syntaxInit = syntaxArray2.map((item, index) => new syntaxImport[index]());
 
-    return syntaxInit.map((item) => item.output()).join("");
+      return syntaxInit.map((item) => item.output()).join("");
+    }
+
+    // ActivateLint 가 false인 경우
+    else {
+      return console.log(`_____________________\nActivateLint is false ('syntax')`);
+    }
   }
 
   // 3. logic ------------------------------------------------------------------------------------->
-  public logic(paramArray: string[]) {
+  public logic(conf: ConfProps) {
 
-    const logicTitle
-    = "logic";
-
-    const logicArray2 = [
+    let logicTitle = "logic";
+    let logicArray2 = [
       "IfElse", "TryCatch"
     ];
 
-    const logicImport = logicArray2.map((item) => {
-      return require(`../rules/${logicTitle}/${item}`).default;
-    });
-    const logicInit = logicArray2.map((item, index) => new logicImport[index]());
+    // ActivateLint 가 true인 경우
+    if (conf.ActivateLint) {
+      const logicImport = logicArray2.map((item) => {
+        return require(`../rules/${logicTitle}/${item}`).default;
+      });
+      const logicInit = logicArray2.map((item, index) => new logicImport[index]());
 
-    return logicInit.map((item) => item.output()).join("");
+      return logicInit.map((item) => item.output()).join("");
+    }
+
+    // ActivateLint 가 false인 경우
+    else {
+      return console.log(`_____________________\nActivateLint is false ('logic')`);
+    }
   }
 
   // 4. extra ------------------------------------------------------------------------------------->
-  public extra(paramArray: string[]) {
+  public extra(conf: ConfProps) {
 
-    const extraTitle
-    = "extra";
-
+    let extraTitle = "extra";
     let extraArray2 = [];
+
     // InsertLine 가 true인 경우
-    if (paramArray.includes("InsertLine")) {
+    if (conf.InsertLine) {
       extraArray2 = ["InsertLine", "SpellCheck", "LineBreak", "Space"];
     }
     // InsertLine 가 false인 경우
