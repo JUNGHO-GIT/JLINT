@@ -27,13 +27,6 @@ const activate = (context: vscode.ExtensionContext) => {
         RemoveComments: config.get<boolean>("RemoveComments") || false,
         InsertLine: config.get<boolean>("InsertLine") || false
       };
-
-      console.log(`--------------------`);
-      console.log(`fileName: ('${fileName}')`);
-      console.log(`ActivateLint: ('${confParam.ActivateLint}')`);
-      console.log(`RemoveComments: ('${confParam.RemoveComments}')`);
-      console.log(`InsertLine: ('${confParam.InsertLine}')`);
-
       await main(confParam, filePath, fileName, fileExt);
     })
   );

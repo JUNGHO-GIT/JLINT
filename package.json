@@ -67,14 +67,13 @@
     "watch": "tsc -watch -p .",
     "compile": "tsc -p .",
     "npm-reset": "powershell -Command \"Remove-Item -Recurse -Force package-lock.json, node_modules; npm install --legacy-peer-deps; npm cache clean --force\"",
-    "vsce": "vsce package"
+    "vsce": "vsce package --no-dependencies"
   },
   "dependencies": {
     "@babel/core": "^7.26.0",
     "@prettier/plugin-xml": "^3.4.1",
     "cheerio": "^1.0.0",
     "chevrotain": "^11.0.3",
-    "debug": "^4.3.7",
     "fast-xml-parser": "^4.5.0",
     "glob": "^11.0.0",
     "jsdom": "^25.0.1",
@@ -84,8 +83,7 @@
     "prettier-plugin-java": "^2.6.5",
     "prettier-plugin-jsp": "^1.0.13",
     "prettier-plugin-sql": "^0.18.1",
-    "strip-comments": "^2.0.1",
-    "supports-color": "^9.4.0"
+    "strip-comments": "^2.0.1"
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",

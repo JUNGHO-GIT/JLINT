@@ -25,11 +25,6 @@ const activate = (context) => {
             RemoveComments: config.get("RemoveComments") || false,
             InsertLine: config.get("InsertLine") || false
         };
-        console.log(`--------------------`);
-        console.log(`fileName: ('${fileName}')`);
-        console.log(`ActivateLint: ('${confParam.ActivateLint}')`);
-        console.log(`RemoveComments: ('${confParam.RemoveComments}')`);
-        console.log(`InsertLine: ('${confParam.InsertLine}')`);
         await (0, Main_js_1.main)(confParam, filePath, fileName, fileExt);
     }));
 };
