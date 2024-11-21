@@ -1,18 +1,20 @@
 # gitignore
 
-/node_modules/
-**/node_modules/
+node_modules/**
+**node_modules/**
 
-/build/
-**/build/
+build/**
+**build/**
 
-/dist/
-**/dist/
+out\**
 
-/.cache/
-**/.cache/
+dist/**
+**/dist/**
 
-client/.cache/
-client/.webpack_cache/
+coverage/**
+**/coverage/**
 
-pakcage-lock.json
+*.log
+*.log.*
+
+package-lock.json
