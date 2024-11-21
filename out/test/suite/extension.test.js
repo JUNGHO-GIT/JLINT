@@ -12,4 +12,3 @@ suite('Extension Test Suite', () => {
         assert_1.default.strictEqual(-1, [1, 2, 3].indexOf(0));
     });
 });
-//# sourceMappingURL=extension.test.js.map

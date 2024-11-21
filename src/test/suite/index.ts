@@ -1,7 +1,7 @@
 // index.ts (test)
 // @ts-nocheck
 
-import * as path from 'path';
+import path from 'path';
 import Mocha from 'mocha';
 import glob from 'glob';
 

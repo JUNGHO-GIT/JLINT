@@ -4,25 +4,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Controller_1 = __importDefault(require("./Controller"));
+exports.main = void 0;
+const fs_1 = __importDefault(require("fs"));
+const Contents_1 = require("../contents/Contents");
+const Controller_1 = require("../core/Controller");
 // -------------------------------------------------------------------------------------------------
-class Main {
-    // 1. common -------------------------------------------------------------------------------------
-    async main(confParam) {
-        console.log(`--------------------`);
-        console.log(`ActivateLint: '${confParam.ActivateLint}'`);
-        console.log(`RemoveComments: '${confParam.RemoveComments}'`);
-        console.log(`InsertLine: '${confParam.InsertLine}'`);
-        const controller = new Controller_1.default();
-        const common = controller.common(confParam);
-        const lang = controller.lang(confParam);
-        const syntax = controller.syntax(confParam);
-        const logic = controller.logic(confParam);
-        const extra = controller.extra(confParam);
-        return common + lang + syntax + logic + extra;
-    }
-    ;
-}
-;
-exports.default = Main;
-//# sourceMappingURL=Main.js.map
+const main = async (confParam, filePath, fileName, fileExt) => {
+    let initContents = (0, Contents_1.getContents)(filePath);
+    let finalContents = "";
+    finalContents = await (0, Controller_1.getCommon)(confParam, initContents, fileName, fileExt);
+    finalContents = await (0, Controller_1.getLanguage)(confParam, finalContents, fileName, fileExt);
+    finalContents = await (0, Controller_1.getSyntax)(confParam, finalContents, fileName);
+    finalContents = await (0, Controller_1.getLogic)(confParam, finalContents, fileName);
+    fs_1.default.writeFileSync(filePath, finalContents, 'utf8');
+};
+exports.main = main;

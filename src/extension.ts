@@ -1,35 +1,40 @@
-// extensions.ts
+// extension.ts
 
-import * as vscode from "vscode";
-import Main from "./core/Main";
+import path from "path";
+import vscode from "vscode";
+import { main } from "./core/Main";
 
 // -------------------------------------------------------------------------------------------------
 const activate = (context: vscode.ExtensionContext) => {
 
-  // 0. check if the extension is activated
-  console.log(`"JLINT" is now active!`);
-
-  // 1. access configuration parameters
+  // 1. Get Configuration
   const config = vscode.workspace.getConfiguration("JLINT");
 
-  // 0. configuration Parameters
-  const confParam = {
-    ActivateLint: false,
-    RemoveComments: false,
-    InsertLine: false
-  };
+  // 2. Output
+  console.log(`"JLINT" is now active!`);
 
-  Object.assign(confParam, {
-    ActivateLint: config.get("ActivateLint") === true ? true : false,
-    RemoveComments: config.get("RemoveComments") === true ? true : false,
-    InsertLine: config.get("InsertLine") === true ? true : false
-  });
-
-  // 4. register command
+  // 3. Register Command
   context.subscriptions.push(
-    vscode.commands.registerCommand("extension.JLINT", () =>  {
-      const main = new Main();
-      main.main(confParam);
+    vscode.commands.registerCommand("extension.JLINT", async () => {
+
+      const editor = vscode.window.activeTextEditor;
+      const filePath = editor.document.uri.fsPath;
+      const fileExt = editor.document.languageId;
+      const fileName = path.basename(filePath);
+
+      const confParam = {
+        ActivateLint: config.get<boolean>("ActivateLint") || false,
+        RemoveComments: config.get<boolean>("RemoveComments") || false,
+        InsertLine: config.get<boolean>("InsertLine") || false
+      };
+
+      console.log(`--------------------`);
+      console.log(`fileName: ('${fileName}')`);
+      console.log(`ActivateLint: ('${confParam.ActivateLint}')`);
+      console.log(`RemoveComments: ('${confParam.RemoveComments}')`);
+      console.log(`InsertLine: ('${confParam.InsertLine}')`);
+
+      await main(confParam, filePath, fileName, fileExt);
     })
   );
 };

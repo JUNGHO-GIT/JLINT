@@ -1,6 +1,8 @@
 // Main.ts
 
-import Controller from './Controller';
+import fs from 'fs';
+import { getContents } from '../contents/Contents';
+import { getCommon, getSyntax, getLanguage, getLogic } from '../core/Controller';
 
 // -------------------------------------------------------------------------------------------------
 declare type ConfProps = {
@@ -10,25 +12,20 @@ declare type ConfProps = {
 };
 
 // -------------------------------------------------------------------------------------------------
-class Main {
+export const main = async (
+  confParam: ConfProps,
+  filePath: string,
+  fileName: string,
+  fileExt: string
+) => {
 
-  // 1. common -------------------------------------------------------------------------------------
-  public async main(confParam: ConfProps) {
+  let initContents = getContents(filePath);
+  let finalContents = "";
 
-    console.log(`--------------------`);
-    console.log(`ActivateLint: '${confParam.ActivateLint}'`);
-    console.log(`RemoveComments: '${confParam.RemoveComments}'`);
-    console.log(`InsertLine: '${confParam.InsertLine}'`);
+  finalContents = await getCommon(confParam, initContents, fileName, fileExt);
+  finalContents = await getLanguage(confParam, finalContents, fileName, fileExt);
+  finalContents = await getSyntax(confParam, finalContents, fileName);
+  finalContents = await getLogic(confParam, finalContents, fileName);
 
-    const controller = new Controller();
-    const common = controller.common(confParam);
-    const lang = controller.lang(confParam);
-    const syntax = controller.syntax(confParam);
-    const logic = controller.logic(confParam);
-    const extra = controller.extra(confParam);
-
-    return common + lang + syntax + logic + extra;
-  };
+  fs.writeFileSync(filePath, finalContents, 'utf8');
 };
-
-export default Main;
