@@ -1,8 +1,7 @@
 // Java.ts
 
 import lodash from "lodash";
-import type {Options} from "prettier";
-import prettier from "prettier";
+import prettier, { Options } from "prettier";
 import vscode from "vscode";
 
 // -------------------------------------------------------------------------------------------------
@@ -37,7 +36,6 @@ export const prettierFormat = async (
       bracketSameLine: false,
       semi: true,
       singleAttributePerLine: false,
-      experimentalTernaries: true,
       __embeddedInHtml: true,
     };
 

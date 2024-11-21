@@ -7,7 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.activate = void 0;
 const path_1 = __importDefault(require("path"));
 const vscode_1 = __importDefault(require("vscode"));
-const Main_1 = require("./core/Main");
+const Main_js_1 = require("./core/Main.js");
 // -------------------------------------------------------------------------------------------------
 const activate = (context) => {
     // 1. Get Configuration
@@ -30,7 +30,7 @@ const activate = (context) => {
         console.log(`ActivateLint: ('${confParam.ActivateLint}')`);
         console.log(`RemoveComments: ('${confParam.RemoveComments}')`);
         console.log(`InsertLine: ('${confParam.InsertLine}')`);
-        await (0, Main_1.main)(confParam, filePath, fileName, fileExt);
+        await (0, Main_js_1.main)(confParam, filePath, fileName, fileExt);
     }));
 };
 exports.activate = activate;

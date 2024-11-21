@@ -1,8 +1,8 @@
 // Controller.ts
 
-import { removeComments, singleTags } from '../rules/utils/Common';
-import { brackets } from '../rules/utils/Syntax';
-import { ifElse, tryCatch } from '../rules/utils/Logic';
+import { removeComments, singleTags } from '../rules/utils/Common.js';
+import { brackets } from '../rules/utils/Syntax.js';
+import { ifElse, tryCatch } from '../rules/utils/Logic.js';
 
 // -------------------------------------------------------------------------------------------------
 declare type ConfProps = {

@@ -2,7 +2,7 @@
 
 import path from "path";
 import vscode from "vscode";
-import { main } from "./core/Main";
+import { main } from "./core/Main.js";
 
 // -------------------------------------------------------------------------------------------------
 const activate = (context: vscode.ExtensionContext) => {

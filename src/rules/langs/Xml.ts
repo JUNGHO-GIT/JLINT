@@ -37,7 +37,6 @@ export const prettierFormat = async (
       bracketSameLine: false,
       semi: true,
       singleAttributePerLine: false,
-      experimentalTernaries: true,
       __embeddedInHtml: true,
     };
 

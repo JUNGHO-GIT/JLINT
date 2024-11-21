@@ -1,8 +1,8 @@
 // Main.ts
 
 import fs from 'fs';
-import { getContents } from '../contents/Contents';
-import { getCommon, getSyntax, getLanguage, getLogic } from '../core/Controller';
+import { getContents } from '../contents/Contents.js';
+import { getCommon, getSyntax, getLanguage, getLogic } from '../core/Controller.js';
 
 // -------------------------------------------------------------------------------------------------
 declare type ConfProps = {
