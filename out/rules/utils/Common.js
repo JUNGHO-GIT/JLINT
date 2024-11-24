@@ -5,8 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.singleTags = exports.removeComments = void 0;
-const lodash_1 = __importDefault(require("lodash"));
-const strip_comments_1 = __importDefault(require("strip-comments"));
+const index_js_1 = __importDefault(require("lodash/index.js"));
+const index_js_2 = __importDefault(require("strip-comments/index.js"));
 // -------------------------------------------------------------------------------------------------
 const removeComments = async (contentsParam, fileName, fileExt) => {
     try {
@@ -32,7 +32,7 @@ const removeComments = async (contentsParam, fileName, fileExt) => {
         const pattern2 = /("|')(\s*)(https:\/\/)([\n\s\S]*?)("|')/gm;
         const pattern3 = /("|')(\s*)(@\{http:\/\/)([\n\s\S]*?)("|')/gm;
         const pattern4 = /("|')(\s*)(@\{https:\/\/)([\n\s\S]*?)("|')/gm;
-        const httpResult1 = lodash_1.default.chain(contentsParam)
+        const httpResult1 = index_js_1.default.chain(contentsParam)
             .replace(pattern1, (_, p1, p2, __, p4, p5) => {
             return `${p1}${p2}httpp${p4}${p5}`;
         })
@@ -47,7 +47,7 @@ const removeComments = async (contentsParam, fileName, fileExt) => {
         })
             .value();
         // 2. remove comments
-        const httpResult2 = (0, strip_comments_1.default)(httpResult1, {
+        const httpResult2 = (0, index_js_2.default)(httpResult1, {
             language: languageExt,
             preserveNewlines: true,
             keepProtected: true,
@@ -59,7 +59,7 @@ const removeComments = async (contentsParam, fileName, fileExt) => {
         const pattern2Re = /("|')(\s*)(httpps)([\n\s\S]*?)("|')/gm;
         const pattern3Re = /("|')(\s*)(@\{httpp)([\n\s\S]*?)("|')/gm;
         const pattern4Re = /("|')(\s*)(@\{httpps)([\n\s\S]*?)("|')/gm;
-        const httpResult3 = lodash_1.default.chain(httpResult2)
+        const httpResult3 = index_js_1.default.chain(httpResult2)
             .replace(pattern1Re, (_, p1, p2, __, p4, p5) => {
             return `${p1}${p2}http://${p4}${p5}`;
         })
@@ -75,7 +75,7 @@ const removeComments = async (contentsParam, fileName, fileExt) => {
             .value();
         // 4. 빈 줄나눔 공백 제거
         const pattern5 = /(\n)(\s*)(\n)/gm;
-        const result = lodash_1.default.chain(httpResult3)
+        const result = index_js_1.default.chain(httpResult3)
             .replace(pattern5, (_, p1, p2, p3) => (`${p1}`))
             .value();
         console.log(`_____________________\n removeComments Activated! ('${fileName}')`);
@@ -94,7 +94,7 @@ const singleTags = async (contentsParam, fileName, fileExt) => {
             return contentsParam;
         }
         const rules1 = /(<)(area|base|br|col|command|embed|hr|img|input|keygen|link|meta|param|source|track|wbr)(\s*)([\n\s\S]*?)(\s*)(?<!=)(\/>)/gm;
-        const result = lodash_1.default.chain(contentsParam)
+        const result = index_js_1.default.chain(contentsParam)
             .replace(rules1, (_, p1, p2, p3, p4, p5, p6) => (`${p1}${p2}${p3}${p4}${p5}/>`))
             .value();
         console.log(`_____________________\n singleTags Activated! ('${fileName}')`);

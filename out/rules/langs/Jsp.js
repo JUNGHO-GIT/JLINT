@@ -13,7 +13,7 @@ const prettierFormat = async (contentsParam, fileName) => {
     try {
         // 1. parse
         const prettierOptions = {
-            parser: "html",
+            parser: "vue",
             parentParser: "jsp",
             plugins: [(await import("prettier-plugin-jsp")).default],
             singleQuote: false,

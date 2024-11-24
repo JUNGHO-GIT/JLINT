@@ -36,7 +36,8 @@ const prettierFormat = async (contentsParam, fileName) => {
             contentsParam = html;
         }
         const prettierOptions = {
-            parser: "html",
+            parser: "vue",
+            parentParser: "veu",
             singleQuote: false,
             printWidth: 100,
             tabWidth: 2,

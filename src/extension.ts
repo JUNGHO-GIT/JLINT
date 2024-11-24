@@ -15,7 +15,7 @@ const activate = (context: vscode.ExtensionContext) => {
 
   // 3. Register Command
   context.subscriptions.push(
-    vscode.commands.registerCommand("extension.JLINT", async () => {
+    vscode.commands.registerCommand("extension.JLINT", () => {
 
       const editor = vscode.window.activeTextEditor;
       const filePath = editor.document.uri.fsPath;
@@ -27,7 +27,9 @@ const activate = (context: vscode.ExtensionContext) => {
         RemoveComments: config.get<boolean>("RemoveComments") || false,
         InsertLine: config.get<boolean>("InsertLine") || false
       };
-      await main(confParam, filePath, fileName, fileExt);
+      (async () => {
+        await main(confParam, filePath, fileName, fileExt);
+      })();
     })
   );
 };

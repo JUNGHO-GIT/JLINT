@@ -43,7 +43,8 @@ export const prettierFormat = async (
     }
 
     const prettierOptions: Options = {
-      parser: "html",
+      parser: "vue",
+      parentParser: "veu",
       singleQuote: false,
       printWidth: 100,
       tabWidth: 2,

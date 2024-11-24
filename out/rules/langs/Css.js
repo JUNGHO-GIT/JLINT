@@ -13,6 +13,7 @@ const prettierFormat = async (contentsParam, fileName) => {
         // 1. parse
         const prettierOptions = {
             parser: "css",
+            parentParser: "css",
             singleQuote: false,
             printWidth: 100,
             tabWidth: 2,

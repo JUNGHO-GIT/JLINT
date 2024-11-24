@@ -14,6 +14,7 @@ export const prettierFormat = async (
     // 1. parse
     const prettierOptions: Options = {
       parser: "babel-ts",
+      parentParser: "babel-ts",
       singleQuote: false,
       printWidth: 100,
       tabWidth: 2,

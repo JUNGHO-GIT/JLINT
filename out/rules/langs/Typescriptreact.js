@@ -14,6 +14,7 @@ const prettierFormat = async (contentsParam, fileName) => {
         // 1. parse
         const prettierOptions = {
             parser: "babel-ts",
+            parentParser: "babel-ts",
             singleQuote: false,
             printWidth: 100,
             tabWidth: 2,

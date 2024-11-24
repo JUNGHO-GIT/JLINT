@@ -13,7 +13,7 @@ export const prettierFormat = async (
   try {
     // 1. parse
     const prettierOptions: Options = {
-      parser: "html",
+      parser: "vue",
       parentParser: "jsp",
       plugins: [(await import("prettier-plugin-jsp")).default],
       singleQuote: false,

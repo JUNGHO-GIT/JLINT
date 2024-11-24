@@ -13,6 +13,7 @@ export const prettierFormat = async (
     // 1. parse
     const prettierOptions: Options = {
       parser: "json",
+      parentParser: "json",
       singleQuote: false,
       printWidth: 100,
       tabWidth: 2,

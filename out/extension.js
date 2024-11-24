@@ -15,7 +15,7 @@ const activate = (context) => {
     // 2. Output
     console.log(`"JLINT" is now active!`);
     // 3. Register Command
-    context.subscriptions.push(vscode_1.default.commands.registerCommand("extension.JLINT", async () => {
+    context.subscriptions.push(vscode_1.default.commands.registerCommand("extension.JLINT", () => {
         const editor = vscode_1.default.window.activeTextEditor;
         const filePath = editor.document.uri.fsPath;
         const fileExt = editor.document.languageId;
@@ -25,7 +25,9 @@ const activate = (context) => {
             RemoveComments: config.get("RemoveComments") || false,
             InsertLine: config.get("InsertLine") || false
         };
-        await (0, Main_js_1.main)(confParam, filePath, fileName, fileExt);
+        (async () => {
+            await (0, Main_js_1.main)(confParam, filePath, fileName, fileExt);
+        })();
     }));
 };
 exports.activate = activate;
