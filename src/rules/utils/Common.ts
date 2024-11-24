@@ -1,7 +1,7 @@
 // Common.ts
 
-import lodash from "lodash/index.js";
-import stripComments from "strip-comments/index.js";
+import * as lodash from "lodash";
+import * as stripComments from "strip-comments";
 
 // -------------------------------------------------------------------------------------------------
 export const removeComments = async (
@@ -50,7 +50,7 @@ export const removeComments = async (
     .value();
 
     // 2. remove comments
-    const httpResult2 = stripComments (httpResult1, {
+    const httpResult2 = stripComments.default(httpResult1, {
       language: languageExt,
       preserveNewlines: true,
       keepProtected: true,

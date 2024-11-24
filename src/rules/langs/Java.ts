@@ -1,8 +1,9 @@
 // Java.ts
 
-import lodash from "lodash";
-import prettier, { Options } from "prettier";
-import vscode from "vscode";
+import * as lodash from "lodash";
+import * as prettier from "prettier";
+import type { Options } from "prettier";
+import * as vscode from "vscode";
 
 // -------------------------------------------------------------------------------------------------
 export const prettierFormat = async (
@@ -17,12 +18,12 @@ export const prettierFormat = async (
       singleQuote: false,
       printWidth: 100,
       tabWidth: 2,
-      useTabs: true,
+      useTabs: false,
       quoteProps: "as-needed",
       jsxSingleQuote: false,
       trailingComma: "all",
       bracketSpacing: false,
-      jsxBracketSameLine: false,
+      jsxBracketSameLine: true,
       arrowParens: "always",
       rangeStart: 0,
       rangeEnd: Infinity,
@@ -33,10 +34,11 @@ export const prettierFormat = async (
       vueIndentScriptAndStyle: true,
       endOfLine: "lf",
       embeddedLanguageFormatting: "auto",
-      bracketSameLine: false,
+      bracketSameLine: true,
       semi: true,
       singleAttributePerLine: false,
       __embeddedInHtml: true,
+      experimentalTernaries: true
     };
 
     console.log(`_____________________\nprettierFormat Activated! ('${fileName}')`);
@@ -45,8 +47,8 @@ export const prettierFormat = async (
   }
   catch (err: any) {
     const msg = err.message.toString().trim().replace(/\x1B\[[0-9;]*[mGKF]/g, "");
-    const msgRegex = /(.*Sad sad panda.*)(line.*?)([!]\n.*?found -->)(.*?)(<--!\n*.*$)/gm;
-    const msgRegexReplace = `[JLINT]\n\nError Line\t=\t(  $2  )\nError Site\t=\t(  $4  )`;
+    const msgRegex = /(\s*)(Sad sad panda)(.*)(line[:])(\s*)(\d+)([\s\S]*?)(->)(.*?)(<-)(.*)/gm;
+    const msgRegexReplace = `[JLINT]\n\nError Line = [ $6 ]\nError Site = [ $9 ]`;
     const msgResult = msg.replace(msgRegex, msgRegexReplace);
 
     console.error(`_____________________\nprettierFormat Error! ('${fileName}')\n${msgResult}`);

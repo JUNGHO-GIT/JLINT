@@ -6,8 +6,6 @@ node_modules/**
 build/**
 **build/**
 
-out\**
-
 dist/**
 **/dist/**
 
@@ -18,3 +16,6 @@ coverage/**
 *.log.*
 
 package-lock.json
+
+out/**
+**/out/**

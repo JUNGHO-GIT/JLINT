@@ -1,13 +1,43 @@
 "use strict";
 // Java.ts
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.spellCheck = exports.space = exports.lineBreak = exports.insertLine = exports.prettierFormat = void 0;
-const lodash_1 = __importDefault(require("lodash"));
-const prettier_1 = __importDefault(require("prettier"));
-const vscode_1 = __importDefault(require("vscode"));
+const lodash = __importStar(require("lodash"));
+const prettier = __importStar(require("prettier"));
+const vscode = __importStar(require("vscode"));
 // -------------------------------------------------------------------------------------------------
 const prettierFormat = async (contentsParam, fileName) => {
     try {
@@ -18,7 +48,7 @@ const prettierFormat = async (contentsParam, fileName) => {
             singleQuote: false,
             printWidth: 100,
             tabWidth: 2,
-            useTabs: true,
+            useTabs: false,
             quoteProps: "as-needed",
             jsxSingleQuote: false,
             trailingComma: "all",
@@ -34,22 +64,22 @@ const prettierFormat = async (contentsParam, fileName) => {
             vueIndentScriptAndStyle: true,
             endOfLine: "lf",
             embeddedLanguageFormatting: "auto",
-            bracketSameLine: false,
+            bracketSameLine: true,
             semi: true,
             singleAttributePerLine: false,
-            __embeddedInHtml: true,
+            __embeddedInHtml: true
         };
         console.log(`_____________________\nprettierFormat Activated! ('${fileName}')`);
-        const prettierCode = await prettier_1.default.format(contentsParam, prettierOptions);
+        const prettierCode = await prettier.format(contentsParam, prettierOptions);
         return prettierCode;
     }
     catch (err) {
         const msg = err.message.toString().trim().replace(/\x1B\[[0-9;]*[mGKF]/g, "");
-        const msgRegex = /(.*Sad sad panda.*)(line.*?)([!]\n.*?found -->)(.*?)(<--!\n*.*$)/gm;
-        const msgRegexReplace = `[JLINT]\n\nError Line\t=\t(  $2  )\nError Site\t=\t(  $4  )`;
+        const msgRegex = /(\s*)(Sad sad panda)(.*)(line[:])(\s*)(\d+)([\s\S]*?)(->)(.*?)(<-)(.*)/gm;
+        const msgRegexReplace = `[JLINT]\n\nError Line = [ $6 ]\nError Site = [ $9 ]`;
         const msgResult = msg.replace(msgRegex, msgRegexReplace);
         console.error(`_____________________\nprettierFormat Error! ('${fileName}')\n${msgResult}`);
-        vscode_1.default.window.showInformationMessage(msgResult, { modal: true });
+        vscode.window.showInformationMessage(msgResult, { modal: true });
         return contentsParam;
     }
 };
@@ -58,7 +88,7 @@ exports.prettierFormat = prettierFormat;
 const insertLine = async (contentsParam, fileName) => {
     try {
         const rules1 = /^(?!\/\/--)(?!(?:.*\bclassName\b)|(?:.*class=".*"))(?:\n*)(\s*)(public|private|function|class)(?:(\s*.*))(\s*?)/gm;
-        const result = lodash_1.default.chain(contentsParam)
+        const result = lodash.chain(contentsParam)
             .replace(rules1, (_, p1, p2, p3) => {
             const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
             const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
@@ -86,7 +116,7 @@ const lineBreak = async (contentsParam, fileName) => {
         const rules7 = /(^\s*)(public|private)(\s*)([\s\S]*?)(\s*)(\{)(\n*)(\s*)(.*)/gm;
         const rules8 = /(.*?)(\n*)(.*?)(\n*)(?<=^.\s*)(return)(\s*?)(\S*?)(\s*)(\n)(\s*)(\})/gm;
         const rules9 = /(import.*)(;)(\n*)(\/\/ --)/gm;
-        const result = lodash_1.default.chain(contentsParam)
+        const result = lodash.chain(contentsParam)
             .replace(rules1, (_, p1, p2, p3, p4, p5, p6) => {
             return `${p2}\n${p6}`;
         })
@@ -130,7 +160,7 @@ const space = async (contentsParam, fileName) => {
         const rules1 = /(\s*)(\))(\s+)(;)/gm;
         const rules2 = /(\s*)(@)(\s*)([\s\S]*?)(\s*)(\()/gm;
         const rules3 = /(\s*?)(ception)(\{)/gm;
-        const result = lodash_1.default.chain(contentsParam)
+        const result = lodash.chain(contentsParam)
             .replace(rules1, (_, p1, p2, p3, p4) => (`${p1}${p2}${p4}`))
             .replace(rules2, (_, p1, p2, p3, p4, p5, p6) => (`${p1}${p2}${p4} ${p6}`))
             .replace(rules3, (_, p1, p2, p3) => (`${p2} ${p3}`))
@@ -150,7 +180,7 @@ const spellCheck = async (contentsParam, fileName) => {
         const rules1 = /(\s*)(\/\/)(\s*)(--.*?)(>)(\s*)(\n)(\s*)(\/\/)(\s*)(--.*?)(>)([\s\S])/gm;
         const rules2 = /(^\n*)(^\s*?)(@.*?\n.*)(\s*)(\/\/\s*--.*?>)(\n)(\s*)(.*)/gm;
         const rules3 = /(^\s*)(\/\/\s+--.*?>)(\n)(^\s*?)(@.*?)(\n+)(\s*)(.*)/gm;
-        const result = lodash_1.default.chain(contentsParam)
+        const result = lodash.chain(contentsParam)
             .replace(rules1, (_, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13) => {
             return `${p1}${p2}${p3}${p4}${p5}${p13}`;
         })
