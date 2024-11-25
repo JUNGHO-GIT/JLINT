@@ -52,7 +52,7 @@ const prettierFormat = async (contentsParam, fileName) => {
             jsxSingleQuote: false,
             trailingComma: "all",
             bracketSpacing: false,
-            jsxBracketSameLine: false,
+            jsxBracketSameLine: true,
             arrowParens: "always",
             rangeStart: 0,
             rangeEnd: Infinity,
@@ -66,7 +66,8 @@ const prettierFormat = async (contentsParam, fileName) => {
             bracketSameLine: true,
             semi: true,
             singleAttributePerLine: false,
-            __embeddedInHtml: true
+            __embeddedInHtml: true,
+            experimentalTernaries: true
         };
         console.log(`_____________________\nprettierFormat Activated! ('${fileName}')`);
         const prettierCode = await prettier.format(contentsParam, prettierOptions);
