@@ -67,8 +67,7 @@ export const prettierFormat = async (
       bracketSameLine: true,
       semi: true,
       singleAttributePerLine: false,
-      __embeddedInHtml: true,
-      experimentalTernaries: true
+      __embeddedInHtml: true
     };
 
     console.log(`_____________________\nprettierFormat Activated! ('${fileName}')`);

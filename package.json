@@ -81,7 +81,7 @@
   "scripts": {
     "watch": "tsc -watch -p .",
     "compile": "tsc -p .",
-    "npm-reset": "powershell -Command \"Remove-Item -Recurse -Force package-lock.json, node_modules; npm install --legacy-peer-deps; npm cache clean --force\"",
+    "npm-reset": "powershell -Command \"Remove-Item -Recurse -Force package-lock.json, node_modules; npm install --legacy-peer-deps;\"",
     "vsce": "vsce package"
   },
    "dependencies": {
@@ -93,7 +93,11 @@
     "fast-xml-parser": "^4.5.0",
     "glob": "^11.0.0",
     "minimatch": "^10.0.1",
-    "strip-comments": "^2.0.1"
+    "strip-comments": "^2.0.1",
+    "prettier": "3.0.3",
+    "prettier-plugin-java": "^2.6.5",
+    "prettier-plugin-jsp": "^1.0.13",
+    "@prettier/plugin-xml": "^3.4.1"
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",
@@ -107,11 +111,6 @@
     "@vscode/test-electron": "^2.4.1",
     "eslint": "^9.15.0",
     "mocha": "^10.8.2",
-    "typescript": "^5.7.2",
-    "prettier": "^3.3.3",
-    "prettier-plugin-java": "^2.6.5",
-    "prettier-plugin-jsp": "^1.0.13",
-    "prettier-plugin-sql": "^0.18.1",
-    "@prettier/plugin-xml": "^3.4.1"
+    "typescript": "^5.7.2"
   }
 }
