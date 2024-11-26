@@ -34,7 +34,7 @@
 
 - After
 
-  ![After](https://storage.googleapis.com/jungho-bucket/JLINT/IMAGE/main/main2.webp)
+  ![After](https://storage.googleapis.com/jungho-bucket/JLINT/IMAGE/main/main4.webp)
 
 ## 💡 Error Message Modal
 
@@ -43,7 +43,7 @@
 
 - Example
 
-  ![Modal](https://storage.googleapis.com/jungho-bucket/JLINT/IMAGE/main/main4.webp)
+  ![Modal](https://storage.googleapis.com/jungho-bucket/JLINT/IMAGE/main/main5.webp)
 
 ## 🛠️ Customization
 
