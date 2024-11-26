@@ -1,15 +1,21 @@
-# gitignore
+# gitignore.public
 
-# directories
-node_modules/
-build/
-dist/
-coverage/
-out/
-temp/
+# directories 1
+*node_modules/
+*build/
+*dist/
+*coverage/
+*out/
+*temp/
+*META-INF/
+*target/
+*test/
+
+# directories 2
+.vscode/
+.idea/
 .tmp/
 .cache/
-.idea/
 .nyc_output/
 .grunt/
 .gulp/
@@ -32,6 +38,9 @@ thumbs.db
 *.env.*
 *.properties
 *.props
+*.classpath
+*.project
+*.settings
 
 # temporary files
 *.tmp
@@ -39,23 +48,72 @@ thumbs.db
 *.backup
 *.orig
 *.rej
-
-# package manager files
-package-lock.json
-yarn.lock
-.pnpm-lock.yaml
-npm-debug.log
-pnpm-debug.log
-pom.xml
 *.jar
 *.war
 *.ear
 *.class
 
-# etc
-*.vsix
+# package manager files
+*package-lock.json
+*yarn.lock
+*npm-debug.log
+*pnpm-debug.log
+
+# config files
 *tsconfig.json
-*tsconfig.path.json
 *tsconfig.jsonc
+*tsconfig.path.json
+*tsconfig.paths.json
+*tsconfig.default.json
+*jsconfig.json
+*jsconfig.jsonc
+*jsconfig.path.json
+*jsconfig.paths.json
+*jsconfig.default.json
+
+# etc
 *push.cjs
+*push.sh
+*fetch.cjs
+*fetch.sh
+*pull.cjs
+*pull.sh
+*merge.cjs
+*merge.sh
 *gcloud.cjs
+*gcloud.sh
+*.gitignore.public
+*.gitignore.private
+*.vsix
+
+# react native
+*build/
+*ios/
+*.bundle/
+*.DB_Store
+*.idea
+*.gradle
+*local.properties
+*.iml
+*.hprof
+*.cxx/
+*.keystore
+*!debug.keystore
+*.jsbundle
+*/vendor/bundle/
+*/vendor/cache/
+*metro.config.js
+*jest.config.js
+*app.json
+*Gemfile
+*Gemfile.lock
+*babel.config.js
+*Podfile
+*Podfile.lock
+*.watchmanconfig
+*.prettierrc
+*.prettierignore
+*.prettierrc.js
+*.eslintrc
+*.eslintignore
+*.eslintrc.js
