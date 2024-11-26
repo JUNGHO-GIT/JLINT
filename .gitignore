@@ -7,9 +7,17 @@
 *coverage/
 *out/
 *temp/
-*META-INF/
 *target/
 *test/
+*META-INF/
+*admin/
+*admin*
+*public/
+*public*
+*private/
+*private*
+*auth/
+*auth*
 
 # directories 2
 .vscode/
