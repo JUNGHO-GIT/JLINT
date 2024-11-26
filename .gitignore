@@ -30,6 +30,8 @@ thumbs.db
 # env files
 *.env
 *.env.*
+*.properties
+*.props
 
 # temporary files
 *.tmp
@@ -45,9 +47,15 @@ yarn.lock
 npm-debug.log
 pnpm-debug.log
 pom.xml
+*.jar
+*.war
+*.ear
+*.class
 
 # etc
 *.vsix
 *tsconfig.json
 *tsconfig.path.json
 *tsconfig.jsonc
+*push.cjs
+*gcloud.cjs
