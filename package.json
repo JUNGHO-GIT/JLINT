@@ -81,9 +81,9 @@
   "scripts": {
     "watch": "tsc -watch -p .",
     "compile": "tsc -p .",
-    "npm-reset": "powershell -Command \"Remove-Item -Recurse -Force package-lock.json, node_modules; npm install --legacy-peer-deps;\"",
     "vsce": "vsce package",
-    "push": "node push.cjs"
+    "npm-reset": "powershell -Command \"Remove-Item -Recurse -Force package-lock.json, node_modules; npm install --legacy-peer-deps;\"",
+    "gcloud": "node gcloud.cjs"
   },
    "dependencies": {
     "@babel/core": "^7.26.0",
