@@ -10,7 +10,6 @@ temp/
 .tmp/
 .cache/
 .idea/
-.vscode/
 .nyc_output/
 .grunt/
 .gulp/
