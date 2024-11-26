@@ -48,3 +48,6 @@ pom.xml
 
 # etc
 *.vsix
+*tsconfig.json
+*tsconfig.path.json
+*tsconfig.jsonc
