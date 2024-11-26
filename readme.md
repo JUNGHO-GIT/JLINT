@@ -30,20 +30,29 @@
 
 - Before
 
-  ![Before](https://storage.googleapis.com/jungho-bucket/JLINT/IMAGE/main/main3.webp)
+  <img
+    alt="Before"
+    src="https://storage.googleapis.com/jungho-bucket/JLINT/IMAGE/main/main3.webp"
+    width="400"
+  />
 
 - After
 
-  ![After](https://storage.googleapis.com/jungho-bucket/JLINT/IMAGE/main/main4.webp)
+  <img
+    alt="After"
+    src="https://storage.googleapis.com/jungho-bucket/JLINT/IMAGE/main/main4.webp"
+    width="400"
+  />
 
 ## 💡 Error Message Modal
 
-- JLINT uses a modal to display error messages. This makes it easier to
-  identify errors.
+- JLINT uses a modal to display error messages. This makes it easier to identify errors.
 
-- Example
-
-  ![Modal](https://storage.googleapis.com/jungho-bucket/JLINT/IMAGE/main/main5.webp)
+  <img
+    alt="Modal"
+    src="https://storage.googleapis.com/jungho-bucket/JLINT/IMAGE/main/main5.webp"
+    width="400"
+  />
 
 ## 🛠️ Customization
 
