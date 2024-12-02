@@ -52,13 +52,12 @@
 # ==== Files =======================================================================================
 # ==================================================================================================
 
-# 1. compiled files
-**/*.class
-**/*.jar
-**/*.war
-**/*.ear
-**/build.gradle
-**/.build.gradle
+# 1. os-specific files
+**/*.swp
+**/*.swo
+**/*.DS_Store
+**/*Thumbs.db
+**/*Gemfile
 
 # 2. log files
 **/*.log
@@ -66,14 +65,7 @@
 **/yarn-debug.log
 **/yarn-error.log
 
-# 3. os-specific files
-**/*.swp
-**/*.swo
-**/*.DS_Store
-**/*Thumbs.db
-**/*Gemfile
-
-# 4. env files
+# 3. env files
 **/*.env
 **/*.env.*
 **/*.properties
@@ -96,8 +88,10 @@
 **/gradlew.bat.*
 **/settings.gradle
 **/settings.gradle.*
+**/build.gradle
+**/.build.gradle
 
-# 5. temporary files
+# 4. temporary files
 **/*.tmp
 **/*.tmp.*
 **/*.bak
