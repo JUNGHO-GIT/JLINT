@@ -15,18 +15,17 @@ declare type ConfProps = {
 export const getCommon = async (
   confParam: ConfProps,
   initContents: string,
-  fileName: string,
   fileExt: string
 ) => {
 
   let resultContents = initContents;
 
   if (confParam.RemoveComments) {
-    resultContents = await removeComments(resultContents, fileName, fileExt);
-    resultContents = await singleTags(resultContents, fileName, fileExt);
+    resultContents = await removeComments(resultContents, fileExt);
+    resultContents = await singleTags(resultContents, fileExt);
   }
   else {
-    resultContents = await singleTags(resultContents, fileName, fileExt);
+    resultContents = await singleTags(resultContents, fileExt);
   }
 
   return resultContents;
@@ -50,16 +49,16 @@ export const getLanguage = async (
   if (confParam.ActivateLint) {
     if (confParam.InsertLine) {
       resultContents = await langRules.prettierFormat(resultContents, fileName);
-      resultContents = await langRules.insertLine(resultContents, fileName);
-      resultContents = await langRules.lineBreak(resultContents, fileName);
-      resultContents = await langRules.spellCheck(resultContents, fileName);
-      resultContents = await langRules.space(resultContents, fileName);
+      resultContents = await langRules.insertLine(resultContents);
+      resultContents = await langRules.lineBreak(resultContents);
+      resultContents = await langRules.spellCheck(resultContents);
+      resultContents = await langRules.space(resultContents);
     }
     else {
       resultContents = await langRules.prettierFormat(resultContents, fileName);
-      resultContents = await langRules.lineBreak(resultContents, fileName);
-      resultContents = await langRules.spellCheck(resultContents, fileName);
-      resultContents = await langRules.space(resultContents, fileName);
+      resultContents = await langRules.lineBreak(resultContents);
+      resultContents = await langRules.spellCheck(resultContents);
+      resultContents = await langRules.space(resultContents);
     }
   }
   else {
@@ -73,13 +72,12 @@ export const getLanguage = async (
 export const getSyntax = async (
   confParam: ConfProps,
   afterLanguageContents: string,
-  fileName: string
 ) => {
 
   let resultContents = afterLanguageContents;
 
   if (confParam.ActivateLint) {
-    resultContents = await brackets(resultContents, fileName);
+    resultContents = await brackets(resultContents);
   }
   else {
     resultContents = resultContents;
@@ -92,14 +90,13 @@ export const getSyntax = async (
 export const getLogic = async (
   confParam: ConfProps,
   afterSyntaxContents: string,
-  fileName: string
 ) => {
 
   let resultContents = afterSyntaxContents;
 
   if (confParam.ActivateLint) {
-    resultContents = await ifElse(resultContents, fileName);
-    resultContents = await tryCatch(resultContents, fileName);
+    resultContents = await ifElse(resultContents);
+    resultContents = await tryCatch(resultContents);
   }
   else {
     resultContents = resultContents;

@@ -39,7 +39,7 @@ export const prettierFormat = async (
       __embeddedInHtml: true
     };
 
-    console.log(`_____________________\nprettierFormat Activated! ('${fileName}')`);
+    console.log(`_____________________\n prettierFormat Activated!`);
     const prettierCode = await prettier.format(contentsParam, prettierOptions);
     return prettierCode;
   }
@@ -57,11 +57,10 @@ export const prettierFormat = async (
 
 // -------------------------------------------------------------------------------------------------
 export const insertLine = async (
-  contentsParam: string,
-  fileName: string
+  contentsParam: string
 ) => {
   try {
-    console.log(`_____________________\ninsertLine Not Supported! ('${fileName}')`);
+    console.log(`_____________________\n insertLine Not Supported!`);
     return contentsParam;
   }
   catch (err: any) {
@@ -72,11 +71,10 @@ export const insertLine = async (
 
 // -------------------------------------------------------------------------------------------------
 export const lineBreak = async (
-  contentsParam: string,
-  fileName: string
+  contentsParam: string
 ) => {
   try {
-    console.log(`_____________________\nlineBreak Not Supported! ('${fileName}')`);
+    console.log(`_____________________\n lineBreak Not Supported!`);
     return contentsParam;
   }
   catch (err: any) {
@@ -87,11 +85,10 @@ export const lineBreak = async (
 
 // -------------------------------------------------------------------------------------------------
 export const space = async (
-  contentsParam: string,
-  fileName: string
+  contentsParam: string
 ) => {
   try {
-    console.log(`_____________________\nspace Not Supported! ('${fileName}')`);
+    console.log(`_____________________\n space Not Supported!`);
     return contentsParam;
   }
   catch (err: any) {
@@ -102,11 +99,10 @@ export const space = async (
 
 // -------------------------------------------------------------------------------------------------
 export const spellCheck = async (
-  contentsParam: string,
-  fileName: string
+  contentsParam: string
 ) => {
   try {
-    console.log(`_____________________\nspellCheck Not Supported! ('${fileName}')`);
+    console.log(`_____________________\n spellCheck Not Supported!`);
     return contentsParam;
   }
   catch (err: any) {

@@ -19,13 +19,22 @@ export const main = async (
   fileExt: string
 ) => {
 
+  console.log(
+  `_____________________
+    ActivateLint: ${confParam.ActivateLint}
+    RemoveComments: ${confParam.RemoveComments}
+    InsertLine: ${confParam.InsertLine}
+    fileName: ${fileName}
+    fileExt: ${fileExt}`
+  );
+
   let initContents = getContents(filePath);
   let finalContents = "";
 
-  finalContents = await getCommon(confParam, initContents, fileName, fileExt);
+  finalContents = await getCommon(confParam, initContents, fileExt);
   finalContents = await getLanguage(confParam, finalContents, fileName, fileExt);
-  finalContents = await getSyntax(confParam, finalContents, fileName);
-  finalContents = await getLogic(confParam, finalContents, fileName);
+  finalContents = await getSyntax(confParam, finalContents);
+  finalContents = await getLogic(confParam, finalContents);
 
   fs.writeFileSync(filePath, finalContents, 'utf8');
 };

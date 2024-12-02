@@ -1,6 +1,6 @@
 // Java.ts
 
-import * as lodash from "lodash";
+import lodash from "lodash";
 import * as prettier from "prettier";
 import type { Options } from "prettier";
 import * as vscode from "vscode";
@@ -40,7 +40,7 @@ export const prettierFormat = async (
       __embeddedInHtml: true
     };
 
-    console.log(`_____________________\nprettierFormat Activated! ('${fileName}')`);
+    console.log(`_____________________\n prettierFormat Activated!`);
     const prettierCode = await prettier.format(contentsParam, prettierOptions);
     return prettierCode;
   }
@@ -58,8 +58,7 @@ export const prettierFormat = async (
 
 // -------------------------------------------------------------------------------------------------
 export const insertLine = async (
-  contentsParam: string,
-  fileName: string
+  contentsParam: string
 ) => {
   try {
     const rules1
@@ -73,7 +72,7 @@ export const insertLine = async (
     })
     .value();
 
-    console.log(`_____________________\ninsertLine Activated! ('${fileName}')`);
+    console.log(`_____________________\n insertLine Activated!`);
     return result;
   }
   catch (err: any) {
@@ -84,8 +83,7 @@ export const insertLine = async (
 
 // -------------------------------------------------------------------------------------------------
 export const lineBreak = async (
-  contentsParam: string,
-  fileName: string
+  contentsParam: string
 ) => {
   try {
     const rules1
@@ -137,7 +135,7 @@ export const lineBreak = async (
     })
     .value();
 
-    console.log(`_____________________\nlineBreak Activated! ('${fileName}')`);
+    console.log(`_____________________\n lineBreak Activated!`);
     return result;
   }
   catch (err: any) {
@@ -148,8 +146,7 @@ export const lineBreak = async (
 
 // -------------------------------------------------------------------------------------------------
 export const space = async (
-  contentsParam: string,
-  fileName: string
+  contentsParam: string
 ) => {
   try {
     const rules1
@@ -171,7 +168,7 @@ export const space = async (
     ))
     .value();
 
-    console.log(`_____________________\nspace Activated! ('${fileName}')`);
+    console.log(`_____________________\n space Activated!`);
     return result;
   }
   catch (err: any) {
@@ -182,8 +179,7 @@ export const space = async (
 
 // -------------------------------------------------------------------------------------------------
 export const spellCheck = async (
-  contentsParam: string,
-  fileName: string
+  contentsParam: string
 ) => {
   try {
     const rules1
@@ -205,7 +201,7 @@ export const spellCheck = async (
     })
     .value();
 
-    console.log(`_____________________\nspellCheck Activated! ('${fileName}')`);
+    console.log(`_____________________\n spellCheck Activated!`);
     return result;
   }
   catch (err: any) {

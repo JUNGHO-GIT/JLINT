@@ -1,12 +1,11 @@
 // Common.ts
 
-import * as lodash from "lodash";
+import lodash from "lodash";
 import * as stripComments from "strip-comments";
 
 // -------------------------------------------------------------------------------------------------
 export const removeComments = async (
   contentsParam: string,
-  fileName: string,
   fileExt: string
 ) => {
   try {
@@ -88,7 +87,7 @@ export const removeComments = async (
     ))
     .value();
 
-    console.log(`_____________________\n removeComments Activated! ('${fileName}')`);
+    console.log(`_____________________\n removeComments Activated!`);
     return result;
   }
   catch (err: any) {
@@ -100,7 +99,6 @@ export const removeComments = async (
 // -------------------------------------------------------------------------------------------------
 export const singleTags = async (
   contentsParam: string,
-  fileName: string,
   fileExt: string
 ) => {
   try {
@@ -116,7 +114,7 @@ export const singleTags = async (
     ))
     .value();
 
-    console.log(`_____________________\n singleTags Activated! ('${fileName}')`);
+    console.log(`_____________________\n singleTags Activated!`);
     return result;
   }
   catch (err: any) {

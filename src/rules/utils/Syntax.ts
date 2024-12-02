@@ -1,11 +1,10 @@
 // Syntax.ts
 
-import * as lodash from "lodash";
+import lodash from "lodash";
 
 // -------------------------------------------------------------------------------------------------
 export const brackets = async (
   contentsParam: string,
-  fileName: string,
 ) => {
   try {
     const rules1 = /(\))(\{)/gm;
@@ -16,7 +15,7 @@ export const brackets = async (
     })
     .value();
 
-    console.log(`_____________________\n brackets Activated! ('${fileName}')`);
+    console.log(`_____________________\n brackets Activated!`);
     return result;
   }
   catch (err: any) {
@@ -28,7 +27,6 @@ export const brackets = async (
 // -------------------------------------------------------------------------------------------------
 export const comma = async (
   contentsParam: string,
-  fileName: string,
 ) => {
   try {
     const rules1 = /(\s*)(,)(\s*)/gm;
@@ -39,7 +37,7 @@ export const comma = async (
     })
     .value();
 
-    console.log(`_____________________\n comma Activated! ('${fileName}')`);
+    console.log(`_____________________\n comma Activated!`);
     return result;
   }
   catch (err: any) {
@@ -51,7 +49,6 @@ export const comma = async (
 // -------------------------------------------------------------------------------------------------
 export const semicolon = async (
   contentsParam: string,
-  fileName: string,
 ) => {
   try {
     const rules1
@@ -78,7 +75,7 @@ export const semicolon = async (
     })
     .value();
 
-    console.log(`_____________________\n semicolon Activated! ('${fileName}')`);
+    console.log(`_____________________\n semicolon Activated!`);
     return result;
   }
   catch (err: any) {
@@ -90,7 +87,6 @@ export const semicolon = async (
 // -------------------------------------------------------------------------------------------------
 export const quotes = async (
   contentsParam: string,
-  fileName: string,
 ) => {
   try {
     const rules1
@@ -102,7 +98,7 @@ export const quotes = async (
     })
     .value();
 
-    console.log(`_____________________\n quote Activated! ('${fileName}')`);
+    console.log(`_____________________\n quote Activated!`);
     return result;
   }
   catch (err: any) {

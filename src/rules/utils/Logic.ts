@@ -1,11 +1,10 @@
 // Logic.ts
 
-import * as lodash from "lodash";
+import lodash from "lodash";
 
 // -------------------------------------------------------------------------------------------------
 export const ifElse = async (
   contentsParam: string,
-  fileName: string,
 ) => {
   try {
     const rules1
@@ -35,7 +34,7 @@ export const ifElse = async (
     })
     .value();
 
-    console.log(`_____________________\n ifElse Activated! ('${fileName}')`);
+    console.log(`_____________________\n ifElse Activated!`);
     return result;
   }
   catch (err: any) {
@@ -47,7 +46,6 @@ export const ifElse = async (
 // -------------------------------------------------------------------------------------------------
 export const tryCatch = async (
   contentsParam: string,
-  fileName: string,
 ) => {
   try {
     const rules1
@@ -69,7 +67,7 @@ export const tryCatch = async (
     ))
     .value();
 
-    console.log(`_____________________\n tryCatch Activated! ('${fileName}')`);
+    console.log(`_____________________\n tryCatch Activated!`);
     return result;
   }
   catch (err: any) {
