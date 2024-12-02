@@ -42,7 +42,7 @@ export const prettierFormat = async (
     };
 
     console.log(`_____________________\n prettierFormat Activated!`);
-    const prettierCode = await prettier.format(contentsParam, prettierOptions);
+    const prettierCode = prettier.format(contentsParam, prettierOptions);
     return prettierCode;
   }
   catch (err: any) {
@@ -119,6 +119,9 @@ export const lineBreak = async (
     const rules9 = (
       /(import.*)(;)(\n*)(\/\/ --)/gm
     );
+    const rules10 = (
+      /(import.*;)(\n)(^public)/gm
+    );
 
     const result = (
       lodash.chain(contentsParam)
@@ -148,6 +151,9 @@ export const lineBreak = async (
       ))
       .replace(rules9, (_, p1, p2, p3, p4) => (
         `${p1}${p2}\n\n${p4}`
+      ))
+      .replace(rules10, (_, p1, p2, p3) => (
+        `${p1}${p2}\n${p3}`
       ))
       .value()
     );
@@ -215,6 +221,12 @@ export const spellCheck = async (
     const rules3 = (
       /(^\s*)(\/\/\s+--.*?>)(\n)(^\s*?)(@.*?)(\n+)(\s*)(.*)/gm
     );
+    const rules4 = (
+      /(\s*)(@Value)(\s*)(\()(.*)(\n+)(.*)(\))/gm
+    );
+    const rules5 = (
+      /(^\s*)(.*;)(\n)(?!\n)(\s*)(@Autowired|@Value|@RequestMapping|@GetMapping|@PostMapping|@PutMapping|@DeleteMapping)/gm
+    );
 
     const result = (
       lodash.chain(contentsParam)
@@ -226,6 +238,12 @@ export const spellCheck = async (
       ))
       .replace(rules3, (_, p1, p2, p3, p4, p5, p6, p7, p8) => (
         `${p1}${p2}${p3}${p4}${p5}\n${p7}${p8}`
+      ))
+      .replace(rules4, (_, p1, p2, p3, p4, p5, p6, p7, p8) => (
+        `${p1}${p2} (${p5}${p7})`
+      ))
+      .replace(rules5, (_, p1, p2, p3, p4, p5) => (
+        `${p1}${p2}\n\n${p4}${p5}`
       ))
       .value()
     );

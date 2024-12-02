@@ -1,31 +1,110 @@
 // Common.ts
 
 import lodash from "lodash";
-import * as stripComments from "strip-comments";
+import stripComments from "strip-comments";
 
 // -------------------------------------------------------------------------------------------------
 export const removeComments = async (
   contentsParam: string,
   fileExt: string
 ) => {
-
   try {
+    // 0. result
+    let httpResult1: string = "";
+    let httpResult2: string = "";
+    let httpResult3: string = "";
+
     // 1. rules
     let languageExt: string;
+    let minifyRules: any;
+
+    // 1. language specific rules
     if (fileExt === "html" || fileExt === "jsp" || fileExt === "vue") {
       languageExt = "html";
+      minifyRules = async (result2: string) => {
+        const { minify } = await import("html-minifier-terser");
+        const minifyResult = await minify(result2, {
+          collapseWhitespace: true,
+          conservativeCollapse: true,
+          removeComments: true,
+          removeRedundantAttributes: true,
+          removeScriptTypeAttributes: true,
+          removeStyleLinkTypeAttributes: true,
+          useShortDoctype: true,
+        });
+
+        return minifyResult;
+      }
     }
-    else if (fileExt === "javascriptreact" || fileExt === "jsx") {
+    else if (fileExt === "css" || fileExt === "scss" || fileExt === "less") {
+      languageExt = "css";
+      minifyRules = async (result2: string) => {
+        const { default: CleanCSS } = await import("clean-css");
+        const minifyResult = new CleanCSS({
+          level: {
+            1: {
+              specialComments: 'none',
+              removeEmpty: true,
+              removeWhitespace: true,
+              replaceMultipleZeros: true,
+              removeNegativePaddings: true,
+            },
+            2: {
+              mergeMedia: true,
+              removeEmpty: true,
+              removeDuplicateFontRules: true,
+              removeDuplicateMediaBlocks: true,
+              removeDuplicateRules: true,
+              removeUnusedAtRules: false,
+              restructureRules: true,
+              skipProperties: [],
+            },
+          },
+        }).minify(result2);
+
+        return minifyResult.styles;
+      }
+    }
+    else if (fileExt === "java") {
+      languageExt = "java";
+      minifyRules = async (result2: string) => {
+        return result2;
+      }
+    }
+    else if (
+      fileExt === "javascript" || fileExt === "js" ||
+      fileExt === "javascriptreact" || fileExt === "jsx" ||
+      fileExt === "typescript" || fileExt === "ts" ||
+      fileExt === "typescriptreact" || fileExt === "tsx"
+    ) {
       languageExt = "javascript";
-    }
-    else if (fileExt === "typescriptreact" || fileExt === "tsx") {
-      languageExt = "typescript";
+      minifyRules = async (result2: string) => {
+        const { minify } = await import("terser");
+        const minifyResult = await minify(result2, {
+          compress: false,
+          mangle: true,
+          format: {
+            comments: false,
+          },
+        });
+
+        return minifyResult.code;
+      }
     }
     else if (fileExt === "json" || fileExt === "jsonc") {
       languageExt = "json";
+      minifyRules = async (result2: string) => {
+        const { default: stripJsonComments } = await import("strip-json-comments");
+        const minifyResult = stripJsonComments(result2);
+
+        return minifyResult;
+      }
     }
-    else {
-      languageExt = fileExt;
+    else if (fileExt === "xml") {
+      languageExt = "xml";
+      minifyRules = async (result2: string) => {
+        return result2;
+      }
     }
 
     // 2. `http://` -> `httpp`
@@ -42,7 +121,7 @@ export const removeComments = async (
       /("|')(\s*)(@\{https:\/\/)([\n\s\S]*?)("|')/gm
     );
 
-    const httpResult1 = (
+    httpResult1 = (
       lodash.chain(contentsParam)
       .replace(pattern1, (_, p1, p2, p3, p4, p5) => (
         `${p1}${p2}httpp${p4}${p5}`
@@ -59,14 +138,19 @@ export const removeComments = async (
       .value()
     );
 
-    // 3. remove comments
-    const httpResult2 = stripComments.default(httpResult1, {
+    // 3-1. remove comments
+    httpResult2 = stripComments(httpResult1, {
       language: languageExt,
       preserveNewlines: true,
-      keepProtected: true,
+      keepProtected: false,
       block: true,
       line: true,
     });
+
+    // 3-2. minify
+    if (minifyRules) {
+      httpResult3 = await minifyRules(httpResult2);
+    }
 
     // 4. `httpp` -> `http://`
     const pattern1Re = (
@@ -82,8 +166,8 @@ export const removeComments = async (
       /("|')(\s*)(@\{httpps)([\n\s\S]*?)("|')/gm
     );
 
-    const httpResult3 = (
-      lodash.chain(httpResult2)
+    const httpResult4 = (
+      lodash.chain(httpResult3)
       .replace(pattern1Re, (_, p1, p2, __, p4, p5) => (
         `${p1}${p2}http://${p4}${p5}`
       ))
@@ -103,9 +187,8 @@ export const removeComments = async (
     const pattern5 = (
       /(\n)(\s*)(\n)/gm
     );
-
     const result = (
-      lodash.chain(httpResult3)
+      lodash.chain(httpResult4)
       .replace(pattern5, (_, p1, p2, p3) => (
         `${p1}`
       ))

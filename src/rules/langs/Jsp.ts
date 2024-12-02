@@ -73,7 +73,7 @@ export const prettierFormat = async (
     };
 
     console.log(`_____________________\n prettierFormat Activated!`);
-    const prettierCode = await prettier.format(contentsParam, prettierOptions);
+    const prettierCode = prettier.format(contentsParam, prettierOptions);
     return prettierCode;
   }
   catch (err: any) {
@@ -125,48 +125,48 @@ export const insertLine = async (
     const result = (
       lodash.chain(contentsParam)
       .replace(rules1, (_, p1, p2, p3) => {
-        const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
-        const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
+        const spaceSize = 100 - (p1.length + `<!-- `.length + `-`.length);
+        const insetLine = `<!-- ` + '-'.repeat(spaceSize) + `-->`;
         return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
       })
       .replace(rules2, (_, p1, p2, p3) => {
-        const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
-        const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
+        const spaceSize = 100 - (p1.length + `<!-- `.length + `-`.length);
+        const insetLine = `<!-- ` + '-'.repeat(spaceSize) + `-->`;
         return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
       })
       .replace(rules3, (_, p1, p2, p3) => {
-        const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
-        const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
+        const spaceSize = 100 - (p1.length + `<!-- `.length + `-`.length);
+        const insetLine = `<!-- ` + '-'.repeat(spaceSize) + `-->`;
         return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
       })
       .replace(rules4, (_, p1, p2, p3) => {
-        const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
-        const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
+        const spaceSize = 100 - (p1.length + `<!-- `.length + `-`.length);
+        const insetLine = `<!-- ` + '-'.repeat(spaceSize) + `-->`;
         return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
       })
       .replace(rules5, (_, p1, p2, p3) => {
-        const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
-        const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
+        const spaceSize = 100 - (p1.length + `<!-- `.length + `-`.length);
+        const insetLine = `<!-- ` + '-'.repeat(spaceSize) + `-->`;
         return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
       })
       .replace(rules6, (_, p1, p2, p3) => {
-        const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
-        const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
+        const spaceSize = 100 - (p1.length + `<!-- `.length + `-`.length);
+        const insetLine = `<!-- ` + '-'.repeat(spaceSize) + `-->`;
         return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
       })
       .replace(rules7, (_, p1, p2, p3) => {
-        const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
-        const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
+        const spaceSize = 100 - (p1.length + `<!-- `.length + `-`.length);
+        const insetLine = `<!-- ` + '-'.repeat(spaceSize) + `-->`;
         return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
       })
       .replace(rules8, (_, p1, p2, p3) => {
-        const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
-        const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
+        const spaceSize = 100 - (p1.length + `<!-- `.length + `-`.length);
+        const insetLine = `<!-- ` + '-'.repeat(spaceSize) + `-->`;
         return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
       })
       .replace(rules9, (_, p1, p2, p3) => {
-        const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
-        const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
+        const spaceSize = 100 - (p1.length + `<!-- `.length + `-`.length);
+        const insetLine = `<!-- ` + '-'.repeat(spaceSize) + `-->`;
         return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
       })
       .value()

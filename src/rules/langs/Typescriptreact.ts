@@ -41,7 +41,7 @@ export const prettierFormat = async (
     };
 
     console.log(`_____________________\n prettierFormat Activated!`);
-    const prettierCode = await prettier.format(contentsParam, prettierOptions);
+    const prettierCode = prettier.format(contentsParam, prettierOptions);
     return prettierCode;
   }
   catch (err: any) {
