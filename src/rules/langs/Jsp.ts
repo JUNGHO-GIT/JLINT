@@ -11,8 +11,8 @@ export const prettierFormat = async (
   contentsParam: string,
   fileName: string
 ) => {
-  try {
 
+  try {
     // 1. check if head tags exist
     const headStartIndex = contentsParam.indexOf("<head>");
     const headEndIndex = contentsParam.indexOf("</head>");
@@ -92,73 +92,85 @@ export const prettierFormat = async (
 export const insertLine = async (
   contentsParam: string
 ) => {
-  try {
-    const rules1
-    = /^(?!\/\/--)(?:\n*)(\s*)([<]head\s*.*\s*[>])(\s*?)/gm;
-    const rules2
-    = /^(?!\/\/--)(?:\n*)(\s*)([<]body\s*.*\s*[>])(\s*?)/gm;
-    const rules3
-    = /^(?!\/\/--)(?:\n*)(\s*)([<]header\s*.*\s*[>])(\s*?)/gm;
-    const rules4
-    = /^(?!\/\/--)(?:\n*)(\s*)([<]main\s*.*\s*[>])(\s*?)/gm;
-    const rules5
-    = /^(?!\/\/--)(?:\n*)(\s*)([<]footer\s*.*\s*[>])(\s*?)/gm;
-    const rules6
-    = /^(?!\/\/--)(?:\n*)(\s*)([<]section\s*.*\s*[>])(\s*?)/gm;
-    const rules7
-    = /^(?!\/\/--)(?:\n*)(\s*)([<]table\s*.*\s*[>])(\s*?)/gm;
-    const rules8
-    = /^(?!\/\/--)(?:\n*)(\s*)([<]form\s*.*\s*[>])(\s*?)/gm;
-    const rules9
-    = /^(?!\/\/--)(?:\n*)(\s*)([<]div class="row\s*.*\s*[>])(\s*?)/gm;
 
-    const result = lodash.chain(contentsParam)
-    .replace(rules1, (_, p1, p2, p3) => {
-      const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
-      const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
-      return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
-    })
-    .replace(rules2, (_, p1, p2, p3) => {
-      const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
-      const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
-      return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
-    })
-    .replace(rules3, (_, p1, p2, p3) => {
-      const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
-      const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
-      return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
-    })
-    .replace(rules4, (_, p1, p2, p3) => {
-      const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
-      const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
-      return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
-    })
-    .replace(rules5, (_, p1, p2, p3) => {
-      const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
-      const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
-      return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
-    })
-    .replace(rules6, (_, p1, p2, p3) => {
-      const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
-      const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
-      return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
-    })
-    .replace(rules7, (_, p1, p2, p3) => {
-      const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
-      const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
-      return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
-    })
-    .replace(rules8, (_, p1, p2, p3) => {
-      const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
-      const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
-      return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
-    })
-    .replace(rules9, (_, p1, p2, p3) => {
-      const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
-      const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
-      return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
-    })
-    .value();
+  try {
+    const rules1 = (
+      /^(?!\/\/--)(?:\n*)(\s*)([<]head\s*.*\s*[>])(\s*?)/gm
+    );
+    const rules2 = (
+      /^(?!\/\/--)(?:\n*)(\s*)([<]body\s*.*\s*[>])(\s*?)/gm
+    );
+    const rules3 = (
+      /^(?!\/\/--)(?:\n*)(\s*)([<]header\s*.*\s*[>])(\s*?)/gm
+    );
+    const rules4 = (
+      /^(?!\/\/--)(?:\n*)(\s*)([<]main\s*.*\s*[>])(\s*?)/gm
+    );
+    const rules5 = (
+      /^(?!\/\/--)(?:\n*)(\s*)([<]footer\s*.*\s*[>])(\s*?)/gm
+    );
+    const rules6 = (
+      /^(?!\/\/--)(?:\n*)(\s*)([<]section\s*.*\s*[>])(\s*?)/gm
+    );
+    const rules7 = (
+      /^(?!\/\/--)(?:\n*)(\s*)([<]table\s*.*\s*[>])(\s*?)/gm
+    );
+    const rules8 = (
+      /^(?!\/\/--)(?:\n*)(\s*)([<]form\s*.*\s*[>])(\s*?)/gm
+    );
+    const rules9 = (
+      /^(?!\/\/--)(?:\n*)(\s*)([<]div class="row\s*.*\s*[>])(\s*?)/gm
+    );
+
+    const result = (
+      lodash.chain(contentsParam)
+      .replace(rules1, (_, p1, p2, p3) => {
+        const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
+        const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
+        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+      })
+      .replace(rules2, (_, p1, p2, p3) => {
+        const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
+        const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
+        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+      })
+      .replace(rules3, (_, p1, p2, p3) => {
+        const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
+        const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
+        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+      })
+      .replace(rules4, (_, p1, p2, p3) => {
+        const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
+        const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
+        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+      })
+      .replace(rules5, (_, p1, p2, p3) => {
+        const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
+        const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
+        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+      })
+      .replace(rules6, (_, p1, p2, p3) => {
+        const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
+        const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
+        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+      })
+      .replace(rules7, (_, p1, p2, p3) => {
+        const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
+        const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
+        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+      })
+      .replace(rules8, (_, p1, p2, p3) => {
+        const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
+        const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
+        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+      })
+      .replace(rules9, (_, p1, p2, p3) => {
+        const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
+        const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
+        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+      })
+      .value()
+    );
 
     console.log(`_____________________\n insertLine Activated!`);
     return result;
@@ -173,20 +185,25 @@ export const insertLine = async (
 export const lineBreak = async (
   contentsParam: string
 ) => {
-  try {
-    const rules1
-    = /(?:\n*)(\s*)(<\/body>)(\s*?)/gm;
-    const rules2
-    = /(.*?)(\n*)(\s*)(\/\/ -.*>)/gm;
 
-    const result = lodash.chain(contentsParam)
-    .replace(rules1, (_, p1, p2, p3) => {
-      return `\n\n${p1}${p2}${p3}`;
-    })
-    .replace(rules2, (_, p1, p2, p3, p4) => {
-      return `${p1}\n\n${p3}${p4}`;
-    })
-    .value();
+  try {
+    const rules1 = (
+      /(?:\n*)(\s*)(<\/body>)(\s*?)/gm
+    );
+    const rules2 = (
+      /(.*?)(\n*)(\s*)(\/\/ -.*>)/gm
+    );
+
+    const result = (
+      lodash.chain(contentsParam)
+      .replace(rules1, (_, p1, p2, p3) => (
+        `\n\n${p1}${p2}${p3}`
+      ))
+      .replace(rules2, (_, p1, p2, p3, p4) => (
+        `${p1}\n\n${p3}${p4}`
+      ))
+      .value()
+    );
 
     console.log(`_____________________\n lineBreak Activated!`);
     return result;
@@ -201,25 +218,31 @@ export const lineBreak = async (
 export const space = async (
   contentsParam: string
 ) => {
-  try {
-    const rules1
-    = /(\s*)(\))(\s+)(;)/gm;
-    const rules2
-    = /(\s*)(@)(\s*)([\s\S]*?)(\s*)(\()/gm;
-    const rules3
-    = /(\s*?)(ception)(\{)/gm;
 
-    const result = lodash.chain(contentsParam)
-    .replace(rules1, (_, p1, p2, p3, p4) => (
-      `${p1}${p2}${p4}`
-    ))
-    .replace(rules2, (_, p1, p2, p3, p4, p5, p6) => (
-      `${p1}${p2}${p4} ${p6}`
-    ))
-    .replace(rules3, (_, p1, p2, p3) => (
-      `${p2} ${p3}`
-    ))
-    .value();
+  try {
+    const rules1 = (
+      /(\s*)(\))(\s+)(;)/gm
+    );
+    const rules2 = (
+      /(\s*)(@)(\s*)([\s\S]*?)(\s*)(\()/gm
+    );
+    const rules3 = (
+      /(\s*?)(ception)(\{)/gm
+    );
+
+    const result = (
+      lodash.chain(contentsParam)
+      .replace(rules1, (_, p1, p2, p3, p4) => (
+        `${p1}${p2}${p4}`
+      ))
+      .replace(rules2, (_, p1, p2, p3, p4, p5, p6) => (
+        `${p1}${p2}${p4} ${p6}`
+      ))
+      .replace(rules3, (_, p1, p2, p3) => (
+        `${p2} ${p3}`
+      ))
+      .value()
+    );
 
     console.log(`_____________________\n space Activated!`);
     return result;
@@ -234,15 +257,19 @@ export const space = async (
 export const spellCheck = async (
   contentsParam: string
 ) => {
-  try {
-    const rules1
-    = /(\s*)(<!)(--.*?)(>)(\s*)(\n)(\s*)(<!)(--.*?)(>)([\s\S])/gm;
 
-    const result = lodash.chain(contentsParam)
-    .replace(rules1, (_, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) => {
-      return `${p1}${p2}${p3}${p4}${p11}`;
-    })
-    .value();
+  try {
+    const rules1 = (
+      /(\s*)(<!)(--.*?)(>)(\s*)(\n)(\s*)(<!)(--.*?)(>)([\s\S])/gm
+    );
+
+    const result = (
+      lodash.chain(contentsParam)
+      .replace(rules1, (_, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) => (
+        `${p1}${p2}${p3}${p4}${p11}`
+      ))
+      .value()
+    );
 
     console.log(`_____________________\n spellCheck Activated!`);
     return result;
@@ -251,4 +278,4 @@ export const spellCheck = async (
     console.error(err.message);
     return contentsParam;
   }
-}
+};

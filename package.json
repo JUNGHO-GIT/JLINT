@@ -4,7 +4,7 @@
   "publisher": "JUNGHO",
   "icon": "logo.webp",
   "license": "Apache-2.0",
-  "version": "1.4.5",
+  "version": "1.4.7",
   "description": "Universal Language formatter",
   "main": "./out/extension.js",
   "repository": {
@@ -86,20 +86,20 @@
     "npm-reset": "powershell -Command \"Remove-Item -Recurse -Force package-lock.json, node_modules; npm install --legacy-peer-deps;\"",
     "gcloud": "node gcloud.cjs"
   },
-   "dependencies": {
+  "dependencies": {
     "@babel/core": "^7.26.0",
-    "jsdom": "^25.0.1",
-    "lodash": "^4.17.21",
+    "@prettier/plugin-xml": "2.2.0",
     "cheerio": "^1.0.0",
     "chevrotain": "^11.0.3",
     "fast-xml-parser": "^4.5.0",
     "glob": "^11.0.0",
+    "jsdom": "^25.0.1",
+    "lodash": "^4.17.21",
     "minimatch": "^10.0.1",
-    "strip-comments": "^2.0.1",
     "prettier": "2.7.1",
     "prettier-plugin-java": "1.6.2",
     "prettier-plugin-jsp": "^1.0.13",
-    "@prettier/plugin-xml": "2.2.0"
+    "strip-comments": "^2.0.1"
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",
@@ -108,6 +108,7 @@
     "@types/minimatch": "^3.0.5",
     "@types/mocha": "^10.0.10",
     "@types/node": "^22.9.3",
+    "@types/prettier": "^2.7.3",
     "@types/strip-comments": "^2.0.4",
     "@types/vscode": "1.95.0",
     "@vscode/test-electron": "^2.4.1",
