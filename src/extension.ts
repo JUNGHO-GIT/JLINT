@@ -7,29 +7,44 @@ import { main } from "./core/Main.js";
 // -------------------------------------------------------------------------------------------------
 export const activate = (context: vscode.ExtensionContext) => {
 
-  // 1. Get Configuration
-  const config = vscode.workspace.getConfiguration("JLINT");
-
-  // 2. Output
-  console.log(`"JLINT" is now active!`);
-
-  // 3. Register Command
   try {
-    context.subscriptions.push(
-      vscode.commands.registerCommand("extension.JLINT", async () => {
-        const editor = vscode.window.activeTextEditor;
-        const filePath = editor.document.uri.fsPath;
-        const fileExt = editor.document.languageId;
-        const fileName = path.basename(filePath);
+    // 1. Output
+    console.log(`_____________________\n JLint Activated!`);
 
-        const confParam = {
-          ActivateLint: config.get("ActivateLint") as boolean || false,
-          RemoveComments: config.get("RemoveComments") as boolean || false,
-          InsertLine: config.get("InsertLine") as boolean || false
-        };
-        await main(confParam, filePath, fileName, fileExt);
+    // 2. Get Configuration
+    const getConfiguration = () => {
+      const config = vscode.workspace.getConfiguration("JLINT");
+      return {
+        ActivateLint: config.get("ActivateLint") as boolean,
+        RemoveComments: config.get("RemoveComments") as boolean,
+        InsertLine: config.get("InsertLine") as boolean
+      };
+    };
+
+    // 3. Register Command
+    const command = vscode.commands.registerCommand("extension.JLINT", async () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        vscode.window.showErrorMessage("No active editor found!");
+        return;
       }
-    ));
+
+      const filePath = editor.document.uri.fsPath;
+      const fileExt = editor.document.languageId;
+      const fileName = path.basename(filePath);
+
+      await main(getConfiguration(), filePath, fileName, fileExt);
+    });
+    context.subscriptions.push(command);
+
+    // 4. Listen for configuration changes
+    context.subscriptions.push(
+      vscode.workspace.onDidChangeConfiguration((event) => {
+        if (event.affectsConfiguration("JLINT")) {
+          console.log(`_____________________\n JLINT configuration updated : ${JSON.stringify(getConfiguration(), null, 2)}`);
+        }
+      })
+    );
   }
   catch (err: any) {
     console.error(err.message);
