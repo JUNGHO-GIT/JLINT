@@ -18,12 +18,12 @@ export const prettierFormat = async (
       singleQuote: false,
       printWidth: 100,
       tabWidth: 2,
-      useTabs: false,
+      useTabs: true,
       quoteProps: "as-needed",
       jsxSingleQuote: false,
       trailingComma: "all",
       bracketSpacing: false,
-      jsxBracketSameLine: true,
+      jsxBracketSameLine: false,
       arrowParens: "always",
       rangeStart: 0,
       rangeEnd: Infinity,
@@ -34,10 +34,9 @@ export const prettierFormat = async (
       vueIndentScriptAndStyle: true,
       endOfLine: "lf",
       embeddedLanguageFormatting: "auto",
-      bracketSameLine: true,
-      semi: true,
       singleAttributePerLine: false,
-      __embeddedInHtml: true
+      bracketSameLine: false,
+      semi: true,
     };
 
     console.log(`_____________________\n prettierFormat Activated!`);
