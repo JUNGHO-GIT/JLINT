@@ -1,6 +1,6 @@
 // Css.ts
 
-import lodash from "lodash";
+import * as lodash from "lodash";
 import type {Options} from "prettier";
 import * as prettier from "prettier";
 import * as vscode from "vscode";
@@ -14,7 +14,6 @@ export const prettierFormat = async (
   try {
     const prettierOptions: Options = {
       parser: "babel-ts",
-      parentParser: "babel-ts",
       singleQuote: false,
       printWidth: 100,
       tabWidth: 2,

@@ -1,7 +1,6 @@
 // Jsp.ts
 
-import { load } from "cheerio";
-import lodash from "lodash";
+import * as lodash from "lodash";
 import type {Options} from "prettier";
 import * as prettier from "prettier";
 import * as vscode from "vscode";
@@ -13,40 +12,10 @@ export const prettierFormat = async (
 ) => {
 
   try {
-    // 1. check if head tags exist
-    const headStartIndex = contentsParam.indexOf("<head>");
-    const headEndIndex = contentsParam.indexOf("</head>");
-
-    let headContent: string = "";
-    let withoutHead: string = contentsParam;
-
-    // if <head> tag exists
-    if (headStartIndex !== -1 && headEndIndex !== -1) {
-      // head tags exist, extract head content
-      const headStart = headStartIndex + "<head>".length;
-      const headEnd = headEndIndex;
-      headContent = contentsParam.slice(headStart, headEnd);
-
-      // remove head content
-      withoutHead = contentsParam.replace(headContent, "");
-    }
-
-    // 2. cheerio
-    let $ = load(withoutHead);
-    let html = $.html();
-
-    // 3. replace head content
-    if (headContent.length > 0) {
-      $("head").html(headContent);
-      html = $.html();
-      contentsParam = html;
-    }
-
-    // 1. parse
+    const jspPlugin = await import("prettier-plugin-jsp");
     const prettierOptions: Options = {
       parser: "html",
-      parentParser: "jsp",
-      plugins: [(await import("prettier-plugin-jsp")).default],
+      plugins: [jspPlugin],
       singleQuote: false,
       printWidth: 100,
       tabWidth: 2,
@@ -125,48 +94,48 @@ export const insertLine = async (
     const result = (
       lodash.chain(contentsParam)
       .replace(rules1, (_, p1, p2, p3) => {
-        const spaceSize = 100 - (p1.length + `<!-- `.length + `-`.length);
-        const insetLine = `<!-- ` + '-'.repeat(spaceSize) + `-->`;
+        const spaceSize = 100 - (p1.length + `<!--`.length + `-`.length);
+        const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
         return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
       })
       .replace(rules2, (_, p1, p2, p3) => {
-        const spaceSize = 100 - (p1.length + `<!-- `.length + `-`.length);
-        const insetLine = `<!-- ` + '-'.repeat(spaceSize) + `-->`;
+        const spaceSize = 100 - (p1.length + `<!--`.length + `-`.length);
+        const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
         return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
       })
       .replace(rules3, (_, p1, p2, p3) => {
-        const spaceSize = 100 - (p1.length + `<!-- `.length + `-`.length);
-        const insetLine = `<!-- ` + '-'.repeat(spaceSize) + `-->`;
+        const spaceSize = 100 - (p1.length + `<!--`.length + `-`.length);
+        const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
         return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
       })
       .replace(rules4, (_, p1, p2, p3) => {
-        const spaceSize = 100 - (p1.length + `<!-- `.length + `-`.length);
-        const insetLine = `<!-- ` + '-'.repeat(spaceSize) + `-->`;
+        const spaceSize = 100 - (p1.length + `<!--`.length + `-`.length);
+        const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
         return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
       })
       .replace(rules5, (_, p1, p2, p3) => {
-        const spaceSize = 100 - (p1.length + `<!-- `.length + `-`.length);
-        const insetLine = `<!-- ` + '-'.repeat(spaceSize) + `-->`;
+        const spaceSize = 100 - (p1.length + `<!--`.length + `-`.length);
+        const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
         return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
       })
       .replace(rules6, (_, p1, p2, p3) => {
-        const spaceSize = 100 - (p1.length + `<!-- `.length + `-`.length);
-        const insetLine = `<!-- ` + '-'.repeat(spaceSize) + `-->`;
+        const spaceSize = 100 - (p1.length + `<!--`.length + `-`.length);
+        const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
         return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
       })
       .replace(rules7, (_, p1, p2, p3) => {
-        const spaceSize = 100 - (p1.length + `<!-- `.length + `-`.length);
-        const insetLine = `<!-- ` + '-'.repeat(spaceSize) + `-->`;
+        const spaceSize = 100 - (p1.length + `<!--`.length + `-`.length);
+        const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
         return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
       })
       .replace(rules8, (_, p1, p2, p3) => {
-        const spaceSize = 100 - (p1.length + `<!-- `.length + `-`.length);
-        const insetLine = `<!-- ` + '-'.repeat(spaceSize) + `-->`;
+        const spaceSize = 100 - (p1.length + `<!--`.length + `-`.length);
+        const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
         return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
       })
       .replace(rules9, (_, p1, p2, p3) => {
-        const spaceSize = 100 - (p1.length + `<!-- `.length + `-`.length);
-        const insetLine = `<!-- ` + '-'.repeat(spaceSize) + `-->`;
+        const spaceSize = 100 - (p1.length + `<!--`.length + `-`.length);
+        const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
         return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
       })
       .value()

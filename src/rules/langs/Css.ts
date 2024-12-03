@@ -13,7 +13,6 @@ export const prettierFormat = async (
   try {
     const prettierOptions: Options = {
       parser: "css",
-      parentParser: "css",
       singleQuote: false,
       printWidth: 100,
       tabWidth: 2,

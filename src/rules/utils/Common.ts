@@ -1,6 +1,6 @@
 // Common.ts
 
-import lodash from "lodash";
+import * as lodash from "lodash";
 import stripComments from "strip-comments";
 
 // -------------------------------------------------------------------------------------------------
@@ -24,13 +24,7 @@ export const removeComments = async (
       minifyRules = async (result2: string) => {
         const { minify } = await import("html-minifier-terser");
         const minifyResult = await minify(result2, {
-          collapseWhitespace: true,
-          conservativeCollapse: true,
           removeComments: true,
-          removeRedundantAttributes: true,
-          removeScriptTypeAttributes: true,
-          removeStyleLinkTypeAttributes: true,
-          useShortDoctype: true,
         });
 
         return minifyResult;
@@ -168,16 +162,16 @@ export const removeComments = async (
 
     const httpResult4 = (
       lodash.chain(httpResult3)
-      .replace(pattern1Re, (_, p1, p2, __, p4, p5) => (
+      .replace(pattern1Re, (_, p1, p2, p3, p4, p5) => (
         `${p1}${p2}http://${p4}${p5}`
       ))
-      .replace(pattern2Re, (_, p1, p2, __, p4, p5) => (
+      .replace(pattern2Re, (_, p1, p2, p3, p4, p5) => (
         `${p1}${p2}https://${p4}${p5}`
       ))
-      .replace(pattern3Re, (_, p1, p2, __, p4, p5) => (
+      .replace(pattern3Re, (_, p1, p2, p3, p4, p5) => (
         `${p1}${p2}@{http://${p4}${p5}`
       ))
-      .replace(pattern4Re, (_, p1, p2, __, p4, p5) => (
+      .replace(pattern4Re, (_, p1, p2, p3, p4, p5) => (
         `${p1}${p2}@{https://${p4}${p5}`
       ))
       .value()

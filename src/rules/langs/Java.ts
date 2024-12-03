@@ -1,8 +1,8 @@
 // Java.ts
 
-import lodash from "lodash";
+import * as lodash from "lodash";
+import type {Options} from "prettier";
 import * as prettier from "prettier";
-import type { Options } from "prettier";
 import * as vscode from "vscode";
 
 // -------------------------------------------------------------------------------------------------
@@ -12,10 +12,10 @@ export const prettierFormat = async (
 ) => {
 
   try {
+    const javaPlugin = await import("prettier-plugin-java");
     const prettierOptions: Options = {
       parser: "java",
-      parentParser: "java",
-      plugins: [(await import("prettier-plugin-java")).default],
+      plugins: [javaPlugin],
       singleQuote: false,
       printWidth: 100,
       tabWidth: 2,
@@ -46,11 +46,17 @@ export const prettierFormat = async (
     return prettierCode;
   }
   catch (err: any) {
-    const msg = err.message.toString().trim().replace(/\x1B\[[0-9;]*[mGKF]/g, "");
-    const msgRegex = /(\s*)(Sad sad panda)(.*)(line[:])(\s*)(\d+)([\s\S]*?)(->)(.*?)(<-)(.*)/gm;
-    const msgRegexReplace = `[JLINT]\n\nError Line = [ $6 ]\nError Site = [ $9 ]`;
-    const msgResult = msg.replace(msgRegex, msgRegexReplace);
+    const msg = err.toString().trim().replace(/\x1B\[[0-9;]*[mGKF]/g, "");
+    const msgRegex = /(\s*)(Sad sad panda)(.*)(line[:])(\s*)(\d+)([\s\S]*?)(column[:])(\s*)(\d+)([\n\s\S]*)(->)(.*)(<-)([\s\S]*)/gm;
+    const msgMatch = msg.match(msgRegex);
+    const msgRegexReplace = `[JLINT]\n\nError Line = [ $6 ]\nError column = [ $10 ]\nError Site = [ $13 ]`;
 
+    if (!msgMatch) {
+      console.error(`_____________________\nprettierFormat Error! ('${fileName}')\n${msg}`);
+      return contentsParam;
+    }
+
+    const msgResult = msg.replace(msgRegex, msgRegexReplace);
     console.error(`_____________________\nprettierFormat Error! ('${fileName}')\n${msgResult}`);
     vscode.window.showInformationMessage(msgResult, { modal: true });
     return contentsParam;
@@ -64,17 +70,17 @@ export const insertLine = async (
 
   try {
     const rules1 = (
-      /^(?!\/\/--)(?!(?:.*\bclassName\b)|(?:.*class=".*"))(?:\n*)(\s*)(public|private|function|class)(?:(\s*.*))(\s*?)/gm
+      /(?!^\/\/--)(^(?!\n)\s*)(@[A-Z].*?(?:(\n\s*))(?=(public|private|function|class))|(?:(public|private|function|class)))/gm
     );
 
     const result = (
       lodash.chain(contentsParam)
-      .replace(rules1, (_, p1, p2, p3) => {
-        const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
-        const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
-        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+      .replace(rules1, (_, p1, p2, p3, p4, p5) => {
+        const spaceSize = (p1).length + (`// `).length + (`-`).length;
+        const insertSize = 100 - spaceSize;
+        const insetLine = (`// ${"-".repeat(insertSize)}`);
+        return `${p1}${insetLine}\n${p1}${p2}`;
       })
-      .value()
     );
 
     console.log(`_____________________\n insertLine Activated!`);
@@ -122,6 +128,15 @@ export const lineBreak = async (
     const rules10 = (
       /(import.*;)(\n)(^public)/gm
     );
+    const rules11 = (
+      /(^\s*)(@Value)(\s*)(\()(.*)(\n+)(.*)(\))/gm
+    );
+    const rules12 = (
+      /(^\s*)(.*;)(\n)(?!\n)(\s*)(@Autowired|@Value|@RequestMapping|@GetMapping|@PostMapping|@PutMapping|@DeleteMapping)/gm
+    );
+    const rules13 = (
+      /(\s*)(@Override)(\n|\n+)(.*)(\n|\n+)(\s*)(public|private)/gm
+    );
 
     const result = (
       lodash.chain(contentsParam)
@@ -154,6 +169,15 @@ export const lineBreak = async (
       ))
       .replace(rules10, (_, p1, p2, p3) => (
         `${p1}${p2}\n${p3}`
+      ))
+      .replace(rules11, (_, p1, p2, p3, p4, p5, p6, p7, p8) => (
+        `${p1}${p2} (${p5}${p7})`
+      ))
+      .replace(rules12, (_, p1, p2, p3, p4, p5) => (
+        `${p1}${p2}\n\n${p4}${p5}`
+      ))
+      .replace(rules13, (_, p1, p2, p3, p4, p5, p6, p7) => (
+        `${p1}${p2}\n${p6}${p7}`
       ))
       .value()
     );
@@ -222,10 +246,7 @@ export const spellCheck = async (
       /(^\s*)(\/\/\s+--.*?>)(\n)(^\s*?)(@.*?)(\n+)(\s*)(.*)/gm
     );
     const rules4 = (
-      /(\s*)(@Value)(\s*)(\()(.*)(\n+)(.*)(\))/gm
-    );
-    const rules5 = (
-      /(^\s*)(.*;)(\n)(?!\n)(\s*)(@Autowired|@Value|@RequestMapping|@GetMapping|@PostMapping|@PutMapping|@DeleteMapping)/gm
+      /(^\s*)(\/\/ [-]+)([->][\n\s]*)(\s*)(\/\/ [-]+)([->][\n\s])/gm
     );
 
     const result = (
@@ -239,11 +260,8 @@ export const spellCheck = async (
       .replace(rules3, (_, p1, p2, p3, p4, p5, p6, p7, p8) => (
         `${p1}${p2}${p3}${p4}${p5}\n${p7}${p8}`
       ))
-      .replace(rules4, (_, p1, p2, p3, p4, p5, p6, p7, p8) => (
-        `${p1}${p2} (${p5}${p7})`
-      ))
-      .replace(rules5, (_, p1, p2, p3, p4, p5) => (
-        `${p1}${p2}\n\n${p4}${p5}`
+      .replace(rules4, (_, p1, p2, p3, p4, p5, p6) => (
+        `${p1}${p2}-\n`
       ))
       .value()
     );

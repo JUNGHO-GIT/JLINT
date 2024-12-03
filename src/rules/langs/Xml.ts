@@ -11,10 +11,10 @@ export const prettierFormat = async (
 ) => {
 
   try {
+    const xmlPlugin = await import("@prettier/plugin-xml");
     const prettierOptions: Options = {
       parser: "xml",
-      parentParser: "xml",
-      plugins: [(await import("@prettier/plugin-xml")).default],
+      plugins: [xmlPlugin],
       singleQuote: false,
       printWidth: 100,
       tabWidth: 2,
