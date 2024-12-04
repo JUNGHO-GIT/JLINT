@@ -3,13 +3,37 @@
 import type {Options} from "prettier";
 import * as prettier from "prettier";
 import * as vscode from "vscode";
+import strip from "strip-comments";
 
-// -------------------------------------------------------------------------------------------------
+// 0. removeComments -------------------------------------------------------------------------------
+export const removeComments = async (
+  contentsParam: string,
+) => {
+  try {
+    const minifyResult = contentsParam;
+
+    const stripResult = strip(minifyResult, {
+      language: "xml",
+      preserveNewlines: false,
+      keepProtected: false,
+      block: true,
+      line: true,
+    });
+
+    console.log(`_____________________\n 'removeComments' Activated!`);
+    return stripResult;
+  }
+  catch (err: any) {
+    console.error(err.message);
+    return contentsParam;
+  }
+};
+
+// 1. prettierFormat -------------------------------------------------------------------------------
 export const prettierFormat = async (
   contentsParam: string,
   fileName: string
 ) => {
-
   try {
     const xmlPlugin = await import("@prettier/plugin-xml");
     const prettierOptions: Options = {
@@ -39,7 +63,7 @@ export const prettierFormat = async (
       semi: true,
     };
 
-    console.log(`_____________________\n prettierFormat Activated!`);
+    console.log(`_____________________\n 'prettierFormat' Activated!`);
     const prettierCode = prettier.format(contentsParam, prettierOptions);
     return prettierCode;
   }
@@ -49,19 +73,18 @@ export const prettierFormat = async (
     const msgRegexReplace = `[JLINT]\n\nError Line = [ $6 ]\nError Site = $8`;
     const msgResult = msg.replace(msgRegex, msgRegexReplace);
 
-    console.error(`_____________________\nprettierFormat Error! ('${fileName}')\n${msgResult}`);
+    console.error(`_____________________\n 'prettierFormat' Error! ('${fileName}')\n${msgResult}`);
     vscode.window.showInformationMessage(msgResult, { modal: true });
     return contentsParam;
   }
 };
 
-// -------------------------------------------------------------------------------------------------
+// 2. insertLine -----------------------------------------------------------------------------------
 export const insertLine = async (
   contentsParam: string
 ) => {
-
   try {
-    console.log(`_____________________\n insertLine Not Supported!`);
+    console.log(`_____________________\n 'insertLine' Not Supported!`);
     return contentsParam;
   }
   catch (err: any) {
@@ -70,13 +93,12 @@ export const insertLine = async (
   }
 };
 
-// -------------------------------------------------------------------------------------------------
+// 3. lineBreak ------------------------------------------------------------------------------------
 export const lineBreak = async (
   contentsParam: string
 ) => {
-
   try {
-    console.log(`_____________________\n lineBreak Not Supported!`);
+    console.log(`_____________________\n 'lineBreak' Not Supported!`);
     return contentsParam;
   }
   catch (err: any) {
@@ -85,13 +107,12 @@ export const lineBreak = async (
   }
 };
 
-// -------------------------------------------------------------------------------------------------
-export const space = async (
+// 4. insertSpace ----------------------------------------------------------------------------------
+export const insertSpace = async (
   contentsParam: string
 ) => {
-
   try {
-    console.log(`_____________________\n space Not Supported!`);
+    console.log(`_____________________\n 'insertLine' Not Supported!`);
     return contentsParam;
   }
   catch (err: any) {
@@ -100,13 +121,12 @@ export const space = async (
   }
 };
 
-// -------------------------------------------------------------------------------------------------
-export const spellCheck = async (
+// 5. finalCheck -----------------------------------------------------------------------------------
+export const finalCheck = async (
   contentsParam: string
 ) => {
-
   try {
-    console.log(`_____________________\n spellCheck Not Supported!`);
+    console.log(`_____________________\n 'finalCheck' Not Supported!`);
     return contentsParam;
   }
   catch (err: any) {

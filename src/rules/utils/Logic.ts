@@ -6,7 +6,6 @@ import * as lodash from "lodash";
 export const ifElse = async (
   contentsParam: string,
 ) => {
-
   try {
     const rules1 = (
       /(\b)(if)(\()/gm
@@ -40,7 +39,7 @@ export const ifElse = async (
       .value()
     );
 
-    console.log(`_____________________\n ifElse Activated!`);
+    console.log(`_____________________\n 'ifElse' Activated!`);
     return result;
   }
   catch (err: any) {
@@ -53,7 +52,6 @@ export const ifElse = async (
 export const tryCatch = async (
   contentsParam: string,
 ) => {
-
   try {
     const rules1 = (
       /(\s*)(try)(\s*)(\{)(\s*)/gm
@@ -79,7 +77,7 @@ export const tryCatch = async (
       .value()
     );
 
-    console.log(`_____________________\n tryCatch Activated!`);
+    console.log(`_____________________\n 'tryCatch' Activated!`);
     return result;
   }
   catch (err: any) {

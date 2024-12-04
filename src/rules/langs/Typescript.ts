@@ -4,13 +4,44 @@ import * as lodash from "lodash";
 import type {Options} from "prettier";
 import * as prettier from "prettier";
 import * as vscode from "vscode";
+import strip from "strip-comments";
 
-// -------------------------------------------------------------------------------------------------
+// 0. removeComments -------------------------------------------------------------------------------
+export const removeComments = async (
+  contentsParam: string,
+) => {
+  try {
+    const { minify } = await import("terser");
+    const minifyResult = await minify(contentsParam, {
+      compress: false,
+      mangle: true,
+      format: {
+        comments: false,
+      },
+    }).then((result) => result.code);
+
+    const stripResult = strip(minifyResult, {
+      language: "javascript",
+      preserveNewlines: false,
+      keepProtected: false,
+      block: true,
+      line: true,
+    });
+
+    console.log(`_____________________\n 'removeComments' Activated!`);
+    return stripResult;
+  }
+  catch (err: any) {
+    console.error(err.message);
+    return contentsParam;
+  }
+};
+
+// 1. prettierFormat -------------------------------------------------------------------------------
 export const prettierFormat = async (
   contentsParam: string,
   fileName: string
 ) => {
-
   try {
     const prettierOptions: Options = {
       parser: "babel-ts",
@@ -38,7 +69,7 @@ export const prettierFormat = async (
       semi: true,
     };
 
-    console.log(`_____________________\n prettierFormat Activated!`);
+    console.log(`_____________________\n 'prettierFormat' Activated!`);
     const prettierCode = prettier.format(contentsParam, prettierOptions);
     return prettierCode;
   }
@@ -48,17 +79,16 @@ export const prettierFormat = async (
     const msgRegexReplace = `[JLINT]\n\nError Line = [ $6 ]\nError Site = $8`;
     const msgResult = msg.replace(msgRegex, msgRegexReplace);
 
-    console.error(`_____________________\nprettierFormat Error! ('${fileName}')\n${msgResult}`);
+    console.error(`_____________________\n 'prettierFormat' Error! ('${fileName}')\n${msgResult}`);
     vscode.window.showInformationMessage(msgResult, { modal: true });
     return contentsParam;
   }
 };
 
-// -------------------------------------------------------------------------------------------------
+// 2. insertLine -----------------------------------------------------------------------------------
 export const insertLine = async (
   contentsParam: string
 ) => {
-
   try {
     const rules1 = (
       /^(?!\/\/--)(?!(?:.*\bclassName\b)|(?:.*class=".*"))(?:\n*)(\s*)(public|private|function|class)(?:(\s*.*))(\s*?)/gm
@@ -106,7 +136,7 @@ export const insertLine = async (
       .value()
     );
 
-    console.log(`_____________________\n insertLine Activated!`);
+    console.log(`_____________________\n 'insertLine' Activated!`);
     return result;
   }
   catch (err: any) {
@@ -115,11 +145,10 @@ export const insertLine = async (
   }
 };
 
-// -------------------------------------------------------------------------------------------------
+// 3. lineBreak ------------------------------------------------------------------------------------
 export const lineBreak = async (
   contentsParam: string
 ) => {
-
   try {
     const rules1 = (
       /(>)(\n*)(?:\})(?:\n*)(function)/gm
@@ -133,7 +162,7 @@ export const lineBreak = async (
       .value()
     );
 
-    console.log(`_____________________\n lineBreak Activated!`);
+    console.log(`_____________________\n 'lineBreak' Activated!`);
     return result;
   }
   catch (err: any) {
@@ -142,11 +171,10 @@ export const lineBreak = async (
   }
 };
 
-// -------------------------------------------------------------------------------------------------
-export const space = async (
+// 4. insertSpace ----------------------------------------------------------------------------------
+export const insertSpace = async (
   contentsParam: string
 ) => {
-
   try {
     const rules1 = (
       /(\s*?)(public|private|function)(\s*)([\s\S]*?)(\s*)(\()(\s*)([\s\S]*?)(\s*)(\))(\s*)(([\s\S]*?))(\s*?)(\{)/gm
@@ -175,11 +203,10 @@ export const space = async (
   }
 };
 
-// -------------------------------------------------------------------------------------------------
-export const spellCheck = async (
+// 5. finalCheck -----------------------------------------------------------------------------------
+export const finalCheck = async (
   contentsParam: string
 ) => {
-
   try {
     const rules1 = (
       /(\s*)(\/\/)(\s*)(--.*?)(>)(\s*)(\n)(\s*)(\/\/)(\s*)(--.*?)(>)([\s\S])/gm

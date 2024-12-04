@@ -6,7 +6,6 @@ import { main } from "./core/Main.js";
 
 // -------------------------------------------------------------------------------------------------
 export const activate = (context: vscode.ExtensionContext) => {
-
   try {
     // 1. Output
     console.log(`_____________________\n JLint Activated!`);

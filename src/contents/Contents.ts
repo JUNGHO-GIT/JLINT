@@ -1,14 +1,16 @@
 // Contents.ts
 
-import * as fs from "fs";
+import * as vscode from "vscode";
 
 // -------------------------------------------------------------------------------------------------
-export const getContents = (filePath: string) => {
+export const getContents = async (filePath: string) => {
 
-  const data = fs.readFileSync(filePath, "utf8");
+  const decoder = new TextDecoder("utf-8");
+  const data = await vscode.workspace.fs.readFile(vscode.Uri.file(filePath));
+  const dataStr = decoder.decode(data);
 
   try {
-    const updateContent = data.split("\n").map((line: string) => {
+    const updateContent = dataStr.split("\n").map((line: string) => {
       const indentMatch = line.match(/^(\s+)/);
       if (indentMatch) {
         const spaces = indentMatch[1].length;
@@ -24,6 +26,6 @@ export const getContents = (filePath: string) => {
   }
   catch (err: any) {
     console.error(err);
-    return data;
+    return dataStr;
   }
 };

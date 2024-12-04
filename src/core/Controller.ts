@@ -1,6 +1,5 @@
 // Controller.ts
 
-import { removeComments, singleTags } from '../rules/utils/Common.js';
 import { brackets } from '../rules/utils/Syntax.js';
 import { ifElse, tryCatch } from '../rules/utils/Logic.js';
 
@@ -12,29 +11,9 @@ declare type ConfProps = {
 };
 
 // -------------------------------------------------------------------------------------------------
-export const getCommon = async (
-  confParam: ConfProps,
-  initContents: string,
-  fileExt: string
-) => {
-
-  let resultContents = initContents;
-
-  if (confParam.RemoveComments) {
-    resultContents = await removeComments(resultContents, fileExt);
-    resultContents = await singleTags(resultContents, fileExt);
-  }
-  else {
-    resultContents = await singleTags(resultContents, fileExt);
-  }
-
-  return resultContents;
-}
-
-// -------------------------------------------------------------------------------------------------
 export const getLanguage = async (
   confParam: ConfProps,
-  afterCommonContents: string,
+  initContents: string,
   fileName: string,
   fileExt: string
 ) => {
@@ -44,40 +23,40 @@ export const getLanguage = async (
     `../rules/langs/${fileExt.charAt(0).toUpperCase() + fileExt.slice(1)}.js`
   );
 
-  let resultContents = afterCommonContents;
+  let resultContents = initContents;
 
-  if (confParam.ActivateLint) {
-    if (confParam.InsertLine) {
-      resultContents = await langRules.prettierFormat(resultContents, fileName);
-      resultContents = await langRules.insertLine(resultContents);
-      resultContents = await langRules.lineBreak(resultContents);
-      resultContents = await langRules.spellCheck(resultContents);
-      resultContents = await langRules.space(resultContents);
-    }
-    else {
-      resultContents = await langRules.prettierFormat(resultContents, fileName);
-      resultContents = await langRules.lineBreak(resultContents);
-      resultContents = await langRules.spellCheck(resultContents);
-      resultContents = await langRules.space(resultContents);
-    }
+  if (!confParam.ActivateLint) {
+    resultContents = resultContents;
   }
   else {
-    resultContents = resultContents;
+    if (confParam.RemoveComments) {
+      resultContents = await langRules.removeComments(resultContents);
+    }
+    if (confParam.ActivateLint) {
+      resultContents = await langRules.prettierFormat(resultContents, fileName);
+    }
+    if (confParam.InsertLine) {
+      resultContents = await langRules.insertLine(resultContents);
+    }
+    resultContents = await langRules.lineBreak(resultContents);
+    resultContents = await langRules.insertSpace(resultContents);
+    resultContents = await langRules.finalCheck(resultContents);
   }
 
   return resultContents;
-};
+}
 
 // -------------------------------------------------------------------------------------------------
 export const getSyntax = async (
   confParam: ConfProps,
   afterLanguageContents: string,
+  fileExt: string
 ) => {
 
   let resultContents = afterLanguageContents;
 
   if (confParam.ActivateLint) {
-    resultContents = await brackets(resultContents);
+    resultContents = await brackets(resultContents, fileExt);
   }
   else {
     resultContents = resultContents;

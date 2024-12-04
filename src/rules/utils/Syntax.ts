@@ -5,11 +5,18 @@ import * as lodash from "lodash";
 // -------------------------------------------------------------------------------------------------
 export const brackets = async (
   contentsParam: string,
+  fileExt: string
 ) => {
 
+  if (fileExt === "xml") {
+    return contentsParam;
+  }
   try {
     const rules1 = (
       /(\))(\{)/gm
+    );
+    const rules2 = (
+      /(<)(area|base|br|col|command|embed|hr|img|input|keygen|link|meta|param|source|track|wbr)(\s*)([\n\s\S]*?)(\s*)(?<!=)(\/>)/gm
     );
 
     const result = (
@@ -17,10 +24,13 @@ export const brackets = async (
       .replace(rules1, (_, p1, p2) => (
         `${p1} ${p2}`
       ))
+      .replace(rules2, (_, p1, p2, p3, p4, p5, p6) => (
+        `${p1}${p2}${p3}${p4} />`
+      ))
       .value()
     );
 
-    console.log(`_____________________\n brackets Activated!`);
+    console.log(`_____________________\n 'brackets' Activated!`);
     return result;
   }
   catch (err: any) {
@@ -33,7 +43,6 @@ export const brackets = async (
 export const comma = async (
   contentsParam: string,
 ) => {
-
   try {
     const rules1 = (
       /(\s*)(,)(\s*)/gm
@@ -47,7 +56,7 @@ export const comma = async (
       .value()
     );
 
-    console.log(`_____________________\n comma Activated!`);
+    console.log(`_____________________\n 'comma' Activated!`);
     return result;
   }
   catch (err: any) {
@@ -60,7 +69,6 @@ export const comma = async (
 export const semicolon = async (
   contentsParam: string,
 ) => {
-
   try {
     const rules1 = (
       /(^\s*)([\s\S]*?)(\s*)(;)(\s*)(?!(\n)|(\/\/)|( \/\/)|(\})|(;))(\s*)/gm
@@ -92,7 +100,7 @@ export const semicolon = async (
       .value()
     );
 
-    console.log(`_____________________\n semicolon Activated!`);
+    console.log(`_____________________\n 'semicolon' Activated!`);
     return result;
   }
   catch (err: any) {
@@ -105,7 +113,6 @@ export const semicolon = async (
 export const quotes = async (
   contentsParam: string
 ) => {
-
   try {
     const rules1 = (
       /(?<!(?:(?:\\['])|(?:['"'])|(?:["'"])))(\s*)(')(\s*)(?!(?:(?:\\['])|(?:['"'])|(?:["'"])))/gm
@@ -119,7 +126,7 @@ export const quotes = async (
       .value()
     );
 
-    console.log(`_____________________\n quote Activated!`);
+    console.log(`_____________________\n 'quote' Activated!`);
     return result;
   }
   catch (err: any) {
