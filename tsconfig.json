@@ -1,0 +1,32 @@
+{
+	"compilerOptions": {
+    "baseUrl": ".",
+		"target": "ESNext",
+		"module": "NodeNext",
+    "moduleResolution": "nodenext",
+    "moduleDetection": "auto",
+		"outDir": "out",
+		"rootDir": "src",
+		"sourceMap": false,
+    "esModuleInterop": true,
+    "allowJs": true,
+    "lib": [
+      "ESNext",
+      "DOM"
+    ],
+    "types": [
+      "node"
+    ],
+    "typeRoots": [
+      "node_modules/@types",
+      "assets/types/"
+    ]
+	},
+  "include": [
+    "src/**/*",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.js",
+    "**/*.jsx"
+  ],
+}
