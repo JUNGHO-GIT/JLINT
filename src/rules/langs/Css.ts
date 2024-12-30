@@ -1,5 +1,6 @@
 // Css.ts
 
+import * as lodash from "lodash";
 import type {Options} from "prettier";
 import * as prettier from "prettier";
 import * as vscode from "vscode";
@@ -161,8 +162,20 @@ export const lineBreak = async (
   contentsParam: string
 ) => {
   try {
-    console.log(`_____________________\n 'lineBreak' Not Supported!`);
-    return contentsParam;
+    const rules1 = (
+      /(>)(\n*)(?:\})(?:\n*)(function)/gm
+    );
+
+    const result = (
+      lodash.chain(contentsParam)
+      .replace(rules1, (_, p1, p2, p3) => (
+        `${p1}\n${p3}`
+      ))
+      .value()
+    );
+
+    console.log(`_____________________\n 'lineBreak' Activated!`);
+    return result;
   }
   catch (err: any) {
     console.error(err.message);
