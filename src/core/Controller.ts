@@ -78,8 +78,8 @@ export const getLogic = async (
   let resultContents = afterSyntaxContents;
 
   if (confParam.ActivateLint) {
-    resultContents = await ifElse(resultContents, fileExt);
-    resultContents = await tryCatch(resultContents, fileExt);
+    /* resultContents = await ifElse(resultContents, fileExt); */
+    /* resultContents = await tryCatch(resultContents, fileExt); */
   }
   else {
     resultContents = resultContents;

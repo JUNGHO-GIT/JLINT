@@ -13,10 +13,10 @@ export const ifElse = async (
       /(\b)(if)(\()/gm
     );
     const rules2 = (
-      /(.*?)(?<=\})(\s*)(\n*)(\s*)(else if)(\s*)(\(?)(?:\s*)(.*?)(\s*)(?:\))(\s*)(\{?)(?:\s*)(.*?)(\s*)(?:\})/gm
+      /(.*?)(?<=\})(\s*)(\n*)(\s*)(else if)(\s*)(\(?)(?:\s*)(.*?)(\s*)(?:\))(\s*)(\{?)(?:\s*)(.*?)(\s*)(\})/gm
     );
     const rules3 = (
-      /(.*?)(?<=\})(\s*)(\n*)(\s*)(else(?!\s*if))(\s*)(\{?)(?:\s*)(.*?)(\s*)(?:\})/gm
+      /(.*?)(?<=\})(\s*)(\n*)(\s*)(else(?!\s*if))(\s*)(\{?)(?:\s*)(.*?)(\s*)(\})/gm
     );
 
     const result = (
@@ -24,11 +24,11 @@ export const ifElse = async (
       .replace(rules1, (_, p1, p2, p3) => (
         `${p2} (`
       ))
-      .replace(rules2, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13) => {
+      .replace(rules2, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14) => {
         const indentSize1 = p1.length - `}`.length;
         const indentSize2 = p13.length - `}`.length;
-        const spaceSize = indentSize1 == -1 ? indentSize2 : indentSize1;
-        const insertSize = " ".repeat(spaceSize);
+        const spaceSize = indentSize1 ===-1 ? indentSize2 : indentSize1;
+        const insertSize = (" ").repeat(spaceSize);
 
         const before = match;
         const after = `${p1}\n${insertSize}else if (${p8}) {\n${insertSize}\t${p12}\n${insertSize}}`;
@@ -38,7 +38,7 @@ export const ifElse = async (
 
         return after;
       })
-      .replace(rules3, (_, p1, p2, p3, p4, p5, p6, p7, p8, p9) => {
+      .replace(rules3, (_, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) => {
         const indentSize1 = p1.length - `}`.length;
         const indentSize2 = p9.length - `}`.length;
         const spaceSize = indentSize1 == -1 ? indentSize2 : indentSize1;
