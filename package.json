@@ -106,9 +106,12 @@
     "prettier": "2.7.1",
     "prettier-plugin-java": "1.6.2",
     "prettier-plugin-jsp": "^1.0.13",
+    "prettier-yaml": "^0.1.2",
+    "sql-formatter": "^15.6.2",
     "strip-comments": "^2.0.1",
     "strip-json-comments": "^5.0.1",
-    "terser": "^5.36.0"
+    "terser": "^5.36.0",
+    "yaml": "^2.8.0"
   },
   "devDependencies": {
     "@types/clean-css": "^4.2.11",
@@ -123,6 +126,7 @@
     "@types/strip-comments": "^2.0.4",
     "@types/strip-json-comments": "^0.0.30",
     "@types/vscode": "1.95.0",
+    "@types/yaml": "^1.9.6",
     "@vscode/test-electron": "^2.4.1",
     "eslint": "^9.15.0",
     "mocha": "^10.8.2",

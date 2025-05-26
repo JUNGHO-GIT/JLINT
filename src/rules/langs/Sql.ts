@@ -1,7 +1,7 @@
-// Css.ts
+// Sql.ts
 
-import type {Options} from "prettier";
-import * as prettier from "prettier";
+import type { FormatOptionsWithLanguage } from "sql-formatter";
+import * as prettier from "sql-formatter";
 import * as vscode from "vscode";
 
 // 0. removeComments -------------------------------------------------------------------------------
@@ -9,13 +9,10 @@ export const removeComments = async (
   contentsParam: string,
 ) => {
   try {
-    const minifyResult = contentsParam;
 
-    const { default: stripJsonComments } = await import("strip-json-comments");
-    const stripResult = stripJsonComments(minifyResult, {
-      trailingCommas: false,
-      whitespace: true
-    });
+    // sql is not needed remove comments
+    const minifyResult = contentsParam;
+    const stripResult = minifyResult;
 
     console.log(`_____________________\n 'removeComments' Activated!`);
     return stripResult;
@@ -32,30 +29,20 @@ export const prettierFormat = async (
   fileName: string
 ) => {
   try {
-    const prettierOptions: Options = {
-      parser: "json",
-      singleQuote: false,
-      printWidth: 120,
+    const prettierOptions: FormatOptionsWithLanguage = {
+      language: "mysql",
       tabWidth: 2,
       useTabs: true,
-      quoteProps: "as-needed",
-      jsxSingleQuote: false,
-      trailingComma: "all",
-      bracketSpacing: false,
-      jsxBracketSameLine: false,
-      arrowParens: "always",
-      rangeStart: 0,
-      rangeEnd: Infinity,
-      requirePragma: false,
-      insertPragma: false,
-      proseWrap: "preserve",
-      htmlWhitespaceSensitivity: "css",
-      vueIndentScriptAndStyle: true,
-      endOfLine: "lf",
-      embeddedLanguageFormatting: "auto",
-      singleAttributePerLine: false,
-      bracketSameLine: false,
-      semi: true,
+      keywordCase: "upper",
+      dataTypeCase: "upper",
+      functionCase: "upper",
+      identifierCase: "upper",
+      indentStyle: "standard",
+      logicalOperatorNewline: "before",
+      expressionWidth: 50,
+      linesBetweenQueries: 1,
+      denseOperators: false,
+      newlineBeforeSemicolon: false
     };
 
     console.log(`_____________________\n 'prettierFormat' Activated!`);
@@ -70,6 +57,20 @@ export const prettierFormat = async (
 
     console.error(`_____________________\n 'prettierFormat' Error! ('${fileName}')\n${msgResult}`);
     vscode.window.showInformationMessage(msgResult, { modal: true });
+    return contentsParam;
+  }
+};
+
+// 2. insertLine -----------------------------------------------------------------------------------
+export const insertLine = async (
+  contentsParam: string
+) => {
+  try {
+    console.log(`_____________________\n 'insertLine' Not Supported!`);
+    return contentsParam;
+  }
+  catch (err: any) {
+    console.error(err.message);
     return contentsParam;
   }
 };

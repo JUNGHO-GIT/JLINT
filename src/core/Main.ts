@@ -31,7 +31,7 @@ export const main = async (
   let finalContents = await getContents(filePath);
   finalContents = await getLanguage(confParam, finalContents, fileName, fileExt);
   finalContents = await getSyntax(confParam, finalContents, fileExt);
-  finalContents = await getLogic(confParam, finalContents);
+  finalContents = await getLogic(confParam, finalContents, fileExt);
 
   fs.writeFileSync(filePath, finalContents, 'utf8');
 };

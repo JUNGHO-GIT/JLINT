@@ -1,6 +1,6 @@
 // Controller.ts
 
-import { brackets } from '../rules/utils/Syntax.js';
+import { brackets, comma, quotes, semicolon } from '../rules/utils/Syntax.js';
 import { ifElse, tryCatch } from '../rules/utils/Logic.js';
 
 // -------------------------------------------------------------------------------------------------
@@ -57,6 +57,9 @@ export const getSyntax = async (
 
   if (confParam.ActivateLint) {
     resultContents = await brackets(resultContents, fileExt);
+    /* resultContents = await comma(resultContents, fileExt); */
+    /* resultContents = await semicolon(resultContents, fileExt); */
+    /* resultContents = await quotes(afterLanguageContents, fileExt); */
   }
   else {
     resultContents = resultContents;
@@ -69,13 +72,14 @@ export const getSyntax = async (
 export const getLogic = async (
   confParam: ConfProps,
   afterSyntaxContents: string,
+  fileExt: string
 ) => {
 
   let resultContents = afterSyntaxContents;
 
   if (confParam.ActivateLint) {
-    resultContents = await ifElse(resultContents);
-    resultContents = await tryCatch(resultContents);
+    resultContents = await ifElse(resultContents, fileExt);
+    resultContents = await tryCatch(resultContents, fileExt);
   }
   else {
     resultContents = resultContents;

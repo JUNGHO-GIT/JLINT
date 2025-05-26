@@ -144,7 +144,7 @@ export const prettierFormat = async (
       parser: "html",
       plugins: [jspPlugin],
       singleQuote: false,
-      printWidth: 100,
+      printWidth: 120,
       tabWidth: 2,
       useTabs: true,
       quoteProps: "as-needed",

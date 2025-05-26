@@ -7,10 +7,6 @@ export const brackets = async (
   contentsParam: string,
   fileExt: string
 ) => {
-
-  if (fileExt === "xml") {
-    return contentsParam;
-  }
   try {
     const rules1 = (
       /(\))(\{)/gm
@@ -30,8 +26,14 @@ export const brackets = async (
       .value()
     );
 
-    console.log(`_____________________\n 'brackets' Activated!`);
-    return result;
+    if (fileExt === "xml" || fileExt === "json" || fileExt === "sql") {
+      console.log(`_____________________\n 'brackets' Not Supported!`);
+      return contentsParam;
+    }
+    else {
+      console.log(`_____________________\n 'brackets' Activated!`);
+      return result;
+    }
   }
   catch (err: any) {
     console.error(err.message);
@@ -42,6 +44,7 @@ export const brackets = async (
 // -------------------------------------------------------------------------------------------------
 export const comma = async (
   contentsParam: string,
+  fileExt: string
 ) => {
   try {
     const rules1 = (
@@ -56,8 +59,14 @@ export const comma = async (
       .value()
     );
 
-    console.log(`_____________________\n 'comma' Activated!`);
-    return result;
+    if (fileExt === "xml" || fileExt === "json" || fileExt === "sql") {
+      console.log(`_____________________\n 'comma' Not Supported!`);
+      return contentsParam;
+    }
+    else {
+      console.log(`_____________________\n 'comma' Activated!`);
+      return result;
+    }
   }
   catch (err: any) {
     console.error(err.message);
@@ -68,6 +77,7 @@ export const comma = async (
 // -------------------------------------------------------------------------------------------------
 export const semicolon = async (
   contentsParam: string,
+  fileExt: string
 ) => {
   try {
     const rules1 = (
@@ -100,8 +110,14 @@ export const semicolon = async (
       .value()
     );
 
-    console.log(`_____________________\n 'semicolon' Activated!`);
-    return result;
+    if (fileExt === "xml" || fileExt === "json" || fileExt === "sql") {
+      console.log(`_____________________\n 'semicolon' Not Supported!`);
+      return contentsParam;
+    }
+    else {
+      console.log(`_____________________\n 'semicolon' Activated!`);
+      return result;
+    }
   }
   catch (err: any) {
     console.error(err.message);
@@ -111,7 +127,8 @@ export const semicolon = async (
 
 // -------------------------------------------------------------------------------------------------
 export const quotes = async (
-  contentsParam: string
+  contentsParam: string,
+  fileExt: string
 ) => {
   try {
     const rules1 = (
@@ -126,8 +143,14 @@ export const quotes = async (
       .value()
     );
 
-    console.log(`_____________________\n 'quote' Activated!`);
-    return result;
+    if (fileExt === "xml" || fileExt === "json" || fileExt === "sql") {
+      console.log(`_____________________\n 'quote' Not Supported!`);
+      return contentsParam;
+    }
+    else {
+      console.log(`_____________________\n 'quote' Activated!`);
+      return result;
+    }
   }
   catch (err: any) {
     console.error(err.message);

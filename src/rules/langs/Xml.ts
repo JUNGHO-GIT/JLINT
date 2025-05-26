@@ -11,7 +11,6 @@ export const removeComments = async (
 ) => {
   try {
     const minifyResult = contentsParam;
-
     const stripResult = strip(minifyResult, {
       language: "xml",
       preserveNewlines: false,
@@ -40,7 +39,7 @@ export const prettierFormat = async (
       parser: "xml",
       plugins: [xmlPlugin],
       singleQuote: false,
-      printWidth: 100,
+      printWidth: 120,
       tabWidth: 2,
       useTabs: true,
       quoteProps: "as-needed",

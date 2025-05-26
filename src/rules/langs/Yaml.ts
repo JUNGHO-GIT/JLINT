@@ -1,90 +1,17 @@
-// Css.ts
+// Yaml.ts
 
-import * as lodash from "lodash";
 import type {Options} from "prettier";
 import * as prettier from "prettier";
 import * as vscode from "vscode";
-import strip from "strip-comments";
+import YAML from 'yaml';
 
 // 0. removeComments -------------------------------------------------------------------------------
 export const removeComments = async (
   contentsParam: string,
 ) => {
   try {
-    const { default: CleanCSS } = await import("clean-css");
-    const minifyResult = new CleanCSS({
-      format: {
-        breaks: {
-          afterAtRule: true,
-          afterBlockBegins: true,
-          afterBlockEnds: true,
-          afterComment: true,
-          afterProperty: true,
-          afterRuleBegins: true,
-          afterRuleEnds: true,
-          beforeBlockEnds: true,
-          betweenSelectors: true,
-        },
-        spaces: {
-          aroundSelectorRelation: true,
-          beforeBlockBegins: true,
-          beforeValue: true,
-        },
-        breakWith: '\n',
-        indentBy: 2,
-        indentWith: 'tab',
-        semicolonAfterLastProperty: true,
-        wrapAt: 100,
-      },
-      level: {
-        1: {
-          all: false,
-          specialComments: 'none',
-          selectorsSortingMethod: 'standard',
-          normalizeUrls: false,
-          roundingPrecision: false,
-          cleanupCharsets: true,
-          optimizeBackground: true,
-          optimizeBorderRadius: true,
-          optimizeFilter: true,
-          optimizeFont: true,
-          optimizeFontWeight: true,
-          optimizeOutline: true,
-          removeEmpty: true,
-          removeWhitespace: true,
-          removeNegativePaddings: true,
-          removeQuotes: false,
-          replaceMultipleZeros: false,
-          replaceTimeUnits: false,
-          replaceZeroUnits: false,
-          tidyAtRules: true,
-          tidyBlockScopes: true,
-          tidySelectors: true,
-        },
-        2: {
-          all: false,
-          mergeMedia: true,
-          mergeAdjacentRules: true,
-          mergeIntoShorthands: true,
-          mergeNonAdjacentRules: true,
-          removeDuplicateFontRules: true,
-          removeDuplicateMediaBlocks: true,
-          removeDuplicateRules: true,
-          removeUnusedAtRules: true,
-          reduceNonAdjacentRules: true,
-          removeEmpty: true,
-          overrideProperties: true,
-        },
-      },
-    }).minify(contentsParam).styles;
-
-    const stripResult = strip(minifyResult, {
-      language: "css",
-      preserveNewlines: false,
-      keepProtected: false,
-      block: true,
-      line: true,
-    });
+    const minifyResult = YAML.parse(contentsParam);
+    const stripResult = YAML.stringify(minifyResult);
 
     console.log(`_____________________\n 'removeComments' Activated!`);
     return stripResult;
@@ -102,7 +29,7 @@ export const prettierFormat = async (
 ) => {
   try {
     const prettierOptions: Options = {
-      parser: "css",
+      parser: "yaml",
       singleQuote: false,
       printWidth: 120,
       tabWidth: 2,
@@ -162,20 +89,8 @@ export const lineBreak = async (
   contentsParam: string
 ) => {
   try {
-    const rules1 = (
-      /(>)(\n*)(?:\})(?:\n*)(function)/gm
-    );
-
-    const result = (
-      lodash.chain(contentsParam)
-      .replace(rules1, (_, p1, p2, p3) => (
-        `${p1}\n${p3}`
-      ))
-      .value()
-    );
-
-    console.log(`_____________________\n 'lineBreak' Activated!`);
-    return result;
+    console.log(`_____________________\n 'lineBreak' Not Supported!`);
+    return contentsParam;
   }
   catch (err: any) {
     console.error(err.message);
