@@ -14,7 +14,7 @@ export const removeComments = async (
     const { minify } = await import("terser");
     const minifyResult = await minify(contentsParam, {
       compress: false,
-      mangle: true,
+      mangle: false,
       format: {
         comments: false,
       },
@@ -85,7 +85,45 @@ export const prettierFormat = async (
   }
 };
 
-// 2. insertLine -----------------------------------------------------------------------------------
+// 2. insertSpace ----------------------------------------------------------------------------------
+export const insertSpace = async (
+  contentsParam: string
+) => {
+  try {
+    const rules1 = (
+      /(\s*)(public|private|function)(\s*)(.*?)(\s*)(?:[(])(\s*)(.*?)(\s*)(?:[)])(\s*)([{])/gm
+    );
+    const rules2 = (
+      /(\s*)(public|private|function)(\s*)([(])(\s*)(.*?)(\s*)(?:[)])(\s*)([{])/gm
+    );
+    const rules3 = (
+      /^(\s*\/\/ --.*){2}(\n*)(^\s*)(public|private|function)(.*)/gm
+    );
+
+    const result = (
+      lodash.chain(contentsParam)
+      .replace(rules1, (_, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) => (
+        `${p1}${p2} ${p4} (${p7}) {`
+      ))
+      .replace(rules2, (_, p1, p2, p3, p4, p5, p6, p7, p8, p9) => (
+        `${p1}${p2} (${p6}) {`
+      ))
+      .replace(rules3, (_, p1, p2, p3, p4, p5) => (
+        `${p2}${p3}${p4}${p5}`
+      ))
+      .value()
+    );
+
+    console.log(`_____________________\n 'insertSpace' Activated!`);
+    return result;
+  }
+  catch (err: any) {
+    console.error(err.message);
+    return contentsParam;
+  }
+};
+
+// 3. insertLine -----------------------------------------------------------------------------------
 export const insertLine = async (
   contentsParam: string
 ) => {
@@ -145,7 +183,7 @@ export const insertLine = async (
   }
 };
 
-// 3. lineBreak ------------------------------------------------------------------------------------
+// 4. lineBreak ------------------------------------------------------------------------------------
 export const lineBreak = async (
   contentsParam: string
 ) => {
@@ -171,38 +209,6 @@ export const lineBreak = async (
   }
 };
 
-// 4. insertSpace ----------------------------------------------------------------------------------
-export const insertSpace = async (
-  contentsParam: string
-) => {
-  try {
-    const rules1 = (
-      /(\s*?)(public|private|function)(\s*)([\s\S]*?)(\s*)(\()(\s*)([\s\S]*?)(\s*)(\))(\s*)(([\s\S]*?))(\s*?)(\{)/gm
-    );
-    const rules2 = (
-      /^(\s*\/\/ --.*){2}(\n*)(^\s*)(public|private|function)(.*)/gm
-    );
-
-    const result = (
-      lodash.chain(contentsParam)
-      .replace(rules1, (_, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15) => (
-        `${p1}${p2} ${p4} ${p6}${p8}${p10} ${p12} ${p15}`
-      ))
-      .replace(rules2, (_, p1, p2, p3, p4, p5) => (
-        `${p2}${p3}${p4}${p5}`
-      ))
-      .value()
-    );
-
-    console.log(`_____________________\n space Activated!`);
-    return result;
-  }
-  catch (err: any) {
-    console.error(err.message);
-    return contentsParam;
-  }
-};
-
 // 5. finalCheck -----------------------------------------------------------------------------------
 export const finalCheck = async (
   contentsParam: string
@@ -220,7 +226,7 @@ export const finalCheck = async (
       .value()
     );
 
-    console.log(`_____________________\n spellCheck Activated!`);
+    console.log(`_____________________\n 'finalCheck' Activated!`);
     return result;
   }
   catch (err: any) {
