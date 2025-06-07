@@ -99,17 +99,11 @@ export const brackets = async (
     const rules1 = (
       /(\))(\{)/gm
     );
-    const rules2 = (
-      /(['|"])(\s+)(>)/gm
-    );
 
     const result = (
       lodash.chain(contentsParam)
       .replace(rules1, (_, p1, p2) => (
         `${p1} ${p2}`
-      ))
-      .replace(rules2, (_, p1, p2, p3) => (
-        `${p1}>`
       ))
       .value()
     );

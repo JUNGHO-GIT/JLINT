@@ -108,8 +108,8 @@ export const brackets = async (
       .replace(rules1, (_, p1, p2) => (
         `${p1} ${p2}`
       ))
-      .replace(rules2, (_, p1, p2, p3) => (
-        `${p1}>`
+      .replace(rules2, (_, p1, p2) => (
+        `${p1} ${p2}`
       ))
       .value()
     );
