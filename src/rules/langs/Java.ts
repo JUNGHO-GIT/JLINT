@@ -59,7 +59,7 @@ export const prettierFormat = async (
       requirePragma: false,
       insertPragma: false,
       proseWrap: "preserve",
-      htmlWhitespaceSensitivity: "css",
+      htmlWhitespaceSensitivity: "ignore",
       vueIndentScriptAndStyle: true,
       endOfLine: fileEol === "lf" ? "lf" : "crlf",
       embeddedLanguageFormatting: "auto",

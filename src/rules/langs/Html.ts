@@ -71,12 +71,12 @@ export const removeComments = async (
       collapseWhitespace: true,
       collapseInlineTagWhitespace: true,
       preserveLineBreaks: true,
+      conservativeCollapse: true,
       preventAttributesEscaping: true,
       quoteCharacter: '"',
       sortClassName: true,
       sortAttributes: true,
       continueOnParseError: true,
-      conservativeCollapse: true,
       processScripts: [],
       processConditionalComments: false,
     });
@@ -160,7 +160,7 @@ export const prettierFormat = async (
       requirePragma: false,
       insertPragma: false,
       proseWrap: "preserve",
-      htmlWhitespaceSensitivity: "css",
+      htmlWhitespaceSensitivity: "ignore",
       vueIndentScriptAndStyle: true,
       endOfLine: fileEol === "lf" ? "lf" : "crlf",
       embeddedLanguageFormatting: "auto",
@@ -169,8 +169,27 @@ export const prettierFormat = async (
       semi: true,
     };
 
+    const rules1 = (
+      /(&nbsp;)/gm
+    );
+    const rules2 = (
+      /(\s*)(<.*>)(<)(input|label|a|b|p|span|select|div|option)/gm
+    );
+
+    const result = (
+      lodash.chain(contentsParam)
+      .replace(rules1, (_, p1) => (
+        ""
+      ))
+      .replace(rules2, (_, p1, p2, p3, p4) => (
+        `${p1}${p2}\n${p1}\t${p3}${p4}`
+      ))
+      .value()
+    );
+
     console.log(`_____________________\n 'prettierFormat' Activated!`);
-    const prettierCode = prettier.format(contentsParam, prettierOptions);
+    const prettierCode = prettier.format(result, prettierOptions);
+
     return prettierCode;
   }
   catch (err: any) {
@@ -203,7 +222,7 @@ export const insertSpace = async (
     const result = (
       lodash.chain(contentsParam)
       .replace(rules1, (_, p1, p2, p3, p4) => (
-        `${p1}${p2}${p4}`
+        `${p1}${p2};`
       ))
       .replace(rules2, (_, p1, p2, p3, p4, p5, p6) => (
         `${p1}${p2}${p4} ${p6}`
@@ -355,10 +374,16 @@ export const finalCheck = async (
     const rules1 = (
       /(\s*)(<!)(--.*?)(>)(\s*)(\n)(\s*)(<!)(--.*?)(>)([\s\S])/gm
     );
+    const rules2 = (
+      /(\s*)(<!)(--.*?)(>)(\s*)(\n)(\s*)(<!)(--.*?)(>)([\s\S])/gm
+    );
 
     const result = (
       lodash.chain(contentsParam)
       .replace(rules1, (_, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) => (
+        `${p1}${p2}${p3}${p4}${p11}`
+      ))
+      .replace(rules2, (_, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) => (
         `${p1}${p2}${p3}${p4}${p11}`
       ))
       .value()
