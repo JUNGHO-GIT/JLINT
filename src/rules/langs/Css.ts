@@ -9,6 +9,8 @@ import strip from "strip-comments";
 // 0. removeComments -------------------------------------------------------------------------------
 export const removeComments = async (
   contentsParam: string,
+  fileTabSize: number,
+  fileEol: string,
 ) => {
   try {
     const { default: CleanCSS } = await import("clean-css");
@@ -30,11 +32,11 @@ export const removeComments = async (
           beforeBlockBegins: true,
           beforeValue: true,
         },
-        breakWith: '\n',
-        indentBy: 2,
+        breakWith: fileEol,
+        indentBy: fileTabSize,
         indentWith: 'tab',
         semicolonAfterLastProperty: true,
-        wrapAt: 100,
+        wrapAt: 120,
       },
       level: {
         1: {
@@ -98,14 +100,16 @@ export const removeComments = async (
 // 1. prettierFormat -------------------------------------------------------------------------------
 export const prettierFormat = async (
   contentsParam: string,
-  fileName: string
+  fileName: string,
+  fileTabSize: number,
+  fileEol: string
 ) => {
   try {
     const prettierOptions: Options = {
       parser: "css",
       singleQuote: false,
-      printWidth: 120,
-      tabWidth: 2,
+      printWidth: 1000,
+      tabWidth: fileTabSize,
       useTabs: true,
       quoteProps: "as-needed",
       jsxSingleQuote: false,
@@ -120,7 +124,7 @@ export const prettierFormat = async (
       proseWrap: "preserve",
       htmlWhitespaceSensitivity: "css",
       vueIndentScriptAndStyle: true,
-      endOfLine: "lf",
+      endOfLine: fileEol === "lf" ? "lf" : "crlf",
       embeddedLanguageFormatting: "auto",
       singleAttributePerLine: false,
       bracketSameLine: false,

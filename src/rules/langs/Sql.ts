@@ -7,6 +7,8 @@ import * as vscode from "vscode";
 // 0. removeComments -------------------------------------------------------------------------------
 export const removeComments = async (
   contentsParam: string,
+  fileTabSize: number,
+  fileEol: string,
 ) => {
   try {
 
@@ -26,12 +28,14 @@ export const removeComments = async (
 // 1. prettierFormat -------------------------------------------------------------------------------
 export const prettierFormat = async (
   contentsParam: string,
-  fileName: string
+  fileName: string,
+  fileTabSize: number,
+  fileEol: string
 ) => {
   try {
     const prettierOptions: FormatOptionsWithLanguage = {
       language: "mysql",
-      tabWidth: 2,
+      tabWidth: fileTabSize,
       useTabs: true,
       keywordCase: "upper",
       dataTypeCase: "upper",
@@ -39,7 +43,7 @@ export const prettierFormat = async (
       identifierCase: "upper",
       indentStyle: "standard",
       logicalOperatorNewline: "before",
-      expressionWidth: 50,
+      expressionWidth: 100,
       linesBetweenQueries: 1,
       denseOperators: false,
       newlineBeforeSemicolon: false

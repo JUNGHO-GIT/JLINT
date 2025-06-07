@@ -8,6 +8,8 @@ import YAML from 'yaml';
 // 0. removeComments -------------------------------------------------------------------------------
 export const removeComments = async (
   contentsParam: string,
+  fileTabSize: number,
+  fileEol: string,
 ) => {
   try {
     const minifyResult = YAML.parse(contentsParam);
@@ -25,14 +27,16 @@ export const removeComments = async (
 // 1. prettierFormat -------------------------------------------------------------------------------
 export const prettierFormat = async (
   contentsParam: string,
-  fileName: string
+  fileName: string,
+  fileTabSize: number,
+  fileEol: string
 ) => {
   try {
     const prettierOptions: Options = {
       parser: "yaml",
       singleQuote: false,
-      printWidth: 120,
-      tabWidth: 2,
+      printWidth: 1000,
+      tabWidth: fileTabSize,
       useTabs: true,
       quoteProps: "as-needed",
       jsxSingleQuote: false,
@@ -47,7 +51,7 @@ export const prettierFormat = async (
       proseWrap: "preserve",
       htmlWhitespaceSensitivity: "css",
       vueIndentScriptAndStyle: true,
-      endOfLine: "lf",
+      endOfLine: fileEol === "lf" ? "lf" : "crlf",
       embeddedLanguageFormatting: "auto",
       singleAttributePerLine: false,
       bracketSameLine: false,
