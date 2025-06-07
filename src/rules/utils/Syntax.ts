@@ -60,12 +60,18 @@ export const singleTags = async (
   try {
 
     const rules1 = (
-      /(<)(area|base|br|col|command|embed|hr|img|input|keygen|link|meta|param|source|track|wbr)(\s*)([\n\s\S]*?)(\s*)(?<!=)(\/>)/gm
+      /(<)\b(area|base|br|col|command|embed|hr|img|input|keygen|link|meta|param|source|track|wbr)\b([\s\n\S]*?)([\n\s]*)([/]*[>])/gm
+    );
+    const rules2 = (
+      /(<)\b(area|base|br|col|command|embed|hr|img|input|keygen|link|meta|param|source|track|wbr)\b(\s*)([/]*[>])/gm
     );
 
     const result = lodash.chain(contentsParam)
-    .replace(rules1, (_, p1, p2, p3, p4, p5, p6) => (
-      `${p1}${p2}${p3}${p4}${p5}/>`
+    .replace(rules1, (_, p1, p2, p3, p4, p5) => (
+      `${p1}${p2}${p3}${p4}/>`
+    ))
+    .replace(rules1, (_, p1, p2, p3, p4) => (
+      `${p1}${p2} />`
     ))
     .value();
 
