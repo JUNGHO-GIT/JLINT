@@ -14,10 +14,10 @@ export const removeComments = async (
 
     // sql is not needed remove comments
     const minifyResult = contentsParam;
-    const stripResult = minifyResult;
+    const finalResult = minifyResult;
 
     console.log(`_____________________\n 'removeComments' Activated!`);
-    return stripResult;
+    return finalResult;
   }
   catch (err: any) {
     console.error(err.message);

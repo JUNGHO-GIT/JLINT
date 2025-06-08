@@ -14,7 +14,7 @@ export const removeComments = async (
 ) => {
   try {
     const minifyResult = contentsParam;
-    const stripResult = strip(minifyResult, {
+    const finalResult = strip(minifyResult, {
       language: "xml",
       preserveNewlines: false,
       keepProtected: false,
@@ -23,7 +23,7 @@ export const removeComments = async (
     });
 
     console.log(`_____________________\n 'removeComments' Activated!`);
-    return stripResult;
+    return finalResult;
   }
   catch (err: any) {
     console.error(err.message);
@@ -142,6 +142,9 @@ export const finalCheck = async (
     const rules2 = (
       /(\s*)(\n+)(\s*)(,)(\s*)/gm
     );
+    const rules3 = (
+      /([a-zA-Z0-9$#]+)(\s*)(=)(\s*)([a-zA-Z0-9$#]+)/gm
+    );
 
     const finalResult = (
       lodash.chain(contentsParam)
@@ -150,6 +153,9 @@ export const finalCheck = async (
       ))
       .replace(rules2, (_, p1, p2, p3, p4, p5) => (
         `${p1}, `
+      ))
+      .replace(rules3, (_, p1, p2, p3, p4, p5) => (
+        `${p1} = ${p5}`
       ))
       .value()
     );

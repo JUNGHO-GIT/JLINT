@@ -14,13 +14,13 @@ export const removeComments = async (
     const minifyResult = contentsParam;
 
     const { default: stripJsonComments } = await import("strip-json-comments");
-    const stripResult = stripJsonComments(minifyResult, {
+    const finalResult = stripJsonComments(minifyResult, {
       trailingCommas: false,
       whitespace: true
     });
 
     console.log(`_____________________\n 'removeComments' Activated!`);
-    return stripResult;
+    return finalResult;
   }
   catch (err: any) {
     console.error(err.message);

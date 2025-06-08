@@ -80,7 +80,7 @@ export const removeComments = async (
       },
     }).minify(contentsParam).styles;
 
-    const stripResult = strip(minifyResult, {
+    const finalResult = strip(minifyResult, {
       language: "css",
       preserveNewlines: false,
       keepProtected: false,
@@ -89,7 +89,7 @@ export const removeComments = async (
     });
 
     console.log(`_____________________\n 'removeComments' Activated!`);
-    return stripResult;
+    return finalResult;
   }
   catch (err: any) {
     console.error(err.message);

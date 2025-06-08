@@ -22,7 +22,7 @@ export const removeComments = async (
       },
     }).then((result) => result.code);
 
-    const stripResult = strip(minifyResult, {
+    const finalResult = strip(minifyResult, {
       language: "javascript",
       preserveNewlines: false,
       keepProtected: false,
@@ -31,7 +31,7 @@ export const removeComments = async (
     });
 
     console.log(`_____________________\n 'removeComments' Activated!`);
-    return stripResult;
+    return finalResult;
   }
   catch (err: any) {
     console.error(err.message);

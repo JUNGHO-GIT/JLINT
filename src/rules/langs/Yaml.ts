@@ -13,10 +13,10 @@ export const removeComments = async (
 ) => {
   try {
     const minifyResult = YAML.parse(contentsParam);
-    const stripResult = YAML.stringify(minifyResult);
+    const finalResult = YAML.stringify(minifyResult);
 
     console.log(`_____________________\n 'removeComments' Activated!`);
-    return stripResult;
+    return finalResult;
   }
   catch (err: any) {
     console.error(err.message);

@@ -15,7 +15,7 @@ export const removeComments = async (
   try {
     const minifyResult = contentsParam;
 
-    const stripResult = strip(minifyResult, {
+    const finalResult = strip(minifyResult, {
       language: "java",
       preserveNewlines: false,
       keepProtected: false,
@@ -24,7 +24,7 @@ export const removeComments = async (
     });
 
     console.log(`_____________________\n 'removeComments' Activated!`);
-    return stripResult;
+    return finalResult;
   }
   catch (err: any) {
     console.error(err.message);

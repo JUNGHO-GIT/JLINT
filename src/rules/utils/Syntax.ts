@@ -10,16 +10,16 @@ export const capitalize = async (
   try {
 
     const rules1 = (
-      /([^</>]\b)(\s*)(select|from|where|insert|into|values|update|set|delete|join|on|create)(\s*)([^</>]\b)/gm
+      /([^</>]\b)(\s*)(select|from|where|insert|into|values|update|set|delete|on|create)\b(\s*)([^</>]\b)/gm
     );
     const rules2 = (
-      /([^</>]\b)(\s*)(table|alter|drop|truncate|order by|group by|having|limit|offset|distinct)(\s*)([^</>]\b)/gm
+      /([^</>]\b)(\s*)(table|alter|drop|truncate|order by|group by|having|limit|offset|distinct)\b(\s*)([^</>]\b)/gm
     );
     const rules3 = (
-      /([^</>]\b)(\s*)(or|not|ifnull|is|in|like|between|as|case when|then|date_format)(\s*)([^</>]\b)/gm
+      /([^</>]\b)(\s*)(or|not|ifnull|is|in|like|between|as|case when|then|date_format)\b(\s*)([^</>]\b)/gm
     );
     const rules4 = (
-      /([^</>]\b)(\s*)(inner join|left join|right join|full join|outer join)(\s*)([^</>]\b)/gm
+      /([^</>]\b)(\s*)(inner join|left join|right join|full join|outer join)\b(\s*)([^</>]\b)/gm
     );
 
     const finalResult = (
