@@ -41,8 +41,8 @@ export const getLanguage = async (
     if (confParam.InsertLine) {
       resultContents = await langRules.insertLine(resultContents);
     }
-    resultContents = await langRules.lineBreak(resultContents);
     resultContents = await langRules.insertSpace(resultContents);
+    resultContents = await langRules.lineBreak(resultContents);
     resultContents = await langRules.finalCheck(resultContents);
   }
 

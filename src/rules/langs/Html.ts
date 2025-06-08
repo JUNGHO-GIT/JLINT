@@ -173,7 +173,7 @@ export const prettierFormat = async (
       /(&nbsp;)/gm
     );
     const rules2 = (
-      /(\s*)(<.*>)(<)(input|label|a|b|p|span|select|div|option)/gm
+      /(\s*)(<.*>)(<)(input|label|a|b|p|span|select|div|option|bold|caption|strong)/gm
     );
 
     const result = (

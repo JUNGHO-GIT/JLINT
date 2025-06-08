@@ -171,8 +171,27 @@ export const prettierFormat = async (
       semi: true,
     };
 
+    const rules1 = (
+      /(&nbsp;)/gm
+    );
+    const rules2 = (
+      /(\s*)(<.*>)(<)(input|label|a|b|p|span|select|div|option|bold|caption|strong)/gm
+    );
+
+    const result = (
+      lodash.chain(contentsParam)
+      .replace(rules1, (_, p1) => (
+        ""
+      ))
+      .replace(rules2, (_, p1, p2, p3, p4) => (
+        `${p1}${p2}\n${p1}\t${p3}${p4}`
+      ))
+      .value()
+    );
+
     console.log(`_____________________\n 'prettierFormat' Activated!`);
-    const prettierCode = prettier.format(contentsParam, prettierOptions);
+    const prettierCode = prettier.format(result, prettierOptions);
+
     return prettierCode;
   }
   catch (err: any) {
