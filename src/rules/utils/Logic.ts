@@ -19,7 +19,7 @@ export const ifElse = async (
       /(.*?)(?<=\})(\s*)(\n*)(\s*)(else(?!\s*if))(\s*)(\{?)(?:\s*)(.*?)(\s*)(\})/gm
     );
 
-    const result = (
+    const finalResult = (
       lodash.chain(contentsParam)
       .replace(rules1, (_, p1, p2, p3) => (
         `${p2} (`
@@ -51,7 +51,7 @@ export const ifElse = async (
     }
     else {
       console.log(`_____________________\n 'ifElse' Activated!`);
-      return result;
+      return finalResult;
     }
   }
   catch (err: any) {
@@ -76,7 +76,7 @@ export const tryCatch = async (
       /(\s*)(.*?)(?<=\})(\s*)(finally)(\s*)/gm
     );
 
-    const result = (
+    const finalResult = (
       lodash.chain(contentsParam)
       .replace(rules1, (_, p1, p2, p3, p4, p5) => (
         `${p1}try {${p5}`
@@ -96,7 +96,7 @@ export const tryCatch = async (
     }
     else {
       console.log(`_____________________\n 'tryCatch' Activated!`);
-      return result;
+      return finalResult;
     }
   }
   catch (err: any) {

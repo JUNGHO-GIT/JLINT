@@ -132,8 +132,8 @@ export const prettierFormat = async (
     };
 
     console.log(`_____________________\n 'prettierFormat' Activated!`);
-    const prettierCode = prettier.format(contentsParam, prettierOptions);
-    return prettierCode;
+    const finalResult = prettier.format(contentsParam, prettierOptions);
+    return finalResult;
   }
   catch (err: any) {
     const msg = err.message.toString().trim().replace(/\x1B\[[0-9;]*[mGKF]/g, "");
@@ -152,10 +152,10 @@ export const insertSpace = async (
   contentsParam: string
 ) => {
   try {
-    const result = contentsParam;
+    const finalResult = contentsParam;
 
     console.log(`_____________________\n 'insertSpace' Not Supported!`);
-    return result;
+    return finalResult;
   }
   catch (err: any) {
     console.error(err.message);
@@ -168,10 +168,10 @@ export const insertLine = async (
   contentsParam: string
 ) => {
   try {
-    const result = contentsParam;
+    const finalResult = contentsParam;
 
     console.log(`_____________________\n 'insertLine' Not Supported!`);
-    return result;
+    return finalResult;
   }
   catch (err: any) {
     console.error(err.message);
@@ -188,7 +188,7 @@ export const lineBreak = async (
       /(>)(\n*)(?:\})(?:\n*)(function)/gm
     );
 
-    const result = (
+    const finalResult = (
       lodash.chain(contentsParam)
       .replace(rules1, (_, p1, p2, p3) => (
         `${p1}\n${p3}`
@@ -197,7 +197,7 @@ export const lineBreak = async (
     );
 
     console.log(`_____________________\n 'lineBreak' Activated!`);
-    return result;
+    return finalResult
   }
   catch (err: any) {
     console.error(err.message);
@@ -210,10 +210,10 @@ export const finalCheck = async (
   contentsParam: string
 ) => {
   try {
-    const result = contentsParam;
+    const finalResult = contentsParam;
 
     console.log(`_____________________\n 'finalCheck' Activated!`);
-    return result;
+    return finalResult
   }
   catch (err: any) {
     console.error(err.message);

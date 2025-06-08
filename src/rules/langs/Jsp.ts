@@ -27,7 +27,7 @@ export const removeComments = async (
       /("|')(\s*)(@\{https:\/\/)([\n\s\S]*?)("|')/gm
     );
 
-    const httpResult1 = (
+    const httpResult = (
       lodash.chain(contentsParam)
       .replace(pattern1, (_, p1, p2, p3, p4, p5) => (
         `${p1}${p2}httpp${p4}${p5}`
@@ -45,7 +45,7 @@ export const removeComments = async (
     );
 
     const { minify } = await import("html-minifier-terser");
-    const minifyResult = await minify(httpResult1, {
+    const minifyResult = await minify(httpResult, {
       html5: true,
       minifyCSS: false,
       minifyJS: false,
@@ -71,18 +71,32 @@ export const removeComments = async (
       collapseWhitespace: true,
       collapseInlineTagWhitespace: true,
       preserveLineBreaks: true,
+      conservativeCollapse: true,
       preventAttributesEscaping: true,
       quoteCharacter: '"',
       sortClassName: true,
       sortAttributes: true,
       continueOnParseError: true,
-      conservativeCollapse: true,
       processScripts: [],
       processConditionalComments: false,
     });
 
-    const stripResult = strip(minifyResult, {
+    const stripResult1 = strip(minifyResult, {
       language: "html",
+      preserveNewlines: false,
+      keepProtected: false,
+      block: true,
+      line: true,
+    });
+    const stripResult2 = strip(stripResult1, {
+      language: "javascript",
+      preserveNewlines: false,
+      keepProtected: false,
+      block: true,
+      line: true,
+    });
+    const stripResult3 = strip(stripResult2, {
+      language: "css",
       preserveNewlines: false,
       keepProtected: false,
       block: true,
@@ -106,8 +120,8 @@ export const removeComments = async (
       /(\n)(\s*)(\n)/gm
     );
 
-    const httpResult2 = (
-      lodash.chain(stripResult)
+    const finalResult = (
+      lodash.chain(stripResult3)
       .replace(pattern1Re, (_, p1, p2, p3, p4, p5) => (
         `${p1}${p2}http://${p4}${p5}`
       ))
@@ -127,7 +141,7 @@ export const removeComments = async (
     );
 
     console.log(`_____________________\n 'removeComments' Activated!`);
-    return httpResult2;
+    return finalResult;
   }
   catch (err: any) {
     console.error(err.message);
@@ -190,9 +204,9 @@ export const prettierFormat = async (
     );
 
     console.log(`_____________________\n 'prettierFormat' Activated!`);
-    const prettierCode = prettier.format(result, prettierOptions);
+    const finalResult = prettier.format(result, prettierOptions);
 
-    return prettierCode;
+    return finalResult;
   }
   catch (err: any) {
     const msg = err.message.toString().trim().replace(/\x1B\[[0-9;]*[mGKF]/g, "");
@@ -221,7 +235,7 @@ export const insertSpace = async (
       /(\s*?)(ception)(\{)/gm
     );
 
-    const result = (
+    const finalResult = (
       lodash.chain(contentsParam)
       .replace(rules1, (_, p1, p2, p3, p4) => (
         `${p1}${p2}${p4}`
@@ -236,7 +250,7 @@ export const insertSpace = async (
     );
 
     console.log(`_____________________\n 'insertSpace' Activated!`);
-    return result;
+    return finalResult
   }
   catch (err: any) {
     console.error(err.message);
@@ -277,7 +291,7 @@ export const insertLine = async (
       /^(?!\/\/--)(?:\n*)(\s*)([<]div class="row\s*.*\s*[>])(\s*?)/gm
     );
 
-    const result = (
+    const finalResult = (
       lodash.chain(contentsParam)
       .replace(rules1, (_, p1, p2, p3) => {
         const spaceSize = 100 - (p1.length + `<!--`.length + `-`.length);
@@ -328,7 +342,7 @@ export const insertLine = async (
     );
 
     console.log(`_____________________\n 'insertLine' Activated!`);
-    return result;
+    return finalResult
   }
   catch (err: any) {
     console.error(err.message);
@@ -348,7 +362,7 @@ export const lineBreak = async (
       /(.*?)(\n*)(\s*)(\/\/ -.*>)/gm
     );
 
-    const result = (
+    const finalResult = (
       lodash.chain(contentsParam)
       .replace(rules1, (_, p1, p2, p3) => (
         `\n\n${p1}${p2}${p3}`
@@ -360,7 +374,7 @@ export const lineBreak = async (
     );
 
     console.log(`_____________________\n 'lineBreak' Activated!`);
-    return result;
+    return finalResult
   }
   catch (err: any) {
     console.error(err.message);
@@ -377,7 +391,7 @@ export const finalCheck = async (
       /(\s*)(<!)(--.*?)(>)(\s*)(\n)(\s*)(<!)(--.*?)(>)([\s\S])/gm
     );
 
-    const result = (
+    const finalResult = (
       lodash.chain(contentsParam)
       .replace(rules1, (_, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) => (
         `${p1}${p2}${p3}${p4}${p11}`
@@ -386,7 +400,7 @@ export const finalCheck = async (
     );
 
     console.log(`_____________________\n 'finalCheck' Activated!`);
-    return result;
+    return finalResult
   }
   catch (err: any) {
     console.error(err.message);

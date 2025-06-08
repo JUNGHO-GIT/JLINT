@@ -69,8 +69,8 @@ export const prettierFormat = async (
     };
 
     console.log(`_____________________\n 'prettierFormat' Activated!`);
-    const prettierCode = prettier.format(contentsParam, prettierOptions);
-    return prettierCode;
+    const finalResult = prettier.format(contentsParam, prettierOptions);
+    return finalResult;
   }
   catch (err: any) {
     const msg = err.toString().trim().replace(/\x1B\[[0-9;]*[mGKF]/g, "");
@@ -105,7 +105,7 @@ export const insertSpace = async (
       /(\s*?)(ception)(\{)/gm
     );
 
-    const result = (
+    const finalResult = (
       lodash.chain(contentsParam)
       .replace(rules1, (_, p1, p2, p3, p4) => (
         `${p1}${p2}${p4}`
@@ -120,7 +120,7 @@ export const insertSpace = async (
     );
 
     console.log(`_____________________\n 'insertSpace' Activated!`);
-    return result;
+    return finalResult
   }
   catch (err: any) {
     console.error(err.message);
@@ -137,7 +137,7 @@ export const insertLine = async (
       /(?!^\/\/--)(^(?!\n)\s*)(@[A-Z].*?(?:(\n\s*))(?=(public|private|function|class))|(?:(public|private|function|class)))/gm
     );
 
-    const result = (
+    const finalResult = (
       lodash.chain(contentsParam)
       .replace(rules1, (_, p1, p2, p3, p4, p5) => {
         const spaceSize = (p1).length + (`// `).length + (`-`).length;
@@ -148,7 +148,7 @@ export const insertLine = async (
     );
 
     console.log(`_____________________\n 'insertLine' Activated!`);
-    return result;
+    return finalResult
   }
   catch (err: any) {
     console.error(err.message);
@@ -201,7 +201,7 @@ export const lineBreak = async (
       /(\s*)(@Override)(\n|\n+)(.*)(\n|\n+)(\s*)(public|private)/gm
     );
 
-    const result = (
+    const finalResult = (
       lodash.chain(contentsParam)
       .replace(rules1, (_, p1, p2, p3, p4, p5, p6) => (
         `${p2}\n${p6}`
@@ -246,7 +246,7 @@ export const lineBreak = async (
     );
 
     console.log(`_____________________\n 'lineBreak' Activated!`);
-    return result;
+    return finalResult
   }
   catch (err: any) {
     console.error(err.message);
@@ -272,7 +272,7 @@ export const finalCheck = async (
       /(^\s*)(\/\/ [-]+)([->][\n\s]*)(\s*)(\/\/ [-]+)([->][\n\s])/gm
     );
 
-    const result = (
+    const finalResult = (
       lodash.chain(contentsParam)
       .replace(rules1, (_, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13) => (
         `${p1}${p2}${p3}${p4}${p5}${p13}`
@@ -290,7 +290,7 @@ export const finalCheck = async (
     );
 
     console.log(`_____________________\n 'finalCheck' Activated!`);
-    return result;
+    return finalResult
   }
   catch (err: any) {
     console.error(err.message);
