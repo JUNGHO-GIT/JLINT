@@ -34,7 +34,14 @@ export const activate = (context: vscode.ExtensionContext) => {
       const fileTabSize = parseInt(editor.options.tabSize as string);
       const fileEol = String(editor.document.eol === 1 ? "lf" : "crlf");
 
-      await main(getConfiguration(), filePath, fileName, fileExt, fileTabSize, fileEol);
+      await main(
+        getConfiguration(),
+        filePath,
+        fileName,
+        fileExt,
+        fileTabSize,
+        fileEol
+      );
     });
     context.subscriptions.push(command);
 

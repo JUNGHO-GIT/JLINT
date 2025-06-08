@@ -9,8 +9,8 @@ export const getContents = async (
   fileEol: string
 ) => {
 
-  const decoder = new TextDecoder("utf-8");
   const data = await vscode.workspace.fs.readFile(vscode.Uri.file(filePath));
+  const decoder = new TextDecoder("utf-8");
   const dataStr = decoder.decode(data);
 
   try {
