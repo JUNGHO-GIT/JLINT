@@ -80,7 +80,14 @@
           "description": "Enable or disable the insert 'vertical line'",
           "scope": "resource"
         }
-      }
+      },
+      "grammars": [
+        {
+          "language": "xml",
+          "scopeName": "text.xml.mybatis",
+          "path": "./rules/syntax/sql-in-xml.tmLanguage.json"
+        }
+      ]
     }
   },
   "scripts": {
