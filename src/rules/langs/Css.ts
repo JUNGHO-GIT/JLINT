@@ -190,8 +190,8 @@ export const lineBreak = async (
 
     const finalResult = (
       lodash.chain(contentsParam)
-      .replace(rules1, (_, p1, p2, p3) => (
-        `${p1}\n${p3}`
+      .replace(rules1, (...p) => (
+        `${p[1]}\n${p[3]}`
       ))
       .value()
     );

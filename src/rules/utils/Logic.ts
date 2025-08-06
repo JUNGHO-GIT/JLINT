@@ -21,26 +21,23 @@ export const ifElse = async (
 
     const finalResult = (
       lodash.chain(contentsParam)
-      .replace(rules1, (_, p1, p2, p3) => (
-        `${p2} (`
+      .replace(rules1, (...p) => (
+        `${p[2]} (`
       ))
-      .replace(rules2, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14) => {
-        const indentSize1 = p1.length - `}`.length;
-        const indentSize2 = p13.length - `}`.length;
+      .replace(rules2, (...p) => {
+        const indentSize1 = p[1].length - `}`.length;
+        const indentSize2 = p[13].length - `}`.length;
         const spaceSize = indentSize1 ===-1 ? indentSize2 : indentSize1;
         const insertSize = (" ").repeat(spaceSize);
 
-        const before = match;
-        const after = `${p1}\n${insertSize}else if (${p8}) {\n${insertSize}\t${p12}\n${insertSize}}`;
-
-        return after;
+        return `${p[1]}\n${insertSize}else if (${p[8]}) {\n${insertSize}\t${p[12]}\n${insertSize}}`;
       })
-      .replace(rules3, (_, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) => {
-        const indentSize1 = p1.length - `}`.length;
-        const indentSize2 = p9.length - `}`.length;
+      .replace(rules3, (...p) => {
+        const indentSize1 = p[1].length - `}`.length;
+        const indentSize2 = p[9].length - `}`.length;
         const spaceSize = indentSize1 == -1 ? indentSize2 : indentSize1;
         const insertSize = " ".repeat(spaceSize);
-        return `${p1}\n${insertSize}else {\n${insertSize}\t${p8}\n${insertSize}}`;
+        return `${p[1]}\n${insertSize}else {\n${insertSize}\t${p[8]}\n${insertSize}}`;
       })
       .value()
     );
@@ -78,14 +75,14 @@ export const tryCatch = async (
 
     const finalResult = (
       lodash.chain(contentsParam)
-      .replace(rules1, (_, p1, p2, p3, p4, p5) => (
-        `${p1}try {${p5}`
+      .replace(rules1, (...p) => (
+        `${p[1]}try {${p[5]}`
       ))
-      .replace(rules2, (_, p1, p2, p3, p4, p5) => (
-        `${p1}${p2}\n${p1}catch`
+      .replace(rules2, (...p) => (
+        `${p[1]}${p[2]}\n${p[1]}catch`
       ))
-      .replace(rules3, (_, p1, p2, p3, p4, p5) => (
-        `${p1}${p2}\n${p1}${p4}`
+      .replace(rules3, (...p) => (
+        `${p[1]}${p[2]}\n${p[1]}${p[4]}`
       ))
       .value()
     );

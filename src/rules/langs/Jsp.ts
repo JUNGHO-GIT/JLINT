@@ -29,17 +29,17 @@ export const removeComments = async (
 
     const httpResult = (
       lodash.chain(contentsParam)
-      .replace(pattern1, (_, p1, p2, p3, p4, p5) => (
-        `${p1}${p2}httpp${p4}${p5}`
+      .replace(pattern1, (...p) => (
+        `${p[1]}${p[2]}httpp${p[4]}${p[5]}`
       ))
-      .replace(pattern2, (_, p1, p2, p3, p4, p5) => (
-        `${p1}${p2}httpps${p4}${p5}`
+      .replace(pattern2, (...p) => (
+        `${p[1]}${p[2]}httpps${p[4]}${p[5]}`
       ))
-      .replace(pattern3, (_, p1, p2, p3, p4, p5) => (
-        `${p1}${p2}@{httpp${p4}${p5}`
+      .replace(pattern3, (...p) => (
+        `${p[1]}${p[2]}@{httpp${p[4]}${p[5]}`
       ))
-      .replace(pattern4, (_, p1, p2, p3, p4, p5) => (
-        `${p1}${p2}@{httpps${p4}${p5}`
+      .replace(pattern4, (...p) => (
+        `${p[1]}${p[2]}@{httpps${p[4]}${p[5]}`
       ))
       .value()
     );
@@ -122,20 +122,20 @@ export const removeComments = async (
 
     const finalResult = (
       lodash.chain(stripResult3)
-      .replace(pattern1Re, (_, p1, p2, p3, p4, p5) => (
-        `${p1}${p2}http://${p4}${p5}`
+      .replace(pattern1Re, (...p) => (
+        `${p[1]}${p[2]}http://${p[4]}${p[5]}`
       ))
-      .replace(pattern2Re, (_, p1, p2, p3, p4, p5) => (
-        `${p1}${p2}https://${p4}${p5}`
+      .replace(pattern2Re, (...p) => (
+        `${p[1]}${p[2]}https://${p[4]}${p[5]}`
       ))
-      .replace(pattern3Re, (_, p1, p2, p3, p4, p5) => (
-        `${p1}${p2}@{http://${p4}${p5}`
+      .replace(pattern3Re, (...p) => (
+        `${p[1]}${p[2]}@{http://${p[4]}${p[5]}`
       ))
-      .replace(pattern4Re, (_, p1, p2, p3, p4, p5) => (
-        `${p1}${p2}@{https://${p4}${p5}`
+      .replace(pattern4Re, (...p) => (
+        `${p[1]}${p[2]}@{https://${p[4]}${p[5]}`
       ))
-      .replace(pattern5, (_, p1, p2, p3) => (
-        `${p1}`
+      .replace(pattern5, (...p) => (
+        `${p[1]}`
       ))
       .value()
     );
@@ -194,11 +194,11 @@ export const prettierFormat = async (
 
     const result = (
       lodash.chain(contentsParam)
-      .replace(rules1, (_, p1) => (
+      .replace(rules1, (...p) => (
         ""
       ))
-      .replace(rules2, (_, p1, p2, p3, p4) => (
-        `${p1}${p2}\n${p1}\t${p3}${p4}`
+      .replace(rules2, (...p) => (
+        `${p[1]}${p[2]}\n${p[1]}\t${p[3]}${p[4]}`
       ))
       .value()
     );
@@ -237,14 +237,14 @@ export const insertSpace = async (
 
     const finalResult = (
       lodash.chain(contentsParam)
-      .replace(rules1, (_, p1, p2, p3, p4) => (
-        `${p1}${p2}${p4}`
+      .replace(rules1, (...p) => (
+        `${p[1]}${p[2]}${p[4]}`
       ))
-      .replace(rules2, (_, p1, p2, p3, p4, p5, p6) => (
-        `${p1}${p2}${p4} ${p6}`
+      .replace(rules2, (...p) => (
+        `${p[1]}${p[2]}${p[4]} ${p[6]}`
       ))
-      .replace(rules3, (_, p1, p2, p3) => (
-        `${p2} ${p3}`
+      .replace(rules3, (...p) => (
+        `${p[2]} ${p[3]}`
       ))
       .value()
     );
@@ -293,50 +293,50 @@ export const insertLine = async (
 
     const finalResult = (
       lodash.chain(contentsParam)
-      .replace(rules1, (_, p1, p2, p3) => {
-        const spaceSize = 100 - (p1.length + `<!--`.length + `-`.length);
+      .replace(rules1, (...p) => {
+        const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
         const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
-        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+        return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
       })
-      .replace(rules2, (_, p1, p2, p3) => {
-        const spaceSize = 100 - (p1.length + `<!--`.length + `-`.length);
+      .replace(rules2, (...p) => {
+        const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
         const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
-        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+        return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
       })
-      .replace(rules3, (_, p1, p2, p3) => {
-        const spaceSize = 100 - (p1.length + `<!--`.length + `-`.length);
+      .replace(rules3, (...p) => {
+        const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
         const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
-        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+        return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
       })
-      .replace(rules4, (_, p1, p2, p3) => {
-        const spaceSize = 100 - (p1.length + `<!--`.length + `-`.length);
+      .replace(rules4, (...p) => {
+        const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
         const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
-        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+        return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
       })
-      .replace(rules5, (_, p1, p2, p3) => {
-        const spaceSize = 100 - (p1.length + `<!--`.length + `-`.length);
+      .replace(rules5, (...p) => {
+        const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
         const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
-        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+        return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
       })
-      .replace(rules6, (_, p1, p2, p3) => {
-        const spaceSize = 100 - (p1.length + `<!--`.length + `-`.length);
+      .replace(rules6, (...p) => {
+        const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
         const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
-        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+        return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
       })
-      .replace(rules7, (_, p1, p2, p3) => {
-        const spaceSize = 100 - (p1.length + `<!--`.length + `-`.length);
+      .replace(rules7, (...p) => {
+        const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
         const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
-        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+        return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
       })
-      .replace(rules8, (_, p1, p2, p3) => {
-        const spaceSize = 100 - (p1.length + `<!--`.length + `-`.length);
+      .replace(rules8, (...p) => {
+        const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
         const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
-        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+        return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
       })
-      .replace(rules9, (_, p1, p2, p3) => {
-        const spaceSize = 100 - (p1.length + `<!--`.length + `-`.length);
+      .replace(rules9, (...p) => {
+        const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
         const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
-        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+        return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
       })
       .value()
     );
@@ -364,11 +364,11 @@ export const lineBreak = async (
 
     const finalResult = (
       lodash.chain(contentsParam)
-      .replace(rules1, (_, p1, p2, p3) => (
-        `\n\n${p1}${p2}${p3}`
+      .replace(rules1, (...p) => (
+        `\n\n${p[1]}${p[2]}${p[3]}`
       ))
-      .replace(rules2, (_, p1, p2, p3, p4) => (
-        `${p1}\n\n${p3}${p4}`
+      .replace(rules2, (...p) => (
+        `${p[1]}\n\n${p[3]}${p[4]}`
       ))
       .value()
     );
@@ -393,8 +393,8 @@ export const finalCheck = async (
 
     const finalResult = (
       lodash.chain(contentsParam)
-      .replace(rules1, (_, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) => (
-        `${p1}${p2}${p3}${p4}${p11}`
+      .replace(rules1, (...p) => (
+        `${p[1]}${p[2]}${p[3]}${p[4]}${p[11]}`
       ))
       .value()
     );

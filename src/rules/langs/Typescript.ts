@@ -106,14 +106,14 @@ export const insertSpace = async (
 
     const finalResult = (
       lodash.chain(contentsParam)
-      .replace(rules1, (_, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) => (
-        `${p1}${p2} ${p4} (${p7}) {`
+      .replace(rules1, (...p) => (
+        `${p[1]}${p[2]} ${p[4]} (${p[7]}) {`
       ))
-      .replace(rules2, (_, p1, p2, p3, p4, p5, p6, p7, p8, p9) => (
-        `${p1}${p2} (${p6}) {`
+      .replace(rules2, (...p) => (
+        `${p[1]}${p[2]} (${p[6]}) {`
       ))
-      .replace(rules3, (_, p1, p2, p3, p4, p5) => (
-        `${p2}${p3}${p4}${p5}`
+      .replace(rules3, (...p) => (
+        `${p[2]}${p[3]}${p[4]}${p[5]}`
       ))
       .value()
     );
@@ -150,30 +150,30 @@ export const insertLine = async (
 
     const finalResult = (
       lodash.chain(contentsParam)
-      .replace(rules1, (_, p1, p2, p3) => {
-        const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
+      .replace(rules1, (...p) => {
+        const spaceSize = 100 - (p[1].length + `// `.length + `-`.length);
         const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
-        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+        return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
       })
-      .replace(rules2, (_, p1, p2, p3) => {
-        const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
+      .replace(rules2, (...p) => {
+        const spaceSize = 100 - (p[1].length + `// `.length + `-`.length);
         const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
-        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+        return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
       })
-      .replace(rules3, (_, p1, p2, p3) => {
-        const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
+      .replace(rules3, (...p) => {
+        const spaceSize = 100 - (p[1].length + `// `.length + `-`.length);
         const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
-        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+        return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
       })
-      .replace(rules4, (_, p1, p2, p3) => {
-        const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
+      .replace(rules4, (...p) => {
+        const spaceSize = 100 - (p[1].length + `// `.length + `-`.length);
         const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
-        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+        return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
       })
-      .replace(rules5, (_, p1, p2, p3) => {
-        const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
+      .replace(rules5, (...p) => {
+        const spaceSize = 100 - (p[1].length + `// `.length + `-`.length);
         const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
-        return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+        return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
       })
       .value()
     );
@@ -198,8 +198,8 @@ export const lineBreak = async (
 
     const finalResult = (
       lodash.chain(contentsParam)
-      .replace(rules1, (_, p1, p2, p3) => (
-        `${p1}\n${p3}`
+      .replace(rules1, (...p) => (
+        `${p[1]}\n${p[3]}`
       ))
       .value()
     );
@@ -224,8 +224,8 @@ export const finalCheck = async (
 
     const finalResult = (
       lodash.chain(contentsParam)
-      .replace(rules1, (_, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13) => (
-        `${p1}${p2}${p3}${p4}${p5}${p13}`
+      .replace(rules1, (...p) => (
+        `${p[1]}${p[2]}${p[3]}${p[4]}${p[5]}${p[13]}`
       ))
       .value()
     );

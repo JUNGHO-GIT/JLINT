@@ -148,14 +148,14 @@ export const finalCheck = async (
 
     const finalResult = (
       lodash.chain(contentsParam)
-      .replace(rules1, (_, p1) => (
+      .replace(rules1, (...p) => (
         `, `
       ))
-      .replace(rules2, (_, p1, p2, p3, p4, p5) => (
-        `${p1}, `
+      .replace(rules2, (...p) => (
+        `${p[1]}, `
       ))
-      .replace(rules3, (_, p1, p2, p3, p4, p5) => (
-        `${p1} = ${p5}`
+      .replace(rules3, (...p) => (
+        `${p[1]} = ${p[5]}`
       ))
       .value()
     );

@@ -24,17 +24,17 @@ export const capitalize = async (
 
     const finalResult = (
       lodash.chain(contentsParam)
-      .replace(rules1, (_, p1, p2, p3, p4, p5) => (
-        `${p1}${p2}${p3.toUpperCase()}${p4}${p5}`
+      .replace(rules1, (...p) => (
+        `${p[1]}${p[2]}${p[3].toUpperCase()}${p[4]}${p[5]}`
       ))
-      .replace(rules2, (_, p1, p2, p3, p4, p5) => (
-        `${p1}${p2}${p3.toUpperCase()}${p4}${p5}`
+      .replace(rules2, (...p) => (
+        `${p[1]}${p[2]}${p[3].toUpperCase()}${p[4]}${p[5]}`
       ))
-      .replace(rules3, (_, p1, p2, p3, p4, p5) => (
-        `${p1}${p2}${p3.toUpperCase()}${p4}${p5}`
+      .replace(rules3, (...p) => (
+        `${p[1]}${p[2]}${p[3].toUpperCase()}${p[4]}${p[5]}`
       ))
-      .replace(rules4, (_, p1, p2, p3, p4, p5) => (
-        `${p1}${p2}${p3.toUpperCase()}${p4}${p5}`
+      .replace(rules4, (...p) => (
+        `${p[1]}${p[2]}${p[3].toUpperCase()}${p[4]}${p[5]}`
       ))
       .value()
     );
@@ -70,11 +70,11 @@ export const singleTags = async (
 
     const finalResult = (
       lodash.chain(contentsParam)
-      .replace(rules1, (_, p1, p2, p3, p4, p5) => (
-        `${p1}${p2}${p3}${p4}/>`
+      .replace(rules1, (...p) => (
+        `${p[1]}${p[2]}${p[3]}${p[4]}/>`
       ))
-      .replace(rules2, (_, p1, p2, p3, p4) => (
-        `${p1}${p2} />`
+      .replace(rules2, (...p) => (
+        `${p[1]}${p[2]} />`
       ))
       .value()
     );
@@ -109,11 +109,11 @@ export const brackets = async (
 
     const finalResult = (
       lodash.chain(contentsParam)
-      .replace(rules1, (_, p1, p2) => (
-        `${p1} ${p2}`
+      .replace(rules1, (...p) => (
+        `${p[1]} ${p[2]}`
       ))
-      .replace(rules2, (_, p1, p2, p3) => (
-        `${p1}>`
+      .replace(rules2, (...p) => (
+        `${p[1]}>`
       ))
       .value()
     );
@@ -145,8 +145,8 @@ export const comma = async (
 
     const finalResult = (
       lodash.chain(contentsParam)
-      .replace(rules1, (_, p1, p2, p3) => (
-        `${p2} `
+      .replace(rules1, (...p) => (
+        `${p[2]} `
       ))
       .value()
     );
@@ -187,17 +187,17 @@ export const semicolon = async (
 
     const finalResult = (
       lodash.chain(contentsParam)
-      .replace(rules1, (_, p1, p2, p3, p4, p5) => (
-        `${p1}${p2}${p4}\n${p1}${p5}`
+      .replace(rules1, (...p) => (
+        `${p[1]}${p[2]}${p[4]}\n${p[1]}${p[5]}`
       ))
-      .replace(rules2, (_, p1, p2, p3) => (
-        `${p1}${p3}`
+      .replace(rules2, (...p) => (
+        `${p[1]}${p[3]}`
       ))
-      .replace(rules3, (_, p1, p2, p3) => (
-        `${p1}${p3}`
+      .replace(rules3, (...p) => (
+        `${p[1]}${p[3]}`
       ))
-      .replace(rules4, (_, p1, p2, p3, p4) => (
-        `${p1} ${p4}`
+      .replace(rules4, (...p) => (
+        `${p[1]} ${p[4]}`
       ))
       .value()
     );
@@ -229,8 +229,8 @@ export const quotes = async (
 
     const finalResult = (
       lodash.chain(contentsParam)
-      .replace(rules1, (_, p1, p2, p3) => (
-        `${p1}"${p3}`
+      .replace(rules1, (...p) => (
+        `${p[1]}"${p[3]}`
       ))
       .value()
     );

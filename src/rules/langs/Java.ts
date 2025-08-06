@@ -107,14 +107,14 @@ export const insertSpace = async (
 
     const finalResult = (
       lodash.chain(contentsParam)
-      .replace(rules1, (_, p1, p2, p3, p4) => (
-        `${p1}${p2}${p4}`
+      .replace(rules1, (...p) => (
+        `${p[1]}${p[2]}${p[4]}`
       ))
-      .replace(rules2, (_, p1, p2, p3, p4, p5, p6) => (
-        `${p1}${p2}${p4} ${p6}`
+      .replace(rules2, (...p) => (
+        `${p[1]}${p[2]}${p[4]} ${p[6]}`
       ))
-      .replace(rules3, (_, p1, p2, p3) => (
-        `${p2} ${p3}`
+      .replace(rules3, (...p) => (
+        `${p[2]} ${p[3]}`
       ))
       .value()
     );
@@ -139,12 +139,15 @@ export const insertLine = async (
 
     const finalResult = (
       lodash.chain(contentsParam)
-      .replace(rules1, (_, p1, p2, p3, p4, p5) => {
-        const spaceSize = (p1).length + (`// `).length + (`-`).length;
+      .replace(rules1, (...p) => {
+        const p1 = p[1] ?? "";
+        const p2 = p[2] ?? "";
+        const spaceSize = p[1].length + (`// `).length + (`-`).length;
         const insertSize = 100 - spaceSize;
         const insetLine = (`// ${"-".repeat(insertSize)}`);
-        return `${p1}${insetLine}\n${p1}${p2}`;
+        return `${p[1]}${insetLine}\n${p[1]}${p[2]}`;
       })
+      .value()
     );
 
     console.log(`_____________________\n 'insertLine' Activated!`);
@@ -164,32 +167,26 @@ export const lineBreak = async (
     const rules1 = (
       /(?<!package.*)(\s*)(;)(\s*)(\n?)(\s*)(import)/gm
     );
-    const rules2 = (
-      /(?<=^.\s*)(return)(\s*?)(\S*?)(\s*)(\n)(\s*)(\})/gm
-    );
-    const rules3 = (
-      /(?<!package.*)(\s*)(;)(\s*)(\n+)(\s*)(\n+)(\s*)(^.*?)/gm
-    );
-    const rules4 = (
-      /(\n+)(^.)(\s*)(\})(\s*)(\n)(\s*)(\/\/)/gm
-    );
     const rules5 = (
       /(^\s*?)(import)([\s\S]*?)((;)|(\n+)?)(\s?)(\/\/)([\s\S]*?)(\n+?)(?=import)/gm
     );
     const rules6 = (
       /(^\s*?)(import)([\s\S]*?)(;)(\s*)(\n*)(^\s*?)(@)(\s*)(\S*)/gm
     );
-    const rules7 = (
-      /(^\s*)(public|private)(\s*)([\s\S]*?)(\s*)(\{)(\n*)(\s*)(.*)/gm
-    );
-    const rules8 = (
-      /(.*?)(\n*)(.*?)(\n*)(?<=^.\s*)(return)(\s*?)(\S*?)(\s*)(\n)(\s*)(\})/gm
-    );
     const rules9 = (
       /(import.*)(;)(\n*)(\/\/ --)/gm
     );
     const rules10 = (
       /(import.*;)(\n)(^public)/gm
+    );
+    const rules2 = (
+      /(?<=^.\s*)(return)(\s*?)(\S*?)(\s*)(\n)(\s*)(\})/gm
+    );
+    const rules4 = (
+      /(\n+)(^.)(\s*)(\})(\s*)(\n)(\s*)(\/\/)/gm
+    );
+    const rules8 = (
+      /(.*?)(\n*)(.*?)(\n*)(?<=^.\s*)(return)(\s*?)(\S*?)(\s*)(\n)(\s*)(\})/gm
     );
     const rules11 = (
       /(^\s*)(@Value)(\s*)(\()(.*)(\n+)(.*)(\))/gm
@@ -203,44 +200,39 @@ export const lineBreak = async (
 
     const finalResult = (
       lodash.chain(contentsParam)
-      .replace(rules1, (_, p1, p2, p3, p4, p5, p6) => (
-        `${p2}\n${p6}`
+      .replace(rules1, (...p) => {
+		console.log(`rules1`, p)
+	  	return `${p[1]}\n${p[6]}`
+	  })
+      .replace(rules5, (...p) => (
+        `${p[1]}${p[2]}${p[3]}${p[4]}\n`
       ))
-      .replace(rules2, (_, p1, p2, p3, p4, p5, p6, p7) => (
-        `${p1} ${p3}\n${p6}${p7}`
+      .replace(rules6, (...p) => (
+        `${p[1]}${p[2]}${p[3]}${p[4]}\n\n${p[8]}${p[10]}`
       ))
-      .replace(rules3, (_, p1, p2, p3, p4, p5, p6, p7, p8) => (
-        `${p2}\n${p7}${p8}`
+      .replace(rules9, (...p) => (
+        `${p[1]}${p[2]}\n\n${p[4]}`
       ))
-      .replace(rules4, (_, p1, p2, p3, p4, p5, p6, p7, p8) => (
-        `${p1}${p2}${p3}${p4}\n\n${p7}${p8}`
+      .replace(rules10, (...p) => (
+        `${p[1]}${p[2]}\n${p[3]}`
       ))
-      .replace(rules5, (_, p1, p2, p3, p4, p5, p6, p7, p8, p9) => (
-        `${p1}${p2}${p3}${p4}\n`
+      .replace(rules2, (...p) => (
+        `${p[1]} ${p[3]}\n${p[6]}${p[7]}`
       ))
-      .replace(rules6, (_, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) => (
-        `${p1}${p2}${p3}${p4}\n\n${p8}${p10}`
+      .replace(rules4, (...p) => (
+        `${p[1]}${p[2]}${p[3]}${p[4]}\n\n${p[7]}${p[8]}`
       ))
-      .replace(rules7, (_, p1, p2, p3, p4, p5, p6, p7, p8, p9) => (
-        `${p1}${p2}${p3}${p4}${p5}${p6}\n\n${p8}${p9}`
+      .replace(rules8, (...p) => (
+        `${p[1]}\n\n${p[3]}${p[4]}${p[5]}${p[6]}${p[7]}${p[8]}${p[9]}${p[10]}${p[11]}`
       ))
-      .replace(rules8, (_, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) => (
-        `${p1}\n\n${p3}${p4}${p5}${p6}${p7}${p8}${p9}${p10}${p11}`
+      .replace(rules11, (...p) => (
+        `${p[1]}${p[2]} (${p[5]}${p[7]})`
       ))
-      .replace(rules9, (_, p1, p2, p3, p4) => (
-        `${p1}${p2}\n\n${p4}`
+      .replace(rules12, (...p) => (
+        `${p[1]}${p[2]}\n\n${p[4]}${p[5]}`
       ))
-      .replace(rules10, (_, p1, p2, p3) => (
-        `${p1}${p2}\n${p3}`
-      ))
-      .replace(rules11, (_, p1, p2, p3, p4, p5, p6, p7, p8) => (
-        `${p1}${p2} (${p5}${p7})`
-      ))
-      .replace(rules12, (_, p1, p2, p3, p4, p5) => (
-        `${p1}${p2}\n\n${p4}${p5}`
-      ))
-      .replace(rules13, (_, p1, p2, p3, p4, p5, p6, p7) => (
-        `${p1}${p2}\n${p6}${p7}`
+      .replace(rules13, (...p) => (
+        `${p[1]}${p[2]}\n${p[6]}${p[7]}`
       ))
       .value()
     );
@@ -274,17 +266,17 @@ export const finalCheck = async (
 
     const finalResult = (
       lodash.chain(contentsParam)
-      .replace(rules1, (_, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13) => (
-        `${p1}${p2}${p3}${p4}${p5}${p13}`
+      .replace(rules1, (...p) => (
+        `${p[1]}${p[2]}${p[3]}${p[4]}${p[5]}${p[13]}`
       ))
-      .replace(rules2, (_, p1, p2, p3, p4, p5, p6, p7, p8) => (
-        `${p4}${p5}\n${p2}${p3}\n${p7}${p8}`
+      .replace(rules2, (...p) => (
+        `${p[4]}${p[5]}\n${p[2]}${p[3]}\n${p[7]}${p[8]}`
       ))
-      .replace(rules3, (_, p1, p2, p3, p4, p5, p6, p7, p8) => (
-        `${p1}${p2}${p3}${p4}${p5}\n${p7}${p8}`
+      .replace(rules3, (...p) => (
+        `${p[1]}${p[2]}${p[3]}${p[4]}${p[5]}\n${p[7]}${p[8]}`
       ))
-      .replace(rules4, (_, p1, p2, p3, p4, p5, p6) => (
-        `${p1}${p2}-\n`
+      .replace(rules4, (...p) => (
+        `${p[1]}${p[2]}-\n`
       ))
       .value()
     );
