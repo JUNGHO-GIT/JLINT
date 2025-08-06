@@ -140,8 +140,6 @@ export const insertLine = async (
     const finalResult = (
       lodash.chain(contentsParam)
       .replace(rules1, (...p) => {
-        const p1 = p[1] ?? "";
-        const p2 = p[2] ?? "";
         const spaceSize = p[1].length + (`// `).length + (`-`).length;
         const insertSize = 100 - spaceSize;
         const insetLine = (`// ${"-".repeat(insertSize)}`);
