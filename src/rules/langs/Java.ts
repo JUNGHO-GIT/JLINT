@@ -200,15 +200,14 @@ export const lineBreak = async (
 
     const finalResult = (
       lodash.chain(contentsParam)
-      .replace(rules1, (...p) => {
-		console.log(`rules1`, p)
-	  	return `${p[1]}\n${p[6]}`
-	  })
+      .replace(rules1, (...p) => (
+  		`${p[1]}${p[2]}\n${p[6]}`
+	  ))
       .replace(rules5, (...p) => (
         `${p[1]}${p[2]}${p[3]}${p[4]}\n`
       ))
       .replace(rules6, (...p) => (
-        `${p[1]}${p[2]}${p[3]}${p[4]}\n\n${p[8]}${p[10]}`
+  		`${p[1]}${p[2]}${p[3]}${p[4]}\n\n${p[8]}${p[10]}`
       ))
       .replace(rules9, (...p) => (
         `${p[1]}${p[2]}\n\n${p[4]}`
