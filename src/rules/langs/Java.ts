@@ -192,9 +192,6 @@ export const lineBreak = async (
     const rules12 = (
       /(^\s*)(.*;)(\n)(?!\n)(\s*)(@Autowired|@Value|@RequestMapping|@GetMapping|@PostMapping|@PutMapping|@DeleteMapping)/gm
     );
-    const rules13 = (
-      /(\s*)(@Override)(\n|\n+)(.*)(\n|\n+)(\s*)(public|private)/gm
-    );
 	const rules14 = (
 	  /(^\s*)(\n\n)(\s*)(return)(.*;)/gm
 	);
@@ -230,9 +227,6 @@ export const lineBreak = async (
       ))
       .replace(rules12, (...p) => (
         `${p[1]}${p[2]}\n\n${p[4]}${p[5]}`
-      ))
-      .replace(rules13, (...p) => (
-        `${p[1]}${p[2]}\n${p[6]}${p[7]}`
       ))
 	  .replace(rules14, (...p) => (
       	`${p[1]}\n${p[3]}${p[4]}${p[5]}`

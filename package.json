@@ -4,7 +4,7 @@
   "publisher": "JUNGHO",
   "icon": "logo.webp",
   "license": "Apache-2.0",
-  "version": "1.7.2",
+  "version": "1.7.3",
   "description": "Universal Language formatter",
   "main": "./out/extension.js",
   "repository": {
