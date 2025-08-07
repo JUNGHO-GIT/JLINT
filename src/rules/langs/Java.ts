@@ -195,6 +195,9 @@ export const lineBreak = async (
     const rules13 = (
       /(\s*)(@Override)(\n|\n+)(.*)(\n|\n+)(\s*)(public|private)/gm
     );
+	const rules14 = (
+	  /(^\s*)(\n\n)(\s*)(return)(.*;)/gm
+	);
 
     const finalResult = (
       lodash.chain(contentsParam)
@@ -230,6 +233,9 @@ export const lineBreak = async (
       ))
       .replace(rules13, (...p) => (
         `${p[1]}${p[2]}\n${p[6]}${p[7]}`
+      ))
+	  .replace(rules14, (...p) => (
+      	`${p[1]}\n${p[3]}${p[4]}${p[5]}`
       ))
       .value()
     );
