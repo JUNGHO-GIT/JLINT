@@ -1,6 +1,6 @@
 // extension.ts
 
-import * as path from "path";
+import path from "path";
 import * as vscode from "vscode";
 import { main } from "./core/Main.js";
 

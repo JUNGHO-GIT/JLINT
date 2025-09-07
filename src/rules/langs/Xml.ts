@@ -1,10 +1,13 @@
 // Xml.ts
 
-import type {Options} from "prettier";
-import * as prettier from "prettier";
 import * as vscode from "vscode";
-import * as lodash from "lodash";
+import lodash from "lodash";
+import prettier from "prettier";
+import type {Options as PrettierOptions} from "prettier";
+import type {Plugin as PrettierPlugin} from "prettier";
 import strip from "strip-comments";
+import type {Options as StripOptions} from "strip-comments";
+import { createRequire } from "module";
 
 // 0. removeComments -------------------------------------------------------------------------------
 export const removeComments = async (
@@ -13,14 +16,22 @@ export const removeComments = async (
   fileEol: string,
 ) => {
   try {
-    const minifyResult = contentsParam;
-    const finalResult = strip(minifyResult, {
-      language: "xml",
-      preserveNewlines: false,
-      keepProtected: false,
-      block: true,
-      line: true,
-    });
+    const minifyResult = (
+			contentsParam
+		);
+
+		const baseOptions: StripOptions = {
+			language: "xml",
+			preserveNewlines: false,
+			keepProtected: false,
+			block: true,
+			line: true,
+		};
+
+		const finalResult = strip(
+			minifyResult,
+			baseOptions
+		);
 
     console.log(`_____________________\n 'removeComments' Activated!`);
     return finalResult;
@@ -39,10 +50,10 @@ export const prettierFormat = async (
   fileEol: string
 ) => {
   try {
-    const xmlPlugin = await import("@prettier/plugin-xml");
-    const prettierOptions: Options = {
+    // 공통 옵션
+    const baseOptions: PrettierOptions = {
       parser: "xml",
-      plugins: [xmlPlugin],
+      plugins: [],
       singleQuote: false,
       printWidth: 1000,
       tabWidth: fileTabSize,
@@ -65,14 +76,48 @@ export const prettierFormat = async (
       singleAttributePerLine: false,
       bracketSameLine: false,
       semi: true,
+      filepath: fileName
     };
 
-    console.log(`_____________________\n 'prettierFormat' Activated!`);
-    const finalResult = prettier.format(contentsParam, prettierOptions);
-    return finalResult;
+    // 1차: ESM 동적 임포트로 플러그인 객체 주입
+    try {
+      const mod = await import("@prettier/plugin-xml");
+      const xmlPlugin: PrettierPlugin = ((mod as any)?.default ?? mod) as PrettierPlugin;
+
+      if ((xmlPlugin as any)?.parsers?.xml == null) {
+        throw new Error("ParserNotRegistered");
+      }
+
+      const finalResult = await prettier.format(contentsParam, {
+        ...baseOptions,
+        plugins: [xmlPlugin]
+      });
+      return finalResult;
+    }
+		// 2차: CJS createRequire 경로로 재시도
+    catch (innerErr: any) {
+      try {
+				const require = createRequire(import.meta.url);
+        const reqMod = require("@prettier/plugin-xml");
+        const xmlPlugin2: PrettierPlugin = (reqMod?.default ?? reqMod) as PrettierPlugin;
+
+        if ((xmlPlugin2 as any)?.parsers?.xml == null) {
+          throw new Error("ParserNotRegistered");
+        }
+
+        const finalResult = await prettier.format(contentsParam, {
+          ...baseOptions,
+          plugins: [xmlPlugin2]
+        });
+        return finalResult;
+      }
+      catch (fallbackErr: any) {
+        throw fallbackErr;
+      }
+    }
   }
   catch (err: any) {
-    const msg = err.message.toString().trim().replace(/\x1B\[[0-9;]*[mGKF]/g, "");
+    const msg = err.message?.toString()?.trim()?.replace(/\x1B\[[0-9;]*[mGKF]/g, "") ?? "unknown";
     const msgRegex = /([\n\s\S]*)(\s*)(https)(.*?)([(])(.*?)([)])([\n\s\S]*)/gm;
     const msgRegexReplace = `[JLINT]\n\nError Line = [ $6 ]\nError Site = $8`;
     const msgResult = msg.replace(msgRegex, msgRegexReplace);

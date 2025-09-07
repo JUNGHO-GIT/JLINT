@@ -1,10 +1,14 @@
-// Css.ts
+// Typescriptreact.ts
 
-import * as lodash from "lodash";
-import type {Options} from "prettier";
-import * as prettier from "prettier";
 import * as vscode from "vscode";
+import lodash from "lodash";
+import prettier from "prettier";
+import type {Options as PrettierOptions} from "prettier";
+import type {Plugin as PrettierPlugin} from "prettier";
+import { minify } from "terser";
 import strip from "strip-comments";
+import type {Options as StripOptions} from "strip-comments";
+import { createRequire } from "module";
 
 // 0. removeComments -------------------------------------------------------------------------------
 export const removeComments = async (
@@ -13,22 +17,28 @@ export const removeComments = async (
   fileEol: string,
 ) => {
   try {
-    const { minify } = await import("terser");
-    const minifyResult = await minify(contentsParam, {
-      compress: false,
-      mangle: false,
-      format: {
-        comments: false,
-      },
-    }).then((result) => result.code);
+		const minifyResult = (
+			await minify(contentsParam, {
+				compress: false,
+				mangle: false,
+				format: {
+					comments: false,
+				},
+			}).then((result) => result.code)
+		);
 
-    const finalResult = strip(minifyResult, {
-      language: "javascript",
-      preserveNewlines: false,
-      keepProtected: false,
-      block: true,
-      line: true,
-    });
+		const baseOptions: StripOptions = {
+			language: "javascript",
+			preserveNewlines: false,
+			keepProtected: false,
+			block: true,
+			line: true,
+		};
+
+		const finalResult = strip(
+			minifyResult,
+			baseOptions
+		);
 
     console.log(`_____________________\n 'removeComments' Activated!`);
     return finalResult;
@@ -47,7 +57,7 @@ export const prettierFormat = async (
   fileEol: string
 ) => {
   try {
-    const prettierOptions: Options = {
+    const baseOptions: PrettierOptions = {
       parser: "babel-ts",
       singleQuote: false,
       printWidth: 1000,
@@ -74,7 +84,7 @@ export const prettierFormat = async (
     };
 
     console.log(`_____________________\n 'prettierFormat' Activated!`);
-    const finalResult = prettier.format(contentsParam, prettierOptions);
+    const finalResult = prettier.format(contentsParam, baseOptions);
     return finalResult;
   }
   catch (err: any) {

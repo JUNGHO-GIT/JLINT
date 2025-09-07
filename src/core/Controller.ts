@@ -22,9 +22,46 @@ export const getLanguage = async (
 ) => {
 
   // 동적으로 언어별 규칙 모듈 import (html -> Html)
-  const langRules = await import(
-    `../rules/langs/${fileExt.charAt(0).toUpperCase() + fileExt.slice(1)}.js`
-  );
+	let langStr = "";
+	if (fileExt.includes("css")) {
+		langStr = "Css";
+	}
+	else if (fileExt.includes("html")) {
+		langStr = "Html";
+	}
+	else if (fileExt.includes("jsp")) {
+		langStr = "Jsp";
+	}
+	else if (fileExt.includes("json")) {
+		langStr = "Json";
+	}
+	else if (fileExt.includes("java")) {
+		langStr = "Java";
+	}
+	else if (fileExt.includes("yaml") || fileExt.includes("yml")) {
+		langStr = "Yaml";
+	}
+	else if (fileExt.includes("xml")) {
+		langStr = "Xml";
+	}
+	else if (fileExt.includes("sql")) {
+		langStr = "Sql";
+	}
+	else if (fileExt.includes("js") || fileExt.includes("javascript")) {
+		langStr = "Javascript";
+	}
+	else if (fileExt.includes("jsx")) {
+		langStr = "Javascriptreact";
+	}
+	else if (fileExt.includes("ts") && fileExt.includes("typescript")) {
+		langStr = "Typescript";
+	}
+	else if (fileExt.includes("tsx")) {
+		langStr = "Typescriptreact";
+	}
+	const langRules = await import(
+		`../rules/langs/${langStr}.js`
+	);
 
   let resultContents = initContents;
 
@@ -61,10 +98,10 @@ export const getSyntax = async (
   if (confParam.ActivateLint) {
     resultContents = await capitalize(resultContents, fileExt);
     resultContents = await singleTags(resultContents, fileExt);
-    resultContents = await brackets(resultContents, fileExt);
-    /* resultContents = await comma(resultContents, fileExt); */
-    /* resultContents = await semicolon(resultContents, fileExt); */
-    /* resultContents = await quotes(afterLanguageContents, fileExt); */
+    // resultContents = await brackets(resultContents, fileExt);
+    // resultContents = await comma(resultContents, fileExt);
+    // resultContents = await semicolon(resultContents, fileExt);
+    // resultContents = await quotes(afterLanguageContents, fileExt);
   }
   else {
     resultContents = resultContents;
@@ -83,8 +120,8 @@ export const getLogic = async (
   let resultContents = afterSyntaxContents;
 
   if (confParam.ActivateLint) {
-    /* resultContents = await ifElse(resultContents, fileExt); */
-    /* resultContents = await tryCatch(resultContents, fileExt); */
+    // resultContents = await ifElse(resultContents, fileExt);
+    // resultContents = await tryCatch(resultContents, fileExt);
   }
   else {
     resultContents = resultContents;

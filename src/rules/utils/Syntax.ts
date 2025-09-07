@@ -1,6 +1,6 @@
 // Syntax.ts
 
-import * as lodash from "lodash";
+import lodash from "lodash";
 
 // -------------------------------------------------------------------------------------------------
 export const capitalize = async (
@@ -79,7 +79,7 @@ export const singleTags = async (
       .value()
     );
 
-    if (fileExt === "xml" || fileExt === "json" || fileExt === "sql") {
+		if (fileExt !== "html" && fileExt !== "jsp") {
       console.log(`_____________________\n 'singleTags' Not Supported!`);
       return contentsParam;
     }
@@ -118,7 +118,7 @@ export const brackets = async (
       .value()
     );
 
-    if (fileExt === "xml" || fileExt === "json" || fileExt === "sql") {
+		if (fileExt !== "html" && fileExt !== "jsp") {
       console.log(`_____________________\n 'brackets' Not Supported!`);
       return contentsParam;
     }
@@ -151,7 +151,7 @@ export const comma = async (
       .value()
     );
 
-    if (fileExt === "xml" || fileExt === "json" || fileExt === "sql") {
+		if (fileExt !== "html" && fileExt !== "jsp") {
       console.log(`_____________________\n 'comma' Not Supported!`);
       return contentsParam;
     }
@@ -202,7 +202,7 @@ export const semicolon = async (
       .value()
     );
 
-    if (fileExt === "xml" || fileExt === "json" || fileExt === "sql") {
+		if (fileExt !== "html" && fileExt !== "jsp") {
       console.log(`_____________________\n 'semicolon' Not Supported!`);
       return contentsParam;
     }
@@ -235,7 +235,7 @@ export const quotes = async (
       .value()
     );
 
-    if (fileExt === "xml" || fileExt === "json" || fileExt === "sql") {
+		if (fileExt !== "html" && fileExt !== "jsp") {
       console.log(`_____________________\n 'quote' Not Supported!`);
       return contentsParam;
     }

@@ -1,8 +1,14 @@
 // Sql.ts
 
-import type { FormatOptionsWithLanguage } from "sql-formatter";
-import * as prettier from "sql-formatter";
 import * as vscode from "vscode";
+import lodash from "lodash";
+import prettier from "prettier";
+import type {Options as PrettierOptions} from "prettier";
+import type {Plugin as PrettierPlugin} from "prettier";
+import strip from "strip-comments";
+import type {Options as StripOptions} from "strip-comments";
+import { createRequire } from "module";
+import type { FormatOptionsWithLanguage } from "sql-formatter";
 
 // 0. removeComments -------------------------------------------------------------------------------
 export const removeComments = async (
@@ -13,8 +19,13 @@ export const removeComments = async (
   try {
 
     // sql is not needed remove comments
-    const minifyResult = contentsParam;
-    const finalResult = minifyResult;
+    const minifyResult = (
+			contentsParam
+		);
+
+		const finalResult = (
+			minifyResult
+		);
 
     console.log(`_____________________\n 'removeComments' Activated!`);
     return finalResult;
@@ -33,7 +44,7 @@ export const prettierFormat = async (
   fileEol: string
 ) => {
   try {
-    const prettierOptions: FormatOptionsWithLanguage = {
+    const baseOptions: FormatOptionsWithLanguage = {
       language: "mysql",
       tabWidth: fileTabSize,
       useTabs: true,
@@ -50,7 +61,7 @@ export const prettierFormat = async (
     };
 
     console.log(`_____________________\n 'prettierFormat' Activated!`);
-    const finalResult = prettier.format(contentsParam, prettierOptions);
+    const finalResult = prettier.format(contentsParam, baseOptions);
     return finalResult;
   }
   catch (err: any) {

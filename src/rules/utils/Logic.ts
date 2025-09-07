@@ -1,6 +1,6 @@
 // Logic.ts
 
-import * as lodash from "lodash";
+import lodash from "lodash";
 
 // -------------------------------------------------------------------------------------------------
 export const ifElse = async (

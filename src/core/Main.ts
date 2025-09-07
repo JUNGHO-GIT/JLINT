@@ -1,6 +1,6 @@
 // Main.ts
 
-import * as fs from "fs";
+import fs from "fs";
 import { getContents } from '../contents/Contents.js';
 import { getLanguage, getSyntax, getLogic } from '../core/Controller.js';
 

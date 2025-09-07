@@ -1,10 +1,14 @@
 // Css.ts
 
-import * as lodash from "lodash";
-import type {Options} from "prettier";
-import * as prettier from "prettier";
 import * as vscode from "vscode";
+import lodash from "lodash";
+import prettier from "prettier";
+import type {Options as PrettierOptions} from "prettier";
+import type {Plugin as PrettierPlugin} from "prettier";
+import CleanCSS from "clean-css";
 import strip from "strip-comments";
+import type {Options as StripOptions} from "strip-comments";
+import { createRequire } from "module";
 
 // 0. removeComments -------------------------------------------------------------------------------
 export const removeComments = async (
@@ -13,80 +17,86 @@ export const removeComments = async (
   fileEol: string,
 ) => {
   try {
-    const { default: CleanCSS } = await import("clean-css");
-    const minifyResult = new CleanCSS({
-      format: {
-        breaks: {
-          afterAtRule: true,
-          afterBlockBegins: true,
-          afterBlockEnds: true,
-          afterComment: true,
-          afterProperty: true,
-          afterRuleBegins: true,
-          afterRuleEnds: true,
-          beforeBlockEnds: true,
-          betweenSelectors: true,
-        },
-        spaces: {
-          aroundSelectorRelation: true,
-          beforeBlockBegins: true,
-          beforeValue: true,
-        },
-        breakWith: fileEol,
-        indentBy: fileTabSize,
-        indentWith: 'tab',
-        semicolonAfterLastProperty: true,
-        wrapAt: 120,
-      },
-      level: {
-        1: {
-          all: false,
-          specialComments: 'none',
-          selectorsSortingMethod: 'standard',
-          normalizeUrls: false,
-          roundingPrecision: false,
-          cleanupCharsets: true,
-          optimizeBackground: true,
-          optimizeBorderRadius: true,
-          optimizeFilter: true,
-          optimizeFont: true,
-          optimizeFontWeight: true,
-          optimizeOutline: true,
-          removeEmpty: true,
-          removeWhitespace: true,
-          removeNegativePaddings: true,
-          removeQuotes: false,
-          replaceMultipleZeros: false,
-          replaceTimeUnits: false,
-          replaceZeroUnits: false,
-          tidyAtRules: true,
-          tidyBlockScopes: true,
-          tidySelectors: true,
-        },
-        2: {
-          all: false,
-          mergeMedia: true,
-          mergeAdjacentRules: true,
-          mergeIntoShorthands: true,
-          mergeNonAdjacentRules: true,
-          removeDuplicateFontRules: true,
-          removeDuplicateMediaBlocks: true,
-          removeDuplicateRules: true,
-          removeUnusedAtRules: true,
-          reduceNonAdjacentRules: true,
-          removeEmpty: true,
-          overrideProperties: true,
-        },
-      },
-    }).minify(contentsParam).styles;
+    const minifyResult = (
+				new CleanCSS({
+				format: {
+					breaks: {
+						afterAtRule: true,
+						afterBlockBegins: true,
+						afterBlockEnds: true,
+						afterComment: true,
+						afterProperty: true,
+						afterRuleBegins: true,
+						afterRuleEnds: true,
+						beforeBlockEnds: true,
+						betweenSelectors: true,
+					},
+					spaces: {
+						aroundSelectorRelation: true,
+						beforeBlockBegins: true,
+						beforeValue: true,
+					},
+					breakWith: fileEol,
+					indentBy: fileTabSize,
+					indentWith: 'tab',
+					semicolonAfterLastProperty: true,
+					wrapAt: 120,
+				},
+				level: {
+					1: {
+						all: false,
+						specialComments: 'none',
+						selectorsSortingMethod: 'standard',
+						normalizeUrls: false,
+						roundingPrecision: false,
+						cleanupCharsets: true,
+						optimizeBackground: true,
+						optimizeBorderRadius: true,
+						optimizeFilter: true,
+						optimizeFont: true,
+						optimizeFontWeight: true,
+						optimizeOutline: true,
+						removeEmpty: true,
+						removeWhitespace: true,
+						removeNegativePaddings: true,
+						removeQuotes: false,
+						replaceMultipleZeros: false,
+						replaceTimeUnits: false,
+						replaceZeroUnits: false,
+						tidyAtRules: true,
+						tidyBlockScopes: true,
+						tidySelectors: true,
+					},
+					2: {
+						all: false,
+						mergeMedia: true,
+						mergeAdjacentRules: true,
+						mergeIntoShorthands: true,
+						mergeNonAdjacentRules: true,
+						removeDuplicateFontRules: true,
+						removeDuplicateMediaBlocks: true,
+						removeDuplicateRules: true,
+						removeUnusedAtRules: true,
+						reduceNonAdjacentRules: true,
+						removeEmpty: true,
+						overrideProperties: true,
+					},
+				},
+			}).minify(contentsParam).styles
+		);
 
-    const finalResult = strip(minifyResult, {
+		const baseOptions: StripOptions = {
       language: "css",
       preserveNewlines: false,
       keepProtected: false,
       block: true,
       line: true,
-    });
+		};
+
+		const finalResult = strip(
+			minifyResult,
+			baseOptions
+		);
 
     console.log(`_____________________\n 'removeComments' Activated!`);
     return finalResult;
@@ -105,7 +115,7 @@ export const prettierFormat = async (
   fileEol: string
 ) => {
   try {
-    const prettierOptions: Options = {
+    const baseOptions: PrettierOptions = {
       parser: "css",
       singleQuote: false,
       printWidth: 1000,
@@ -132,7 +142,7 @@ export const prettierFormat = async (
     };
 
     console.log(`_____________________\n 'prettierFormat' Activated!`);
-    const finalResult = prettier.format(contentsParam, prettierOptions);
+    const finalResult = prettier.format(contentsParam, baseOptions);
     return finalResult;
   }
   catch (err: any) {

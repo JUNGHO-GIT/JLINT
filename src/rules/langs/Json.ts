@@ -1,8 +1,14 @@
-// Css.ts
+// Json.ts
 
-import type {Options} from "prettier";
-import * as prettier from "prettier";
 import * as vscode from "vscode";
+import lodash from "lodash";
+import prettier from "prettier";
+import type {Options as PrettierOptions} from "prettier";
+import type {Plugin as PrettierPlugin} from "prettier";
+import strip from "strip-comments";
+import stripJsonComments from "strip-json-comments";
+import type {Options as StripOptions} from "strip-json-comments";
+import { createRequire } from "module";
 
 // 0. removeComments -------------------------------------------------------------------------------
 export const removeComments = async (
@@ -11,13 +17,19 @@ export const removeComments = async (
   fileEol: string,
 ) => {
   try {
-    const minifyResult = contentsParam;
+    const minifyResult = (
+			contentsParam
+		);
 
-    const { default: stripJsonComments } = await import("strip-json-comments");
-    const finalResult = stripJsonComments(minifyResult, {
+		const baseOptions: StripOptions = {
       trailingCommas: false,
       whitespace: true
-    });
+		};
+
+		const finalResult = stripJsonComments(
+			minifyResult,
+			baseOptions
+		);
 
     console.log(`_____________________\n 'removeComments' Activated!`);
     return finalResult;
@@ -36,7 +48,7 @@ export const prettierFormat = async (
   fileEol: string
 ) => {
   try {
-    const prettierOptions: Options = {
+    const baseOptions: PrettierOptions = {
       parser: "json",
       singleQuote: false,
       printWidth: 1000,
@@ -63,7 +75,7 @@ export const prettierFormat = async (
     };
 
     console.log(`_____________________\n 'prettierFormat' Activated!`);
-    const finalResult = prettier.format(contentsParam, prettierOptions);
+    const finalResult = prettier.format(contentsParam, baseOptions);
     return finalResult;
   }
   catch (err: any) {

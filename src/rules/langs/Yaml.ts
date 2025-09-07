@@ -1,9 +1,12 @@
 // Yaml.ts
 
-import type {Options} from "prettier";
-import * as prettier from "prettier";
 import * as vscode from "vscode";
-import YAML from 'yaml';
+import prettier from "prettier";
+import type {Options as PrettierOptions} from "prettier";
+import type {Plugin as PrettierPlugin} from "prettier";
+import strip from "strip-comments";
+import type {Options as StripOptions} from "strip-comments";
+import { createRequire } from "module";
 
 // 0. removeComments -------------------------------------------------------------------------------
 export const removeComments = async (
@@ -12,8 +15,23 @@ export const removeComments = async (
   fileEol: string,
 ) => {
   try {
-    const minifyResult = YAML.parse(contentsParam);
-    const finalResult = YAML.stringify(minifyResult);
+    const minifyResult = (
+			// YAML.parse(contentsParam)
+			contentsParam
+		);
+
+		const baseOptions: StripOptions = {
+			language: "yaml",
+			preserveNewlines: false,
+			keepProtected: false,
+			block: true,
+			line: true,
+		};
+
+		const finalResult = strip(
+			minifyResult,
+			baseOptions
+		);
 
     console.log(`_____________________\n 'removeComments' Activated!`);
     return finalResult;
@@ -32,8 +50,9 @@ export const prettierFormat = async (
   fileEol: string
 ) => {
   try {
-    const prettierOptions: Options = {
+    const baseOptions: PrettierOptions = {
       parser: "yaml",
+      plugins: [],
       singleQuote: false,
       printWidth: 1000,
       tabWidth: fileTabSize,
@@ -56,11 +75,27 @@ export const prettierFormat = async (
       singleAttributePerLine: false,
       bracketSameLine: false,
       semi: true,
+      filepath: fileName
     };
 
-    console.log(`_____________________\n 'prettierFormat' Activated!`);
-    const finalResult = prettier.format(contentsParam, prettierOptions);
-    return finalResult;
+    try {
+      const finalResult = await prettier.format(contentsParam, baseOptions);
+      return finalResult;
+    }
+    catch (innerErr: any) {
+      const mod = await import("prettier/plugins/yaml");
+      const yamlPlugin: PrettierPlugin = ((mod as any)?.default ?? mod) as PrettierPlugin;
+
+      if ((yamlPlugin as any)?.parsers?.yaml == null) {
+        throw new Error("ParserNotRegistered");
+      }
+
+      const finalResult = await prettier.format(contentsParam, {
+        ...baseOptions,
+        plugins: [yamlPlugin]
+      });
+      return finalResult;
+    }
   }
   catch (err: any) {
     const msg = err.message.toString().trim().replace(/\x1B\[[0-9;]*[mGKF]/g, "");
