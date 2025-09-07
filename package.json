@@ -3,7 +3,7 @@
 	"displayName": "JLINT",
 	"publisher": "JUNGHO",
 	"icon": "logo.webp",
-	"version": "1.7.5",
+	"version": "1.7.6",
 	"license": "Apache-2.0",
 	"type": "module",
 	"description": "Universal Language formatter",
@@ -86,7 +86,7 @@
 	"scripts": {
 		"watch": "tsc -watch -p .",
 		"compile": "tsc -p .",
-		"vsce": "vsce package",
+		"vsce": "pnpm exec vsce package --no-dependencies",
 		"gcloud-deploy": "node .node/gcloud.cjs --full-deploy",
 		"pnpm-reset": "pwsh -NoProfile -Command \"try { Stop-Process -Name node -Force -ErrorAction SilentlyContinue } catch {}; Start-Sleep -Milliseconds 200; if (Test-Path 'node_modules') { cmd /c 'rd /s /q \"node_modules\"' } ; if (Test-Path 'package-lock.json') { cmd /c 'del /f /q \"package-lock.json\"' } ; pnpm install\""
 	},
@@ -128,6 +128,7 @@
 		"@types/vscode": "1.103.0",
 		"@types/yaml": "^1.9.7",
 		"@vscode/test-electron": "^2.5.2",
+		"@vscode/vsce": "^3.6.0",
 		"eslint": "^9.35.0",
 		"mocha": "^11.7.2",
 		"typescript": "^5.9.2"
