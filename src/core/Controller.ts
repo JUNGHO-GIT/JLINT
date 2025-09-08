@@ -22,53 +22,54 @@ export const getLanguage = async (
 ) => {
 
   // 동적으로 언어별 규칙 모듈 import (html -> Html)
-	let langStr = "";
-	if (fileExt.includes("css")) {
-		langStr = "Css";
-	}
-	else if (fileExt.includes("html")) {
-		langStr = "Html";
-	}
-	else if (fileExt.includes("jsp")) {
-		langStr = "Jsp";
-	}
-	else if (fileExt.includes("json")) {
-		langStr = "Json";
-	}
-	else if (fileExt.includes("java")) {
-		langStr = "Java";
-	}
-	else if (fileExt.includes("yaml") || fileExt.includes("yml")) {
-		langStr = "Yaml";
-	}
-	else if (fileExt.includes("xml")) {
-		langStr = "Xml";
-	}
-	else if (fileExt.includes("sql")) {
-		langStr = "Sql";
-	}
-	else if (fileExt.includes("js") || fileExt.includes("javascript")) {
-		langStr = "Javascript";
-	}
-	else if (fileExt.includes("jsx")) {
-		langStr = "Javascriptreact";
-	}
-	else if (fileExt.includes("ts") && fileExt.includes("typescript")) {
-		langStr = "Typescript";
-	}
-	else if (fileExt.includes("tsx")) {
-		langStr = "Typescriptreact";
-	}
-	const langRules = await import(
-		`../rules/langs/${langStr}.js`
-	);
+  let langStr: string | null = null;
+
+  if (fileExt.includes("css")) {
+    langStr = "Css";
+  }
+  else if (fileExt.includes("html")) {
+    langStr = "Html";
+  }
+  else if (fileExt.includes("jsp")) {
+    langStr = "Jsp";
+  }
+  else if (fileExt.includes("json")) {
+    langStr = "Json";
+  }
+  else if (fileExt.includes("java")) {
+    langStr = "Java";
+  }
+  else if (fileExt.includes("yaml") || fileExt.includes("yml")) {
+    langStr = "Yaml";
+  }
+  else if (fileExt.includes("xml")) {
+    langStr = "Xml";
+  }
+  else if (fileExt.includes("sql")) {
+    langStr = "Sql";
+  }
+  else if (fileExt.includes("js") || fileExt.includes("javascript")) {
+    langStr = "Javascript";
+  }
+  else if (fileExt.includes("jsx") || fileExt.includes("javascriptreact")) {
+    langStr = "Javascriptreact";
+  }
+  else if (fileExt.includes("ts") || fileExt.includes("typescript")) {
+    langStr = "Typescript";
+  }
+  else if (fileExt.includes("tsx") || fileExt.includes("typescriptreact")) {
+    langStr = "Typescriptreact";
+  }
+
+  if (!langStr) {
+    throw new Error(`Unsupported file extension: ${fileExt}`);
+  }
+
+  const langRules = await import(`../rules/langs/${langStr}.js`);
 
   let resultContents = initContents;
 
-  if (!confParam.ActivateLint) {
-    resultContents = resultContents;
-  }
-  else {
+  if (confParam.ActivateLint) {
     if (confParam.RemoveComments) {
       resultContents = await langRules.removeComments(resultContents, fileTabSize, fileEol);
     }
@@ -103,9 +104,6 @@ export const getSyntax = async (
     // resultContents = await semicolon(resultContents, fileExt);
     // resultContents = await quotes(afterLanguageContents, fileExt);
   }
-  else {
-    resultContents = resultContents;
-  }
 
   return resultContents;
 };
@@ -122,9 +120,6 @@ export const getLogic = async (
   if (confParam.ActivateLint) {
     // resultContents = await ifElse(resultContents, fileExt);
     // resultContents = await tryCatch(resultContents, fileExt);
-  }
-  else {
-    resultContents = resultContents;
   }
 
   return resultContents;

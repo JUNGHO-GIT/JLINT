@@ -3,7 +3,7 @@
 	"displayName": "JLINT",
 	"publisher": "JUNGHO",
 	"icon": "logo.webp",
-	"version": "1.7.6",
+	"version": "1.7.8",
 	"license": "Apache-2.0",
 	"type": "module",
 	"description": "Universal Language formatter",
@@ -86,9 +86,9 @@
 	"scripts": {
 		"watch": "tsc -watch -p .",
 		"compile": "tsc -p .",
-		"vsce": "pnpm exec vsce package --no-dependencies",
+		"vsce": "tsc -p . && vsce package",
 		"gcloud-deploy": "node .node/gcloud.cjs --full-deploy",
-		"pnpm-reset": "pwsh -NoProfile -Command \"try { Stop-Process -Name node -Force -ErrorAction SilentlyContinue } catch {}; Start-Sleep -Milliseconds 200; if (Test-Path 'node_modules') { cmd /c 'rd /s /q \"node_modules\"' } ; if (Test-Path 'package-lock.json') { cmd /c 'del /f /q \"package-lock.json\"' } ; pnpm install\""
+		"npm-reset": "pwsh -NoProfile -Command \"try { Stop-Process -Name node -Force -ErrorAction SilentlyContinue } catch {}; Start-Sleep -Milliseconds 200; if (Test-Path 'node_modules') { cmd /c 'rd /s /q \"node_modules\"' } ; if (Test-Path 'package-lock.json') { cmd /c 'del /f /q \"package-lock.json\"' } ; npm install\""
 	},
 	"dependencies": {
 		"@babel/core": "^7.28.4",
@@ -104,9 +104,6 @@
 		"lodash": "^4.17.21",
 		"minimatch": "^10.0.3",
 		"prettier": "3.6.2",
-		"prettier-plugin-java": "2.7.4",
-		"prettier-plugin-jsp": "^1.0.13",
-		"prettier-yaml": "^0.1.2",
 		"sql-formatter": "^15.6.8",
 		"strip-comments": "^2.0.1",
 		"strip-json-comments": "^5.0.3",
@@ -114,6 +111,9 @@
 		"yaml": "^2.8.1"
 	},
 	"devDependencies": {
+		"prettier-plugin-java": "2.7.4",
+		"prettier-plugin-jsp": "^1.0.13",
+		"prettier-yaml": "^0.1.2",
 		"@types/clean-css": "^4.2.11",
 		"@types/glob": "^9.0.0",
 		"@types/html-minifier-terser": "^7.0.2",
@@ -128,9 +128,9 @@
 		"@types/vscode": "1.103.0",
 		"@types/yaml": "^1.9.7",
 		"@vscode/test-electron": "^2.5.2",
-		"@vscode/vsce": "^3.6.0",
 		"eslint": "^9.35.0",
 		"mocha": "^11.7.2",
-		"typescript": "^5.9.2"
+		"typescript": "^5.9.2",
+		"@vscode/vsce": "^3.6.0"
 	}
 }
