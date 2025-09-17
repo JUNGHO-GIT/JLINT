@@ -2,25 +2,23 @@
 
 import * as path from "path";
 import * as vscode from "vscode";
-import { main } from "./core/Main.js";
+import { main } from "./core/Main";
 
 // -------------------------------------------------------------------------------------------------
+export const deactivate = () => {};
 export const activate = (context: vscode.ExtensionContext) => {
-  try {
-    // 1. Output
-    console.log(`_____________________\n JLint Activated!`);
 
-    // 2. Get Configuration
+    // 1. Get Configuration ------------------------------------------------------------------------
     const getConfiguration = () => {
       const config = vscode.workspace.getConfiguration("JLINT");
       return {
-        ActivateLint: config.get("ActivateLint") as boolean,
-        RemoveComments: config.get("RemoveComments") as boolean,
-        InsertLine: config.get("InsertLine") as boolean
+        ActivateLint: config.get("ActivateLint", true) as boolean,
+        RemoveComments: config.get("RemoveComments", true) as boolean,
+        InsertLine: config.get("InsertLine", true) as boolean
       };
     };
 
-    // 3. Register Command
+    // 2. Register Command ---------------------------------------------------------------------------
     const command = vscode.commands.registerCommand("extension.JLINT", async () => {
       const editor = vscode.window.activeTextEditor;
       if (!editor) {
@@ -45,16 +43,10 @@ export const activate = (context: vscode.ExtensionContext) => {
     });
     context.subscriptions.push(command);
 
-    // 4. Listen for configuration changes
+    // 3. Listen for configuration changes -----------------------------------------------------------
     context.subscriptions.push(
       vscode.workspace.onDidChangeConfiguration((event) => {
-        if (event.affectsConfiguration("JLINT")) {
-          console.log(`_____________________\n JLINT configuration updated : ${JSON.stringify(getConfiguration(), null, 2)}`);
-        }
+        event.affectsConfiguration("JLINT") && console.log(`_____________________\n JLINT configuration updated : ${JSON.stringify(getConfiguration(), null, 2)}`);
       })
     );
-  }
-  catch (err: any) {
-    console.error(err.message);
-  }
 };

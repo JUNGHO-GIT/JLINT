@@ -3,9 +3,8 @@
 	"displayName": "JLINT",
 	"publisher": "JUNGHO",
 	"icon": "logo.webp",
-	"version": "1.7.8",
+	"version": "1.8.0",
 	"license": "Apache-2.0",
-	"type": "module",
 	"description": "Universal Language formatter",
 	"main": "./out/extension.js",
 	"repository": {
@@ -14,7 +13,7 @@
 	},
 	"engines": {
 		"vscode": "^1.103.0",
-		"node": ">=18.0.0",
+		"node": ">=21.0.0",
 		"npm": ">=10.0.0"
 	},
 	"activationEvents": [
@@ -92,7 +91,7 @@
 	},
 	"dependencies": {
 		"@babel/core": "^7.28.4",
-		"@prettier/plugin-xml": "3.4.2",
+		"@prettier/plugin-xml": "^3.4.2",
 		"astring": "^1.9.0",
 		"cheerio": "^1.1.2",
 		"chevrotain": "^11.0.3",
@@ -100,20 +99,18 @@
 		"fast-xml-parser": "^5.2.5",
 		"glob": "^11.0.3",
 		"html-minifier-terser": "^7.2.0",
-		"jsdom": "^26.1.0",
+		"jsdom": "^27.0.0",
 		"lodash": "^4.17.21",
 		"minimatch": "^10.0.3",
+		"postcss": "^8.5.6",
 		"prettier": "3.6.2",
-		"sql-formatter": "^15.6.8",
+		"sql-formatter": "^15.6.9",
 		"strip-comments": "^2.0.1",
 		"strip-json-comments": "^5.0.3",
 		"terser": "^5.44.0",
 		"yaml": "^2.8.1"
 	},
 	"devDependencies": {
-		"prettier-plugin-java": "2.7.4",
-		"prettier-plugin-jsp": "^1.0.13",
-		"prettier-yaml": "^0.1.2",
 		"@types/clean-css": "^4.2.11",
 		"@types/glob": "^9.0.0",
 		"@types/html-minifier-terser": "^7.0.2",
@@ -121,16 +118,19 @@
 		"@types/lodash": "^4.17.20",
 		"@types/minimatch": "^6.0.0",
 		"@types/mocha": "^10.0.10",
-		"@types/node": "^24.3.1",
+		"@types/node": "^24.5.1",
 		"@types/prettier": "^3.0.0",
 		"@types/strip-comments": "^2.0.4",
 		"@types/strip-json-comments": "^3.0.0",
 		"@types/vscode": "1.103.0",
 		"@types/yaml": "^1.9.7",
 		"@vscode/test-electron": "^2.5.2",
+		"@vscode/vsce": "^3.6.0",
 		"eslint": "^9.35.0",
 		"mocha": "^11.7.2",
-		"typescript": "^5.9.2",
-		"@vscode/vsce": "^3.6.0"
+		"prettier-plugin-java": "2.7.5",
+		"prettier-plugin-jsp": "^1.0.13",
+		"prettier-plugin-xml": "^0.1.0",
+		"typescript": "^5.9.2"
 	}
 }

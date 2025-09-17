@@ -1,8 +1,8 @@
 // Controller.ts
 
-import { capitalize, singleTags, brackets } from '../rules/utils/Syntax.js';
-import { comma, quotes, semicolon } from '../rules/utils/Syntax.js';
-import { ifElse, tryCatch } from '../rules/utils/Logic.js';
+import { capitalize, singleTags, brackets } from '../utils/Syntax.js';
+import { comma, quotes, semicolon } from '../utils/Syntax.js';
+import { ifElse, tryCatch } from '../utils/Logic.js';
 
 // -------------------------------------------------------------------------------------------------
 declare type ConfProps = {
@@ -42,7 +42,7 @@ export const getLanguage = async (
   else if (fileExt.includes("yaml") || fileExt.includes("yml")) {
     langStr = "Yaml";
   }
-  else if (fileExt.includes("xml")) {
+  else if (fileExt.includes("xml") || fileExt.includes("mybatis")) {
     langStr = "Xml";
   }
   else if (fileExt.includes("sql")) {
@@ -60,29 +60,28 @@ export const getLanguage = async (
   else if (fileExt.includes("tsx") || fileExt.includes("typescriptreact")) {
     langStr = "Typescriptreact";
   }
-
-  if (!langStr) {
+	else {
     throw new Error(`Unsupported file extension: ${fileExt}`);
   }
 
-  const langRules = await import(`../rules/langs/${langStr}.js`);
-
+  let langRules = await import(`../langs/${langStr}.js`);
   let resultContents = initContents;
+  if (!confParam.ActivateLint) {
+		return resultContents;
+	}
 
-  if (confParam.ActivateLint) {
-    if (confParam.RemoveComments) {
-      resultContents = await langRules.removeComments(resultContents, fileTabSize, fileEol);
-    }
-    if (confParam.ActivateLint) {
-      resultContents = await langRules.prettierFormat(resultContents, fileName, fileTabSize, fileEol);
-    }
-    if (confParam.InsertLine) {
-      resultContents = await langRules.insertLine(resultContents);
-    }
-    resultContents = await langRules.insertSpace(resultContents);
-    resultContents = await langRules.lineBreak(resultContents);
-    resultContents = await langRules.finalCheck(resultContents);
-  }
+	if (confParam.RemoveComments) {
+		resultContents = await langRules.removeComments(resultContents, fileTabSize, fileEol);
+	}
+	if (confParam.ActivateLint) {
+		resultContents = await langRules.prettierFormat(resultContents, fileName, fileTabSize, fileEol);
+	}
+	if (confParam.InsertLine) {
+		resultContents = await langRules.insertLine(resultContents);
+	}
+	resultContents = await langRules.insertSpace(resultContents);
+	resultContents = await langRules.lineBreak(resultContents);
+	resultContents = await langRules.finalCheck(resultContents);
 
   return resultContents;
 }
@@ -95,15 +94,16 @@ export const getSyntax = async (
 ) => {
 
   let resultContents = afterLanguageContents;
+  if (!confParam.ActivateLint) {
+		return resultContents;
+	}
 
-  if (confParam.ActivateLint) {
-    resultContents = await capitalize(resultContents, fileExt);
-    resultContents = await singleTags(resultContents, fileExt);
-    // resultContents = await brackets(resultContents, fileExt);
-    // resultContents = await comma(resultContents, fileExt);
-    // resultContents = await semicolon(resultContents, fileExt);
-    // resultContents = await quotes(afterLanguageContents, fileExt);
-  }
+	resultContents = await capitalize(resultContents, fileExt);
+	resultContents = await singleTags(resultContents, fileExt);
+	// resultContents = await brackets(resultContents, fileExt);
+	// resultContents = await comma(resultContents, fileExt);
+	// resultContents = await semicolon(resultContents, fileExt);
+	// resultContents = await quotes(afterLanguageContents, fileExt);
 
   return resultContents;
 };
@@ -116,11 +116,12 @@ export const getLogic = async (
 ) => {
 
   let resultContents = afterSyntaxContents;
+  if (!confParam.ActivateLint) {
+		return resultContents;
+	}
 
-  if (confParam.ActivateLint) {
-    // resultContents = await ifElse(resultContents, fileExt);
-    // resultContents = await tryCatch(resultContents, fileExt);
-  }
+	// resultContents = await ifElse(resultContents, fileExt);
+	// resultContents = await tryCatch(resultContents, fileExt);
 
   return resultContents;
 };

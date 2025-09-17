@@ -1,14 +1,12 @@
-// Css.ts
+// Xml.ts
 
 import * as vscode from "vscode";
 import lodash from "lodash";
 import prettier from "prettier";
 import type {Options as PrettierOptions} from "prettier";
 import type {Plugin as PrettierPlugin} from "prettier";
-import CleanCSS from "clean-css";
 import strip from "strip-comments";
 import type {Options as StripOptions} from "strip-comments";
-import { createRequire } from "module";
 
 // 0. removeComments -------------------------------------------------------------------------------
 export const removeComments = async (
@@ -18,79 +16,15 @@ export const removeComments = async (
 ) => {
   try {
     const minifyResult = (
-				new CleanCSS({
-				format: {
-					breaks: {
-						afterAtRule: true,
-						afterBlockBegins: true,
-						afterBlockEnds: true,
-						afterComment: true,
-						afterProperty: true,
-						afterRuleBegins: true,
-						afterRuleEnds: true,
-						beforeBlockEnds: true,
-						betweenSelectors: true,
-					},
-					spaces: {
-						aroundSelectorRelation: true,
-						beforeBlockBegins: true,
-						beforeValue: true,
-					},
-					breakWith: fileEol,
-					indentBy: fileTabSize,
-					indentWith: 'tab',
-					semicolonAfterLastProperty: true,
-					wrapAt: 120,
-				},
-				level: {
-					1: {
-						all: false,
-						specialComments: 'none',
-						selectorsSortingMethod: 'standard',
-						normalizeUrls: false,
-						roundingPrecision: false,
-						cleanupCharsets: true,
-						optimizeBackground: true,
-						optimizeBorderRadius: true,
-						optimizeFilter: true,
-						optimizeFont: true,
-						optimizeFontWeight: true,
-						optimizeOutline: true,
-						removeEmpty: true,
-						removeWhitespace: true,
-						removeNegativePaddings: true,
-						removeQuotes: false,
-						replaceMultipleZeros: false,
-						replaceTimeUnits: false,
-						replaceZeroUnits: false,
-						tidyAtRules: true,
-						tidyBlockScopes: true,
-						tidySelectors: true,
-					},
-					2: {
-						all: false,
-						mergeMedia: true,
-						mergeAdjacentRules: true,
-						mergeIntoShorthands: true,
-						mergeNonAdjacentRules: true,
-						removeDuplicateFontRules: true,
-						removeDuplicateMediaBlocks: true,
-						removeDuplicateRules: true,
-						removeUnusedAtRules: true,
-						reduceNonAdjacentRules: true,
-						removeEmpty: true,
-						overrideProperties: true,
-					},
-				},
-			}).minify(contentsParam).styles
+			contentsParam
 		);
 
 		const baseOptions: StripOptions = {
-      language: "css",
-      preserveNewlines: false,
-      keepProtected: false,
-      block: true,
-      line: true,
+			language: "xml",
+			preserveNewlines: false,
+			keepProtected: false,
+			block: true,
+			line: true,
 		};
 
 		const finalResult = strip(
@@ -115,8 +49,10 @@ export const prettierFormat = async (
   fileEol: string
 ) => {
   try {
+    // 공통 옵션
     const baseOptions: PrettierOptions = {
-      parser: "css",
+      parser: "xml",
+      plugins: [],
       singleQuote: false,
       printWidth: 1000,
       tabWidth: fileTabSize,
@@ -139,14 +75,52 @@ export const prettierFormat = async (
       singleAttributePerLine: false,
       bracketSameLine: false,
       semi: true,
+      filepath: fileName
     };
 
-    console.log(`_____________________\n 'prettierFormat' Activated!`);
-    const finalResult = prettier.format(contentsParam, baseOptions);
-    return finalResult;
+    // 1차: ESM 동적 임포트로 플러그인 객체 주입
+    try {
+      const mod = await import("prettier-plugin-xml");
+      const xmlPlugin: PrettierPlugin = ((mod as any)?.default ?? mod) as PrettierPlugin;
+
+      if ((xmlPlugin as any)?.parsers?.xml == null) {
+        throw new Error("ParserNotRegistered");
+      }
+
+      const finalResult = await prettier.format(contentsParam, {
+        ...baseOptions,
+        plugins: [xmlPlugin]
+      });
+      return finalResult;
+    }
+		// 2차: CJS 전용 환경에서 require로 재시도
+    catch (innerErr: any) {
+      try {
+        const maybeRequire = (globalThis as any).require ?? (typeof require !== "undefined" ? (require as any) : undefined);
+        if (!maybeRequire) {
+          throw new Error("RequireNotAvailable");
+        }
+
+        const reqMod = maybeRequire("@prettier/plugin-xml");
+        const xmlPlugin2: PrettierPlugin = (reqMod?.default ?? reqMod) as PrettierPlugin;
+
+        if ((xmlPlugin2 as any)?.parsers?.xml == null) {
+          throw new Error("ParserNotRegistered");
+        }
+
+        const finalResult = await prettier.format(contentsParam, {
+          ...baseOptions,
+          plugins: [xmlPlugin2]
+        });
+        return finalResult;
+      }
+      catch (fallbackErr: any) {
+        throw fallbackErr;
+      }
+    }
   }
   catch (err: any) {
-    const msg = err.message.toString().trim().replace(/\x1B\[[0-9;]*[mGKF]/g, "");
+    const msg = err.message?.toString()?.trim()?.replace(/\x1B\[[0-9;]*[mGKF]/g, "") ?? "unknown";
     const msgRegex = /([\n\s\S]*)(\s*)(https)(.*?)([(])(.*?)([)])([\n\s\S]*)/gm;
     const msgRegexReplace = `[JLINT]\n\nError Line = [ $6 ]\nError Site = $8`;
     const msgResult = msg.replace(msgRegex, msgRegexReplace);
@@ -194,20 +168,10 @@ export const lineBreak = async (
   contentsParam: string
 ) => {
   try {
-    const rules1 = (
-      /(>)(\n*)(?:\})(?:\n*)(function)/gm
-    );
+    const finalResult = contentsParam;
 
-    const finalResult = (
-      lodash.chain(contentsParam)
-      .replace(rules1, (...p) => (
-        `${p[1]}\n${p[3]}`
-      ))
-      .value()
-    );
-
-    console.log(`_____________________\n 'lineBreak' Activated!`);
-    return finalResult
+    console.log(`_____________________\n 'lineBreak' Not Supported!`);
+    return finalResult;
   }
   catch (err: any) {
     console.error(err.message);
@@ -220,7 +184,27 @@ export const finalCheck = async (
   contentsParam: string
 ) => {
   try {
-    const finalResult = contentsParam;
+    const rules1 = (
+      /( , )/gm
+    );
+    const rules2 = (
+      /(\s*)(\n+)(\s*)(,)(\s*)/gm
+    );
+    const rules3 = (
+      /([a-zA-Z0-9$#]+)(\s*)(=)(\s*)([a-zA-Z0-9$#]+)/gm
+    );
+
+    const finalResult = lodash.chain(contentsParam)
+		.replace(rules1, (...p) => (
+			`, `
+		))
+		.replace(rules2, (...p) => (
+			`${p[1]}, `
+		))
+		.replace(rules3, (...p) => (
+			`${p[1]} = ${p[5]}`
+		))
+		.value();
 
     console.log(`_____________________\n 'finalCheck' Activated!`);
     return finalResult

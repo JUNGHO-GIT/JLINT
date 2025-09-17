@@ -22,22 +22,20 @@ export const capitalize = async (
       /([^</>]\b)(\s*)(inner join|left join|right join|full join|outer join)\b(\s*)([^</>]\b)/gm
     );
 
-    const finalResult = (
-      lodash.chain(contentsParam)
-      .replace(rules1, (...p) => (
-        `${p[1]}${p[2]}${p[3].toUpperCase()}${p[4]}${p[5]}`
-      ))
-      .replace(rules2, (...p) => (
-        `${p[1]}${p[2]}${p[3].toUpperCase()}${p[4]}${p[5]}`
-      ))
-      .replace(rules3, (...p) => (
-        `${p[1]}${p[2]}${p[3].toUpperCase()}${p[4]}${p[5]}`
-      ))
-      .replace(rules4, (...p) => (
-        `${p[1]}${p[2]}${p[3].toUpperCase()}${p[4]}${p[5]}`
-      ))
-      .value()
-    );
+    const finalResult = lodash.chain(contentsParam)
+		.replace(rules1, (...p) => (
+			`${p[1]}${p[2]}${p[3].toUpperCase()}${p[4]}${p[5]}`
+		))
+		.replace(rules2, (...p) => (
+			`${p[1]}${p[2]}${p[3].toUpperCase()}${p[4]}${p[5]}`
+		))
+		.replace(rules3, (...p) => (
+			`${p[1]}${p[2]}${p[3].toUpperCase()}${p[4]}${p[5]}`
+		))
+		.replace(rules4, (...p) => (
+			`${p[1]}${p[2]}${p[3].toUpperCase()}${p[4]}${p[5]}`
+		))
+		.value();
 
     if (fileExt !== "xml" && fileExt !== "sql") {
       console.log(`_____________________\n 'capitalize' Not Supported!`);
@@ -68,16 +66,14 @@ export const singleTags = async (
       /(<)\b(area|base|br|col|command|embed|hr|img|input|keygen|link|meta|param|source|track|wbr)\b(\s*)([/]*[>])/gm
     );
 
-    const finalResult = (
-      lodash.chain(contentsParam)
-      .replace(rules1, (...p) => (
-        `${p[1]}${p[2]}${p[3]}${p[4]}/>`
-      ))
-      .replace(rules2, (...p) => (
-        `${p[1]}${p[2]} />`
-      ))
-      .value()
-    );
+    const finalResult = lodash.chain(contentsParam)
+		.replace(rules1, (...p) => (
+			`${p[1]}${p[2]}${p[3]}${p[4]}/>`
+		))
+		.replace(rules2, (...p) => (
+			`${p[1]}${p[2]} />`
+		))
+		.value();
 
 		if (fileExt !== "html" && fileExt !== "jsp") {
       console.log(`_____________________\n 'singleTags' Not Supported!`);
@@ -107,16 +103,14 @@ export const brackets = async (
       /(['|"])(\s+)(>)/gm
     );
 
-    const finalResult = (
-      lodash.chain(contentsParam)
-      .replace(rules1, (...p) => (
-        `${p[1]} ${p[2]}`
-      ))
-      .replace(rules2, (...p) => (
-        `${p[1]}>`
-      ))
-      .value()
-    );
+    const finalResult = lodash.chain(contentsParam)
+		.replace(rules1, (...p) => (
+			`${p[1]} ${p[2]}`
+		))
+		.replace(rules2, (...p) => (
+			`${p[1]}>`
+		))
+		.value();
 
 		if (fileExt !== "html" && fileExt !== "jsp") {
       console.log(`_____________________\n 'brackets' Not Supported!`);
@@ -143,13 +137,11 @@ export const comma = async (
       /(\s*)(,)(\s*)/gm
     );
 
-    const finalResult = (
-      lodash.chain(contentsParam)
-      .replace(rules1, (...p) => (
-        `${p[2]} `
-      ))
-      .value()
-    );
+    const finalResult = lodash.chain(contentsParam)
+		.replace(rules1, (...p) => (
+			`${p[2]} `
+		))
+		.value();
 
 		if (fileExt !== "html" && fileExt !== "jsp") {
       console.log(`_____________________\n 'comma' Not Supported!`);
@@ -185,22 +177,20 @@ export const semicolon = async (
       /(;)(\n*)(\s*)(charset)/gm
     );
 
-    const finalResult = (
-      lodash.chain(contentsParam)
-      .replace(rules1, (...p) => (
-        `${p[1]}${p[2]}${p[4]}\n${p[1]}${p[5]}`
-      ))
-      .replace(rules2, (...p) => (
-        `${p[1]}${p[3]}`
-      ))
-      .replace(rules3, (...p) => (
-        `${p[1]}${p[3]}`
-      ))
-      .replace(rules4, (...p) => (
-        `${p[1]} ${p[4]}`
-      ))
-      .value()
-    );
+    const finalResult = lodash.chain(contentsParam)
+		.replace(rules1, (...p) => (
+			`${p[1]}${p[2]}${p[4]}\n${p[1]}${p[5]}`
+		))
+		.replace(rules2, (...p) => (
+			`${p[1]}${p[3]}`
+		))
+		.replace(rules3, (...p) => (
+			`${p[1]}${p[3]}`
+		))
+		.replace(rules4, (...p) => (
+			`${p[1]} ${p[4]}`
+		))
+		.value();
 
 		if (fileExt !== "html" && fileExt !== "jsp") {
       console.log(`_____________________\n 'semicolon' Not Supported!`);
@@ -227,13 +217,11 @@ export const quotes = async (
       /(?<!(?:(?:\\['])|(?:['"'])|(?:["'"])))(\s*)(')(\s*)(?!(?:(?:\\['])|(?:['"'])|(?:["'"])))/gm
     );
 
-    const finalResult = (
-      lodash.chain(contentsParam)
-      .replace(rules1, (...p) => (
-        `${p[1]}"${p[3]}`
-      ))
-      .value()
-    );
+    const finalResult = lodash.chain(contentsParam)
+		.replace(rules1, (...p) => (
+			`${p[1]}"${p[3]}`
+		))
+		.value();
 
 		if (fileExt !== "html" && fileExt !== "jsp") {
       console.log(`_____________________\n 'quote' Not Supported!`);

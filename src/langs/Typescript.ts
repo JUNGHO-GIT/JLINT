@@ -1,4 +1,4 @@
-// Javascriptreact.ts
+// Typescript.ts
 
 import * as vscode from "vscode";
 import lodash from "lodash";
@@ -58,7 +58,7 @@ export const prettierFormat = async (
 ) => {
   try {
     const baseOptions: PrettierOptions = {
-      parser: "babel-flow",
+      parser: "babel-ts",
       singleQuote: false,
       printWidth: 1000,
       tabWidth: fileTabSize,
@@ -114,19 +114,17 @@ export const insertSpace = async (
       /^(\s*\/\/ --.*){2}(\n*)(^\s*)(public|private|function)(.*)/gm
     );
 
-    const finalResult = (
-      lodash.chain(contentsParam)
-      .replace(rules1, (...p) => (
-        `${p[1]}${p[2]} ${p[4]} (${p[7]}) {`
-      ))
-      .replace(rules2, (...p) => (
-        `${p[1]}${p[2]} (${p[6]}) {`
-      ))
-      .replace(rules3, (...p) => (
-        `${p[2]}${p[3]}${p[4]}${p[5]}`
-      ))
-      .value()
-    );
+    const finalResult = lodash.chain(contentsParam)
+		.replace(rules1, (...p) => (
+			`${p[1]}${p[2]} ${p[4]} (${p[7]}) {`
+		))
+		.replace(rules2, (...p) => (
+			`${p[1]}${p[2]} (${p[6]}) {`
+		))
+		.replace(rules3, (...p) => (
+			`${p[2]}${p[3]}${p[4]}${p[5]}`
+		))
+		.value();
 
     console.log(`_____________________\n 'insertSpace' Activated!`);
     return finalResult
@@ -158,35 +156,33 @@ export const insertLine = async (
       /^(?!\/\/--)(?:\n*)(\s*)(return\s*.*?\s*[<])(\s*?)/gm
     );
 
-    const finalResult = (
-      lodash.chain(contentsParam)
-      .replace(rules1, (...p) => {
-        const spaceSize = 100 - (p[1].length + `// `.length + `-`.length);
-        const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
-        return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
-      })
-      .replace(rules2, (...p) => {
-        const spaceSize = 100 - (p[1].length + `// `.length + `-`.length);
-        const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
-        return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
-      })
-      .replace(rules3, (...p) => {
-        const spaceSize = 100 - (p[1].length + `// `.length + `-`.length);
-        const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
-        return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
-      })
-      .replace(rules4, (...p) => {
-        const spaceSize = 100 - (p[1].length + `// `.length + `-`.length);
-        const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
-        return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
-      })
-      .replace(rules5, (...p) => {
-        const spaceSize = 100 - (p[1].length + `// `.length + `-`.length);
-        const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
-        return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
-      })
-      .value()
-    );
+    const finalResult = lodash.chain(contentsParam)
+		.replace(rules1, (...p) => {
+			const spaceSize = 100 - (p[1].length + `// `.length + `-`.length);
+			const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
+			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
+		})
+		.replace(rules2, (...p) => {
+			const spaceSize = 100 - (p[1].length + `// `.length + `-`.length);
+			const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
+			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
+		})
+		.replace(rules3, (...p) => {
+			const spaceSize = 100 - (p[1].length + `// `.length + `-`.length);
+			const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
+			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
+		})
+		.replace(rules4, (...p) => {
+			const spaceSize = 100 - (p[1].length + `// `.length + `-`.length);
+			const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
+			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
+		})
+		.replace(rules5, (...p) => {
+			const spaceSize = 100 - (p[1].length + `// `.length + `-`.length);
+			const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
+			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
+		})
+		.value();
 
     console.log(`_____________________\n 'insertLine' Activated!`);
     return finalResult
@@ -206,13 +202,11 @@ export const lineBreak = async (
       /(>)(\n*)(?:\})(?:\n*)(function)/gm
     );
 
-    const finalResult = (
-      lodash.chain(contentsParam)
-      .replace(rules1, (...p) => (
-        `${p[1]}\n${p[3]}`
-      ))
-      .value()
-    );
+    const finalResult = lodash.chain(contentsParam)
+		.replace(rules1, (...p) => (
+			`${p[1]}\n${p[3]}`
+		))
+		.value();
 
     console.log(`_____________________\n 'lineBreak' Activated!`);
     return finalResult
@@ -232,13 +226,11 @@ export const finalCheck = async (
       /(\s*)(\/\/)(\s*)(--.*?)(>)(\s*)(\n)(\s*)(\/\/)(\s*)(--.*?)(>)([\s\S])/gm
     );
 
-    const finalResult = (
-      lodash.chain(contentsParam)
-      .replace(rules1, (...p) => (
-        `${p[1]}${p[2]}${p[3]}${p[4]}${p[5]}${p[13]}`
-      ))
-      .value()
-    );
+    const finalResult = lodash.chain(contentsParam)
+		.replace(rules1, (...p) => (
+			`${p[1]}${p[2]}${p[3]}${p[4]}${p[5]}${p[13]}`
+		))
+		.value();
 
     console.log(`_____________________\n 'finalCheck' Activated!`);
     return finalResult

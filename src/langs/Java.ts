@@ -99,7 +99,7 @@ export const prettierFormat = async (
 		// 2차: CJS require 경로 해석 후 객체 주입
 		catch (innerErr: any) {
 			try {
-				const require = createRequire(import.meta.url);
+				const require = createRequire(typeof __filename !== "undefined" ? __filename : "");
 				const reqMod = require("prettier-plugin-java");
 				const javaPlugin2: PrettierPlugin = (reqMod?.default ?? reqMod) as PrettierPlugin;
 
@@ -154,19 +154,17 @@ export const insertSpace = async (
 			/(\s*?)(ception)(\{)/gm
 		);
 
-		const finalResult = (
-			lodash.chain(contentsParam)
-			.replace(rules1, (...p) => (
-				`${p[1]}${p[2]}${p[4]}`
-			))
-			.replace(rules2, (...p) => (
-				`${p[1]}${p[2]}${p[4]} ${p[6]}`
-			))
-			.replace(rules3, (...p) => (
-				`${p[2]} ${p[3]}`
-			))
-			.value()
-		);
+		const finalResult = lodash.chain(contentsParam)
+		.replace(rules1, (...p) => (
+			`${p[1]}${p[2]}${p[4]}`
+		))
+		.replace(rules2, (...p) => (
+			`${p[1]}${p[2]}${p[4]} ${p[6]}`
+		))
+		.replace(rules3, (...p) => (
+			`${p[2]} ${p[3]}`
+		))
+		.value();
 
 		console.log(`_____________________\n 'insertSpace' Activated!`);
 		return finalResult
@@ -186,16 +184,14 @@ export const insertLine = async (
 			/(?!^\/\/--)(^(?!\n)\s*)(@[A-Z].*?(?:(\n\s*))(?=(public|private|function|class))|(?:(public|private|function|class)))/gm
 		);
 
-		const finalResult = (
-			lodash.chain(contentsParam)
-			.replace(rules1, (...p) => {
-				const spaceSize = p[1].length + (`// `).length + (`-`).length;
-				const insertSize = 100 - spaceSize;
-				const insetLine = (`// ${"-".repeat(insertSize)}`);
-				return `${p[1]}${insetLine}\n${p[1]}${p[2]}`;
-			})
-			.value()
-		);
+		const finalResult = lodash.chain(contentsParam)
+		.replace(rules1, (...p) => {
+			const spaceSize = p[1].length + (`// `).length + (`-`).length;
+			const insertSize = 100 - spaceSize;
+			const insetLine = (`// ${"-".repeat(insertSize)}`);
+			return `${p[1]}${insetLine}\n${p[1]}${p[2]}`;
+		})
+		.value();
 
 		console.log(`_____________________\n 'insertLine' Activated!`);
 		return finalResult
@@ -245,43 +241,41 @@ export const lineBreak = async (
 			/(\s*)(@Override)(\n|\n+)(.*)(\n|\n+)(\s*)(public|private)/gm
 		);
 
-		const finalResult = (
-			lodash.chain(contentsParam)
-			.replace(rules1, (...p) => (
+		const finalResult = lodash.chain(contentsParam)
+		.replace(rules1, (...p) => (
 			`${p[1]}${p[2]}\n${p[6]}`
 		))
-			.replace(rules5, (...p) => (
-				`${p[1]}${p[2]}${p[3]}${p[4]}\n`
-			))
-			.replace(rules6, (...p) => (
-			`${p[1]}${p[2]}${p[3]}${p[4]}\n\n${p[8]}${p[10]}`
-			))
-			.replace(rules9, (...p) => (
-				`${p[1]}${p[2]}\n\n${p[4]}`
-			))
-			.replace(rules10, (...p) => (
-				`${p[1]}${p[2]}\n${p[3]}`
-			))
-			.replace(rules2, (...p) => (
-				`${p[1]} ${p[3]}\n${p[6]}${p[7]}`
-			))
-			.replace(rules4, (...p) => (
-				`${p[1]}${p[2]}${p[3]}${p[4]}\n\n${p[7]}${p[8]}`
-			))
-			.replace(rules8, (...p) => (
-				`${p[1]}\n\n${p[3]}${p[4]}${p[5]}${p[6]}${p[7]}${p[8]}${p[9]}${p[10]}${p[11]}`
-			))
-			.replace(rules11, (...p) => (
-				`${p[1]}${p[2]} (${p[5]}${p[7]})`
-			))
-			.replace(rules12, (...p) => (
-				`${p[1]}${p[2]}\n\n${p[4]}${p[5]}`
-			))
-			.replace(rules13, (...p) => (
-				`${p[1]}${p[2]}\n${p[6]}${p[7]}`
-			))
-			.value()
-		);
+		.replace(rules5, (...p) => (
+			`${p[1]}${p[2]}${p[3]}${p[4]}\n`
+		))
+		.replace(rules6, (...p) => (
+		`${p[1]}${p[2]}${p[3]}${p[4]}\n\n${p[8]}${p[10]}`
+		))
+		.replace(rules9, (...p) => (
+			`${p[1]}${p[2]}\n\n${p[4]}`
+		))
+		.replace(rules10, (...p) => (
+			`${p[1]}${p[2]}\n${p[3]}`
+		))
+		.replace(rules2, (...p) => (
+			`${p[1]} ${p[3]}\n${p[6]}${p[7]}`
+		))
+		.replace(rules4, (...p) => (
+			`${p[1]}${p[2]}${p[3]}${p[4]}\n\n${p[7]}${p[8]}`
+		))
+		.replace(rules8, (...p) => (
+			`${p[1]}\n\n${p[3]}${p[4]}${p[5]}${p[6]}${p[7]}${p[8]}${p[9]}${p[10]}${p[11]}`
+		))
+		.replace(rules11, (...p) => (
+			`${p[1]}${p[2]} (${p[5]}${p[7]})`
+		))
+		.replace(rules12, (...p) => (
+			`${p[1]}${p[2]}\n\n${p[4]}${p[5]}`
+		))
+		.replace(rules13, (...p) => (
+			`${p[1]}${p[2]}\n${p[6]}${p[7]}`
+		))
+		.value();
 
 		console.log(`_____________________\n 'lineBreak' Activated!`);
 		return finalResult
@@ -310,28 +304,26 @@ export const finalCheck = async (
 			/(^\s*)(\/\/ [-]+)([->][\n\s]*)(\s*)(\/\/ [-]+)([->][\n\s])/gm
 		);
 		const rules5 = (
-			/(---------------------------)(\n+)(\s*)(\w+)/gm
+			/(---------------------------)(\n+)(\s*)(\w+)/m
 		);
 
-		const finalResult = (
-			lodash.chain(contentsParam)
-			.replace(rules1, (...p) => (
-				`${p[1]}${p[2]}${p[3]}${p[4]}${p[5]}${p[13]}`
-			))
-			.replace(rules2, (...p) => (
-				`${p[4]}${p[5]}\n${p[2]}${p[3]}\n${p[7]}${p[8]}`
-			))
-			.replace(rules3, (...p) => (
-				`${p[1]}${p[2]}${p[3]}${p[4]}${p[5]}\n${p[7]}${p[8]}`
-			))
-			.replace(rules4, (...p) => (
-				`${p[1]}${p[2]}-\n`
-			))
-			.replace(rules5, (...p) => (
-				`${p[1]}\n${p[3]}${p[4]}`
-			))
-			.value()
-		);
+		const finalResult = lodash.chain(contentsParam)
+		.replace(rules1, (...p) => (
+			`${p[1]}${p[2]}${p[3]}${p[4]}${p[5]}${p[13]}`
+		))
+		.replace(rules2, (...p) => (
+			`${p[4]}${p[5]}\n${p[2]}${p[3]}\n${p[7]}${p[8]}`
+		))
+		.replace(rules3, (...p) => (
+			`${p[1]}${p[2]}${p[3]}${p[4]}${p[5]}\n${p[7]}${p[8]}`
+		))
+		.replace(rules4, (...p) => (
+			`${p[1]}${p[2]}-\n`
+		))
+		.replace(rules5, (...p) => (
+			`${p[1]}\n${p[3]}${p[4]}`
+		))
+		.value();
 
 		console.log(`_____________________\n 'finalCheck' Activated!`);
 		return finalResult

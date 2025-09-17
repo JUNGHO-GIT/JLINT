@@ -1,9 +1,11 @@
-// Yaml.ts
+// Javascriptreact.ts
 
 import * as vscode from "vscode";
+import lodash from "lodash";
 import prettier from "prettier";
 import type {Options as PrettierOptions} from "prettier";
 import type {Plugin as PrettierPlugin} from "prettier";
+import { minify } from "terser";
 import strip from "strip-comments";
 import type {Options as StripOptions} from "strip-comments";
 import { createRequire } from "module";
@@ -15,13 +17,18 @@ export const removeComments = async (
   fileEol: string,
 ) => {
   try {
-    const minifyResult = (
-			// YAML.parse(contentsParam)
-			contentsParam
+		const minifyResult = (
+			await minify(contentsParam, {
+				compress: false,
+				mangle: false,
+				format: {
+					comments: false,
+				},
+			}).then((result) => result.code)
 		);
 
 		const baseOptions: StripOptions = {
-			language: "yaml",
+			language: "javascript",
 			preserveNewlines: false,
 			keepProtected: false,
 			block: true,
@@ -51,8 +58,7 @@ export const prettierFormat = async (
 ) => {
   try {
     const baseOptions: PrettierOptions = {
-      parser: "yaml",
-      plugins: [],
+      parser: "babel-flow",
       singleQuote: false,
       printWidth: 1000,
       tabWidth: fileTabSize,
@@ -75,27 +81,11 @@ export const prettierFormat = async (
       singleAttributePerLine: false,
       bracketSameLine: false,
       semi: true,
-      filepath: fileName
     };
 
-    try {
-      const finalResult = await prettier.format(contentsParam, baseOptions);
-      return finalResult;
-    }
-    catch (innerErr: any) {
-      const mod = await import("prettier/plugins/yaml");
-      const yamlPlugin: PrettierPlugin = ((mod as any)?.default ?? mod) as PrettierPlugin;
-
-      if ((yamlPlugin as any)?.parsers?.yaml == null) {
-        throw new Error("ParserNotRegistered");
-      }
-
-      const finalResult = await prettier.format(contentsParam, {
-        ...baseOptions,
-        plugins: [yamlPlugin]
-      });
-      return finalResult;
-    }
+    console.log(`_____________________\n 'prettierFormat' Activated!`);
+    const finalResult = prettier.format(contentsParam, baseOptions);
+    return finalResult;
   }
   catch (err: any) {
     const msg = err.message.toString().trim().replace(/\x1B\[[0-9;]*[mGKF]/g, "");
@@ -114,10 +104,30 @@ export const insertSpace = async (
   contentsParam: string
 ) => {
   try {
-    const finalResult = contentsParam;
+    const rules1 = (
+      /(\s*)(public|private|function)(\s*)(.*?)(\s*)(?:[(])(\s*)(.*?)(\s*)(?:[)])(\s*)([{])/gm
+    );
+    const rules2 = (
+      /(\s*)(public|private|function)(\s*)([(])(\s*)(.*?)(\s*)(?:[)])(\s*)([{])/gm
+    );
+    const rules3 = (
+      /^(\s*\/\/ --.*){2}(\n*)(^\s*)(public|private|function)(.*)/gm
+    );
 
-    console.log(`_____________________\n 'insertSpace' Not Supported!`);
-    return finalResult;
+    const finalResult = lodash.chain(contentsParam)
+		.replace(rules1, (...p) => (
+			`${p[1]}${p[2]} ${p[4]} (${p[7]}) {`
+		))
+		.replace(rules2, (...p) => (
+			`${p[1]}${p[2]} (${p[6]}) {`
+		))
+		.replace(rules3, (...p) => (
+			`${p[2]}${p[3]}${p[4]}${p[5]}`
+		))
+		.value();
+
+    console.log(`_____________________\n 'insertSpace' Activated!`);
+    return finalResult
   }
   catch (err: any) {
     console.error(err.message);
@@ -130,10 +140,52 @@ export const insertLine = async (
   contentsParam: string
 ) => {
   try {
-    const finalResult = contentsParam;
+    const rules1 = (
+      /^(?!\/\/--)(?!(?:.*\bclassName\b)|(?:.*class=".*"))(?:\n*)(\s*)(public|private|function|class)(?:(\s*.*))(\s*?)/gm
+    );
+    const rules2 = (
+      /^(?!\/\/--)(?:\n*)(\s*)(const\s+\w+\s*=\s*\(.*?\)\s*=>\s*\{)(\s*?)/gm
+    );
+    const rules3 = (
+      /^(?!\/\/--)(?:\n*)(\s*)(const\s+\w+\s*=\s*\[)(\s*?)/gm
+    );
+    const rules4 = (
+      /^(?!\/\/--)(?:\n*)(\s*)(useEffect\s*\(\s*\(\s*.*?\)\s*=>\s*\{)(\s*?)/gm
+    );
+    const rules5 = (
+      /^(?!\/\/--)(?:\n*)(\s*)(return\s*.*?\s*[<])(\s*?)/gm
+    );
 
-    console.log(`_____________________\n 'insertLine' Not Supported!`);
-    return finalResult;
+    const finalResult = lodash.chain(contentsParam)
+		.replace(rules1, (...p) => {
+			const spaceSize = 100 - (p[1].length + `// `.length + `-`.length);
+			const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
+			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
+		})
+		.replace(rules2, (...p) => {
+			const spaceSize = 100 - (p[1].length + `// `.length + `-`.length);
+			const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
+			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
+		})
+		.replace(rules3, (...p) => {
+			const spaceSize = 100 - (p[1].length + `// `.length + `-`.length);
+			const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
+			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
+		})
+		.replace(rules4, (...p) => {
+			const spaceSize = 100 - (p[1].length + `// `.length + `-`.length);
+			const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
+			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
+		})
+		.replace(rules5, (...p) => {
+			const spaceSize = 100 - (p[1].length + `// `.length + `-`.length);
+			const insetLine = `// ` + '-'.repeat(spaceSize) + `-`;
+			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
+		})
+		.value();
+
+    console.log(`_____________________\n 'insertLine' Activated!`);
+    return finalResult
   }
   catch (err: any) {
     console.error(err.message);
@@ -146,10 +198,18 @@ export const lineBreak = async (
   contentsParam: string
 ) => {
   try {
-    const finalResult = contentsParam;
+    const rules1 = (
+      /(>)(\n*)(?:\})(?:\n*)(function)/gm
+    );
 
-    console.log(`_____________________\n 'lineBreak' Not Supported!`);
-    return finalResult;
+    const finalResult = lodash.chain(contentsParam)
+		.replace(rules1, (...p) => (
+			`${p[1]}\n${p[3]}`
+		))
+		.value();
+
+    console.log(`_____________________\n 'lineBreak' Activated!`);
+    return finalResult
   }
   catch (err: any) {
     console.error(err.message);
@@ -162,7 +222,15 @@ export const finalCheck = async (
   contentsParam: string
 ) => {
   try {
-    const finalResult = contentsParam;
+    const rules1 = (
+      /(\s*)(\/\/)(\s*)(--.*?)(>)(\s*)(\n)(\s*)(\/\/)(\s*)(--.*?)(>)([\s\S])/gm
+    );
+
+    const finalResult = lodash.chain(contentsParam)
+		.replace(rules1, (...p) => (
+			`${p[1]}${p[2]}${p[3]}${p[4]}${p[5]}${p[13]}`
+		))
+		.value();
 
     console.log(`_____________________\n 'finalCheck' Activated!`);
     return finalResult

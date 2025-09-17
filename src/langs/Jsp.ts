@@ -1,4 +1,4 @@
-// Html.ts
+// Jsp.ts
 
 import * as vscode from "vscode";
 import lodash from "lodash";
@@ -17,38 +17,36 @@ export const removeComments = async (
   fileEol: string,
 ) => {
   try {
-    // 1. `http://` -> `httpp`
-    const pattern1 = (
-      /("|')(\s*)(http:\/\/)([\n\s\S]*?)("|')/gm
-    );
-    const pattern2 = (
-      /("|')(\s*)(https:\/\/)([\n\s\S]*?)("|')/gm
-    );
-    const pattern3 = (
-      /("|')(\s*)(@\{http:\/\/)([\n\s\S]*?)("|')/gm
-    );
-    const pattern4 = (
-      /("|')(\s*)(@\{https:\/\/)([\n\s\S]*?)("|')/gm
-    );
+		// 1. `http://` -> `httpp`
+		const pattern1 = (
+			/("|')(\s*)(http:\/\/)([\n\s\S]*?)("|')/gm
+		);
+		const pattern2 = (
+			/("|')(\s*)(https:\/\/)([\n\s\S]*?)("|')/gm
+		);
+		const pattern3 = (
+			/("|')(\s*)(@\{http:\/\/)([\n\s\S]*?)("|')/gm
+		);
+		const pattern4 = (
+			/("|')(\s*)(@\{https:\/\/)([\n\s\S]*?)("|')/gm
+		);
 
-    const httpResult = (
-      lodash.chain(contentsParam)
-      .replace(pattern1, (...p) => (
-        `${p[1]}${p[2]}httpp${p[4]}${p[5]}`
-      ))
-      .replace(pattern2, (...p) => (
-        `${p[1]}${p[2]}httpps${p[4]}${p[5]}`
-      ))
-      .replace(pattern3, (...p) => (
-        `${p[1]}${p[2]}@{httpp${p[4]}${p[5]}`
-      ))
-      .replace(pattern4, (...p) => (
-        `${p[1]}${p[2]}@{httpps${p[4]}${p[5]}`
-      ))
-      .value()
-    );
+		const httpResult = lodash.chain(contentsParam)
+		.replace(pattern1, (...p) => (
+			`${p[1]}${p[2]}httpp${p[4]}${p[5]}`
+		))
+		.replace(pattern2, (...p) => (
+			`${p[1]}${p[2]}httpps${p[4]}${p[5]}`
+		))
+		.replace(pattern3, (...p) => (
+			`${p[1]}${p[2]}@{httpp${p[4]}${p[5]}`
+		))
+		.replace(pattern4, (...p) => (
+			`${p[1]}${p[2]}@{httpps${p[4]}${p[5]}`
+		))
+		.value();
 
-    const minifyResult = (
+		const minifyResult = (
 			await minify(httpResult, {
 				html5: true,
 				minifyCSS: false,
@@ -87,25 +85,25 @@ export const removeComments = async (
 		);
 
 		const baseOptions1: StripOptions = {
-      language: "html",
-      preserveNewlines: false,
-      keepProtected: false,
-      block: true,
-      line: true,
+			language: "html",
+			preserveNewlines: false,
+			keepProtected: false,
+			block: true,
+			line: true,
 		};
 		const baseOptions2: StripOptions = {
-      language: "javascript",
-      preserveNewlines: false,
-      keepProtected: false,
-      block: true,
-      line: true,
-    };
+			language: "javascript",
+			preserveNewlines: false,
+			keepProtected: false,
+			block: true,
+			line: true,
+		};
 		const baseOptions3: StripOptions = {
-      language: "css",
-      preserveNewlines: false,
-      keepProtected: false,
-      block: true,
-      line: true,
+			language: "css",
+			preserveNewlines: false,
+			keepProtected: false,
+			block: true,
+			line: true,
 		};
 
 		const stripResult1 = strip(
@@ -121,42 +119,40 @@ export const removeComments = async (
 			baseOptions3
 		);
 
-    // 2. `httpp` -> `http://`
-    const pattern1Re = (
-      /("|')(\s*)(httpp)([\n\s\S]*?)("|')/gm
-    );
-    const pattern2Re = (
-      /("|')(\s*)(httpps)([\n\s\S]*?)("|')/gm
-    );
-    const pattern3Re = (
-      /("|')(\s*)(@\{httpp)([\n\s\S]*?)("|')/gm
-    );
-    const pattern4Re = (
-      /("|')(\s*)(@\{httpps)([\n\s\S]*?)("|')/gm
-    );
-    const pattern5 = (
-      /(\n)(\s*)(\n)/gm
-    );
+		// 2. `httpp` -> `http://`
+		const pattern1Re = (
+			/("|')(\s*)(httpp)([\n\s\S]*?)("|')/gm
+		);
+		const pattern2Re = (
+			/("|')(\s*)(httpps)([\n\s\S]*?)("|')/gm
+		);
+		const pattern3Re = (
+			/("|')(\s*)(@\{httpp)([\n\s\S]*?)("|')/gm
+		);
+		const pattern4Re = (
+			/("|')(\s*)(@\{httpps)([\n\s\S]*?)("|')/gm
+		);
+		const pattern5 = (
+			/(\n)(\s*)(\n)/gm
+		);
 
-    const finalResult = (
-      lodash.chain(stripResult3)
-      .replace(pattern1Re, (...p) => (
-        `${p[1]}${p[2]}http://${p[4]}${p[5]}`
-      ))
-      .replace(pattern2Re, (...p) => (
-        `${p[1]}${p[2]}https://${p[4]}${p[5]}`
-      ))
-      .replace(pattern3Re, (...p) => (
-        `${p[1]}${p[2]}@{http://${p[4]}${p[5]}`
-      ))
-      .replace(pattern4Re, (...p) => (
-        `${p[1]}${p[2]}@{https://${p[4]}${p[5]}`
-      ))
-      .replace(pattern5, (...p) => (
-        `${p[1]}`
-      ))
-      .value()
-    );
+		const finalResult = lodash.chain(stripResult3)
+		.replace(pattern1Re, (...p) => (
+			`${p[1]}${p[2]}http://${p[4]}${p[5]}`
+		))
+		.replace(pattern2Re, (...p) => (
+			`${p[1]}${p[2]}https://${p[4]}${p[5]}`
+		))
+		.replace(pattern3Re, (...p) => (
+			`${p[1]}${p[2]}@{http://${p[4]}${p[5]}`
+		))
+		.replace(pattern4Re, (...p) => (
+			`${p[1]}${p[2]}@{https://${p[4]}${p[5]}`
+		))
+		.replace(pattern5, (...p) => (
+			`${p[1]}`
+		))
+		.value();
 
     console.log(`_____________________\n 'removeComments' Activated!`);
     return finalResult;
@@ -175,8 +171,10 @@ export const prettierFormat = async (
   fileEol: string
 ) => {
   try {
+    const jspPlugin = await import("prettier-plugin-jsp");
     const baseOptions: PrettierOptions = {
       parser: "html",
+      plugins: [jspPlugin],
       singleQuote: false,
       printWidth: 1000,
       tabWidth: fileTabSize,
@@ -205,19 +203,17 @@ export const prettierFormat = async (
       /(&nbsp;)/gm
     );
     const rules2 = (
-      /(\s*)[^`'"](<.*>)(<)(input|label|a|b|p|span|select|div|option|bold|caption|strong)/gm
+      /(\s*)[^`'"](<.*>)(<)(input|label|a|b|p|span|select|div|option|bold|caption|strong)/gi
     );
 
-    const result = (
-      lodash.chain(contentsParam)
-      .replace(rules1, (...p) => (
-        ""
-      ))
-      .replace(rules2, (...p) => (
-        `${p[1]}${p[2]}\n${p[1]}\t${p[3]}${p[4]}`
-      ))
-      .value()
-    );
+    const result = lodash.chain(contentsParam)
+		.replace(rules1, (...p) => (
+			""
+		))
+		.replace(rules2, (...p) => (
+			`${p[1]}${p[2]}\n${p[1]}\t${p[3]}${p[4]}`
+		))
+		.value();
 
     console.log(`_____________________\n 'prettierFormat' Activated!`);
     const finalResult = prettier.format(result, baseOptions);
@@ -251,19 +247,17 @@ export const insertSpace = async (
       /(\s*?)(ception)(\{)/gm
     );
 
-	const finalResult = (
-	  lodash.chain(contentsParam)
-	  .replace(rules1, (...p) => (
-		`${p[1]}${p[2]};`
-	  ))
-	  .replace(rules2, (...p) => (
-		`${p[1]}${p[2]}${p[4]} ${p[6]}`
-	  ))
-	  .replace(rules3, (...p) => (
-		`${p[2]} ${p[3]}`
-	  ))
-	  .value()
-	);
+    const finalResult = lodash.chain(contentsParam)
+		.replace(rules1, (...p) => (
+			`${p[1]}${p[2]}${p[4]}`
+		))
+		.replace(rules2, (...p) => (
+			`${p[1]}${p[2]}${p[4]} ${p[6]}`
+		))
+		.replace(rules3, (...p) => (
+			`${p[2]} ${p[3]}`
+		))
+		.value();
 
     console.log(`_____________________\n 'insertSpace' Activated!`);
     return finalResult
@@ -307,55 +301,53 @@ export const insertLine = async (
       /^(?!\/\/--)(?:\n*)(\s*)([<]div class="row\s*.*\s*[>])(\s*?)/gm
     );
 
-    const finalResult = (
-      lodash.chain(contentsParam)
-      .replace(rules1, (...p) => {
-        const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
-        const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
-		return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
-      })
-      .replace(rules2, (...p) => {
-        const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
-        const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
-        return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
-      })
-      .replace(rules3, (...p) => {
-        const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
-        const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
-        return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
-      })
-      .replace(rules4, (...p) => {
-        const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
-        const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
-        return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
-      })
-      .replace(rules5, (...p) => {
-        const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
-        const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
-        return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
-      })
-      .replace(rules6, (...p) => {
-        const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
-        const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
-        return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
-      })
-      .replace(rules7, (...p) => {
-        const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
-        const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
-        return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
-      })
-      .replace(rules8, (...p) => {
-        const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
-        const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
-        return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
-      })
-      .replace(rules9, (...p) => {
-        const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
-        const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
-        return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
-      })
-      .value()
-    );
+    const finalResult = lodash.chain(contentsParam)
+		.replace(rules1, (...p) => {
+			const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
+			const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
+			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
+		})
+		.replace(rules2, (...p) => {
+			const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
+			const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
+			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
+		})
+		.replace(rules3, (...p) => {
+			const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
+			const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
+			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
+		})
+		.replace(rules4, (...p) => {
+			const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
+			const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
+			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
+		})
+		.replace(rules5, (...p) => {
+			const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
+			const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
+			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
+		})
+		.replace(rules6, (...p) => {
+			const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
+			const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
+			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
+		})
+		.replace(rules7, (...p) => {
+			const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
+			const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
+			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
+		})
+		.replace(rules8, (...p) => {
+			const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
+			const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
+			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
+		})
+		.replace(rules9, (...p) => {
+			const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
+			const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
+			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
+		})
+		.value();
 
     console.log(`_____________________\n 'insertLine' Activated!`);
     return finalResult
@@ -378,16 +370,14 @@ export const lineBreak = async (
       /(.*?)(\n*)(\s*)(\/\/ -.*>)/gm
     );
 
-    const finalResult = (
-      lodash.chain(contentsParam)
-      .replace(rules1, (...p) => (
-		`\n\n${p[1]}${p[2]}${p[3]}`
-      ))
-      .replace(rules2, (...p) => (
-        `${p[1]}\n\n${p[3]}${p[4]}`
-      ))
-      .value()
-    );
+    const finalResult = lodash.chain(contentsParam)
+		.replace(rules1, (...p) => (
+			`\n\n${p[1]}${p[2]}${p[3]}`
+		))
+		.replace(rules2, (...p) => (
+			`${p[1]}\n\n${p[3]}${p[4]}`
+		))
+		.value();
 
     console.log(`_____________________\n 'lineBreak' Activated!`);
     return finalResult
@@ -406,20 +396,12 @@ export const finalCheck = async (
     const rules1 = (
       /(\s*)(<!)(--.*?)(>)(\s*)(\n)(\s*)(<!)(--.*?)(>)([\s\S])/gm
     );
-    const rules2 = (
-      /(\s*)(<!)(--.*?)(>)(\s*)(\n)(\s*)(<!)(--.*?)(>)([\s\S])/gm
-    );
 
-    const finalResult = (
-      lodash.chain(contentsParam)
-      .replace(rules1, (...p) => (
-        `${p[1]}${p[2]}${p[3]}${p[4]}${p[11]}`
-      ))
-      .replace(rules2, (...p) => (
-        `${p[1]}${p[2]}${p[3]}${p[4]}${p[11]}`
-      ))
-      .value()
-    );
+    const finalResult = lodash.chain(contentsParam)
+		.replace(rules1, (...p) => (
+			`${p[1]}${p[2]}${p[3]}${p[4]}${p[11]}`
+		))
+		.value();
 
     console.log(`_____________________\n 'finalCheck' Activated!`);
     return finalResult
