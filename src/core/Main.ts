@@ -16,9 +16,9 @@ export const main = async (
   confParam: ConfProps,
   filePath: string,
   fileName: string,
-  fileExt: string,
   fileTabSize: number,
-  fileEol: string
+  fileEol: string,
+  fileExt: string,
 ) => {
 
   console.log(
@@ -32,8 +32,8 @@ export const main = async (
     fileEol: ${fileEol}`
   );
 
-  let finalContents = await getContents(filePath, fileTabSize, fileEol);
-  finalContents = await getLanguage(confParam, finalContents, fileName, fileExt, fileTabSize, fileEol);
+  let finalContents = await getContents(filePath, fileTabSize, fileEol, fileExt);
+  finalContents = await getLanguage(confParam, finalContents, fileName, fileTabSize, fileEol, fileExt);
   finalContents = await getSyntax(confParam, finalContents, fileExt);
   finalContents = await getLogic(confParam, finalContents, fileExt);
 

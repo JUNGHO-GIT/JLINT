@@ -13,6 +13,7 @@ export const removeComments = async (
   contentsParam: string,
   fileTabSize: number,
   fileEol: string,
+	fileExt: string
 ) => {
   try {
     const minifyResult = (
@@ -32,11 +33,11 @@ export const removeComments = async (
 			baseOptions
 		);
 
-    console.log(`_____________________\n 'removeComments' Activated!`);
+    console.log(`_____________________\n [${fileExt}] 'removeComments' Activated!`);
     return finalResult;
   }
   catch (err: any) {
-    console.error(err.message);
+    console.error(`_____________________\n [${fileExt}] 'removeComments' Error!\n${err.message}`);
     return contentsParam;
   }
 };
@@ -46,7 +47,8 @@ export const prettierFormat = async (
   contentsParam: string,
   fileName: string,
   fileTabSize: number,
-  fileEol: string
+  fileEol: string,
+	fileExt: string
 ) => {
   try {
     const baseOptions: PrettierOptions = {
@@ -110,64 +112,68 @@ export const prettierFormat = async (
 
 // 2. insertSpace ----------------------------------------------------------------------------------
 export const insertSpace = async (
-  contentsParam: string
+  contentsParam: string,
+	fileExt: string
 ) => {
   try {
     const finalResult = contentsParam;
 
-    console.log(`_____________________\n 'insertSpace' Not Supported!`);
-    return finalResult;
+    console.log(`_____________________\n [${fileExt}] 'insertSpace' Activated!`);
+    return finalResult
   }
   catch (err: any) {
-    console.error(err.message);
+		console.error(`_____________________\n [${fileExt}] 'insertSpace' Error!\n${err.message}`);
     return contentsParam;
   }
 };
 
 // 3. insertLine -----------------------------------------------------------------------------------
 export const insertLine = async (
-  contentsParam: string
+  contentsParam: string,
+	fileExt: string
 ) => {
   try {
     const finalResult = contentsParam;
 
-    console.log(`_____________________\n 'insertLine' Not Supported!`);
-    return finalResult;
+    console.log(`_____________________\n [${fileExt}] 'insertLine' Activated!`);
+    return finalResult
   }
   catch (err: any) {
-    console.error(err.message);
+    console.error(`_____________________\n [${fileExt}] 'insertLine' Error!\n${err.message}`);
     return contentsParam;
   }
 };
 
 // 4. lineBreak ------------------------------------------------------------------------------------
 export const lineBreak = async (
-  contentsParam: string
+  contentsParam: string,
+	fileExt: string
 ) => {
   try {
     const finalResult = contentsParam;
 
-    console.log(`_____________________\n 'lineBreak' Not Supported!`);
+    console.log(`_____________________\n [${fileExt}] 'lineBreak' Not Supported!`);
     return finalResult;
   }
   catch (err: any) {
-    console.error(err.message);
+		console.error(`_____________________\n [${fileExt}] 'lineBreak' Error!\n${err.message}`);
     return contentsParam;
   }
 };
 
 // 5. finalCheck -----------------------------------------------------------------------------------
 export const finalCheck = async (
-  contentsParam: string
+  contentsParam: string,
+	fileExt: string
 ) => {
   try {
     const finalResult = contentsParam;
 
-    console.log(`_____________________\n 'finalCheck' Activated!`);
+    console.log(`_____________________\n [${fileExt}] 'finalCheck' Activated!`);
     return finalResult
   }
   catch (err: any) {
-    console.error(err.message);
+    console.error(`_____________________\n [${fileExt}] 'finalCheck' Error!\n${err.message}`);
     return contentsParam;
   }
 };

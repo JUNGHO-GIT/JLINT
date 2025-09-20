@@ -27,18 +27,18 @@ export const activate = (context: vscode.ExtensionContext) => {
       }
 
       const filePath = editor.document.uri.fsPath;
-      const fileExt = editor.document.languageId;
       const fileName = path.basename(filePath);
       const fileTabSize = parseInt(editor.options.tabSize as string);
       const fileEol = String(editor.document.eol === 1 ? "lf" : "crlf");
+      const fileExt = editor.document.languageId;
 
       await main(
         getConfiguration(),
         filePath,
         fileName,
-        fileExt,
         fileTabSize,
-        fileEol
+        fileEol,
+        fileExt,
       );
     });
     context.subscriptions.push(command);

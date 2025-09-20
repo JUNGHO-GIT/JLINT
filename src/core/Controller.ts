@@ -16,9 +16,9 @@ export const getLanguage = async (
   confParam: ConfProps,
   initContents: string,
   fileName: string,
-  fileExt: string,
   fileTabSize: number,
-  fileEol: string
+  fileEol: string,
+	fileExt: string
 ) => {
 
   // 동적으로 언어별 규칙 모듈 import (html -> Html)
@@ -71,17 +71,17 @@ export const getLanguage = async (
 	}
 
 	if (confParam.RemoveComments) {
-		resultContents = await langRules.removeComments(resultContents, fileTabSize, fileEol);
+		resultContents = await langRules.removeComments(resultContents, fileTabSize, fileEol, fileExt);
 	}
 	if (confParam.ActivateLint) {
-		resultContents = await langRules.prettierFormat(resultContents, fileName, fileTabSize, fileEol);
+		resultContents = await langRules.prettierFormat(resultContents, fileName, fileTabSize, fileEol, fileExt);
 	}
 	if (confParam.InsertLine) {
-		resultContents = await langRules.insertLine(resultContents);
+		resultContents = await langRules.insertLine(resultContents, fileExt);
 	}
-	resultContents = await langRules.insertSpace(resultContents);
-	resultContents = await langRules.lineBreak(resultContents);
-	resultContents = await langRules.finalCheck(resultContents);
+	resultContents = await langRules.insertSpace(resultContents, fileExt);
+	resultContents = await langRules.lineBreak(resultContents, fileExt);
+	resultContents = await langRules.finalCheck(resultContents, fileExt);
 
   return resultContents;
 }

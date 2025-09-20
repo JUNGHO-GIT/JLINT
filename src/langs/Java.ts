@@ -14,6 +14,7 @@ export const removeComments = async (
 	contentsParam: string,
 	fileTabSize: number,
 	fileEol: string,
+	fileExt: string
 ) => {
 	try {
 		const minifyResult = (
@@ -33,7 +34,7 @@ export const removeComments = async (
 			baseOptions
 		);
 
-		console.log(`_____________________\n 'removeComments' Activated!`);
+		console.log(`_____________________\n [${fileExt}] 'removeComments' Activated!`);
 		return finalResult;
 	}
 	catch (err: any) {
@@ -47,7 +48,8 @@ export const prettierFormat = async (
 	contentsParam: string,
 	fileName: string,
 	fileTabSize: number,
-	fileEol: string
+	fileEol: string,
+	fileExt: string
 ) => {
 	try {
 		// 공통 옵션
@@ -93,7 +95,7 @@ export const prettierFormat = async (
 				plugins: [javaPlugin]
 			});
 
-			console.log(`_____________________\n 'prettierFormat' Activated! (dynamic import)`);
+			console.log(`_____________________\n [${fileExt}] 'prettierFormat' Activated! (dynamic import)`);
 			return formatted;
 		}
 		// 2차: CJS require 경로 해석 후 객체 주입
@@ -112,7 +114,7 @@ export const prettierFormat = async (
 					plugins: [javaPlugin2]
 				});
 
-				console.log(`_____________________\n 'prettierFormat' Activated! (createRequire)`);
+				console.log(`_____________________\n [${fileExt}] 'prettierFormat' Activated! (createRequire)`);
 				return formatted;
 			}
 			catch (fallbackErr: any) {
@@ -141,7 +143,8 @@ export const prettierFormat = async (
 
 // 2. insertSpace ----------------------------------------------------------------------------------
 export const insertSpace = async (
-	contentsParam: string
+	contentsParam: string,
+	fileExt: string
 ) => {
 	try {
 		const rules1 = (
@@ -166,7 +169,7 @@ export const insertSpace = async (
 		))
 		.value();
 
-		console.log(`_____________________\n 'insertSpace' Activated!`);
+		console.log(`_____________________\n [${fileExt}] 'insertSpace' Activated!`);
 		return finalResult
 	}
 	catch (err: any) {
@@ -177,7 +180,8 @@ export const insertSpace = async (
 
 // 3. insertLine -----------------------------------------------------------------------------------
 export const insertLine = async (
-	contentsParam: string
+	contentsParam: string,
+	fileExt: string
 ) => {
 	try {
 		const rules1 = (
@@ -193,7 +197,7 @@ export const insertLine = async (
 		})
 		.value();
 
-		console.log(`_____________________\n 'insertLine' Activated!`);
+		console.log(`_____________________\n [${fileExt}] 'insertLine' Activated!`);
 		return finalResult
 	}
 	catch (err: any) {
@@ -204,7 +208,8 @@ export const insertLine = async (
 
 // 4. lineBreak ------------------------------------------------------------------------------------
 export const lineBreak = async (
-	contentsParam: string
+	contentsParam: string,
+	fileExt: string
 ) => {
 	try {
 		const rules1 = (
@@ -277,7 +282,7 @@ export const lineBreak = async (
 		))
 		.value();
 
-		console.log(`_____________________\n 'lineBreak' Activated!`);
+		console.log(`_____________________\n [${fileExt}] 'lineBreak' Activated!`);
 		return finalResult
 	}
 	catch (err: any) {
@@ -288,7 +293,8 @@ export const lineBreak = async (
 
 // 5. finalCheck -----------------------------------------------------------------------------------
 export const finalCheck = async (
-	contentsParam: string
+	contentsParam: string,
+	fileExt: string
 ) => {
 	try {
 		const rules1 = (
@@ -325,7 +331,7 @@ export const finalCheck = async (
 		))
 		.value();
 
-		console.log(`_____________________\n 'finalCheck' Activated!`);
+		console.log(`_____________________\n [${fileExt}] 'finalCheck' Activated!`);
 		return finalResult
 	}
 	catch (err: any) {

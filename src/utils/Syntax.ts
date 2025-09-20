@@ -38,16 +38,16 @@ export const capitalize = async (
 		.value();
 
     if (fileExt !== "xml" && fileExt !== "sql") {
-      console.log(`_____________________\n 'capitalize' Not Supported!`);
+      console.log(`_____________________\n [${fileExt}] 'capitalize' Not Supported!`);
       return contentsParam;
     }
     else {
-      console.log(`_____________________\n 'capitalize' Activated!`);
+      console.log(`_____________________\n [${fileExt}] 'capitalize' Activated!`);
       return finalResult;
     }
   }
-  catch (err: any) {
-    console.error(err.message);
+	catch (err: any) {
+		console.error(`_____________________\n [${fileExt}] 'capitalize' Error!\n${err.message}`);
     return contentsParam;
   }
 };
@@ -76,16 +76,16 @@ export const singleTags = async (
 		.value();
 
 		if (fileExt !== "html" && fileExt !== "jsp") {
-      console.log(`_____________________\n 'singleTags' Not Supported!`);
+      console.log(`_____________________\n [${fileExt}] 'singleTags' Not Supported!`);
       return contentsParam;
     }
     else {
-      console.log(`_____________________\n 'singleTags' Activated!`);
+      console.log(`_____________________\n [${fileExt}] 'singleTags' Activated!`);
       return finalResult;
     }
   }
   catch (err: any) {
-    console.error(err.message);
+		console.error(`_____________________\n [${fileExt}] 'singleTags' Error!\n${err.message}`);
     return contentsParam;
   }
 };
@@ -113,16 +113,16 @@ export const brackets = async (
 		.value();
 
 		if (fileExt !== "html" && fileExt !== "jsp") {
-      console.log(`_____________________\n 'brackets' Not Supported!`);
+      console.log(`_____________________\n [${fileExt}] 'brackets' Not Supported!`);
       return contentsParam;
     }
     else {
-      console.log(`_____________________\n 'brackets' Activated!`);
+      console.log(`_____________________\n [${fileExt}] 'brackets' Activated!`);
       return finalResult;
     }
   }
   catch (err: any) {
-    console.error(err.message);
+    console.error(`_____________________\n [${fileExt}] 'brackets' Error!\n${err.message}`);
     return contentsParam;
   }
 };
@@ -144,16 +144,16 @@ export const comma = async (
 		.value();
 
 		if (fileExt !== "html" && fileExt !== "jsp") {
-      console.log(`_____________________\n 'comma' Not Supported!`);
+      console.log(`_____________________\n [${fileExt}] 'comma' Not Supported!`);
       return contentsParam;
     }
     else {
-      console.log(`_____________________\n 'comma' Activated!`);
+      console.log(`_____________________\n [${fileExt}] 'comma' Activated!`);
       return finalResult;
     }
   }
   catch (err: any) {
-    console.error(err.message);
+    console.error(`_____________________\n [${fileExt}] 'comma' Error!\n${err.message}`);
     return contentsParam;
   }
 };
@@ -193,16 +193,16 @@ export const semicolon = async (
 		.value();
 
 		if (fileExt !== "html" && fileExt !== "jsp") {
-      console.log(`_____________________\n 'semicolon' Not Supported!`);
+      console.log(`_____________________\n [${fileExt}] 'semicolon' Not Supported!`);
       return contentsParam;
     }
     else {
-      console.log(`_____________________\n 'semicolon' Activated!`);
+      console.log(`_____________________\n [${fileExt}] 'semicolon' Activated!`);
       return finalResult;
     }
   }
   catch (err: any) {
-    console.error(err.message);
+    console.error(`_____________________\n [${fileExt}] 'semicolon' Error!\n${err.message}`);
     return contentsParam;
   }
 }
@@ -224,16 +224,16 @@ export const quotes = async (
 		.value();
 
 		if (fileExt !== "html" && fileExt !== "jsp") {
-      console.log(`_____________________\n 'quote' Not Supported!`);
+      console.log(`_____________________\n [${fileExt}] 'quote' Not Supported!`);
       return contentsParam;
     }
     else {
-      console.log(`_____________________\n 'quote' Activated!`);
+      console.log(`_____________________\n [${fileExt}] 'quote' Activated!`);
       return finalResult;
     }
   }
   catch (err: any) {
-    console.error(err.message);
+    console.error(`_____________________\n [${fileExt}] 'quote' Error!\n${err.message}`);
     return contentsParam;
   }
 };

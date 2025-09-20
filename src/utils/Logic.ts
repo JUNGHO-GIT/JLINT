@@ -41,16 +41,16 @@ export const ifElse = async (
 		.value();
 
     if (fileExt === "xml" || fileExt === "json" || fileExt === "sql") {
-      console.log(`_____________________\n 'ifElse' Not Supported!`);
+      console.log(`_____________________\n [${fileExt}] 'ifElse' Not Supported!`);
       return contentsParam;
     }
     else {
-      console.log(`_____________________\n 'ifElse' Activated!`);
+      console.log(`_____________________\n [${fileExt}] 'ifElse' Activated!`);
       return finalResult;
     }
   }
   catch (err: any) {
-    console.error(err.message);
+		console.error(`_____________________\n [${fileExt}] 'ifElse' Error!\n${err.message}`);
     return contentsParam;
   }
 };
@@ -84,16 +84,17 @@ export const tryCatch = async (
 		.value();
 
     if (fileExt === "xml" || fileExt === "json" || fileExt === "sql") {
-      console.log(`_____________________\n 'tryCatch' Not Supported!`);
+      console.log(`_____________________\n [${fileExt}] 'tryCatch' Not Supported!`);
       return contentsParam;
     }
     else {
-      console.log(`_____________________\n 'tryCatch' Activated!`);
+      console.log(`_____________________\n [${fileExt}] 'tryCatch' Activated!`);
       return finalResult;
     }
   }
-  catch (err: any) {
-    console.error(err.message);
+
+	catch (err: any) {
+		console.error(`_____________________\n [${fileExt}] 'tryCatch' Error!\n${err.message}`);
     return contentsParam;
   }
 };
