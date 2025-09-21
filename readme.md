@@ -1,4 +1,4 @@
-# ✨ JLINT
+# ✨ Jlint
 
 ## 📚 Multiple Language Support
 
@@ -20,19 +20,19 @@
 
 ## 💥 Fast and Efficient
 
-- Built using powerful libraries and tools such as Babel and Prettier, JLINT provides
+- Built using powerful libraries and tools such as Babel and Prettier, Jlint provides
   high performance in code formatting and linting tasks.
 
 ## 🔥 Visual Separation of Code Blocks
 
-- JLINT uses a visual separator to separate code blocks. This makes it easier to
+- Jlint uses a visual separator to separate code blocks. This makes it easier to
   understand the code structure and identify errors.
 
 - Before
 
   <img
     alt="Before"
-    src="https://storage.googleapis.com/jungho-bucket/JLINT/IMAGE/main/main3.webp"
+    src="https://storage.googleapis.com/jungho-bucket/Jlint/IMAGE/main/main3.webp"
     width="400"
   />
 
@@ -40,25 +40,25 @@
 
   <img
     alt="After"
-    src="https://storage.googleapis.com/jungho-bucket/JLINT/IMAGE/main/main4.webp"
+    src="https://storage.googleapis.com/jungho-bucket/Jlint/IMAGE/main/main4.webp"
     width="400"
   />
 
 ## 💡 Error Message Modal
 
-- JLINT uses a modal to display error messages. This makes it easier to identify errors.
+- Jlint uses a modal to display error messages. This makes it easier to identify errors.
 
   <img
     alt="Modal"
-    src="https://storage.googleapis.com/jungho-bucket/JLINT/IMAGE/main/main5.webp"
+    src="https://storage.googleapis.com/jungho-bucket/Jlint/IMAGE/main/main5.webp"
     width="400"
   />
 
 ## 🛠️ Customization
 
-- Customize JLINT through user settings in your code editor.
+- Customize Jlint through user settings in your code editor.
 
-- `JLINT.ActiveLint`: Enable or disable linting
-- `JLINT.RemoveComments`: Enable or disable removal of comments from your code
-- `JLINT.InsertLine`: Enable or disable insertion of a 'Comment Vertical Line' to
+- `Jlint.ActiveLint`: Enable or disable linting
+- `Jlint.RemoveComments`: Enable or disable removal of comments from your code
+- `Jlint.InsertLine`: Enable or disable insertion of a 'Comment Vertical Line' to
   visually separate code blocks.

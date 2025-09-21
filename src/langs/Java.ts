@@ -127,7 +127,7 @@ export const prettierFormat = async (
 		const msg = err.toString().trim().replace(/\x1B\[[0-9;]*[mGKF]/g, "");
 		const msgRegex = /(\s*)(Sad sad panda)(.*)(line[:])(\s*)(\d+)([\s\S]*?)(column[:])(\s*)(\d+)([\n\s\S]*)(->)(.*)(<-)([\s\S]*)/gm;
 		const msgMatch = msg.match(msgRegex);
-		const msgRegexReplace = `[JLINT]\n\nError Line = [ $6 ]\nError column = [ $10 ]\nError Site = [ $13 ]`;
+		const msgRegexReplace = `[Jlint]\n\nError Line = [ $6 ]\nError column = [ $10 ]\nError Site = [ $13 ]`;
 
 		if (!msgMatch) {
 			console.error(`_____________________\n 'prettierFormat' Error! ('${fileName}')\n${msg}`);

@@ -10,7 +10,7 @@ export const activate = (context: vscode.ExtensionContext) => {
 
     // 1. Get Configuration ------------------------------------------------------------------------
     const getConfiguration = () => {
-      const config = vscode.workspace.getConfiguration("JLINT");
+      const config = vscode.workspace.getConfiguration("Jlint");
       return {
         ActivateLint: config.get("ActivateLint", true) as boolean,
         RemoveComments: config.get("RemoveComments", true) as boolean,
@@ -19,7 +19,7 @@ export const activate = (context: vscode.ExtensionContext) => {
     };
 
     // 2. Register Command ---------------------------------------------------------------------------
-    const command = vscode.commands.registerCommand("extension.JLINT", async () => {
+    const command = vscode.commands.registerCommand("extension.Jlint", async () => {
       const editor = vscode.window.activeTextEditor;
       if (!editor) {
         vscode.window.showErrorMessage("No active editor found!");
@@ -46,7 +46,7 @@ export const activate = (context: vscode.ExtensionContext) => {
     // 3. Listen for configuration changes -----------------------------------------------------------
     context.subscriptions.push(
       vscode.workspace.onDidChangeConfiguration((event) => {
-        event.affectsConfiguration("JLINT") && console.log(`_____________________\n JLINT configuration updated : ${JSON.stringify(getConfiguration(), null, 2)}`);
+        event.affectsConfiguration("Jlint") && console.log(`_____________________\n Jlint configuration updated : ${JSON.stringify(getConfiguration(), null, 2)}`);
       })
     );
 };

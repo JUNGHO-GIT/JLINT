@@ -1,9 +1,9 @@
 {
-	"name": "JLINT",
-	"displayName": "JLINT",
+	"name": "jlint",
+	"displayName": "Jlint",
 	"publisher": "JUNGHO",
 	"icon": "logo.webp",
-	"version": "1.8.0",
+	"version": "1.8.2",
 	"license": "Apache-2.0",
 	"description": "Universal Language formatter",
 	"main": "./out/extension.js",
@@ -33,47 +33,47 @@
 		"menus": {
 			"commandPalette": [
 				{
-					"command": "extension.JLINT",
+					"command": "extension.Jlint",
 					"when": "editorTextFocus"
 				}
 			],
 			"editor/context": [
 				{
-					"command": "extension.JLINT",
+					"command": "extension.Jlint",
 					"when": "editorTextFocus"
 				}
 			]
 		},
 		"commands": [
 			{
-				"command": "extension.JLINT",
-				"title": "JLINT"
+				"command": "extension.Jlint",
+				"title": "Jlint"
 			}
 		],
 		"keybindings": [
 			{
-				"command": "extension.JLINT",
+				"command": "extension.Jlint",
 				"key": "alt+shift+f",
 				"when": "editorTextFocus"
 			}
 		],
 		"configuration": {
 			"order": 0,
-			"title": "JLINT",
+			"title": "Jlint",
 			"properties": {
-				"JLINT.ActivateLint": {
+				"Jlint.ActivateLint": {
 					"type": "boolean",
 					"default": true,
 					"description": "Enable or disable the lint",
 					"scope": "resource"
 				},
-				"JLINT.RemoveComments": {
+				"Jlint.RemoveComments": {
 					"type": "boolean",
 					"default": true,
 					"description": "Enable or disable the remove comments",
 					"scope": "resource"
 				},
-				"JLINT.InsertLine": {
+				"Jlint.InsertLine": {
 					"type": "boolean",
 					"default": false,
 					"description": "Enable or disable the insert 'vertical line'",

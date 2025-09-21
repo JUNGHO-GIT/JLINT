@@ -150,7 +150,7 @@ export const prettierFormat = async (
   catch (err: any) {
     const msg = err.message.toString().trim().replace(/\x1B\[[0-9;]*[mGKF]/g, "");
     const msgRegex = /([\n\s\S]*)(\s*)(https)(.*?)([(])(.*?)([)])([\n\s\S]*)/gm;
-    const msgRegexReplace = `[JLINT]\n\nError Line = [ $6 ]\nError Site = $8`;
+    const msgRegexReplace = `[Jlint]\n\nError Line = [ $6 ]\nError Site = $8`;
     const msgResult = msg.replace(msgRegex, msgRegexReplace);
 
     console.error(`_____________________\n 'prettierFormat' Error! ('${fileName}')\n${msgResult}`);
