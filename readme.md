@@ -32,7 +32,7 @@
 
   <img
     alt="Before"
-    src="https://storage.googleapis.com/jungho-bucket/Jlint/IMAGE/main/main3.webp"
+    src="https://storage.googleapis.com/jungho-bucket/JLINT/IMAGE/main/main3.webp"
     width="400"
   />
 
@@ -40,7 +40,7 @@
 
   <img
     alt="After"
-    src="https://storage.googleapis.com/jungho-bucket/Jlint/IMAGE/main/main4.webp"
+    src="https://storage.googleapis.com/jungho-bucket/JLINT/IMAGE/main/main4.webp"
     width="400"
   />
 
@@ -50,7 +50,7 @@
 
   <img
     alt="Modal"
-    src="https://storage.googleapis.com/jungho-bucket/Jlint/IMAGE/main/main5.webp"
+    src="https://storage.googleapis.com/jungho-bucket/JLINT/IMAGE/main/main5.webp"
     width="400"
   />
 
