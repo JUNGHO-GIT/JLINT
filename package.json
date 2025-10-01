@@ -86,8 +86,9 @@
 		"watch": "tsc -watch -p .",
 		"compile": "tsc -p .",
 		"vsce": "tsc -p . && vsce package",
-		"gcloud-deploy": "node .node/gcloud.cjs --full-deploy",
-		"npm-reset": "pwsh -NoProfile -Command \"try { Stop-Process -Name node -Force -ErrorAction SilentlyContinue } catch {}; Start-Sleep -Milliseconds 200; if (Test-Path 'node_modules') { cmd /c 'rd /s /q \"node_modules\"' } ; if (Test-Path 'package-lock.json') { cmd /c 'del /f /q \"package-lock.json\"' } ; npm install\""
+		"reset": "node .node/reset.cjs --npm",
+		"autofix": "node .node/autofix.cjs",
+		"gcloud": "node .node/gcloud.cjs"
 	},
 	"dependencies": {
 		"@babel/core": "^7.28.4",
