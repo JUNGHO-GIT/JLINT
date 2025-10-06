@@ -1,6 +1,7 @@
 // Contents.ts
 
 import * as vscode from "vscode";
+import { fnLogger } from "../assets/scripts/utils";
 
 // -------------------------------------------------------------------------------------------------
 export const getContents = async (
@@ -42,11 +43,11 @@ export const getContents = async (
 		.join("\n")
 		.trim();
 
-		console.log(`_____________________\n [${fileExt}] 'getContents' Activated!`);
+		fnLogger(fileExt, "getContents", "Y");
 		return updateContent;
   }
   catch (err: any) {
-    console.error(err);
+		fnLogger(fileExt, "getContents", "E", err.message);
     return dataStr;
   }
 };

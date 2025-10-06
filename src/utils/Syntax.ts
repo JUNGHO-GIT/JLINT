@@ -1,6 +1,7 @@
 // Syntax.ts
 
 import lodash from "lodash";
+import { fnLogger } from "../assets/scripts/utils";
 
 // -------------------------------------------------------------------------------------------------
 export const capitalize = async (
@@ -8,7 +9,6 @@ export const capitalize = async (
   fileExt: string
 ) => {
   try {
-
     const rules1 = (
       /([^</>]\b)(\s*)(select|from|where|insert|into|values|update|set|delete|on|create)\b(\s*)([^</>]\b)/gm
     );
@@ -37,17 +37,14 @@ export const capitalize = async (
 		))
 		.value();
 
-    if (fileExt !== "xml" && fileExt !== "sql") {
-      console.log(`_____________________\n [${fileExt}] 'capitalize' Not Supported!`);
-      return contentsParam;
-    }
-    else {
-      console.log(`_____________________\n [${fileExt}] 'capitalize' Activated!`);
-      return finalResult;
-    }
+    return (
+      fileExt !== "xml" && fileExt !== "sql"
+			? (fnLogger(fileExt, "capitalize", "N"), contentsParam)
+			: (fnLogger(fileExt, "capitalize", "Y"), finalResult)
+    );
   }
 	catch (err: any) {
-		console.error(`_____________________\n [${fileExt}] 'capitalize' Error!\n${err.message}`);
+		fnLogger(fileExt, "capitalize", "E", err.message);
     return contentsParam;
   }
 };
@@ -58,7 +55,6 @@ export const singleTags = async (
   fileExt: string
 ) => {
   try {
-
     const rules1 = (
       /(<)\b(area|base|br|col|command|embed|hr|img|input|keygen|link|meta|param|source|track|wbr)\b([\s\n\S]*?)([\n\s]*)([/]*[>])/gm
     );
@@ -75,17 +71,11 @@ export const singleTags = async (
 		))
 		.value();
 
-		if (fileExt !== "html" && fileExt !== "jsp") {
-      console.log(`_____________________\n [${fileExt}] 'singleTags' Not Supported!`);
-      return contentsParam;
-    }
-    else {
-      console.log(`_____________________\n [${fileExt}] 'singleTags' Activated!`);
-      return finalResult;
-    }
+		fnLogger(fileExt, "singleTags", "Y");
+    return finalResult;
   }
   catch (err: any) {
-		console.error(`_____________________\n [${fileExt}] 'singleTags' Error!\n${err.message}`);
+		fnLogger(fileExt, "singleTags", "E", err.message);
     return contentsParam;
   }
 };
@@ -112,17 +102,11 @@ export const brackets = async (
 		))
 		.value();
 
-		if (fileExt !== "html" && fileExt !== "jsp") {
-      console.log(`_____________________\n [${fileExt}] 'brackets' Not Supported!`);
-      return contentsParam;
-    }
-    else {
-      console.log(`_____________________\n [${fileExt}] 'brackets' Activated!`);
-      return finalResult;
-    }
+		fnLogger(fileExt, "brackets", "Y");
+    return finalResult;
   }
   catch (err: any) {
-    console.error(`_____________________\n [${fileExt}] 'brackets' Error!\n${err.message}`);
+    fnLogger(fileExt, "brackets", "E", err.message);
     return contentsParam;
   }
 };
@@ -143,17 +127,11 @@ export const comma = async (
 		))
 		.value();
 
-		if (fileExt !== "html" && fileExt !== "jsp") {
-      console.log(`_____________________\n [${fileExt}] 'comma' Not Supported!`);
-      return contentsParam;
-    }
-    else {
-      console.log(`_____________________\n [${fileExt}] 'comma' Activated!`);
-      return finalResult;
-    }
+		fnLogger(fileExt, "comma", "Y");
+    return finalResult;
   }
   catch (err: any) {
-    console.error(`_____________________\n [${fileExt}] 'comma' Error!\n${err.message}`);
+    fnLogger(fileExt, "comma", "E", err.message);
     return contentsParam;
   }
 };
@@ -164,45 +142,21 @@ export const semicolon = async (
   fileExt: string
 ) => {
   try {
-    const rules1 = (
-      /(^\s*)([\s\S]*?)(\s*)(;)(\s*)(?!(\n)|(\/\/)|( \/\/)|(\})|(;))(\s*)/gm
-    );
-    const rules2 = (
-      /(&nbsp;)(\n+)(&nbsp;)/gm
-    );
-    const rules3 = (
-      /(&lt;)(\n+)(&lt;)/gm
-    );
-    const rules4 = (
-      /(;)(\n*)(\s*)(charset)/gm
-    );
+		const rules1 = (
+			/(\s*)(return)(\s*)([;])/gm
+		);
 
     const finalResult = lodash.chain(contentsParam)
 		.replace(rules1, (...p) => (
-			`${p[1]}${p[2]}${p[4]}\n${p[1]}${p[5]}`
-		))
-		.replace(rules2, (...p) => (
-			`${p[1]}${p[3]}`
-		))
-		.replace(rules3, (...p) => (
-			`${p[1]}${p[3]}`
-		))
-		.replace(rules4, (...p) => (
-			`${p[1]} ${p[4]}`
+			`${p[1]}${p[2]};`
 		))
 		.value();
 
-		if (fileExt !== "html" && fileExt !== "jsp") {
-      console.log(`_____________________\n [${fileExt}] 'semicolon' Not Supported!`);
-      return contentsParam;
-    }
-    else {
-      console.log(`_____________________\n [${fileExt}] 'semicolon' Activated!`);
-      return finalResult;
-    }
+		fnLogger(fileExt, "semicolon", "Y");
+    return finalResult;
   }
   catch (err: any) {
-    console.error(`_____________________\n [${fileExt}] 'semicolon' Error!\n${err.message}`);
+    fnLogger(fileExt, "semicolon", "E", err.message);
     return contentsParam;
   }
 }
@@ -223,17 +177,11 @@ export const quotes = async (
 		))
 		.value();
 
-		if (fileExt !== "html" && fileExt !== "jsp") {
-      console.log(`_____________________\n [${fileExt}] 'quote' Not Supported!`);
-      return contentsParam;
-    }
-    else {
-      console.log(`_____________________\n [${fileExt}] 'quote' Activated!`);
-      return finalResult;
-    }
+		fnLogger(fileExt, "quotes", "Y");
+    return finalResult;
   }
   catch (err: any) {
-    console.error(`_____________________\n [${fileExt}] 'quote' Error!\n${err.message}`);
+    fnLogger(fileExt, "quotes", "E", err.message);
     return contentsParam;
   }
 };

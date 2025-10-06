@@ -8,6 +8,7 @@ import type {Plugin as PrettierPlugin} from "prettier";
 import strip from "strip-comments";
 import type {Options as StripOptions} from "strip-comments";
 import { createRequire } from "module";
+import { fnLogger } from "../assets/scripts/utils";
 
 // 0. removeComments -------------------------------------------------------------------------------
 export const removeComments = async (
@@ -34,11 +35,11 @@ export const removeComments = async (
 			baseOptions
 		);
 
-		console.log(`_____________________\n [${fileExt}] 'removeComments' Activated!`);
+		fnLogger(fileExt, "removeComments", "Y");
 		return finalResult;
 	}
 	catch (err: any) {
-		console.error(err.message);
+		fnLogger(fileExt, "removeComments", "E", err.message);
 		return contentsParam;
 	}
 };
@@ -95,7 +96,7 @@ export const prettierFormat = async (
 				plugins: [javaPlugin]
 			});
 
-			console.log(`_____________________\n [${fileExt}] 'prettierFormat' Activated! (dynamic import)`);
+			fnLogger(fileExt, "prettierFormat", "Y");
 			return formatted;
 		}
 		// 2차: CJS require 경로 해석 후 객체 주입
@@ -114,11 +115,11 @@ export const prettierFormat = async (
 					plugins: [javaPlugin2]
 				});
 
-				console.log(`_____________________\n [${fileExt}] 'prettierFormat' Activated! (createRequire)`);
+				fnLogger(fileExt, "prettierFormat", "Y");
 				return formatted;
 			}
 			catch (fallbackErr: any) {
-				console.error(fallbackErr?.message ?? fallbackErr);
+				fnLogger(fileExt, "prettierFormat", "E", fallbackErr?.message ?? fallbackErr);
 				return contentsParam;
 			}
 		}
@@ -130,12 +131,12 @@ export const prettierFormat = async (
 		const msgRegexReplace = `[Jlint]\n\nError Line = [ $6 ]\nError column = [ $10 ]\nError Site = [ $13 ]`;
 
 		if (!msgMatch) {
-			console.error(`_____________________\n 'prettierFormat' Error! ('${fileName}')\n${msg}`);
+			fnLogger(fileExt, "prettierFormat", "E", msg);
 			return contentsParam;
 		}
 
 		const msgResult = msg.replace(msgRegex, msgRegexReplace);
-		console.error(`_____________________\n 'prettierFormat' Error! ('${fileName}')\n${msgResult}`);
+		fnLogger(fileExt, "prettierFormat", "E", msgResult);
 		vscode.window.showInformationMessage(msgResult, { modal: true });
 		return contentsParam;
 	}
@@ -169,11 +170,11 @@ export const insertSpace = async (
 		))
 		.value();
 
-		console.log(`_____________________\n [${fileExt}] 'insertSpace' Activated!`);
+		fnLogger(fileExt, "insertSpace", "Y");
 		return finalResult
 	}
 	catch (err: any) {
-		console.error(err.message);
+		fnLogger(fileExt, "insertSpace", "E", err.message);
 		return contentsParam;
 	}
 };
@@ -197,11 +198,11 @@ export const insertLine = async (
 		})
 		.value();
 
-		console.log(`_____________________\n [${fileExt}] 'insertLine' Activated!`);
+		fnLogger(fileExt, "insertLine", "Y");
 		return finalResult
 	}
 	catch (err: any) {
-		console.error(err.message);
+		fnLogger(fileExt, "insertLine", "E", err.message);
 		return contentsParam;
 	}
 };
@@ -282,11 +283,11 @@ export const lineBreak = async (
 		))
 		.value();
 
-		console.log(`_____________________\n [${fileExt}] 'lineBreak' Activated!`);
+		fnLogger(fileExt, "lineBreak", "Y");
 		return finalResult
 	}
 	catch (err: any) {
-		console.error(err.message);
+		fnLogger(fileExt, "lineBreak", "E", err.message);
 		return contentsParam;
 	}
 };
@@ -331,11 +332,11 @@ export const finalCheck = async (
 		))
 		.value();
 
-		console.log(`_____________________\n [${fileExt}] 'finalCheck' Activated!`);
+		fnLogger(fileExt, "finalCheck", "Y");
 		return finalResult
 	}
 	catch (err: any) {
-		console.error(err.message);
+		fnLogger(fileExt, "finalCheck", "E", err.message);
 		return contentsParam;
 	}
 };

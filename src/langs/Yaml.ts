@@ -6,7 +6,7 @@ import type {Options as PrettierOptions} from "prettier";
 import type {Plugin as PrettierPlugin} from "prettier";
 import strip from "strip-comments";
 import type {Options as StripOptions} from "strip-comments";
-import { createRequire } from "module";
+import { fnLogger } from "../assets/scripts/utils";
 
 // 0. removeComments -------------------------------------------------------------------------------
 export const removeComments = async (
@@ -33,11 +33,11 @@ export const removeComments = async (
 			baseOptions
 		);
 
-    console.log(`_____________________\n [${fileExt}] 'removeComments' Activated!`);
+    fnLogger(fileExt, "removeComments", "Y");
     return finalResult;
   }
   catch (err: any) {
-    console.error(`_____________________\n [${fileExt}] 'removeComments' Error!\n${err.message}`);
+    fnLogger(fileExt, "removeComments", "E", err.message);
     return contentsParam;
   }
 };
@@ -104,7 +104,7 @@ export const prettierFormat = async (
     const msgRegexReplace = `[Jlint]\n\nError Line = [ $6 ]\nError Site = $8`;
     const msgResult = msg.replace(msgRegex, msgRegexReplace);
 
-    console.error(`_____________________\n 'prettierFormat' Error! ('${fileName}')\n${msgResult}`);
+    fnLogger(fileExt, "prettierFormat", "E", msgResult);
     vscode.window.showInformationMessage(msgResult, { modal: true });
     return contentsParam;
   }
@@ -118,11 +118,11 @@ export const insertSpace = async (
   try {
     const finalResult = contentsParam;
 
-    console.log(`_____________________\n [${fileExt}] 'insertSpace' Activated!`);
+    fnLogger(fileExt, "insertSpace", "Y");
     return finalResult
   }
   catch (err: any) {
-		console.error(`_____________________\n [${fileExt}] 'insertSpace' Error!\n${err.message}`);
+		fnLogger(fileExt, "insertSpace", "E", err.message);
     return contentsParam;
   }
 };
@@ -135,11 +135,11 @@ export const insertLine = async (
   try {
     const finalResult = contentsParam;
 
-    console.log(`_____________________\n [${fileExt}] 'insertLine' Activated!`);
+    fnLogger(fileExt, "insertLine", "Y");
     return finalResult
   }
   catch (err: any) {
-    console.error(`_____________________\n [${fileExt}] 'insertLine' Error!\n${err.message}`);
+    fnLogger(fileExt, "insertLine", "E", err.message);
     return contentsParam;
   }
 };
@@ -152,11 +152,11 @@ export const lineBreak = async (
   try {
     const finalResult = contentsParam;
 
-    console.log(`_____________________\n [${fileExt}] 'lineBreak' Not Supported!`);
+    fnLogger(fileExt, "lineBreak", "N");
     return finalResult;
   }
   catch (err: any) {
-		console.error(`_____________________\n [${fileExt}] 'lineBreak' Error!\n${err.message}`);
+		fnLogger(fileExt, "lineBreak", "E", err.message);
     return contentsParam;
   }
 };
@@ -169,11 +169,11 @@ export const finalCheck = async (
   try {
     const finalResult = contentsParam;
 
-    console.log(`_____________________\n [${fileExt}] 'finalCheck' Activated!`);
+    fnLogger(fileExt, "finalCheck", "Y");
     return finalResult
   }
   catch (err: any) {
-    console.error(`_____________________\n [${fileExt}] 'finalCheck' Error!\n${err.message}`);
+    fnLogger(fileExt, "finalCheck", "E", err.message);
     return contentsParam;
   }
 };

@@ -1,6 +1,7 @@
 // Logic.ts
 
 import lodash from "lodash";
+import { fnLogger } from "../assets/scripts/utils";
 
 // -------------------------------------------------------------------------------------------------
 export const ifElse = async (
@@ -8,12 +9,11 @@ export const ifElse = async (
   fileExt: string,
 ) => {
   try {
-
     const rules1 = (
       /(\b)(if)(\()/gm
     );
     const rules2 = (
-      /(.*?)(?<=\})(\s*)(\n*)(\s*)(else if)(\s*)(\(?)(?:\s*)(.*?)(\s*)(?:\))(\s*)(\{?)(?:\s*)(.*?)(\s*)(\})/gm
+      /(.*?)(?<=\})(\s*)(\n*)(\s*)(if|else if)(\s*)(\(?)(?:\s*)(.*?)(\s*)(?:\))(\s*)(\{?)(?:\s*)(.*?)(\s*)(\})/gm
     );
     const rules3 = (
       /(.*?)(?<=\})(\s*)(\n*)(\s*)(else(?!\s*if))(\s*)(\{?)(?:\s*)(.*?)(\s*)(\})/gm
@@ -24,33 +24,23 @@ export const ifElse = async (
 			`${p[2]} (`
 		))
 		.replace(rules2, (...p) => {
-			const indentSize1 = p[1].length - `}`.length;
-			const indentSize2 = p[13].length - `}`.length;
-			const spaceSize = indentSize1 ===-1 ? indentSize2 : indentSize1;
-			const insertSize = (" ").repeat(spaceSize);
-
-			return `${p[1]}\n${insertSize}else if (${p[8]}) {\n${insertSize}\t${p[12]}\n${insertSize}}`;
+			const baseIndent = p[1].match(/^(.*?)\}$/)?.[1] || '';
+			return `${p[1]}\n${baseIndent}${p[5]} (${p[8]}) {\n${baseIndent}\t${p[12]}\n${baseIndent}}`;
 		})
 		.replace(rules3, (...p) => {
-			const indentSize1 = p[1].length - `}`.length;
-			const indentSize2 = p[9].length - `}`.length;
-			const spaceSize = indentSize1 == -1 ? indentSize2 : indentSize1;
-			const insertSize = " ".repeat(spaceSize);
-			return `${p[1]}\n${insertSize}else {\n${insertSize}\t${p[8]}\n${insertSize}}`;
+			const baseIndent = p[1].match(/^(.*?)\}$/)?.[1] || '';
+			return `${p[1]}\n${baseIndent}${p[5]} {\n${baseIndent}\t${p[8]}\n${baseIndent}}`;
 		})
 		.value();
 
-    if (fileExt === "xml" || fileExt === "json" || fileExt === "sql") {
-      console.log(`_____________________\n [${fileExt}] 'ifElse' Not Supported!`);
-      return contentsParam;
-    }
-    else {
-      console.log(`_____________________\n [${fileExt}] 'ifElse' Activated!`);
-      return finalResult;
-    }
+    return (
+      fileExt === "xml" || fileExt === "json" || fileExt === "sql"
+			? (fnLogger(fileExt, "ifElse", "N"), contentsParam)
+			: (fnLogger(fileExt, "ifElse", "Y"), finalResult)
+    );
   }
   catch (err: any) {
-		console.error(`_____________________\n [${fileExt}] 'ifElse' Error!\n${err.message}`);
+		fnLogger(fileExt, "ifElse", "E", err.message);
     return contentsParam;
   }
 };
@@ -72,29 +62,31 @@ export const tryCatch = async (
     );
 
     const finalResult = lodash.chain(contentsParam)
-		.replace(rules1, (...p) => (
-			`${p[1]}try {${p[5]}`
-		))
-		.replace(rules2, (...p) => (
-			`${p[1]}${p[2]}\n${p[1]}catch`
-		))
-		.replace(rules3, (...p) => (
-			`${p[1]}${p[2]}\n${p[1]}${p[4]}`
-		))
+		.replace(rules1, (...p) => {
+			const leadingMatch = p[1].match(/^(\s*)/);
+			const insertSize = leadingMatch ? leadingMatch[1] : "";
+			return `${insertSize}try {${p[5]}`;
+		})
+		.replace(rules2, (...p) => {
+			const leadingMatch = p[1].match(/^(\s*)/);
+			const insertSize = leadingMatch ? leadingMatch[1] : "";
+			return `${insertSize}${p[2]}\n${insertSize}catch`;
+		})
+		.replace(rules3, (...p) => {
+			const leadingMatch = p[1].match(/^(\s*)/);
+			const insertSize = leadingMatch ? leadingMatch[1] : "";
+			return `${insertSize}${p[2]}\n${insertSize}${p[4]}`;
+		})
 		.value();
 
-    if (fileExt === "xml" || fileExt === "json" || fileExt === "sql") {
-      console.log(`_____________________\n [${fileExt}] 'tryCatch' Not Supported!`);
-      return contentsParam;
-    }
-    else {
-      console.log(`_____________________\n [${fileExt}] 'tryCatch' Activated!`);
-      return finalResult;
-    }
+    return (
+      fileExt === "xml" || fileExt === "json" || fileExt === "sql"
+			? (fnLogger(fileExt, "tryCatch", "N"), contentsParam)
+			: (fnLogger(fileExt, "tryCatch", "Y"), finalResult)
+    );
   }
-
 	catch (err: any) {
-		console.error(`_____________________\n [${fileExt}] 'tryCatch' Error!\n${err.message}`);
+		fnLogger(fileExt, "tryCatch", "E", err.message);
     return contentsParam;
   }
 };
