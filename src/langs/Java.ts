@@ -8,7 +8,7 @@ import type {Plugin as PrettierPlugin} from "prettier";
 import strip from "strip-comments";
 import type {Options as StripOptions} from "strip-comments";
 import { createRequire } from "module";
-import { fnLogger } from "@scripts/utils";
+import { fnLogger } from "../assets/scripts/utils";
 
 // 0. removeComments -------------------------------------------------------------------------------
 export const removeComments = async (
@@ -84,7 +84,7 @@ export const prettierFormat = async (
 
 		// 1차: ESM 동적 임포트로 플러그인 객체 주입
 		try {
-			const mod = await import("prettier-plugin-java");
+			const mod = await import("prettier-plugin-java" as any);
 			const javaPlugin: PrettierPlugin = ((mod as any)?.default ?? mod) as PrettierPlugin;
 
 			if ((javaPlugin as any)?.parsers?.java == null) {
@@ -270,7 +270,7 @@ export const lineBreak = async (
 			`${p[1]}${p[2]}${p[3]}${p[4]}\n\n${p[7]}${p[8]}`
 		))
 		.replace(rules8, (...p) => (
-			`${p[1]}\n\n${p[3]}${p[4]}${p[5]}${p[6]}${p[7]}${p[8]}${p[9]}${p[10]}${p[11]}`
+			`${p[1]}\n${p[3]}${p[4]}${p[5]}${p[6]}${p[7]}${p[8]}${p[9]}${p[10]}${p[11]}`
 		))
 		.replace(rules11, (...p) => (
 			`${p[1]}${p[2]} (${p[5]}${p[7]})`

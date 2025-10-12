@@ -7,7 +7,7 @@ import type {Options as PrettierOptions} from "prettier";
 import CleanCSS from "clean-css";
 import strip from "strip-comments";
 import type {Options as StripOptions} from "strip-comments";
-import { fnLogger } from "@scripts/utils";
+import { fnLogger } from "../assets/scripts/utils";
 
 // 0. removeComments -------------------------------------------------------------------------------
 export const removeComments = async (
@@ -18,7 +18,7 @@ export const removeComments = async (
 ) => {
   try {
     const minifyResult = (
-				new CleanCSS({
+			new CleanCSS({
 				format: {
 					breaks: {
 						afterAtRule: true,

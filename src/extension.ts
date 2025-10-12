@@ -1,5 +1,6 @@
 // extension.ts
 
+import "tsconfig-paths/register";
 import * as path from "path";
 import * as vscode from "vscode";
 import { main } from "./core/Main";

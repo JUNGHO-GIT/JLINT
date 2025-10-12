@@ -1,7 +1,7 @@
 // Syntax.ts
 
 import lodash from "lodash";
-import { fnLogger } from "@scripts/utils";
+import { fnLogger } from "../assets/scripts/utils";
 
 // -------------------------------------------------------------------------------------------------
 export const capitalize = async (
