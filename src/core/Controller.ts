@@ -1,7 +1,7 @@
 // Controller.ts
 
-import { capitalize, singleTags, brackets, comma, semicolon, quotes } from '../utils/Syntax.js';
-import { ifElse, tryCatch } from '../utils/Logic.js';
+import { capitalize, singleTags, brackets, comma, semicolon, quotes } from "../utils/Syntax";
+import { ifElse, tryCatch } from "../utils/Logic";
 import { fnLogger } from "../assets/scripts/utils";
 
 // -------------------------------------------------------------------------------------------------

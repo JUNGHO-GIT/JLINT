@@ -5,7 +5,7 @@ import prettier from "prettier";
 import type {Options as PrettierOptions} from "prettier";
 import stripJsonComments from "strip-json-comments";
 import type {Options as StripOptions} from "strip-json-comments";
-import { fnLogger } from "../assets/scripts/utils";
+import { fnLogger } from "@scripts/utils";
 
 // 0. removeComments -------------------------------------------------------------------------------
 export const removeComments = async (

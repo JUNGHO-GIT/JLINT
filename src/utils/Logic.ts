@@ -1,7 +1,7 @@
 // Logic.ts
 
 import lodash from "lodash";
-import { fnLogger } from "../assets/scripts/utils";
+import { fnLogger } from "@scripts/utils";
 
 // -------------------------------------------------------------------------------------------------
 export const ifElse = async (

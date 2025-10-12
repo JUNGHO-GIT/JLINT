@@ -8,7 +8,7 @@ import type {Plugin as PrettierPlugin} from "prettier";
 import strip from "strip-comments";
 import type {Options as StripOptions} from "strip-comments";
 import { createRequire } from "module";
-import { fnLogger } from "../assets/scripts/utils";
+import { fnLogger } from "@scripts/utils";
 
 // 0. removeComments -------------------------------------------------------------------------------
 export const removeComments = async (
