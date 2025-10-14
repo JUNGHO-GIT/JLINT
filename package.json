@@ -3,7 +3,7 @@
 	"displayName": "Jlint",
 	"publisher": "JUNGHO",
 	"icon": "logo.webp",
-	"version": "1.8.9",
+	"version": "1.9.0",
 	"license": "Apache-2.0",
 	"description": "Universal Language formatter",
 	"main": "./out/extension.js",
@@ -132,7 +132,6 @@
 		"prettier-plugin-java": "2.7.6",
 		"prettier-plugin-jsp": "^1.0.13",
 		"prettier-plugin-xml": "^0.1.0",
-		"tsconfig-paths": "^4.2.0",
 		"typescript": "^5.9.3"
 	}
 }
