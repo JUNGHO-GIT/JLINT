@@ -12,9 +12,11 @@ export const activate = (context: vscode.ExtensionContext) => {
     const getConfiguration = () => {
       const config = vscode.workspace.getConfiguration("Jlint");
       return {
-        ActivateLint: config.get("ActivateLint", true) as boolean,
-        RemoveComments: config.get("RemoveComments", true) as boolean,
-        InsertLine: config.get("InsertLine", true) as boolean
+        activateLint: config.get("activateLint", true) as boolean,
+        removeComments: config.get("removeComments", true) as boolean,
+        insertLine: config.get("insertLine", true) as boolean,
+        tabSize: config.get("tabSize", 2) as number,
+        quoteType: config.get("quoteType", "double") as string
       };
     };
 
@@ -28,7 +30,7 @@ export const activate = (context: vscode.ExtensionContext) => {
 
       const filePath = editor.document.uri.fsPath;
       const fileName = path.basename(filePath);
-      const fileTabSize = parseInt(editor.options.tabSize as string);
+      const fileTabSize = getConfiguration().tabSize;
       const fileEol = String(editor.document.eol === 1 ? "lf" : "crlf");
       const fileExt = editor.document.languageId;
 

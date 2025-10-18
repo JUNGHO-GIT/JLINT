@@ -6,9 +6,11 @@ import { fnLogger } from "../assets/scripts/utils";
 
 // -------------------------------------------------------------------------------------------------
 declare type ConfProps = {
-  ActivateLint: boolean,
-  RemoveComments: boolean,
-  InsertLine: boolean
+  activateLint: boolean,
+  removeComments: boolean,
+  insertLine: boolean,
+  tabSize: number,
+  quoteType: string
 };
 
 // -------------------------------------------------------------------------------------------------
@@ -44,16 +46,16 @@ export const getLanguage = async (
 
   let langRules = await import(`../langs/${langStr}.js`);
   let resultContents = initContents;
-  if (!confParam.ActivateLint) {
+  if (!confParam.activateLint) {
 		return resultContents;
 	}
-	confParam.RemoveComments && (
+	confParam.removeComments && (
 		resultContents = await langRules.removeComments(resultContents, fileTabSize, fileEol, fileExt)
 	);
-	confParam.ActivateLint && (
-		resultContents = await langRules.prettierFormat(resultContents, fileName, fileTabSize, fileEol, fileExt)
+	confParam.activateLint && (
+		resultContents = await langRules.prettierFormat(confParam, resultContents, fileName, fileTabSize, fileEol, fileExt)
 	);
-	confParam.InsertLine && (
+	confParam.insertLine && (
 		resultContents = await langRules.insertLine(resultContents, fileExt)
 	);
 	resultContents = await langRules.insertSpace(resultContents, fileExt);
@@ -71,7 +73,7 @@ export const getSyntax = async (
 ) => {
 
   let resultContents = afterLanguageContents;
-  if (!confParam.ActivateLint) {
+  if (!confParam.activateLint) {
 		return resultContents;
 	}
 	resultContents = await capitalize(resultContents, fileExt);
@@ -92,7 +94,7 @@ export const getLogic = async (
 ) => {
 
   let resultContents = afterSyntaxContents;
-  if (!confParam.ActivateLint) {
+  if (!confParam.activateLint) {
 		return resultContents;
 	}
 	resultContents = await ifElse(resultContents, fileExt);

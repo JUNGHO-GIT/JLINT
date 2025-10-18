@@ -9,6 +9,15 @@ import type {Options as StripOptions} from "strip-comments";
 import type { FormatOptionsWithLanguage } from "sql-formatter";
 import { fnLogger } from "../assets/scripts/utils";
 
+// -------------------------------------------------------------------------------------------------
+declare type ConfProps = {
+  activateLint: boolean,
+  removeComments: boolean,
+  insertLine: boolean,
+  tabSize: number,
+  quoteType: string
+};
+
 // 0. removeComments -------------------------------------------------------------------------------
 export const removeComments = async (
   contentsParam: string,
@@ -38,6 +47,7 @@ export const removeComments = async (
 
 // 1. prettierFormat -------------------------------------------------------------------------------
 export const prettierFormat = async (
+  confParam: ConfProps,
   contentsParam: string,
   fileName: string,
   fileTabSize: number,
@@ -47,7 +57,7 @@ export const prettierFormat = async (
   try {
     const baseOptions: FormatOptionsWithLanguage = {
       language: "mysql",
-      tabWidth: fileTabSize,
+      tabWidth: confParam.tabSize,
       useTabs: true,
       keywordCase: "upper",
       dataTypeCase: "upper",

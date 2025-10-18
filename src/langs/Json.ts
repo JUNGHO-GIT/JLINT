@@ -7,6 +7,15 @@ import stripJsonComments from "strip-json-comments";
 import type {Options as StripOptions} from "strip-json-comments";
 import { fnLogger } from "../assets/scripts/utils";
 
+// -------------------------------------------------------------------------------------------------
+declare type ConfProps = {
+  activateLint: boolean,
+  removeComments: boolean,
+  insertLine: boolean,
+  tabSize: number,
+  quoteType: string
+};
+
 // 0. removeComments -------------------------------------------------------------------------------
 export const removeComments = async (
   contentsParam: string,
@@ -40,6 +49,7 @@ export const removeComments = async (
 
 // 1. prettierFormat -------------------------------------------------------------------------------
 export const prettierFormat = async (
+  confParam: ConfProps,
   contentsParam: string,
   fileName: string,
   fileTabSize: number,
@@ -49,12 +59,12 @@ export const prettierFormat = async (
   try {
     const baseOptions: PrettierOptions = {
       parser: "json",
-      singleQuote: false,
+      singleQuote: confParam.quoteType === "single",
       printWidth: 1000,
-      tabWidth: fileTabSize,
+      tabWidth: confParam.tabSize,
       useTabs: true,
       quoteProps: "as-needed",
-      jsxSingleQuote: false,
+      jsxSingleQuote: confParam.quoteType === "single",
       trailingComma: "all",
       bracketSpacing: false,
       jsxBracketSameLine: false,

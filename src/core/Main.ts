@@ -6,9 +6,11 @@ import { getLanguage, getSyntax, getLogic } from "./Controller";
 
 // -------------------------------------------------------------------------------------------------
 declare type ConfProps = {
-  ActivateLint: boolean,
-  RemoveComments: boolean,
-  InsertLine: boolean
+  activateLint: boolean,
+  removeComments: boolean,
+  insertLine: boolean,
+  tabSize: number,
+  quoteType: string
 };
 
 // -------------------------------------------------------------------------------------------------
@@ -23,9 +25,11 @@ export const main = async (
 
   console.log(
     `_____________________
-    ActivateLint: ${confParam.ActivateLint}
-    RemoveComments: ${confParam.RemoveComments}
-    InsertLine: ${confParam.InsertLine}
+    activateLint: ${confParam.activateLint}
+    removeComments: ${confParam.removeComments}
+    insertLine: ${confParam.insertLine}
+    tabSize: ${confParam.tabSize}
+    quoteType: ${confParam.quoteType}
     fileName: ${fileName}
     fileExt: ${fileExt}
     fileTabSize: ${fileTabSize}
