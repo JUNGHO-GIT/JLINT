@@ -1,6 +1,6 @@
 // Java.ts
 
-import { lodash, prettier, strip, createRequire } from "@exportLibs";
+import { lodash, strip, createRequire } from "@exportLibs";
 import type { PrettierOptions, StripOptions } from "@exportLibs";
 import type { Plugin as PrettierPlugin } from "prettier";
 import { logger, notify } from "@exportScripts";
@@ -96,7 +96,8 @@ export const prettierFormat = async (
 				throw new Error("ParserNotRegistered");
 			}
 
-			const formatted = await prettier.format(contentsParam, {
+			const prettierLib = await import("prettier").then((m: any) => (m.default || m));
+			const formatted = await prettierLib.format(contentsParam, {
 				...baseOptions,
 				plugins: [javaPlugin]
 			});
@@ -115,7 +116,8 @@ export const prettierFormat = async (
 					throw new Error("ParserNotRegistered");
 				}
 
-				const formatted = await prettier.format(contentsParam, {
+				const prettierLib2 = await import("prettier").then((m: any) => (m.default || m));
+				const formatted = await prettierLib2.format(contentsParam, {
 					...baseOptions,
 					plugins: [javaPlugin2]
 				});
@@ -195,7 +197,7 @@ export const insertLine = async (
 		);
 
 		const finalResult = lodash.chain(contentsParam)
-		.replace(rules1, (...p) => {
+		.replace(rules1, (...p: any[]) => {
 			const spaceSize = p[1].length + (`// `).length + (`-`).length;
 			const insertSize = 100 - spaceSize;
 			const insetLine = (`// ${"-".repeat(insertSize)}`);

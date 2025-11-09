@@ -1,6 +1,6 @@
 // Css.ts
 
-import { lodash, prettier, CleanCSS, strip } from "@exportLibs";
+import { lodash, CleanCSS, strip } from "@exportLibs";
 import type { PrettierOptions, StripOptions } from "@exportLibs";
 import { logger, notify } from "@exportScripts";
 
@@ -148,8 +148,9 @@ export const prettierFormat = async (
       __embeddedInHtml: true,
     };
 
-  	logger("debug", `${fileExt}:prettierFormat`, "Y");
-    const finalResult = prettier.format(contentsParam, baseOptions);
+    logger("debug", `${fileExt}:prettierFormat`, "Y");
+     const prettierLib = await import("prettier").then((m: any) => (m.default || m));
+     const finalResult = prettierLib.format(contentsParam, baseOptions);
     return finalResult;
   }
   catch (err: any) {

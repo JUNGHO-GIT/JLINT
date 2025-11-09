@@ -1,6 +1,6 @@
 // Xml.ts
 
-import { lodash, prettier, strip } from "@exportLibs";
+import { lodash, strip } from "@exportLibs";
 import type { PrettierOptions, StripOptions } from "@exportLibs";
 import type { PrettierPlugin } from "@exportLibs";
 import { logger, notify } from "@exportScripts";
@@ -96,7 +96,8 @@ export const prettierFormat = async (
         throw new Error("ParserNotRegistered");
       }
 
-      const finalResult = await prettier.format(contentsParam, {
+			const prettierLib = await import("prettier").then((m: any) => (m.default || m));
+			const finalResult = await prettierLib.format(contentsParam, {
         ...baseOptions,
         plugins: [xmlPlugin]
       });
@@ -117,7 +118,8 @@ export const prettierFormat = async (
           throw new Error("ParserNotRegistered");
         }
 
-        const finalResult = await prettier.format(contentsParam, {
+				const prettierLib2 = await import("prettier").then((m: any) => (m.default || m));
+				const finalResult = await prettierLib2.format(contentsParam, {
           ...baseOptions,
           plugins: [xmlPlugin2]
         });
@@ -135,7 +137,7 @@ export const prettierFormat = async (
     const msgResult = msg.replace(msgRegex, msgRegexReplace);
 
   	logger("error", `${fileExt}:prettierFormat`, msgResult);
-  notify("error", fileExt, msgResult);
+  	notify("error", fileExt, msgResult);
     return contentsParam;
   }
 };

@@ -1,6 +1,6 @@
 // Json.ts
 
-import { prettier, stripJsonComments } from "@exportLibs";
+import { stripJsonComments } from "@exportLibs";
 import type { PrettierOptions, StripJsonOptions } from "@exportLibs";
 import { logger, notify } from "@exportScripts";
 
@@ -81,8 +81,9 @@ export const prettierFormat = async (
       __embeddedInHtml: true,
     };
 
-  	logger("debug", `${fileExt}:prettierFormat`, "Y");
-    const finalResult = prettier.format(contentsParam, baseOptions);
+    logger("debug", `${fileExt}:prettierFormat`, "Y");
+     const prettierLib = await import("prettier").then((m: any) => (m.default || m));
+     const finalResult = prettierLib.format(contentsParam, baseOptions);
     return finalResult;
   }
   catch (err: any) {
@@ -92,7 +93,7 @@ export const prettierFormat = async (
     const msgResult = msg.replace(msgRegex, msgRegexReplace);
 
   	logger("error", `${fileExt}:prettierFormat`, msgResult);
-  notify("error", fileExt, msgResult);
+  	notify("error", fileExt, msgResult);
     return contentsParam;
   }
 };

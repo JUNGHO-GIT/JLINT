@@ -44,7 +44,7 @@ export const getLanguage = async (
 		notify("error", `${fileExt}:getLanguage`, `Unsupported language: ${fileExt}`)
 	);
 
-  let langRules = await import(`@exportLangs/${langStr}`);
+  let langRules = await import(`../langs/${langStr}`);
   let resultContents = initContents;
   if (!confParam.activateLint) {
 		return resultContents;

@@ -1,6 +1,6 @@
 // Html.ts
 
-import { lodash, prettier } from "@exportLibs";
+import { lodash } from "@exportLibs";
 import type { PrettierOptions } from "@exportLibs";
 import { htmlMinify as minify, strip } from "@exportLibs";
 import type { StripOptions } from "@exportLibs";
@@ -222,8 +222,9 @@ export const prettierFormat = async (
 		))
 		.value();
 
-  	logger("debug", `${fileExt}:prettierFormat`, "Y");
-    const finalResult = prettier.format(result, baseOptions);
+    logger("debug", `${fileExt}:prettierFormat`, "Y");
+     const prettierLib = await import("prettier").then((m: any) => (m.default || m));
+     const finalResult = prettierLib.format(result, baseOptions);
 
     return finalResult;
   }
@@ -234,7 +235,7 @@ export const prettierFormat = async (
     const msgResult = msg.replace(msgRegex, msgRegexReplace);
 
   	logger("error", `${fileExt}:prettierFormat`, msgResult);
-  notify("error", fileExt, msgResult);
+  	notify("error", fileExt, msgResult);
     return contentsParam;
   }
 };
@@ -311,47 +312,47 @@ export const insertLine = async (
     );
 
     const finalResult = lodash.chain(contentsParam)
-		.replace(rules1, (...p) => {
+		.replace(rules1, (...p: any[]) => {
 			const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
 			const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
 			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
 		})
-		.replace(rules2, (...p) => {
+		.replace(rules2, (...p: any[]) => {
 			const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
 			const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
 			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
 		})
-		.replace(rules3, (...p) => {
+		.replace(rules3, (...p: any[]) => {
 			const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
 			const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
 			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
 		})
-		.replace(rules4, (...p) => {
+		.replace(rules4, (...p: any[]) => {
 			const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
 			const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
 			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
 		})
-		.replace(rules5, (...p) => {
+		.replace(rules5, (...p: any[]) => {
 			const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
 			const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
 			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
 		})
-		.replace(rules6, (...p) => {
+		.replace(rules6, (...p: any[]) => {
 			const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
 			const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
 			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
 		})
-		.replace(rules7, (...p) => {
+		.replace(rules7, (...p: any[]) => {
 			const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
 			const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
 			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
 		})
-		.replace(rules8, (...p) => {
+		.replace(rules8, (...p: any[]) => {
 			const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
 			const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
 			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
 		})
-		.replace(rules9, (...p) => {
+		.replace(rules9, (...p: any[]) => {
 			const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
 			const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
 			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;

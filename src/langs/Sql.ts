@@ -1,6 +1,6 @@
 // Sql.ts
 
-import { vscode, lodash, prettier, strip } from "@exportLibs";
+import { vscode, lodash, strip } from "@exportLibs"; // sql-formatter uses own API, prettier removed
 import type { PrettierOptions, StripOptions, FormatOptionsWithLanguage } from "@exportLibs";
 import { logger, notify } from "@exportScripts";
 
@@ -66,8 +66,10 @@ export const prettierFormat = async (
       newlineBeforeSemicolon: false
     };
 
-  	logger("debug", `${fileExt}:prettierFormat`, "Y");
-    const finalResult = prettier.format(contentsParam, baseOptions);
+    logger("debug", `${fileExt}:prettierFormat`, "Y");
+     // sql formatter: dynamic import only when needed
+     const sqlFormatterLib = await import("sql-formatter");
+     const finalResult = (sqlFormatterLib as any).format(contentsParam, baseOptions);
     return finalResult;
   }
   catch (err: any) {
@@ -77,7 +79,7 @@ export const prettierFormat = async (
     const msgResult = msg.replace(msgRegex, msgRegexReplace);
 
   	logger("error", `${fileExt}:prettierFormat`, msgResult);
-  notify("error", fileExt, msgResult);
+  	notify("error", fileExt, msgResult);
     return contentsParam;
   }
 };

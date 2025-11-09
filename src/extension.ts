@@ -26,7 +26,7 @@ export const activate = (context: vscode.ExtensionContext) => {
     const command = vscode.commands.registerCommand("extension.Jlint", async () => {
       const editor = vscode.window.activeTextEditor;
       if (!editor) {
-        notify("error", "extension", "No active editor found!");
+        notify("error", "Jlint", "No active editor found.");
         return;
       }
 
@@ -44,6 +44,7 @@ export const activate = (context: vscode.ExtensionContext) => {
         fileEol,
         fileExt,
       );
+      notify("info", "Jlint", `Linting completed for ${fileName}`);
     });
     context.subscriptions.push(command);
 
