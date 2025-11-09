@@ -1,27 +1,99 @@
-0. Maximum Java version: Java 11
-1. Priority: reduce memory waste/leaks, maximize performance and efficiency
-2. Do not shorten variable/parameter names to extremes (e.g., result => r)
-3. Never break a line before a semicolon
-4. Use arrow function format and add 'fn' prefix (e.g., 'fnFoo')
-5. Never change comments, even simple `----` lines
-6. Use JUST ONE SPACE around assignment operators ('=' or ':')
-7. ALWAYS use line breaks and indentation after '{' and before '}' for all brackets: '()', '[]', '{}'
-8. Avoid 'if' statements - use ternary operator or '&&' / '||' instead
-9. When modifying code, convert all 'if' statements to ternary or '&&' / '||'
-10. ONLY when 'if', 'else', 'else if', 'try', 'catch', 'finally' are unavoidable:
-	- Must use braces {..} with line breaks and indentation
-	- Line break immediately after '{' and before '}'
-	- Never write on a single line
-	- Format: `}\n\telse {` or `}\n\telse if (condition) {` or `}\n\tcatch (Exception e) {` or `}\n\tfinally {`
+# CORE PRINCIPLES & CONTEXT & LANGUAGE
 
-CORRECT:
+## Response Principles
+- Provide detailed, objective, professional responses
+- Capture core intent, not just literal interpretation
+- Never fabricate And Acknowledge and correct errors immediately
+- Korean development environment (may include Korean terms/comments)
+
+## Coding Philosophy
+- PerformanceFirst: minimize memory waste/leaks, maximize efficiency
+- Readability: clear variable names (avoid extreme abbreviations)
+- Maintainability: avoid deeply nested logic, prefer flat structure
+- FunctionOrganization: group by logical flow units, not micro-tasks
+- StyleGuide: avoid spaghetti code like more over 4 phase indentation etc
+
+## MANDATORY Code Modification Protocol
+- ALWAYS PREFER ternary operators or IIFE over if-else statements
+- ALWAYS send it in "code format" so that I can "copy and paste" it
+- ALWAYS modify and return "MODIFIED code" ONLY
+- SEND entire code when i request entire code specially
+- NEVER modify comments (preserve `// -----------` exactly)
+- NEVER break line before semicolon
+- ALWAYS Exactly ONE SPACE around "=" or ":"
+
+## Java (max v1.8)
+- Instead of complicating things by separating small methods, define inner classes within a larger class and define related methods within those inner classes.
+
+## JavaScript/TypeScript (ES6+)
+- Prefer ternary/&& over if statements
+- Prefer Arrow functions
+- Template literals: `foo` (backticks)
+- Object keys: always double quotes ("key": value)
+
+# FORMATTING RULES
+
+## IIFE
+- Prefer IIFE over if-else for control flow when ternary is insufficient
+- AVOID excessive IIFE: use simple parentheses when no function scope needed
+- Only use arrow function wrapper `(() => { })()` when multiple statements require isolated scope, variable declarations need block scoping, or return statement needed mid-execution
+- **INCORRECT:**
+```javascript
+(!result.error) ? (() => {
+  const okStatus = typeof result.status === `number` ? result.status === 0 : true;
+  return okStatus;
+})() : (
+  false
+)
+```
+- **CORRECT:**
+```javascript
+(!result.error) ? (
+  typeof result.status === `number` ? result.status === 0 : true
+) : (
+  false
+)
+```
+
+## TERNARY CHAINS
+- Wrap each condition/result in parentheses on separate lines
+- **INCORRECT:**
+```javascript
+(!str || str === "today") ? moment() : (str === "yesterday") ? moment(str, "YYYYMMDD") : moment(str);
+```
+- **CORRECT:**
+```javascript
+(!str || str === `today`) ? (
+  moment()
+) : (str === "yesterday") ? (
+  moment(str, "YYYYMMDD")
+) : (
+  moment(str)
+)
+```
+
+## IF/ELSE TRY/CATCH
+- ALWAYS PREFER ternary operators or IIFE over if-else statements
+- ALL if/else/try/catch MUST use braces with line breaks
+- Closing brace and else/catch on SEPARATE lines: `}\nelse {`
+- **INCORRECT:**
+```javascript
+if (x) return y;
 if (condition) {
-	return value;
+} else { handle(e); }
+```
+- **CORRECT:**
+```javascript
+if (x) {
+  return y;
 }
 else {
-	doOther();
+  statement;
 }
-
-INCORRECT:
-if (condition) { return value; }
-if (condition) return value;
+try {
+  riskyOp();
+}
+catch (Exception e) {
+  handle(e);
+}
+```

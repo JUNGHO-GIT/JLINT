@@ -1,8 +1,8 @@
 // Main.ts
 
-import * as fs from "fs";
-import { getContents } from "./Contents";
-import { getLanguage, getSyntax, getLogic } from "./Controller";
+import { fs } from "@exportLibs";
+import { getContents, getLanguage, getSyntax, getLogic } from "@exportCores";
+import { logger } from "@exportScripts";
 
 // -------------------------------------------------------------------------------------------------
 declare type ConfProps = {
@@ -23,17 +23,10 @@ export const main = async (
   fileExt: string,
 ) => {
 
-  console.log(
-    `_____________________
-    activateLint: ${confParam.activateLint}
-    removeComments: ${confParam.removeComments}
-    insertLine: ${confParam.insertLine}
-    tabSize: ${confParam.tabSize}
-    quoteType: ${confParam.quoteType}
-    fileName: ${fileName}
-    fileExt: ${fileExt}
-    fileTabSize: ${fileTabSize}
-    fileEol: ${fileEol}`
+  logger(
+    "info",
+    "main",
+    `activateLint: ${confParam.activateLint}\nremoveComments: ${confParam.removeComments}\ninsertLine: ${confParam.insertLine}\ntabSize: ${confParam.tabSize}\nquoteType: ${confParam.quoteType}\nfileName: ${fileName}\nfileExt: ${fileExt}\nfileTabSize: ${fileTabSize}\nfileEol: ${fileEol}`
   );
 
   let finalContents = await getContents(filePath, fileTabSize, fileEol, fileExt);

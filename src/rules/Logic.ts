@@ -1,7 +1,7 @@
-// Logic.ts
+// rules/Logic.ts
 
-import lodash from "lodash";
-import { fnLogger } from "../assets/scripts/utils";
+import { lodash } from "@exportLibs";
+import { logger } from "@exportScripts";
 
 // -------------------------------------------------------------------------------------------------
 export const ifElse = async (
@@ -60,13 +60,13 @@ export const ifElse = async (
     );
 
     const finalResult = lodash.chain(contentsParam)
-      .replace(rules1, (...p) => (
+      .replace(rules1, (...p: any[]) => (
         'if ('
       ))
-      .replace(rules2, (...p) => (
+      .replace(rules2, (...p: any[]) => (
         'else if ('
       ))
-      .replace(rules3, (...p) => (
+      .replace(rules3, (...p: any[]) => (
         `}\n${p[1]}`
       ))
       .replace(rules4, (...p) => {
@@ -91,25 +91,25 @@ export const ifElse = async (
         const content = p[2].trim();
         return `${indent}}\n${indent}else {\n${indent}\t${content}\n${indent}}`;
       })
-      .replace(rules8, (...p) => (
+      .replace(rules8, (...p: any[]) => (
         '{\n'
       ))
-      .replace(rules9, (...p) => (
+      .replace(rules9, (...p: any[]) => (
         `\n${p[1]}}`
       ))
-      .replace(rules10, (...p) => (
+      .replace(rules10, (...p: any[]) => (
         `${p[1]}${p[2]}\n${p[1]}${p[6]}${p[7]}${p[8]}`
       ))
       .value();
 
     return (
       fileExt === "xml" || fileExt === "json" || fileExt === "sql"
-        ? (fnLogger(fileExt, "ifElse", "N"), contentsParam)
-        : (fnLogger(fileExt, "ifElse", "Y"), finalResult)
+  ? (logger("debug", `${fileExt}:ifElse`, "N"), contentsParam)
+  : (logger("debug", `${fileExt}:ifElse`, "Y"), finalResult)
     );
   }
   catch (err: any) {
-    fnLogger(fileExt, "ifElse", "E", err.message);
+    logger("error", `${fileExt}:ifElse`, err.message);
     return contentsParam;
   }
 };
@@ -166,10 +166,10 @@ export const tryCatch = async (
     );
 
     const finalResult = lodash.chain(contentsParam)
-      .replace(rules1, (...p) => (
+      .replace(rules1, (...p: any[]) => (
         'try {'
       ))
-      .replace(rules2, (...p) => (
+      .replace(rules2, (...p: any[]) => (
         'catch ('
       ))
       .replace(rules3, (...p) => {
@@ -180,31 +180,31 @@ export const tryCatch = async (
         const indent = p[1];
         return `${indent}}\n${indent}finally {`;
       })
-      .replace(rules5, (...p) => (
+      .replace(rules5, (...p: any[]) => (
         '{\n'
       ))
-      .replace(rules6, (...p) => (
+      .replace(rules6, (...p: any[]) => (
         `\n${p[1]}}`
       ))
-      .replace(rules7, (...p) => (
+      .replace(rules7, (...p: any[]) => (
         `${p[1]}${p[2]}\n${p[1]}${p[6]}`
       ))
-      .replace(rules8, (...p) => (
+      .replace(rules8, (...p: any[]) => (
         `${p[1]}${p[2]}\n${p[1]}${p[6]}`
       ))
-      .replace(rules9, (...p) => (
+      .replace(rules9, (...p: any[]) => (
         '}\n'
       ))
       .value();
 
     return (
       fileExt === "xml" || fileExt === "json" || fileExt === "sql"
-        ? (fnLogger(fileExt, "tryCatch", "N"), contentsParam)
-        : (fnLogger(fileExt, "tryCatch", "Y"), finalResult)
+  ? (logger("debug", `${fileExt}:tryCatch`, "N"), contentsParam)
+  : (logger("debug", `${fileExt}:tryCatch`, "Y"), finalResult)
     );
   }
   catch (err: any) {
-    fnLogger(fileExt, "tryCatch", "E", err.message);
+    logger("error", `${fileExt}:tryCatch`, err.message);
     return contentsParam;
   }
 };

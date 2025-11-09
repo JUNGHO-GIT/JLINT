@@ -1,11 +1,8 @@
 // Json.ts
 
-import * as vscode from "vscode";
-import prettier from "prettier";
-import type {Options as PrettierOptions} from "prettier";
-import stripJsonComments from "strip-json-comments";
-import type {Options as StripOptions} from "strip-json-comments";
-import { fnLogger } from "../assets/scripts/utils";
+import { prettier, stripJsonComments } from "@exportLibs";
+import type { PrettierOptions, StripJsonOptions } from "@exportLibs";
+import { logger, notify } from "@exportScripts";
 
 // -------------------------------------------------------------------------------------------------
 declare type ConfProps = {
@@ -28,7 +25,7 @@ export const removeComments = async (
 			contentsParam
 		);
 
-		const baseOptions: StripOptions = {
+    const baseOptions: StripJsonOptions = {
       trailingCommas: false,
       whitespace: true
 		};
@@ -38,11 +35,11 @@ export const removeComments = async (
 			baseOptions
 		);
 
-    fnLogger(fileExt, "removeComments", "Y");
+  	logger("debug", `${fileExt}:removeComments`, "Y");
     return finalResult;
   }
   catch (err: any) {
-    fnLogger(fileExt, "removeComments", "E", err.message);
+  	logger("error", `${fileExt}:removeComments`, err.message);
     return contentsParam;
   }
 };
@@ -84,7 +81,7 @@ export const prettierFormat = async (
       __embeddedInHtml: true,
     };
 
-    fnLogger(fileExt, "prettierFormat", "Y");
+  	logger("debug", `${fileExt}:prettierFormat`, "Y");
     const finalResult = prettier.format(contentsParam, baseOptions);
     return finalResult;
   }
@@ -94,8 +91,8 @@ export const prettierFormat = async (
     const msgRegexReplace = `[Jlint]\n\nError Line = [ $6 ]\nError Site = $8`;
     const msgResult = msg.replace(msgRegex, msgRegexReplace);
 
-    fnLogger(fileExt, "prettierFormat", "E", msgResult);
-    vscode.window.showInformationMessage(msgResult, { modal: true });
+  	logger("error", `${fileExt}:prettierFormat`, msgResult);
+  notify("error", fileExt, msgResult);
     return contentsParam;
   }
 };
@@ -108,11 +105,11 @@ export const insertSpace = async (
   try {
     const finalResult = contentsParam;
 
-    fnLogger(fileExt, "insertSpace", "Y");
+  	logger("debug", `${fileExt}:insertSpace`, "Y");
     return finalResult
   }
   catch (err: any) {
-		fnLogger(fileExt, "insertSpace", "E", err.message);
+  	logger("error", `${fileExt}:insertSpace`, err.message);
     return contentsParam;
   }
 };
@@ -125,11 +122,11 @@ export const lineBreak = async (
   try {
     const finalResult = contentsParam;
 
-    fnLogger(fileExt, "lineBreak", "N");
+  	logger("debug", `${fileExt}:lineBreak`, "N");
     return finalResult;
   }
   catch (err: any) {
-		fnLogger(fileExt, "lineBreak", "E", err.message);
+  	logger("error", `${fileExt}:lineBreak`, err.message);
     return contentsParam;
   }
 };
@@ -140,11 +137,11 @@ export const finalCheck = async (
 	fileExt: string
 ) => {
   try {
-    fnLogger(fileExt, "finalCheck", "N");
+  logger("debug", `${fileExt}:finalCheck`, "N");
     return contentsParam;
   }
   catch (err: any) {
-		fnLogger(fileExt, "finalCheck", "E", err.message);
+  	logger("error", `${fileExt}:finalCheck`, err.message);
     return contentsParam;
   }
 };

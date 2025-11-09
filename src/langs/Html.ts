@@ -1,13 +1,10 @@
 // Html.ts
 
-import * as vscode from "vscode";
-import lodash from "lodash";
-import prettier from "prettier";
-import type {Options as PrettierOptions} from "prettier";
-import { minify } from "html-minifier-terser";
-import strip from "strip-comments";
-import type {Options as StripOptions} from "strip-comments";
-import { fnLogger } from "../assets/scripts/utils";
+import { lodash, prettier } from "@exportLibs";
+import type { PrettierOptions } from "@exportLibs";
+import { htmlMinify as minify, strip } from "@exportLibs";
+import type { StripOptions } from "@exportLibs";
+import { logger, notify } from "@exportScripts";
 
 // -------------------------------------------------------------------------------------------------
 declare type ConfProps = {
@@ -41,16 +38,16 @@ export const removeComments = async (
     );
 
     const httpResult = lodash.chain(contentsParam)
-		.replace(pattern1, (...p) => (
+		.replace(pattern1, (...p: any[]) => (
 			`${p[1]}${p[2]}httpp${p[4]}${p[5]}`
 		))
-		.replace(pattern2, (...p) => (
+		.replace(pattern2, (...p: any[]) => (
 			`${p[1]}${p[2]}httpps${p[4]}${p[5]}`
 		))
-		.replace(pattern3, (...p) => (
+		.replace(pattern3, (...p: any[]) => (
 			`${p[1]}${p[2]}@{httpp${p[4]}${p[5]}`
 		))
-		.replace(pattern4, (...p) => (
+		.replace(pattern4, (...p: any[]) => (
 			`${p[1]}${p[2]}@{httpps${p[4]}${p[5]}`
 		))
 		.value();
@@ -146,28 +143,28 @@ export const removeComments = async (
     );
 
     const finalResult = lodash.chain(stripResult3)
-		.replace(pattern1Re, (...p) => (
+		.replace(pattern1Re, (...p: any[]) => (
 			`${p[1]}${p[2]}http://${p[4]}${p[5]}`
 		))
-		.replace(pattern2Re, (...p) => (
+		.replace(pattern2Re, (...p: any[]) => (
 			`${p[1]}${p[2]}https://${p[4]}${p[5]}`
 		))
-		.replace(pattern3Re, (...p) => (
+		.replace(pattern3Re, (...p: any[]) => (
 			`${p[1]}${p[2]}@{http://${p[4]}${p[5]}`
 		))
-		.replace(pattern4Re, (...p) => (
+		.replace(pattern4Re, (...p: any[]) => (
 			`${p[1]}${p[2]}@{https://${p[4]}${p[5]}`
 		))
-		.replace(pattern5, (...p) => (
+		.replace(pattern5, (...p: any[]) => (
 			`${p[1]}`
 		))
 		.value();
 
-		fnLogger(fileExt, "removeComments", "Y");
+  	logger("debug", `${fileExt}:removeComments`, "Y");
     return finalResult;
   }
   catch (err: any) {
-    fnLogger(fileExt, "removeComments", "E", err.message);
+  	logger("error", `${fileExt}:removeComments`, err.message);
     return contentsParam;
   }
 };
@@ -217,15 +214,15 @@ export const prettierFormat = async (
     );
 
     const result = lodash.chain(contentsParam)
-		.replace(rules1, (...p) => (
+		.replace(rules1, (...p: any[]) => (
 			""
 		))
-		.replace(rules2, (...p) => (
+		.replace(rules2, (...p: any[]) => (
 			`${p[1]}${p[2]}\n${p[1]}\t${p[3]}${p[4]}`
 		))
 		.value();
 
-    fnLogger(fileExt, "prettierFormat", "Y");
+  	logger("debug", `${fileExt}:prettierFormat`, "Y");
     const finalResult = prettier.format(result, baseOptions);
 
     return finalResult;
@@ -236,8 +233,8 @@ export const prettierFormat = async (
     const msgRegexReplace = `[Jlint]\n\nError Line = [ $6 ]\nError Site = $8`;
     const msgResult = msg.replace(msgRegex, msgRegexReplace);
 
-    fnLogger(fileExt, "prettierFormat", "E", msgResult);
-    vscode.window.showInformationMessage(msgResult, { modal: true });
+  	logger("error", `${fileExt}:prettierFormat`, msgResult);
+  notify("error", fileExt, msgResult);
     return contentsParam;
   }
 };
@@ -259,22 +256,22 @@ export const insertSpace = async (
     );
 
 		const finalResult = lodash.chain(contentsParam)
-		.replace(rules1, (...p) => (
+		.replace(rules1, (...p: any[]) => (
 			`${p[1]}${p[2]};`
 		))
-		.replace(rules2, (...p) => (
+		.replace(rules2, (...p: any[]) => (
 			`${p[1]}${p[2]}${p[4]} ${p[6]}`
 		))
-		.replace(rules3, (...p) => (
+		.replace(rules3, (...p: any[]) => (
 			`${p[2]} ${p[3]}`
 		))
 		.value();
 
-    fnLogger(fileExt, "insertSpace", "Y");
+  	logger("debug", `${fileExt}:insertSpace`, "Y");
     return finalResult
   }
   catch (err: any) {
-		fnLogger(fileExt, "insertSpace", "E", err.message);
+  	logger("error", `${fileExt}:insertSpace`, err.message);
     return contentsParam;
   }
 };
@@ -361,11 +358,11 @@ export const insertLine = async (
 		})
 		.value();
 
-    fnLogger(fileExt, "insertLine", "Y");
+  	logger("debug", `${fileExt}:insertLine`, "Y");
     return finalResult
   }
   catch (err: any) {
-		fnLogger(fileExt, "insertLine", "E", err.message);
+  	logger("error", `${fileExt}:insertLine`, err.message);
     return contentsParam;
   }
 };
@@ -384,19 +381,19 @@ export const lineBreak = async (
     );
 
     const finalResult = lodash.chain(contentsParam)
-		.replace(rules1, (...p) => (
+		.replace(rules1, (...p: any[]) => (
 			`\n\n${p[1]}${p[2]}${p[3]}`
 		))
-		.replace(rules2, (...p) => (
+		.replace(rules2, (...p: any[]) => (
 			`${p[1]}\n\n${p[3]}${p[4]}`
 		))
 		.value();
 
-    fnLogger(fileExt, "lineBreak", "Y");
+  	logger("debug", `${fileExt}:lineBreak`, "Y");
     return finalResult
   }
   catch (err: any) {
-    fnLogger(fileExt, "lineBreak", "E", err.message);
+  	logger("error", `${fileExt}:lineBreak`, err.message);
     return contentsParam;
   }
 };
@@ -415,19 +412,19 @@ export const finalCheck = async (
     );
 
     const finalResult = lodash.chain(contentsParam)
-		.replace(rules1, (...p) => (
+		.replace(rules1, (...p: any[]) => (
 			`${p[1]}${p[2]}${p[3]}${p[4]}${p[11]}`
 		))
-		.replace(rules2, (...p) => (
+		.replace(rules2, (...p: any[]) => (
 			`${p[1]}${p[2]}${p[3]}${p[4]}${p[11]}`
 		))
 		.value();
 
-    fnLogger(fileExt, "finalCheck", "Y");
+  	logger("debug", `${fileExt}:finalCheck`, "Y");
     return finalResult
   }
   catch (err: any) {
-    fnLogger(fileExt, "finalCheck", "E", err.message);
+  	logger("error", `${fileExt}:finalCheck`, err.message);
     return contentsParam;
   }
 };

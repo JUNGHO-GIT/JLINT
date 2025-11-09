@@ -1,7 +1,7 @@
-// Syntax.ts
+// rules/Syntax.ts
 
-import lodash from "lodash";
-import { fnLogger } from "../assets/scripts/utils";
+import { lodash } from "@exportLibs";
+import { logger } from "@exportScripts";
 
 // -------------------------------------------------------------------------------------------------
 export const capitalize = async (
@@ -23,28 +23,28 @@ export const capitalize = async (
     );
 
     const finalResult = lodash.chain(contentsParam)
-		.replace(rules1, (...p) => (
+		.replace(rules1, (...p: any[]) => (
 			`${p[1]}${p[2]}${p[3].toUpperCase()}${p[4]}${p[5]}`
 		))
-		.replace(rules2, (...p) => (
+		.replace(rules2, (...p: any[]) => (
 			`${p[1]}${p[2]}${p[3].toUpperCase()}${p[4]}${p[5]}`
 		))
-		.replace(rules3, (...p) => (
+		.replace(rules3, (...p: any[]) => (
 			`${p[1]}${p[2]}${p[3].toUpperCase()}${p[4]}${p[5]}`
 		))
-		.replace(rules4, (...p) => (
+		.replace(rules4, (...p: any[]) => (
 			`${p[1]}${p[2]}${p[3].toUpperCase()}${p[4]}${p[5]}`
 		))
 		.value();
 
     return (
       fileExt !== "xml" && fileExt !== "sql"
-			? (fnLogger(fileExt, "capitalize", "N"), contentsParam)
-			: (fnLogger(fileExt, "capitalize", "Y"), finalResult)
+			? (logger("debug", `${fileExt}:capitalize`, "N"), contentsParam)
+			: (logger("debug", `${fileExt}:capitalize`, "Y"), finalResult)
     );
   }
 	catch (err: any) {
-		fnLogger(fileExt, "capitalize", "E", err.message);
+    logger("error", `${fileExt}:capitalize`, err.message);
     return contentsParam;
   }
 };
@@ -63,19 +63,19 @@ export const singleTags = async (
     );
 
     const finalResult = lodash.chain(contentsParam)
-		.replace(rules1, (...p) => (
+		.replace(rules1, (...p: any[]) => (
 			`${p[1]}${p[2]}${p[3]}${p[4]}/>`
 		))
-		.replace(rules2, (...p) => (
+		.replace(rules2, (...p: any[]) => (
 			`${p[1]}${p[2]} />`
 		))
 		.value();
 
-		fnLogger(fileExt, "singleTags", "Y");
+		logger("debug", `${fileExt}:singleTags`, "Y");
     return finalResult;
   }
   catch (err: any) {
-		fnLogger(fileExt, "singleTags", "E", err.message);
+		logger("error", `${fileExt}:singleTags`, err.message);
     return contentsParam;
   }
 };
@@ -94,19 +94,19 @@ export const brackets = async (
     );
 
     const finalResult = lodash.chain(contentsParam)
-		.replace(rules1, (...p) => (
+		.replace(rules1, (...p: any[]) => (
 			`${p[1]} ${p[2]}`
 		))
-		.replace(rules2, (...p) => (
+		.replace(rules2, (...p: any[]) => (
 			`${p[1]}>`
 		))
 		.value();
 
-		fnLogger(fileExt, "brackets", "Y");
+		logger("debug", `${fileExt}:brackets`, "Y");
     return finalResult;
   }
   catch (err: any) {
-    fnLogger(fileExt, "brackets", "E", err.message);
+    logger("error", `${fileExt}:brackets`, err.message);
     return contentsParam;
   }
 };
@@ -122,16 +122,16 @@ export const comma = async (
     );
 
     const finalResult = lodash.chain(contentsParam)
-		.replace(rules1, (...p) => (
+		.replace(rules1, (...p: any[]) => (
 			`${p[2]} `
 		))
 		.value();
 
-		fnLogger(fileExt, "comma", "Y");
+		logger("debug", `${fileExt}:comma`, "Y");
     return finalResult;
   }
   catch (err: any) {
-    fnLogger(fileExt, "comma", "E", err.message);
+    logger("error", `${fileExt}:comma`, err.message);
     return contentsParam;
   }
 };
@@ -147,16 +147,16 @@ export const semicolon = async (
 		);
 
     const finalResult = lodash.chain(contentsParam)
-		.replace(rules1, (...p) => (
+		.replace(rules1, (...p: any[]) => (
 			`${p[1]}${p[2]};`
 		))
 		.value();
 
-		fnLogger(fileExt, "semicolon", "Y");
+		logger("debug", `${fileExt}:semicolon`, "Y");
     return finalResult;
   }
   catch (err: any) {
-    fnLogger(fileExt, "semicolon", "E", err.message);
+    logger("error", `${fileExt}:semicolon`, err.message);
     return contentsParam;
   }
 }
@@ -172,16 +172,16 @@ export const quotes = async (
     );
 
     const finalResult = lodash.chain(contentsParam)
-		.replace(rules1, (...p) => (
+		.replace(rules1, (...p: any[]) => (
 			`${p[1]}"${p[3]}`
 		))
 		.value();
 
-		fnLogger(fileExt, "quotes", "Y");
+		logger("debug", `${fileExt}:quotes`, "Y");
     return finalResult;
   }
   catch (err: any) {
-    fnLogger(fileExt, "quotes", "E", err.message);
+    logger("error", `${fileExt}:quotes`, err.message);
     return contentsParam;
   }
 };

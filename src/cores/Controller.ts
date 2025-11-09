@@ -1,8 +1,7 @@
 // Controller.ts
 
-import { capitalize, singleTags, brackets, comma, semicolon, quotes } from "../utils/Syntax";
-import { ifElse, tryCatch } from "../utils/Logic";
-import { fnLogger } from "../assets/scripts/utils";
+import { capitalize, singleTags, semicolon, ifElse, tryCatch } from "@exportRules";
+import { logger, notify } from "@exportScripts";
 
 // -------------------------------------------------------------------------------------------------
 declare type ConfProps = {
@@ -25,23 +24,24 @@ export const getLanguage = async (
 
   // 동적으로 언어별 규칙 모듈 import (html -> Html)
   let langStr: string | null = null;
-	(fileExt === "css") && (langStr = "Css");
-	(fileExt === "html") && (langStr = "Html");
-	(fileExt === "jsp") && (langStr = "Jsp");
-	(fileExt === "json") && (langStr = "Json");
-	(fileExt === "java") && (langStr = "Java");
-	(fileExt === "sql") && (langStr = "Sql");
+	(fileExt === "css" || fileExt === "scss") && (langStr = "Css");
+	(fileExt === "html" || fileExt === "htm") && (langStr = "Html");
+	(fileExt === "jsp" || fileExt === "jspx") && (langStr = "Jsp");
+	(fileExt === "json" || fileExt === "jsonc") && (langStr = "Json");
+	(fileExt === "java" || fileExt === "jav") && (langStr = "Java");
+	(fileExt === "sql" || fileExt === "plsql") && (langStr = "Sql");
 	(fileExt === "yaml" || fileExt === "yml") && (langStr = "Yaml");
 	(fileExt === "xml" || fileExt === "mybatis") && (langStr = "Xml");
-	(fileExt === "javascript") && (langStr = "Javascript");
-	(fileExt === "javascriptreact") && (langStr = "Javascriptreact");
-	(fileExt === "typescript") && (langStr = "Typescript");
-	(fileExt === "typescriptreact") && (langStr = "Typescriptreact");
+	(fileExt === "javascript" || fileExt === "js") && (langStr = "Javascript");
+	(fileExt === "javascriptreact" || fileExt === "jsx") && (langStr = "Javascriptreact");
+	(fileExt === "typescript" || fileExt === "ts") && (langStr = "Typescript");
+	(fileExt === "typescriptreact" || fileExt === "tsx") && (langStr = "Typescriptreact");
 
 	langStr ? (
-		fnLogger(fileExt, "getLanguage", "M", `langStr: ${langStr}`)
+		logger("debug", `${fileExt}:getLanguage`, `langStr:${langStr}`)
 	) : (
-		fnLogger(fileExt, "getLanguage", "E", `Unsupported language: ${fileExt}`)
+		logger("error", `${fileExt}:getLanguage`, `Unsupported language: ${fileExt}`),
+		notify("error", `${fileExt}:getLanguage`, `Unsupported language: ${fileExt}`)
 	);
 
   let langRules = await import(`../langs/${langStr}.js`);

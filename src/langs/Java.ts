@@ -1,14 +1,9 @@
 // Java.ts
 
-import * as vscode from "vscode";
-import lodash from "lodash";
-import prettier from "prettier";
-import type {Options as PrettierOptions} from "prettier";
-import type {Plugin as PrettierPlugin} from "prettier";
-import strip from "strip-comments";
-import type {Options as StripOptions} from "strip-comments";
-import { createRequire } from "module";
-import { fnLogger } from "../assets/scripts/utils";
+import { lodash, prettier, strip, createRequire } from "@exportLibs";
+import type { PrettierOptions, StripOptions } from "@exportLibs";
+import type { Plugin as PrettierPlugin } from "prettier";
+import { logger, notify } from "@exportScripts";
 
 // -------------------------------------------------------------------------------------------------
 declare type ConfProps = {
@@ -44,11 +39,11 @@ export const removeComments = async (
 			baseOptions
 		);
 
-		fnLogger(fileExt, "removeComments", "Y");
+		logger("debug", `${fileExt}:removeComments`, "Y");
 		return finalResult;
 	}
 	catch (err: any) {
-		fnLogger(fileExt, "removeComments", "E", err.message);
+		logger("error", `${fileExt}:removeComments`, err.message);
 		return contentsParam;
 	}
 };
@@ -106,7 +101,7 @@ export const prettierFormat = async (
 				plugins: [javaPlugin]
 			});
 
-			fnLogger(fileExt, "prettierFormat", "Y");
+			logger("debug", `${fileExt}:prettierFormat`, "Y");
 			return formatted;
 		}
 		// 2차: CJS require 경로 해석 후 객체 주입
@@ -125,11 +120,11 @@ export const prettierFormat = async (
 					plugins: [javaPlugin2]
 				});
 
-				fnLogger(fileExt, "prettierFormat", "Y");
+				logger("debug", `${fileExt}:prettierFormat`, "Y");
 				return formatted;
 			}
 			catch (fallbackErr: any) {
-				fnLogger(fileExt, "prettierFormat", "E", fallbackErr?.message ?? fallbackErr);
+				logger("error", `${fileExt}:prettierFormat`, fallbackErr?.message ?? fallbackErr);
 				return contentsParam;
 			}
 		}
@@ -141,13 +136,13 @@ export const prettierFormat = async (
 		const msgRegexReplace = `[Jlint]\n\nError Line = [ $6 ]\nError column = [ $10 ]\nError Site = [ $13 ]`;
 
 		if (!msgMatch) {
-			fnLogger(fileExt, "prettierFormat", "E", msg);
+			logger("error", `${fileExt}:prettierFormat`, msg);
 			return contentsParam;
 		}
 
 		const msgResult = msg.replace(msgRegex, msgRegexReplace);
-		fnLogger(fileExt, "prettierFormat", "E", msgResult);
-		vscode.window.showInformationMessage(msgResult, { modal: true });
+		logger("error", `${fileExt}:prettierFormat`, msgResult);
+		notify("error", fileExt, msgResult);
 		return contentsParam;
 	}
 };
@@ -169,22 +164,22 @@ export const insertSpace = async (
 		);
 
 		const finalResult = lodash.chain(contentsParam)
-		.replace(rules1, (...p) => (
+		.replace(rules1, (...p: any[]) => (
 			`${p[1]}${p[2]}${p[4]}`
 		))
-		.replace(rules2, (...p) => (
+		.replace(rules2, (...p: any[]) => (
 			`${p[1]}${p[2]}${p[4]} ${p[6]}`
 		))
-		.replace(rules3, (...p) => (
+		.replace(rules3, (...p: any[]) => (
 			`${p[2]} ${p[3]}`
 		))
 		.value();
 
-		fnLogger(fileExt, "insertSpace", "Y");
+		logger("debug", `${fileExt}:insertSpace`, "Y");
 		return finalResult
 	}
 	catch (err: any) {
-		fnLogger(fileExt, "insertSpace", "E", err.message);
+		logger("error", `${fileExt}:insertSpace`, err.message);
 		return contentsParam;
 	}
 };
@@ -208,11 +203,11 @@ export const insertLine = async (
 		})
 		.value();
 
-		fnLogger(fileExt, "insertLine", "Y");
+		logger("debug", `${fileExt}:insertLine`, "Y");
 		return finalResult
 	}
 	catch (err: any) {
-		fnLogger(fileExt, "insertLine", "E", err.message);
+		logger("error", `${fileExt}:insertLine`, err.message);
 		return contentsParam;
 	}
 };
@@ -258,46 +253,46 @@ export const lineBreak = async (
 		);
 
 		const finalResult = lodash.chain(contentsParam)
-		.replace(rules1, (...p) => (
+		.replace(rules1, (...p: any[]) => (
 			`${p[1]}${p[2]}\n${p[6]}`
 		))
-		.replace(rules5, (...p) => (
+		.replace(rules5, (...p: any[]) => (
 			`${p[1]}${p[2]}${p[3]}${p[4]}\n`
 		))
-		.replace(rules6, (...p) => (
+		.replace(rules6, (...p: any[]) => (
 		`${p[1]}${p[2]}${p[3]}${p[4]}\n\n${p[8]}${p[10]}`
 		))
-		.replace(rules9, (...p) => (
+		.replace(rules9, (...p: any[]) => (
 			`${p[1]}${p[2]}\n\n${p[4]}`
 		))
-		.replace(rules10, (...p) => (
+		.replace(rules10, (...p: any[]) => (
 			`${p[1]}${p[2]}\n${p[3]}`
 		))
-		.replace(rules2, (...p) => (
+		.replace(rules2, (...p: any[]) => (
 			`${p[1]} ${p[3]}\n${p[6]}${p[7]}`
 		))
-		.replace(rules4, (...p) => (
+		.replace(rules4, (...p: any[]) => (
 			`${p[1]}${p[2]}${p[3]}${p[4]}\n\n${p[7]}${p[8]}`
 		))
-		.replace(rules8, (...p) => (
+		.replace(rules8, (...p: any[]) => (
 			`${p[1]}\n${p[3]}${p[4]}${p[5]}${p[6]}${p[7]}${p[8]}${p[9]}${p[10]}${p[11]}`
 		))
-		.replace(rules11, (...p) => (
+		.replace(rules11, (...p: any[]) => (
 			`${p[1]}${p[2]} (${p[5]}${p[7]})`
 		))
-		.replace(rules12, (...p) => (
+		.replace(rules12, (...p: any[]) => (
 			`${p[1]}${p[2]}\n\n${p[4]}${p[5]}`
 		))
-		.replace(rules13, (...p) => (
+		.replace(rules13, (...p: any[]) => (
 			`${p[1]}${p[2]}\n${p[6]}${p[7]}`
 		))
 		.value();
 
-		fnLogger(fileExt, "lineBreak", "Y");
+		logger("debug", `${fileExt}:lineBreak`, "Y");
 		return finalResult
 	}
 	catch (err: any) {
-		fnLogger(fileExt, "lineBreak", "E", err.message);
+		logger("error", `${fileExt}:lineBreak`, err.message);
 		return contentsParam;
 	}
 };
@@ -325,28 +320,28 @@ export const finalCheck = async (
 		);
 
 		const finalResult = lodash.chain(contentsParam)
-		.replace(rules1, (...p) => (
+		.replace(rules1, (...p: any[]) => (
 			`${p[1]}${p[2]}${p[3]}${p[4]}${p[5]}${p[13]}`
 		))
-		.replace(rules2, (...p) => (
+		.replace(rules2, (...p: any[]) => (
 			`${p[4]}${p[5]}\n${p[2]}${p[3]}\n${p[7]}${p[8]}`
 		))
-		.replace(rules3, (...p) => (
+		.replace(rules3, (...p: any[]) => (
 			`${p[1]}${p[2]}${p[3]}${p[4]}${p[5]}\n${p[7]}${p[8]}`
 		))
-		.replace(rules4, (...p) => (
+		.replace(rules4, (...p: any[]) => (
 			`${p[1]}${p[2]}-\n`
 		))
-		.replace(rules5, (...p) => (
+		.replace(rules5, (...p: any[]) => (
 			`${p[1]}\n${p[3]}${p[4]}`
 		))
 		.value();
 
-		fnLogger(fileExt, "finalCheck", "Y");
+		logger("debug", `${fileExt}:finalCheck`, "Y");
 		return finalResult
 	}
 	catch (err: any) {
-		fnLogger(fileExt, "finalCheck", "E", err.message);
+		logger("error", `${fileExt}:finalCheck`, err.message);
 		return contentsParam;
 	}
 };

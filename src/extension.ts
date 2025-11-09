@@ -1,8 +1,8 @@
 // extension.ts
 
-import * as path from "path";
-import * as vscode from "vscode";
-import { main } from "./core/Main";
+import { path, vscode } from "@exportLibs";
+import { main } from "@exportCores";
+import { logger, notify } from "@exportScripts";
 
 // -------------------------------------------------------------------------------------------------
 export const deactivate = () => {};
@@ -24,7 +24,7 @@ export const activate = (context: vscode.ExtensionContext) => {
     const command = vscode.commands.registerCommand("extension.Jlint", async () => {
       const editor = vscode.window.activeTextEditor;
       if (!editor) {
-        vscode.window.showErrorMessage("No active editor found!");
+        notify("error", "extension", "No active editor found!");
         return;
       }
 
@@ -47,8 +47,10 @@ export const activate = (context: vscode.ExtensionContext) => {
 
     // 3. Listen for configuration changes -----------------------------------------------------------
     context.subscriptions.push(
-      vscode.workspace.onDidChangeConfiguration((event) => {
-        event.affectsConfiguration("Jlint") && console.log(`_____________________\n Jlint configuration updated : ${JSON.stringify(getConfiguration(), null, 2)}`);
+      vscode.workspace.onDidChangeConfiguration((event: vscode.ConfigurationChangeEvent) => {
+        if (event.affectsConfiguration("Jlint")) {
+          logger("info", "configuration", `updated: ${JSON.stringify(getConfiguration(), null, 2)}`);
+        }
       })
     );
 };
