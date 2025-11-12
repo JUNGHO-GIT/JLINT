@@ -44,7 +44,7 @@ export const activate = (context: vscode.ExtensionContext) => {
         fileEol,
         fileExt,
       );
-      notify("info", "Jlint", `Linting completed for ${fileName}`);
+      notify("info", "Linting Completed", `"${fileName}"`);
     });
     context.subscriptions.push(command);
 

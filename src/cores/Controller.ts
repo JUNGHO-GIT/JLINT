@@ -24,23 +24,26 @@ export const getLanguage = async (
 ) => {
 
   // 동적으로 언어별 규칙 모듈 import (html -> Html)
-  let langStr: string | null = null;
-	(fileExt === "css" || fileExt === "scss") && (langStr = "Css");
-	(fileExt === "html" || fileExt === "htm") && (langStr = "Html");
-	(fileExt === "jsp" || fileExt === "jspx") && (langStr = "Jsp");
-	(fileExt === "json" || fileExt === "jsonc") && (langStr = "Json");
-	(fileExt === "java" || fileExt === "jav") && (langStr = "Java");
-	(fileExt === "sql" || fileExt === "plsql") && (langStr = "Sql");
-	(fileExt === "yaml" || fileExt === "yml") && (langStr = "Yaml");
-	(fileExt === "xml" || fileExt === "mybatis") && (langStr = "Xml");
-	(fileExt === "javascript" || fileExt === "js") && (langStr = "Javascript");
-	(fileExt === "javascriptreact" || fileExt === "jsx") && (langStr = "Javascriptreact");
-	(fileExt === "typescript" || fileExt === "ts") && (langStr = "Typescript");
-	(fileExt === "typescriptreact" || fileExt === "tsx") && (langStr = "Typescriptreact");
+	const langStr = (
+		(fileExt === "css" || fileExt === "scss") ? "Css" :
+		(fileExt === "html" || fileExt === "htm") ? "Html" :
+		(fileExt === "jsp" || fileExt === "jspx") ? "Jsp" :
+		(fileExt === "json" || fileExt === "jsonc") ? "Json" :
+		(fileExt === "java" || fileExt === "jav") ? "Java" :
+		(fileExt === "sql" || fileExt === "plsql") ? "Sql" :
+		(fileExt === "yaml" || fileExt === "yml") ? "Yaml" :
+		(fileExt === "xml" || fileExt === "mybatis") ? "Xml" :
+		(fileExt === "javascript" || fileExt === "js") ? "Javascript" :
+		(fileExt === "javascriptreact" || fileExt === "jsx") ? "Javascriptreact" :
+		(fileExt === "typescript" || fileExt === "ts") ? "Typescript" :
+		(fileExt === "typescriptreact" || fileExt === "tsx") ? "Typescriptreact" :
+		null
+	);
 
 	langStr ? (
 		logger("debug", `getLanguage`, `langStr:${langStr}`)
 	) : (
+		logger("error", `getLanguage`, `Unsupported language: ${fileExt}`),
 		notify("error", `getLanguage`, `Unsupported language: ${fileExt}`)
 	);
 

@@ -73,7 +73,7 @@ const compile = () => {
 	})();
 
 	run(`pnpm`, [`exec`, `swc`, `src`, `-d`, `out`, `--source-maps`, `--strip-leading-paths`]);
-	run(`pnpm`, [`exec`, `tsc-alias`, `-p`, `tsconfig.json`, `-f`]);
+	run(`pnpm`, [`exec`, `tsc-alias`, `-p`, `tsconfig.json`]);
 
 	logger(`success`, `컴파일 완료`);
 };
@@ -85,13 +85,13 @@ const watch = () => {
 	const swcProc = spawn(`pnpm`, [`exec`, `swc`, `src`, `-d`, `out`, `--source-maps`, `--strip-leading-paths`, `--watch`], {
 		stdio: `inherit`,
 		shell: true,
-		env: process.env
+		env: { ...process.env, NODE_OPTIONS: `--max-old-space-size=2048` }
 	});
 
-	const aliasProc = spawn(`pnpm`, [`exec`, `tsc-alias`, `-p`, `tsconfig.json`, `-f`, `--watch`], {
+	const aliasProc = spawn(`pnpm`, [`exec`, `tsc-alias`, `-p`, `tsconfig.json`, `--watch`], {
 		stdio: `inherit`,
 		shell: true,
-		env: process.env
+		env: { ...process.env, NODE_OPTIONS: `--max-old-space-size=2048` }
 	});
 
 	const cleanup = () => {

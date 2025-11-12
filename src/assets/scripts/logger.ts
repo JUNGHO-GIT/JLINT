@@ -10,16 +10,9 @@ export const logger = (
 	key: string,
 	value: string,
 ): void => {
-	type === `debug` && console.debug(
-		`[jlint] [${key}] ${value}`
-	);
-	type === `info` && console.info(
-		`[jlint] [${key}] ${value}`
-	);
-	type === `warn` && console.warn(
-		`[jlint] [${key}] ${value}`
-	);
-	type === `error` && console.error(
-		`[jlint] [${key}] ${value}`
-	);
+	const msg = `[Jlint] [${key}] ${value}`;
+	type === `debug` && console.debug(msg);
+	type === `info` && console.info(msg);
+	type === `warn` && console.warn(msg);
+	type === `error` && console.error(msg);
 };

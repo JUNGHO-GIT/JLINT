@@ -12,11 +12,12 @@ export const notify = (
 	key: string,
 	value: string,
 ): void => {
-	const text = `[jlint] [${key}] ${value}`;
+	const msg = `[Jlint] [${key}] ${value}`;
+
 	if (type === `debug` || type === `info`) {
 		void vscode.window.withProgress({
 			location: vscode.ProgressLocation.Notification,
-			title: text,
+			title: msg,
 			cancellable: false
 		},
 		async (_) => {
@@ -27,10 +28,10 @@ export const notify = (
 		return;
 	}
 	if (type === `warn`) {
-		vscode.window.showWarningMessage(text, { modal: false });
+		vscode.window.showWarningMessage(msg, { modal: false });
 		void vscode.window.withProgress({
 			location: vscode.ProgressLocation.Notification,
-			title: text,
+			title: msg,
 			cancellable: false
 		},
 		async (_) => {
@@ -41,10 +42,10 @@ export const notify = (
 		return;
 	}
 	if (type === `error`) {
-		vscode.window.showErrorMessage(text, { modal: false });
+		vscode.window.showErrorMessage(msg, { modal: false });
 		void vscode.window.withProgress({
 			location: vscode.ProgressLocation.Notification,
-			title: text,
+			title: msg,
 			cancellable: false
 		},
 		async (_) => {
