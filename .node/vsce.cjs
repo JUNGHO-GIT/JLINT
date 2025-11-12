@@ -96,38 +96,36 @@ const runCommand = (cmd=``, args=[], stepName=``) => {
 (() => {
 	logger(`info`, `VSCE 패키지 빌드 시작`);
 	incrementVersion();
+
+	// out 디렉토리 초기화
+	(() => {
+		const outDir = path.join(process.cwd(), `out`);
+		fs.existsSync(outDir) && (() => {
+			fs.rmSync(outDir, { recursive: true, force: true });
+			logger(`info`, `기존 out 디렉토리 삭제 완료`);
+		})();
+	})();
+
+	// swc로 컴파일 (swc.cjs와 동일한 방식)
 	runCommand(
 		`pnpm`,
-		[`add`, `-D`, `esbuild`],
-		`esbuild 의존성 설치`
+		[`exec`, `swc`, `src`, `-d`, `out`, `--source-maps`, `--strip-leading-paths`],
+		`SWC 컴파일`
 	);
+
+	// tsc-alias로 경로 별칭 처리
 	runCommand(
-		`tsc`,
-		[`-p`, `.`],
-		`TypeScript 컴파일`
-	);
-	runCommand(
-		`tsc-alias`,
-		[`-p`, `tsconfig.json`, `-f`],
+		`pnpm`,
+		[`exec`, `tsc-alias`, `-p`, `tsconfig.json`],
 		`TypeScript 경로 별칭 처리`
 	);
-	runCommand(
-		`esbuild`,
-		[
-			`src/extension.ts`,
-			`--bundle`,
-			`--platform=node`,
-			`--target=node18`,
-			`--outfile=out/extension.js`,
-			`--external:vscode`,
-			`--minify`
-		],
-		`esbuild 번들링`
-	);
+
+	// vsce 패키지 생성
 	runCommand(
 		`vsce`,
 		[`package`, `--no-dependencies`],
 		`VSCE 패키지 생성`
 	);
+
 	logger(`success`, `VSCE 패키지 빌드 완료`);
 })();

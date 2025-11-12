@@ -89,10 +89,10 @@ export const prettierFormat = async (
 
 		// 1차: ESM 동적 임포트로 플러그인 객체 주입
 		try {
-			const mod = await import("prettier-plugin-java" as any);
-			const javaPlugin: PrettierPlugin = ((mod as any)?.default ?? mod) as PrettierPlugin;
+			const mod = await import("prettier-plugin-java");
+			const javaPlugin: PrettierPlugin = ((mod)?.default ?? mod) as PrettierPlugin;
 
-			if ((javaPlugin as any)?.parsers?.java == null) {
+			if ((javaPlugin)?.parsers?.java == null) {
 				throw new Error("ParserNotRegistered");
 			}
 
@@ -112,7 +112,7 @@ export const prettierFormat = async (
 				const reqMod = require("prettier-plugin-java");
 				const javaPlugin2: PrettierPlugin = (reqMod?.default ?? reqMod) as PrettierPlugin;
 
-				if ((javaPlugin2 as any)?.parsers?.java == null) {
+				if ((javaPlugin2)?.parsers?.java == null) {
 					throw new Error("ParserNotRegistered");
 				}
 
