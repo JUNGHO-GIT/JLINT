@@ -29,18 +29,18 @@
 **/.gen/
 **/.git/
 **/node_modules/
-# **/META-INF/
-# **/.META-INF/
+**/META-INF/
+**/.META-INF/
 
 # 3. project directories
-# **/admin/
-# **/public/
-# **/private/
-# **/auth/
+**/admin/
+**/public/
+**/private/
+**/auth/
 
 # 4. ide & temp directories
-# **/.vscode/
-# **/.idea/
+**/.vscode/
+**/.idea/
 **/.tmp/
 **/.cache/
 **/.nyc_output/
@@ -65,31 +65,33 @@
 **/yarn-debug.log
 **/yarn-error.log
 
-# 4. env files
-# **/*.env
-# **/*.env.*
-# **/*.properties
-# **/*.properties.*
-# **/*.classpath
-# **/*.classpath.*
-# **/*.props
-# **/*.props.*
-# **/*.project
-# **/*.project.*
-# **/*.settings
-# **/*.settings.*
-# **/*.keystore
-# **/*.keystore.*
-# **/app.json
-# **/app.json.*
-# **/gradlew
-# **/gradlew.*
-# **/gradlew.bat
-# **/gradlew.bat.*
-# **/settings.gradle
-# **/settings.gradle.*
+# 3. env files
+**/*.env
+**/*.env.*
+**/*.properties
+**/*.properties.*
+**/*.classpath
+**/*.classpath.*
+**/*.props
+**/*.props.*
+**/*.project
+**/*.project.*
+**/*.settings
+**/*.settings.*
+**/*.keystore
+**/*.keystore.*
+**/app.json
+**/app.json.*
+**/gradlew
+**/gradlew.*
+**/gradlew.bat
+**/gradlew.bat.*
+**/settings.gradle
+**/settings.gradle.*
+**/build.gradle
+**/.build.gradle
 
-# 5. temporary files
+# 4. temporary files
 **/*.tmp
 **/*.tmp.*
 **/*.bak
@@ -108,73 +110,73 @@
 **/yarn.lock.*
 
 # 7. config files
-# **/tsconfig.json
-# **/tsconfig.json.*
-# **/tsconfig.paths.json
-# **/tsconfig.paths.json.*
-# **/tsconfig.default.json
-# **/tsconfig.default.json.*
-# **/tsconfig.regular.json
-# **/tsconfig.regular.json.*
-# **/jsconfig.json
-# **/jsconfig.json.*
-# **/jsconfig.paths.json
-# **/jsconfig.paths.json.*
-# **/jsconfig.default.json
-# **/jsconfig.default.json.*
-# **/jsconfig.regular.json
-# **/jsconfig.regular.json.*
-# **/metro.config.js
-# **/metro.config.*
-# **/jest.config.js
-# **/jest.config.*
-# **/babel.config.js
-# **/babel.config.*
-# **/.watchmanconfig
-# **/.watchmanconfig.*
-# **/.prettierrc
-# **/.prettierrc.*
-# **/.prettierignore
-# **/.prettierignore.*
-# **/.prettierrc.js
-# **/.prettierrc.js.*
-# **/.eslintrc
-# **/.eslintrc.*
-# **/.eslintignore
-# **/.eslintignore.*
-# **/.eslintrc.js
-# **/.eslintrc.js.*
-# **/.stylelintrc
-# **/.stylelintrc.*
-# **/.stylelintignore
-# **/.swcrc
-# **/.swcrc.*
+**/tsconfig.json
+**/tsconfig.json.*
+**/tsconfig.paths.json
+**/tsconfig.paths.json.*
+**/tsconfig.default.json
+**/tsconfig.default.json.*
+**/tsconfig.regular.json
+**/tsconfig.regular.json.*
+**/jsconfig.json
+**/jsconfig.json.*
+**/jsconfig.paths.json
+**/jsconfig.paths.json.*
+**/jsconfig.default.json
+**/jsconfig.default.json.*
+**/jsconfig.regular.json
+**/jsconfig.regular.json.*
+**/metro.config.js
+**/metro.config.*
+**/jest.config.js
+**/jest.config.*
+**/babel.config.js
+**/babel.config.*
+**/.watchmanconfig
+**/.watchmanconfig.*
+**/.prettierrc
+**/.prettierrc.*
+**/.prettierignore
+**/.prettierignore.*
+**/.prettierrc.js
+**/.prettierrc.js.*
+**/.eslintrc
+**/.eslintrc.*
+**/.eslintignore
+**/.eslintignore.*
+**/.eslintrc.js
+**/.eslintrc.js.*
+**/.stylelintrc
+**/.stylelintrc.*
+**/.stylelintignore
+**/.swcrc
+**/.swcrc.*
 
 # 8. etc files
-# **/push.cjs
-# **/push.cjs.*
-# **/push.sh
-# **/push.sh.*
-# **/fetch.cjs
-# **/fetch.cjs.*
-# **/fetch.sh
-# **/fetch.sh.*
-# **/pull.cjs
-# **/pull.cjs
-# **/pull.sh
-# **/pull.sh.*
-# **/merge.cjs
-# **/merge.cjs.*
-# **/merge.sh
-# **/merge.sh.*
-# **/gcloud.cjs
-# **/gcloud.cjs.*
-# **/gcloud.sh
-# **/gcloud.sh.*
-# **/.gitignore.public
-# **/.gitignore.public.*
-# **/.gitignore.private
-# **/.gitignore.private.*
+**/push.cjs
+**/push.cjs.*
+**/push.sh
+**/push.sh.*
+**/fetch.cjs
+**/fetch.cjs.*
+**/fetch.sh
+**/fetch.sh.*
+**/pull.cjs
+**/pull.cjs
+**/pull.sh
+**/pull.sh.*
+**/merge.cjs
+**/merge.cjs.*
+**/merge.sh
+**/merge.sh.*
+**/gcloud.cjs
+**/gcloud.cjs.*
+**/gcloud.sh
+**/gcloud.sh.*
+**/.gitignore.public
+**/.gitignore.public.*
+**/.gitignore.private
+**/.gitignore.private.*
 **/*.vsix
 **/*.vsix.*
 **/*.history

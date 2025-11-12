@@ -2,6 +2,7 @@
 
 import { capitalize, singleTags, semicolon, ifElse, tryCatch } from "@exportRules";
 import { logger, notify } from "@exportScripts";
+import * as Langs from "@exportLangs";
 
 // -------------------------------------------------------------------------------------------------
 declare type ConfProps = {
@@ -40,12 +41,15 @@ export const getLanguage = async (
 	langStr ? (
 		logger("debug", `getLanguage`, `langStr:${langStr}`)
 	) : (
-		logger("error", `getLanguage`, `Unsupported language: ${fileExt}`),
 		notify("error", `getLanguage`, `Unsupported language: ${fileExt}`)
 	);
 
-  let langRules = langStr ? await import(`../langs/${langStr}`) : null;
   let resultContents = initContents ? initContents : "";
+  if (!langStr) {
+    return resultContents;
+  }
+	const langFactory = (Langs as any)[langStr];
+	const langRules = (typeof langFactory === "function") ? langFactory() : langFactory;
 
   if (!confParam.activateLint) {
 		return resultContents;
