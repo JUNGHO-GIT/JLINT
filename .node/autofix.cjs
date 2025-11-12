@@ -51,6 +51,25 @@ const logger = (type = ``, ...args) => {
 	);
 };
 
+// 명령 실행 함수 ------------------------------------------------------------------------------
+const run = (cmd = ``, args = []) => {
+	logger(`info`, `실행: ${cmd} ${args.join(` `)}`);
+
+	const result = spawnSync(cmd, args, {
+		stdio: `inherit`,
+		shell: true,
+		env: process.env
+	});
+
+	(result.status !== 0) ? (
+		logger(`error`, `${cmd} 실패 (exit code: ${result.status})`),
+		process.exit(result.status || 1)
+	) : (
+		logger(`success`, `${cmd} 실행 완료`)
+	);
+};
+
+
 // 유틸리티 함수 -------------------------------------------------------------------------------
 const withLocalBinOnPath = (env = {}) => {
 	const binDir = path.join(process.cwd(), `node_modules`, `.bin`);

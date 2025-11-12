@@ -38,14 +38,15 @@ export const getLanguage = async (
 	(fileExt === "typescriptreact" || fileExt === "tsx") && (langStr = "Typescriptreact");
 
 	langStr ? (
-		logger("debug", `${fileExt}:getLanguage`, `langStr:${langStr}`)
+		logger("debug", `getLanguage`, `langStr:${langStr}`)
 	) : (
-		logger("error", `${fileExt}:getLanguage`, `Unsupported language: ${fileExt}`),
-		notify("error", `${fileExt}:getLanguage`, `Unsupported language: ${fileExt}`)
+		logger("error", `getLanguage`, `Unsupported language: ${fileExt}`),
+		notify("error", `getLanguage`, `Unsupported language: ${fileExt}`)
 	);
 
-  let langRules = await import(`../langs/${langStr}`);
-  let resultContents = initContents;
+  let langRules = langStr ? await import(`../langs/${langStr}`) : null;
+  let resultContents = initContents ? initContents : "";
+
   if (!confParam.activateLint) {
 		return resultContents;
 	}

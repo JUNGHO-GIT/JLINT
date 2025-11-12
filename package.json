@@ -3,7 +3,7 @@
   "displayName": "Jlint",
   "publisher": "JUNGHO",
   "icon": "logo.webp",
-  "version": "1.9.5",
+  "version": "1.9.7",
   "license": "Apache-2.0",
   "description": "Universal Language formatter",
   "main": "./out/extension.js",
@@ -106,7 +106,7 @@
     "watch": "node .node/swc.cjs --watch",
     "compile": "node .node/swc.cjs --compile",
     "reset": "node .node/reset.cjs --pnpm",
-    "gcloud": "node .node/gcloud.cjs --only-git",
+    "gcloud": "node .node/gcloud.cjs --git",
     "autofix": "node .node/autofix.cjs --fix",
     "vsce": "node .node/vsce.cjs"
   },
@@ -121,7 +121,7 @@
     "fast-xml-parser": "^5.3.1",
     "glob": "^11.0.3",
     "html-minifier-terser": "^7.2.0",
-    "jsdom": "^27.1.0",
+    "jsdom": "^27.2.0",
     "lodash": "^4.17.21",
     "minimatch": "^10.1.1",
     "postcss": "^8.5.6",
@@ -140,12 +140,12 @@
     "@types/jsdom": "^27.0.0",
     "@types/lodash": "^4.17.20",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^24.10.0",
+    "@types/node": "^24.10.1",
     "@types/strip-comments": "^2.0.4",
     "@types/vscode": "1.105.0",
     "@vscode/test-electron": "^2.5.2",
     "@vscode/vsce": "^3.7.0",
-    "esbuild": "^0.26.0",
+    "esbuild": "^0.27.0",
     "eslint": "^9.39.1",
     "mocha": "^11.7.5",
     "prettier-plugin-java": "2.7.7",
@@ -154,6 +154,6 @@
     "ts-prune": "^0.10.3",
     "tsc-alias": "^1.8.16",
     "typescript": "^5.9.3"
-  }
-  ,"sideEffects": false
+  },
+  "sideEffects": false
 }
