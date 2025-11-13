@@ -12,7 +12,7 @@
     "url": "https://github.com/JUNGHO-GIT/JLINT.git"
   },
   "engines": {
-    "vscode": "^1.105.0",
+    "vscode": "^1.106.0",
     "node": ">=21.0.0",
     "npm": ">=10.0.0"
   },
@@ -142,7 +142,7 @@
     "@types/mocha": "^10.0.10",
     "@types/node": "^24.10.1",
     "@types/strip-comments": "^2.0.4",
-    "@types/vscode": "1.105.0",
+    "@types/vscode": "1.106.0",
     "@vscode/test-electron": "^2.5.2",
     "@vscode/vsce": "^3.7.0",
     "esbuild": "^0.27.0",
