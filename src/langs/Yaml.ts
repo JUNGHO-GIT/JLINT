@@ -3,7 +3,7 @@
 import { strip } from "@exportLibs";
 import type { PrettierOptions, StripOptions } from "@exportLibs";
 import type { Plugin as PrettierPlugin } from "prettier";
-import { logger, notify } from "@exportScripts";
+import { logger, modal } from "@exportScripts";
 
 // -------------------------------------------------------------------------------------------------
 declare type ConfProps = {
@@ -87,8 +87,8 @@ export const prettierFormat = async (
     };
 
     try {
-  const prettierLib = await import("prettier").then((m: any) => (m.default || m));
-  const finalResult = await prettierLib.format(contentsParam, baseOptions);
+			const prettierLib = await import("prettier").then((m: any) => (m.default || m));
+			const finalResult = await prettierLib.format(contentsParam, baseOptions);
       return finalResult;
     }
     catch (innerErr: any) {
@@ -98,12 +98,12 @@ export const prettierFormat = async (
       if ((yamlPlugin as any)?.parsers?.yaml == null) {
         throw new Error("ParserNotRegistered");
       }
-
-  const prettierLib2 = await import("prettier").then((m: any) => (m.default || m));
-  const finalResult = await prettierLib2.format(contentsParam, {
+			const prettierLib2 = await import("prettier").then((m: any) => (m.default || m));
+			const finalResult = await prettierLib2.format(contentsParam, {
         ...baseOptions,
         plugins: [yamlPlugin]
       });
+
       return finalResult;
     }
   }
@@ -114,7 +114,7 @@ export const prettierFormat = async (
     const msgResult = msg.replace(msgRegex, msgRegexReplace);
 
   	logger("error", `${fileExt}:prettierFormat`, msgResult);
-  	notify("error", fileExt, msgResult);
+  	modal("error", fileExt, msgResult);
     return contentsParam;
   }
 };

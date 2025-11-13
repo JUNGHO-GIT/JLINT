@@ -150,7 +150,7 @@ export const prettierFormat = async (
 
     logger("debug", `${fileExt}:prettierFormat`, "Y");
      const prettierLib = await import("prettier").then((m: any) => (m.default || m));
-     const finalResult = prettierLib.format(contentsParam, baseOptions);
+     const finalResult = await prettierLib.format(contentsParam, baseOptions);
     return finalResult;
   }
   catch (err: any) {

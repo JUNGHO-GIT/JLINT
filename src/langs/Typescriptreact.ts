@@ -2,7 +2,7 @@
 
 import { lodash, jsMinify, strip } from "@exportLibs";
 import type { PrettierOptions, StripOptions } from "@exportLibs";
-import { logger, notify } from "@exportScripts";
+import { logger, modal } from "@exportScripts";
 
 // -------------------------------------------------------------------------------------------------
 declare type ConfProps = {
@@ -91,8 +91,8 @@ export const prettierFormat = async (
     };
 
     logger("debug", `${fileExt}:prettierFormat`, "Y");
-     const prettierLib = await import("prettier").then((m: any) => (m.default || m));
-     const finalResult = prettierLib.format(contentsParam, baseOptions);
+		const prettierLib = await import("prettier").then((m: any) => (m.default || m));
+		const finalResult = await prettierLib.format(contentsParam, baseOptions);
     return finalResult;
   }
   catch (err: any) {
@@ -102,7 +102,7 @@ export const prettierFormat = async (
     const msgResult = msg.replace(msgRegex, msgRegexReplace);
 
   	logger("error", `${fileExt}:prettierFormat`, msgResult);
-  	notify("error", fileExt, msgResult);
+  	modal("error", fileExt, msgResult);
     return contentsParam;
   }
 };

@@ -3,7 +3,7 @@
   "displayName": "Jlint",
   "publisher": "JUNGHO",
   "icon": "logo.webp",
-  "version": "1.9.10",
+  "version": "1.9.11",
   "license": "Apache-2.0",
   "description": "Universal Language formatter",
   "main": "./out/extension.js",

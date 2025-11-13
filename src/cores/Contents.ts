@@ -17,20 +17,14 @@ export const getContents = async (
 
   try {
 		const updateContent = dataStr
-
-		// .split("\n")
 		.split(fileEol === "lf" ? "\n" : "\r\n")
-
-		// 우측 공백 제거
-		.map((line: string) => line.trimEnd())
-
-		// 빈 줄 제거 + 연속 빈 줄 방지
+		.map((line: string) => {
+			return line.trimEnd();
+		})
 		.filter((line: string, idx, arr) => {
 			const prev = arr[idx - 1] || "";
 			return !(line === "" && prev === "");
 		})
-
-		// 들여쓰기 조정
 		.map((line: string) => {
 			const indentMatch = line.match(/^(\s+)/);
 			if (indentMatch) {

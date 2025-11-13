@@ -3,7 +3,7 @@
 import { lodash, strip } from "@exportLibs";
 import type { PrettierOptions, StripOptions } from "@exportLibs";
 import type { PrettierPlugin } from "@exportLibs";
-import { logger, notify } from "@exportScripts";
+import { logger, modal } from "@exportScripts";
 
 // -------------------------------------------------------------------------------------------------
 declare type ConfProps = {
@@ -137,7 +137,7 @@ export const prettierFormat = async (
     const msgResult = msg.replace(msgRegex, msgRegexReplace);
 
   	logger("error", `${fileExt}:prettierFormat`, msgResult);
-  	notify("error", fileExt, msgResult);
+  	modal("error", fileExt, msgResult);
     return contentsParam;
   }
 };

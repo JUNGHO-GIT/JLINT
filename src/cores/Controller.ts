@@ -48,10 +48,10 @@ export const getLanguage = async (
 	);
 
   let resultContents = initContents ? initContents : "";
-  if (!langStr) {
+  !langStr && (() => {
     return resultContents;
-  }
-	const langFactory = (Langs as any)[langStr];
+  })();
+	const langFactory = (Langs as any)[langStr as string];
 	const langRules = (typeof langFactory === "function") ? langFactory() : langFactory;
 
   if (!confParam.activateLint) {

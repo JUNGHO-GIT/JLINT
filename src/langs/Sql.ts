@@ -1,8 +1,7 @@
 // Sql.ts
 
-import { vscode, lodash, strip } from "@exportLibs"; // sql-formatter uses own API, prettier removed
-import type { PrettierOptions, StripOptions, FormatOptionsWithLanguage } from "@exportLibs";
-import { logger, notify } from "@exportScripts";
+import type { FormatOptionsWithLanguage } from "@exportLibs";
+import { logger, modal } from "@exportScripts";
 
 // -------------------------------------------------------------------------------------------------
 declare type ConfProps = {
@@ -22,7 +21,6 @@ export const removeComments = async (
 ) => {
   try {
 
-    // sql is not needed remove comments
     const minifyResult = (
 			contentsParam
 		);
@@ -67,10 +65,9 @@ export const prettierFormat = async (
     };
 
     logger("debug", `${fileExt}:prettierFormat`, "Y");
-     // sql formatter: dynamic import only when needed
-     const sqlFormatterLib = await import("sql-formatter");
-     const finalResult = (sqlFormatterLib as any).format(contentsParam, baseOptions);
-    return finalResult;
+		const sqlFormatterLib = await import("sql-formatter");
+		const finalResult = (sqlFormatterLib as any).format(contentsParam, baseOptions);
+  	return finalResult;
   }
   catch (err: any) {
     const msg = err.message.toString().trim().replace(/\x1B\[[0-9;]*[mGKF]/g, "");
@@ -79,7 +76,7 @@ export const prettierFormat = async (
     const msgResult = msg.replace(msgRegex, msgRegexReplace);
 
   	logger("error", `${fileExt}:prettierFormat`, msgResult);
-  	notify("error", fileExt, msgResult);
+  	modal("error", fileExt, msgResult);
     return contentsParam;
   }
 };

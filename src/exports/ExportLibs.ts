@@ -21,7 +21,6 @@ export { minify as htmlMinify } from "html-minifier-terser";
 export type { FormatOptionsWithLanguage } from "sql-formatter";
 
 // -------------------------------------------------------------------------------
-// prettier default export 제거: Lazy dynamic import 사용 (타입만 유지)
 export type { Options as PrettierOptions } from "prettier";
 export type { Plugin as PrettierPlugin } from "prettier";
 
