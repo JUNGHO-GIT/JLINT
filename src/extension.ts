@@ -2,13 +2,17 @@
 
 import { path, vscode } from "@exportLibs";
 import { main } from "@exportCores";
-import { logger, notify } from "@exportScripts";
+import { logger, initLogger, notify } from "@exportScripts";
 
 // -------------------------------------------------------------------------------------------------
 export const deactivate = () => {};
 
 // -------------------------------------------------------------------------------------------------
 export const activate = (context: vscode.ExtensionContext) => {
+
+		// Initialize Logger
+		initLogger();
+		logger("info", "activation", "Jlint is now active!");
 
     // 1. Get Configuration ------------------------------------------------------------------------
     const getConfiguration = () => {

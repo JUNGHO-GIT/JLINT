@@ -21,6 +21,7 @@ export { minify as htmlMinify } from "html-minifier-terser";
 export type { FormatOptionsWithLanguage } from "sql-formatter";
 
 // -------------------------------------------------------------------------------
+export { default as prettier } from "prettier";
 export type { Options as PrettierOptions } from "prettier";
 export type { Plugin as PrettierPlugin } from "prettier";
 

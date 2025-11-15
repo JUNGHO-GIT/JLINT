@@ -1,71 +1,45 @@
 # .vscodeignore
 
-# VS Code 관련
-**/.vscode/**
-**/.vscode-test/**
-**/vsc-extension-quickstart.md
-
-# 소스 코드
-**/src/**
+# 소스 코드 (컴파일된 out만 포함)
+src/**
 **/*.ts
-!out/**/*.js
-
-# 빌드 및 설정 파일
-**/tsconfig*.json
-**/tsconfig.json
-**/tsconfig.paths.json
-**/.eslintrc*
-**/.eslintignore
-**/.prettierrc*
-**/.editorconfig
-**/.babel*
-**/webpack.config.js
-**/esbuild.config.js
-
-# 패키지 관리자
-**/node_modules/**
-**/package-lock.json
-**/yarn.lock
-**/pnpm-lock.yaml
-**/.yarnrc*
-**/.npmrc
-**/.pnpmfile.cjs
-
-# Git 관련
-**/.git/**
-**/.gitignore
-**/.gitattributes
-**/.github/**
-
-# 테스트 및 커버리지
-**/test/**
-**/tests/**
-**/*.test.ts
-**/*.spec.ts
-**/coverage/**
-**/.nyc_output/**
-
-# 임시 및 캐시 파일
-**/.DS_Store
-**/.history/**
-**/dist/**
-**/tmp/**
-**/temp/**
-**/*.log
-**/*.map
-**/.cache/**
-
-# 개발 도구 및 스크립트
-**/.node/**
-**/.vscode/**
-**/scripts/**
-**/*.cjs
 !out/**
 
+# VS Code 개발 환경
+.vscode/**
+.vscode-test/**
+
+# 설정 파일
+tsconfig*.json
+.eslintrc*
+.eslintignore
+.prettierrc*
+.editorconfig
+
+# 테스트
+test/**
+tests/**
+**/*.test.js
+**/*.spec.js
+
+# Git
+.git
+.gitignore
+.gitattributes
+.github/**
+
+# 패키지 관리자 락 파일
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# 빌드 스크립트
+.node/**
+scripts/**
+
+# 환경 변수
+.env*
+
 # 기타
-**/.env*
-**/.dockerignore
-**/Dockerfile
-**/.editorconfig
-**/renovate.json
-**/.releaserc*
+.DS_Store
+*.log

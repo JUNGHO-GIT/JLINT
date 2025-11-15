@@ -5,6 +5,10 @@ const fs = require(`fs`);
 const path = require(`path`);
 const process = require(`process`);
 
+// 인자 파싱 ------------------------------------------------------------------------------------
+const argv = process.argv.slice(2);
+const args1 = argv.find(arg => [`--npm`, `--pnpm`, `--yarn`, `--bun`].includes(arg))?.replace(`--`, ``) || ``;
+
 // 로깅 함수 -----------------------------------------------------------------------------------
 const logger = (type=``, message=``) => {
 	const format = (text=``) => text.trim().replace(/^\s+/gm, ``);
@@ -37,95 +41,51 @@ const logger = (type=``, message=``) => {
 	`));
 };
 
-// 버전 증가 함수 ------------------------------------------------------------------------------
-const incrementVersion = () => {
-	logger(`info`, `버전 자동 증가 시작`);
-
-	const packageJsonPath = path.join(process.cwd(), `package.json`);
-
-	!fs.existsSync(packageJsonPath) && (() => {
-		logger(`error`, `package.json 파일을 찾을 수 없습니다: ${packageJsonPath}`);
-		process.exit(1);
-	})();
-
-	const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, `utf8`));
-	const currentVersion = packageJson.version;
-
-	!currentVersion && (() => {
-		logger(`error`, `package.json에 version 필드가 없습니다`);
-		process.exit(1);
-	})();
-
-	const versionParts = currentVersion.split(`.`);
-	versionParts.length !== 3 && (() => {
-		logger(`error`, `올바르지 않은 버전 형식입니다: ${currentVersion}`);
-		process.exit(1);
-	})();
-
-	const [major, minor, patch] = versionParts.map(Number);
-	const newVersion = `${major}.${minor}.${patch + 1}`;
-
-	packageJson.version = newVersion;
-	fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2) + `\n`, `utf8`);
-
-	logger(`success`, `버전 업데이트: ${currentVersion} → ${newVersion}`);
-	return newVersion;
-};
-
 // 명령 실행 함수 ------------------------------------------------------------------------------
-const runCommand = (cmd=``, args=[], stepName=``) => {
-	logger(`info`, `${stepName} 시작`);
+// @ts-ignore
+const runCommand = (cmd=``, args=[]) => {
 	logger(`info`, `실행: ${cmd} ${args.join(` `)}`);
 
 	const result = spawnSync(cmd, args, {
 		stdio: `inherit`,
 		shell: true,
-		cwd: process.cwd()
+		env: process.env
 	});
 
 	result.status !== 0 && (() => {
-		logger(`error`, `${stepName} 실패 (exit code: ${result.status})`);
-		process.exit(1);
+		logger(`error`, `${cmd} 실패 (exit code: ${result.status})`);
+		process.exit(result.status || 1);
 	})();
 
-	logger(`success`, `${stepName} 완료`);
-	return result;
+	logger(`success`, `${cmd} 실행 완료`);
+};
+
+// out 디렉토리 초기화 -----------------------------------------------------------------------
+const deleteOutDir = () => {
+	const outDir = path.join(process.cwd(), `out`);
+
+	fs.existsSync(outDir) && (
+		fs.rmSync(outDir, { recursive: true, force: true }),
+		logger(`info`, `기존 out 디렉토리 삭제 완료`)
+	);
 };
 
 // 메인 실행 함수 ------------------------------------------------------------------------------
 (() => {
 	logger(`info`, `VSCE 패키지 빌드 시작`);
-	incrementVersion();
 
-	// out 디렉토리 초기화
-	(() => {
-		const outDir = path.join(process.cwd(), `out`);
-		fs.existsSync(outDir) && (() => {
-			fs.rmSync(outDir, { recursive: true, force: true });
-			logger(`info`, `기존 out 디렉토리 삭제 완료`);
-		})();
-	})();
+	deleteOutDir();
 
-	// swc로 컴파일 (swc.cjs와 동일한 방식)
-	runCommand(
-		`pnpm`,
-		[`exec`, `swc`, `src`, `-d`, `out`, `--source-maps`, `--strip-leading-paths`],
-		`SWC 컴파일`
+	args1 === `npm` ? (
+		runCommand(args1, [`exec`, `--`, `swc`, `src`, `-d`, `out`, `--source-maps`, `--strip-leading-paths`]),
+		runCommand(args1, [`exec`, `--`, `tsc-alias`, `-p`, `tsconfig.json`, `-f`])
+	)
+	: (
+		runCommand(args1, [`exec`, `swc`, `src`, `-d`, `out`, `--source-maps`, `--strip-leading-paths`]),
+		runCommand(args1, [`exec`, `tsc-alias`, `-p`, `tsconfig.json`, `-f`])
 	);
 
-	// tsc-alias로 경로 별칭 처리
-	runCommand(
-		`pnpm`,
-		[`exec`, `tsc-alias`, `-p`, `tsconfig.json`],
-		`TypeScript 경로 별칭 처리`
-	);
-
-	// vsce 패키지 생성
-	runCommand(
-		`vsce`,
-		[`package`, `--no-dependencies`],
-		`VSCE 패키지 생성`
-	);
+	runCommand(`vsce`, [`package`]);
 
 	logger(`success`, `VSCE 패키지 빌드 완료`);
 })();

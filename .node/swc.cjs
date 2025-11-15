@@ -7,8 +7,8 @@ const process = require(`process`);
 
 // 인자 파싱 ------------------------------------------------------------------------------------
 const argv = process.argv.slice(2);
-const isCompile = argv.includes(`--compile`);
-const isWatch = argv.includes(`--watch`);
+const args1 = argv.find(arg => [`--npm`, `--pnpm`, `--yarn`, `--bun`].includes(arg))?.replace(`--`, ``) || ``;
+const args2 = argv.find(arg => [`--compile`, `--watch`].includes(arg))?.replace(`--`, ``) || ``;
 
 // 로깅 함수 -----------------------------------------------------------------------------------
 const logger = (type=``, message=``) => {
@@ -43,7 +43,8 @@ const logger = (type=``, message=``) => {
 };
 
 // 명령 실행 함수 ------------------------------------------------------------------------------
-const run = (cmd=``, args=[]) => {
+// @ts-ignore
+const runCommand = (cmd=``, args=[]) => {
 	logger(`info`, `실행: ${cmd} ${args.join(` `)}`);
 
 	const result = spawnSync(cmd, args, {
@@ -63,17 +64,19 @@ const run = (cmd=``, args=[]) => {
 // 컴파일 실행 ----------------------------------------------------------------------------------
 const compile = () => {
 	logger(`info`, `컴파일 시작`);
+	const outDir = path.join(process.cwd(), `out`);
 
-	(() => {
-		const outDir = path.join(process.cwd(), `out`);
-		fs.existsSync(outDir) && (() => {
-			fs.rmSync(outDir, { recursive: true, force: true });
-			logger(`info`, `기존 out 디렉토리 삭제 완료`);
-		})();
-	})();
+	fs.existsSync(outDir) && fs.rmSync(outDir, { recursive: true, force: true });
+	logger(`info`, `기존 out 디렉토리 삭제 완료`);
 
-	run(`pnpm`, [`exec`, `swc`, `src`, `-d`, `out`, `--source-maps`, `--strip-leading-paths`]);
-	run(`pnpm`, [`exec`, `tsc-alias`, `-p`, `tsconfig.json`]);
+	args1 === `npm` ? (
+		runCommand(args1, [`exec`, `--`, `swc`, `src`, `-d`, `out`, `--source-maps`, `--strip-leading-paths`]),
+		runCommand(args1, [`exec`, `--`, `tsc-alias`, `-p`, `tsconfig.json`, `-f`])
+	)
+	: (
+		runCommand(args1, [`exec`, `swc`, `src`, `-d`, `out`, `--source-maps`, `--strip-leading-paths`]),
+		runCommand(args1, [`exec`, `tsc-alias`, `-p`, `tsconfig.json`, `-f`])
+	);
 
 	logger(`success`, `컴파일 완료`);
 };
@@ -82,16 +85,30 @@ const compile = () => {
 const watch = () => {
 	logger(`info`, `워치 모드 시작`);
 
-	const swcProc = spawn(`pnpm`, [`exec`, `swc`, `src`, `-d`, `out`, `--source-maps`, `--strip-leading-paths`, `--watch`], {
+	const swcArgs = args1 === `npm` ? (
+		[`exec`, `--`, `swc`, `src`, `-d`, `out`, `--source-maps`, `--strip-leading-paths`, `--watch`]
+	)
+	: (
+		[`exec`, `swc`, `src`, `-d`, `out`, `--source-maps`, `--strip-leading-paths`, `--watch`]
+	);
+
+	const aliasArgs = args1 === `npm` ? (
+		[`exec`, `--`, `tsc-alias`, `-p`, `tsconfig.json`, `-f`, `--watch`]
+	)
+	: (
+		[`exec`, `tsc-alias`, `-p`, `tsconfig.json`, `-f`, `--watch`]
+	);
+
+	const swcProc = spawn(args1, swcArgs, {
 		stdio: `inherit`,
 		shell: true,
-		env: { ...process.env, NODE_OPTIONS: `--max-old-space-size=2048` }
+		env: process.env
 	});
 
-	const aliasProc = spawn(`pnpm`, [`exec`, `tsc-alias`, `-p`, `tsconfig.json`, `--watch`], {
+	const aliasProc = spawn(args1, aliasArgs, {
 		stdio: `inherit`,
 		shell: true,
-		env: { ...process.env, NODE_OPTIONS: `--max-old-space-size=2048` }
+		env: process.env
 	});
 
 	const cleanup = () => {
@@ -120,17 +137,14 @@ const watch = () => {
 	logger(`info`, `스크립트 실행: swc.cjs (인자: ${argv.join(` `) || `none`})`);
 
 	try {
-		isCompile ? (() => {
-			compile();
-		})() : isWatch ? (() => {
-			watch();
-		})() : (() => {
-			logger(`error`, `올바른 인자를 사용하세요: --compile 또는 --watch`);
-			process.exit(1);
+		args2 === `compile` ? compile() :
+		args2 === `watch` ? watch() : (() => {
+			throw new Error(`Invalid argument. Use --compile or --watch.`);
 		})();
 	}
 	catch (e) {
-		logger(`error`, `스크립트 실행 실패: ${e.message}`);
+		const msg = e instanceof Error ? e.message : String(e);
+		logger(`error`, `스크립트 실행 실패: ${msg}`);
 		process.exit(1);
 	}
 })();

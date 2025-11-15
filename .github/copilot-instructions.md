@@ -1,99 +1,108 @@
-# CORE PRINCIPLES & CONTEXT & LANGUAGE
+# 1. CORE PRINCIPLES
 
-## Response Principles
-- Provide detailed, objective, professional responses
-- Capture core intent, not just literal interpretation
-- Never fabricate And Acknowledge and correct errors immediately
-- Korean development environment (may include Korean terms/comments)
+# 1-1. Response Principles
+- Detailed, objective, professional responses
+- Capture core intent, not literal interpretation
+- Never fabricate; acknowledge errors immediately
 
-## Coding Philosophy
-- PerformanceFirst: minimize memory waste/leaks, maximize efficiency
-- Readability: clear variable names (avoid extreme abbreviations)
-- Maintainability: avoid deeply nested logic, prefer flat structure
-- FunctionOrganization: group by logical flow units, not micro-tasks
-- StyleGuide: avoid spaghetti code like more over 4 phase indentation etc
+# 1-2. Coding Philosophy
+- PerformanceFirst: minimize memory waste/leaks
+- Readability: clear variable names (no extreme abbreviations)
+- Maintainability: flat sucture, avoid deep nesting
+- FunctionOrganization: group by logical flow, not micro-tasks
+- StyleGuide: no spaghetti (max 4-level indentation)
 
-## MANDATORY Code Modification Protocol
-- ALWAYS PREFER ternary operators or IIFE over if-else statements
-- ALWAYS send it in "code format" so that I can "copy and paste" it
-- ALWAYS modify and return "MODIFIED code" ONLY
-- SEND entire code when i request entire code specially
-- NEVER modify comments (preserve `// -----------` exactly)
+# 1-3. MANDATORY Code Modification Protocol
+- ALWAYS PREFER `ternary` or `IIFE` over if-else
+- ALWAYS send `code format` for copy-paste
+- ALWAYS return `MODIFIED code` ONLY
+- ALWAYS exactly ONE SPACE around "=" or ":"
+- NEVER modify comments (preserve `// -----------`)
 - NEVER break line before semicolon
-- ALWAYS Exactly ONE SPACE around "=" or ":"
 
-## Java (max v1.8)
-- Instead of complicating things by separating small methods, define inner classes within a larger class and define related methods within those inner classes.
+# 1-4. Java (max v1.8)
+- Define inner classes within larger class; group related methods in inner classes
 
-## JavaScript/TypeScript (ES6+)
+#  1-5. JavaScript (ES6+)
 - Prefer ternary/&& over if statements
-- Prefer Arrow functions
+- Prefer arrow functions
 - Template literals: `foo` (backticks)
 - Object keys: always double quotes ("key": value)
 
-# FORMATTING RULES
+# 2. FORMATTING EXAMPLES
 
-## IIFE
-- Prefer IIFE over if-else for control flow when ternary is insufficient
-- AVOID excessive IIFE: use simple parentheses when no function scope needed
-- Only use arrow function wrapper `(() => { })()` when multiple statements require isolated scope, variable declarations need block scoping, or return statement needed mid-execution
-- **INCORRECT:**
+# 2-1. TERNARY CHAINS
+- Wrap each condition/result in parentheses on separate lines
+**INCORRECT:**
 ```javascript
-(!result.error) ? (() => {
-  const okStatus = typeof result.status === `number` ? result.status === 0 : true;
-  return okStatus;
+(!s || s === "p1") ? fn() : (s === "p2") ? fn(s, "yy") : fn(s);
+```
+**CORRECT:**
+```javascript
+!s || s === `p1` ? (
+  fn()
+)
+: s === `p2` ? (
+  fn(s, "yy")
+)
+: (
+  fn(s)
+)
+```
+
+# 2-2. IIFE
+- Prefer IIFE over if-else when ternary insufficient
+- AVOID excessive IIFE, use simple parentheses when no scope needed
+- Use `(() => { })()` only when: isolated scope required, block scoping needed, or mid-execution return
+**INCORRECT:**
+```javascript
+(!r.e) ? (() => {
+  const sts = typeof r.s === `number` ? r.s === 0 : true;
+  return sts;
 })() : (
   false
 )
+fs.existsSync(o) && (() => {
+  fs.rmSync(o, { recursive: true, force: true });
+  log(`info`, `foo`);
+})();
 ```
-- **CORRECT:**
+**CORRECT:**
 ```javascript
-(!result.error) ? (
-  typeof result.status === `number` ? result.status === 0 : true
-) : (
+!r.e ? (
+  typeof r.s === `number` ? r.s === 0 : true
+)
+: (
   false
 )
-```
-
-## TERNARY CHAINS
-- Wrap each condition/result in parentheses on separate lines
-- **INCORRECT:**
-```javascript
-(!str || str === "today") ? moment() : (str === "yesterday") ? moment(str, "YYYYMMDD") : moment(str);
-```
-- **CORRECT:**
-```javascript
-(!str || str === `today`) ? (
-  moment()
-) : (str === "yesterday") ? (
-  moment(str, "YYYYMMDD")
-) : (
-  moment(str)
+fs.existsSync(outDir) && (
+  fs.rmSync(o, { recursive: true, force: true }),
+  log(`info`, `foo`)
 )
 ```
 
-## IF/ELSE TRY/CATCH
-- ALWAYS PREFER ternary operators or IIFE over if-else statements
+# 2-2. IF/ELSE & TRY/CATCH
+- ALWAYS PREFER ternary/IIFE over if-else
 - ALL if/else/try/catch MUST use braces with line breaks
 - Closing brace and else/catch on SEPARATE lines: `}\nelse {`
-- **INCORRECT:**
+**INCORRECT:**
 ```javascript
-if (x) return y;
-if (condition) {
-} else { handle(e); }
+if (p1) return res;
+if (p2) {
+} else { fn(e); }
 ```
-- **CORRECT:**
+**CORRECT:**
 ```javascript
-if (x) {
-  return y;
+if (p1) {
+  return res;
 }
 else {
-  statement;
+  fn(e);
 }
 try {
-  riskyOp();
+  fn1();
 }
 catch (Exception e) {
-  handle(e);
+  fn2();
 }
 ```

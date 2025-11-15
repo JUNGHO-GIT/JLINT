@@ -1,24 +1,16 @@
 {
   "name": "jlint",
   "displayName": "Jlint",
+  "description": "Universal Language formatter",
   "publisher": "JUNGHO",
   "icon": "logo.webp",
-  "version": "1.9.11",
   "license": "Apache-2.0",
-  "description": "Universal Language formatter",
   "main": "./out/extension.js",
+  "version": "1.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/JUNGHO-GIT/JLINT.git"
   },
-  "engines": {
-    "vscode": "^1.106.0",
-    "node": ">=21.0.0",
-    "npm": ">=10.0.0"
-  },
-  "activationEvents": [
-    "onCommand:extension.Jlint"
-  ],
   "categories": [
     "Formatters",
     "Linters",
@@ -29,7 +21,45 @@
     "Debuggers",
     "Other"
   ],
+  "keywords": [
+    "lint",
+    "formatter",
+    "jlint",
+    "code",
+    "format",
+    "prettier",
+    "java",
+    "xml",
+    "html",
+    "css",
+    "javascript",
+    "typescript",
+    "json",
+    "yaml",
+    "sql",
+    "jsp",
+    "universal"
+  ],
+  "activationEvents": [
+    "onCommand:extension.Jlint"
+  ],
   "contributes": {
+    "outputChannels": [
+      "Jlint"
+    ],
+    "commands": [
+      {
+        "command": "extension.Jlint",
+        "title": "Jlint"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "extension.Jlint",
+        "key": "alt+shift+f",
+        "when": "editorTextFocus"
+      }
+    ],
     "menus": {
       "commandPalette": [
         {
@@ -44,23 +74,21 @@
         }
       ]
     },
-    "commands": [
-      {
-        "command": "extension.Jlint",
-        "title": "Jlint"
-      }
-    ],
-    "keybindings": [
-      {
-        "command": "extension.Jlint",
-        "key": "alt+shift+f",
-        "when": "editorTextFocus"
-      }
-    ],
     "configuration": {
-      "order": 0,
       "title": "Jlint",
       "properties": {
+        "Jlint.logLevel": {
+          "type": "string",
+          "scope": "window",
+          "enum": [
+            "off",
+            "debug",
+            "info",
+            "warn",
+            "error"
+          ],
+          "default": "info"
+        },
         "Jlint.activateLint": {
           "type": "boolean",
           "default": true,
@@ -103,12 +131,17 @@
     }
   },
   "scripts": {
-    "watch": "node .node/swc.cjs --watch",
-    "compile": "node .node/swc.cjs --compile",
-    "reset": "node .node/reset.cjs --pnpm",
-    "gcloud": "node .node/gcloud.cjs --git",
+    "watch": "node .node/swc.cjs --npm --watch",
+    "compile": "node .node/swc.cjs --npm --compile",
+    "reset": "node .node/reset.cjs --npm",
     "autofix": "node .node/autofix.cjs --fix",
-    "vsce": "node .node/vsce.cjs"
+    "gcloud": "node .node/gcloud.cjs --git",
+    "vsce": "node .node/vsce.cjs --npm"
+  },
+  "engines": {
+    "vscode": "^1.106.0",
+    "node": ">=21.0.0",
+    "npm": ">=10.0.0"
   },
   "dependencies": {
     "@babel/core": "^7.28.5",
@@ -118,7 +151,7 @@
     "cheerio": "^1.1.2",
     "chevrotain": "^11.0.3",
     "clean-css": "^5.3.3",
-    "fast-xml-parser": "^5.3.1",
+    "fast-xml-parser": "^5.3.2",
     "glob": "^11.0.3",
     "html-minifier-terser": "^7.2.0",
     "jsdom": "^27.2.0",
@@ -134,7 +167,7 @@
   },
   "devDependencies": {
     "@swc/cli": "^0.7.9",
-    "@swc/core": "^1.15.1",
+    "@swc/core": "^1.15.2",
     "@types/clean-css": "^4.2.11",
     "@types/html-minifier-terser": "^7.0.2",
     "@types/jsdom": "^27.0.0",
@@ -154,6 +187,5 @@
     "ts-prune": "^0.10.3",
     "tsc-alias": "^1.8.16",
     "typescript": "^5.9.3"
-  },
-  "sideEffects": false
+  }
 }
