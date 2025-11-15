@@ -41,11 +41,9 @@
 ```javascript
 !s || s === `p1` ? (
   fn()
-)
-: s === `p2` ? (
+) : s === `p2` ? (
   fn(s, "yy")
-)
-: (
+) : (
   fn(s)
 )
 ```
@@ -71,8 +69,7 @@ fs.existsSync(o) && (() => {
 ```javascript
 !r.e ? (
   typeof r.s === `number` ? r.s === 0 : true
-)
-: (
+) : (
   false
 )
 fs.existsSync(outDir) && (
