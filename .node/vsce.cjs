@@ -10,8 +10,8 @@ const argv = process.argv.slice(2);
 const args1 = argv.find(arg => [`--npm`, `--pnpm`, `--yarn`, `--bun`].includes(arg))?.replace(`--`, ``) || ``;
 
 // 로깅 함수 -----------------------------------------------------------------------------------
-const logger = (type=``, message=``) => {
-	const format = (text=``) => text.trim().replace(/^\s+/gm, ``);
+const logger = (type = ``, message = ``) => {
+	const format = (text = ``) => text.trim().replace(/^\s+/gm, ``);
 	const line = `----------------------------------------`;
 	const colors = {
 		line: `\x1b[38;5;214m`,
@@ -43,7 +43,7 @@ const logger = (type=``, message=``) => {
 
 // 명령 실행 함수 ------------------------------------------------------------------------------
 // @ts-ignore
-const runCommand = (cmd=``, args=[]) => {
+const runCommand = (cmd = ``, args = []) => {
 	logger(`info`, `실행: ${cmd} ${args.join(` `)}`);
 
 	const result = spawnSync(cmd, args, {
@@ -70,20 +70,26 @@ const deleteOutDir = () => {
 	);
 };
 
+// esbuild 번들링 -----------------------------------------------------------------------------
+const bundle = () => {
+	logger(`info`, `esbuild 번들링 시작`);
+
+	args1 === `npm` ? (
+		runCommand(args1, [`exec`, `--`, `esbuild`, `src/extension.ts`, `--bundle`, `--outfile=out/extension.js`, `--external:vscode`, `--format=cjs`, `--platform=node`, `--sourcemap`, `--minify`])
+	)
+	: (
+		runCommand(args1, [`exec`, `esbuild`, `src/extension.ts`, `--bundle`, `--outfile=out/extension.js`, `--external:vscode`, `--format=cjs`, `--platform=node`, `--sourcemap`, `--minify`])
+	);
+
+	logger(`success`, `esbuild 번들링 완료`);
+};
+
 // 메인 실행 함수 ------------------------------------------------------------------------------
 (() => {
 	logger(`info`, `VSCE 패키지 빌드 시작`);
 
 	deleteOutDir();
-
-	args1 === `npm` ? (
-		runCommand(args1, [`exec`, `--`, `swc`, `src`, `-d`, `out`, `--source-maps`, `--strip-leading-paths`]),
-		runCommand(args1, [`exec`, `--`, `tsc-alias`, `-p`, `tsconfig.json`, `-f`])
-	)
-	: (
-		runCommand(args1, [`exec`, `swc`, `src`, `-d`, `out`, `--source-maps`, `--strip-leading-paths`]),
-		runCommand(args1, [`exec`, `tsc-alias`, `-p`, `tsconfig.json`, `-f`])
-	);
+	bundle();
 
 	runCommand(`vsce`, [`package`]);
 
