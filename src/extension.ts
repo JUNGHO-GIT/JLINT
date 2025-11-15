@@ -6,11 +6,9 @@ import { logger, initLogger, notify } from "@exportScripts";
 
 // -------------------------------------------------------------------------------------------------
 export const deactivate = () => {};
-
-// -------------------------------------------------------------------------------------------------
 export const activate = (context: vscode.ExtensionContext) => {
 
-		// Initialize Logger
+		// 0. Initialize Logger ------------------------------------------------------------------------
 		initLogger();
 		logger("info", "activation", "Jlint is now active!");
 
