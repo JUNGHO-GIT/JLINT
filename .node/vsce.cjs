@@ -9,6 +9,16 @@ const process = require(`process`);
 const argv = process.argv.slice(2);
 const args1 = argv.find(arg => [`--npm`, `--pnpm`, `--yarn`, `--bun`].includes(arg))?.replace(`--`, ``) || ``;
 
+// 설정 파일 로드 ------------------------------------------------------------------------------
+const loadConfig = () => {
+	const configPath = path.join(process.cwd(), `vsce.config.json`);
+	return fs.existsSync(configPath) ? (
+		JSON.parse(fs.readFileSync(configPath, `utf8`))
+	) : (
+		{ external: [`vscode`], copyPackages: [], esbuildOptions: {}, vsceOptions: {} }
+	);
+};
+
 // 로깅 함수 -----------------------------------------------------------------------------------
 const logger = (type = ``, message = ``) => {
 	const format = (text = ``) => text.trim().replace(/^\s+/gm, ``);
@@ -87,21 +97,13 @@ const deleteOldVsixFiles = () => {
 	);
 };
 
-// esbuild 번들링 (src에서 직접) -----------------------------------------------------------
-const bundle = () => {
+// esbuild 번들링 -----------------------------------------------------------------------------
+// @ts-ignore
+const bundle = (config) => {
 	logger(`info`, `esbuild 번들링 시작 (src → out)`);
 
-	const externalPackages = [
-		`vscode`,
-		`prettier`,
-		`prettier-plugin-java`,
-		`prettier-plugin-jsp`,
-		`@prettier/plugin-xml`,
-		`sql-formatter`
-	];
-
-	const externalArgs = externalPackages.map(pkg => `--external:${pkg}`);
-
+	// @ts-ignore
+	const externalArgs = config.external.map(pkg => `--external:${pkg}`);
 	const esbuildArgs = [
 		`src/extension.ts`,
 		`--bundle`,
@@ -110,11 +112,12 @@ const bundle = () => {
 		`--format=cjs`,
 		`--platform=node`,
 		`--sourcemap`,
-		`--minify`,
-		`--tree-shaking=true`,
-		`--target=node21`,
-		`--legal-comments=none`
+		`--minify`
 	];
+
+	config.esbuildOptions[`tree-shaking`] && esbuildArgs.push(`--tree-shaking=true`);
+	config.esbuildOptions.target && esbuildArgs.push(`--target=${config.esbuildOptions.target}`);
+	config.esbuildOptions[`legal-comments`] && esbuildArgs.push(`--legal-comments=${config.esbuildOptions[`legal-comments`]}`);
 
 	args1 === `npm` ? (
 		runCommand(args1, [`exec`, `--`, `esbuild`, ...esbuildArgs])
@@ -125,41 +128,44 @@ const bundle = () => {
 	logger(`success`, `esbuild 번들링 완료`);
 };
 
-// Prettier 패키지 복사 -----------------------------------------------------------------------
-const copyPrettierPackages = () => {
-	logger(`info`, `Prettier 패키지 복사 시작`);
-	const nodeModulesTarget = path.join(process.cwd(), `out`, `node_modules`);
+// 패키지 복사 --------------------------------------------------------------------------------
+// @ts-ignore
+const copyPackages = (config) => {
+	!config.copyPackages.length && (
+		logger(`info`, `복사할 패키지 없음`)
+	) || (
+		logger(`info`, `패키지 복사 시작`),
+		(() => {
+			const nodeModulesTarget = path.join(process.cwd(), `out`, `node_modules`);
+			!fs.existsSync(nodeModulesTarget) && fs.mkdirSync(nodeModulesTarget, { recursive: true });
 
-	!fs.existsSync(nodeModulesTarget) && fs.mkdirSync(nodeModulesTarget, { recursive: true });
+			// @ts-ignore
+			config.copyPackages.forEach(pkg => {
+				const src = path.join(process.cwd(), `node_modules`, pkg);
+				const dest = path.join(nodeModulesTarget, pkg);
+				fs.existsSync(src) && (
+					fs.cpSync(src, dest, { recursive: true, force: true }),
+					logger(`info`, `복사 완료: ${pkg}`)
+				);
+			});
 
-	const packagesToCopy = [
-		`prettier`,
-		`prettier-plugin-java`,
-		`prettier-plugin-jsp`,
-		`@prettier`,
-		`sql-formatter`
-	];
-
-	packagesToCopy.forEach(pkg => {
-		const src = path.join(process.cwd(), `node_modules`, pkg);
-		const dest = path.join(nodeModulesTarget, pkg);
-
-		fs.existsSync(src) && (
-			fs.cpSync(src, dest, { recursive: true, force: true }),
-			logger(`info`, `복사 완료: ${pkg}`)
-		);
-	});
-
-	logger(`success`, `Prettier 패키지 복사 완료`);
+			logger(`success`, `패키지 복사 완료`);
+		})()
+	);
 };
 
 // 메인 실행 함수 ------------------------------------------------------------------------------
 (() => {
+	const config = loadConfig();
 	logger(`info`, `VSCE 패키지 빌드 시작`);
 	deleteOutDir();
-	bundle();
-	copyPrettierPackages();
+	bundle(config);
+	copyPackages(config);
 	deleteOldVsixFiles();
-	runCommand(`vsce`, [`package`, `--no-dependencies`]);
+
+	const vsceArgs = [`package`];
+	config.vsceOptions[`no-dependencies`] && vsceArgs.push(`--no-dependencies`);
+
+	runCommand(`vsce`, vsceArgs);
 	logger(`success`, `VSCE 패키지 빌드 완료`);
 })();

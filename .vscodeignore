@@ -15,6 +15,7 @@
 **/.swcrc
 **/webpack.config.js
 **/esbuild.config.js
+**/vsce.config.json
 
 # 패키지 관리자
 **/package-lock.json
