@@ -53,18 +53,51 @@ const _resolveModule = (moduleResult: any) => moduleResult && typeof moduleResul
 ) : (
   moduleResult
 );
-const _dynamicImport = async (specifier: string) => {
-  try {
-    const moduleResult = await import(specifier);
-    return _resolveModule(moduleResult);
+const _resolveModulePath = (specifier: string) => {
+  const extensionPath = _path.dirname(__dirname || "");
+  const localPath = _path.join(extensionPath, "node_modules", specifier);
+
+  if (_fs.existsSync(localPath)) {
+    return localPath;
   }
-  catch (importErr) {
+
+  if (_fs.existsSync(_path.join(localPath, "index.js"))) {
+    return _path.join(localPath, "index.js");
+  }
+
+  const packageJsonPath = _path.join(localPath, "package.json");
+  if (_fs.existsSync(packageJsonPath)) {
     try {
-      const requiredModule = require(specifier);
-      return _resolveModule(requiredModule);
+      const packageJson = JSON.parse(_fs.readFileSync(packageJsonPath, "utf8"));
+      const mainFile = packageJson.main || "index.js";
+      return _path.join(localPath, mainFile);
     }
-    catch (requireErr) {
-      return null;
+    catch (err) {
+      return specifier;
+    }
+  }
+
+  return specifier;
+};
+const _dynamicImport = async (specifier: string) => {
+  const resolvedPath = _resolveModulePath(specifier);
+  try {
+    const requiredModule = require(resolvedPath);
+    return _resolveModule(requiredModule);
+  }
+  catch (requireErr) {
+    try {
+      const moduleResult = await import(resolvedPath);
+      return _resolveModule(moduleResult);
+    }
+    catch (importErr) {
+      try {
+        const fallbackModule = require(specifier);
+        return _resolveModule(fallbackModule);
+      }
+      catch (fallbackErr) {
+        return null;
+      }
     }
   }
 };
