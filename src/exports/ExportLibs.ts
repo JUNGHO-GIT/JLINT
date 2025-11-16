@@ -19,8 +19,6 @@ import _stripJsonComments from "strip-json-comments";
 import type { Options as _StripJsonOptions } from "strip-json-comments";
 import _strip from "strip-comments";
 import type { Options as _StripOptions } from "strip-comments";
-// prettier plugins (loaded lazily to avoid ESM/CJS createRequire issues during esbuild bundling)
-// NOTE: Do NOT convert these to static imports; dynamic import preserves proper module context inside VSCode extension host
 
 // 2. export --------------------------------------------------------------------------------
 export { _vscode as vscode };
@@ -41,46 +39,85 @@ export { _stripJsonComments as stripJsonComments };
 export type { _StripJsonOptions as StripJsonOptions };
 export { _strip as strip };
 export type { _StripOptions as StripOptions };
-// removed static exports for prettier plugins (now using lazy getters)
 
 // 3. special export -------------------------------------------------------------------------------
-let _sqlFormatterCache: any = null;
-const _getSqlFormatter = async () => (_sqlFormatterCache ?? (_sqlFormatterCache = await import("sql-formatter")));
-export { _getSqlFormatter as getSqlFormatter };
-
 let _prettierCache: any = null;
-const _getPrettier = async () => (_prettierCache ?? (_prettierCache = await import("prettier")));
-export { _getPrettier as getPrettier };
-
-// lazy prettier plugin getters -------------------------------------------------------------------
-let _prettierPluginYamlCache: any = null;
-const _getPrettierPluginYaml = async () => (
-	_prettierPluginYamlCache ?? (
-		_prettierPluginYamlCache = await import("prettier/plugins/yaml").then(m => (m as any).default ?? m).catch(() => null)
-	)
-);
-export { _getPrettierPluginYaml as getPrettierPluginYaml };
-
-let _prettierPluginXmlCache: any = null;
-const _getPrettierPluginXml = async () => (
-	_prettierPluginXmlCache ?? (
-		_prettierPluginXmlCache = await import("@prettier/plugin-xml").then(m => (m as any).default ?? m).catch(() => null)
-	)
-);
-export { _getPrettierPluginXml as getPrettierPluginXml };
-
 let _prettierPluginJavaCache: any = null;
+let _prettierPluginJspCache: any = null;
+let _prettierPluginXmlCache: any = null;
+let _prettierPluginYamlCache: any = null;
+let _sqlFormatterCache: any = null;
+
+const _getPrettier = async () => (
+	_prettierCache ?? (
+		_prettierCache = await import("prettier")
+		.then((m) => {
+			return (m as any).default ?? m;
+		})
+		.catch(() => {
+			return null;
+		})
+	)
+);
 const _getPrettierPluginJava = async () => (
 	_prettierPluginJavaCache ?? (
-		_prettierPluginJavaCache = await import("prettier-plugin-java").then(m => (m as any).default ?? m).catch(() => null)
+		_prettierPluginJavaCache = await import("prettier-plugin-java")
+		.then((m) => {
+			return (m as any).default ?? m;
+		})
+		.catch(() => {
+			return null;
+		})
 	)
 );
-export { _getPrettierPluginJava as getPrettierPluginJava };
-
-let _prettierPluginJspCache: any = null;
 const _getPrettierPluginJsp = async () => (
 	_prettierPluginJspCache ?? (
-		_prettierPluginJspCache = await import("prettier-plugin-jsp").then(m => (m as any).default ?? m).catch(() => null)
+		_prettierPluginJspCache = await import("prettier-plugin-jsp")
+		.then((m) => {
+			return (m as any).default ?? m;
+		})
+		.catch(() => {
+			return null;
+		})
 	)
 );
+const _getPrettierPluginXml = async () => (
+	_prettierPluginXmlCache ?? (
+		_prettierPluginXmlCache = await import("@prettier/plugin-xml")
+		.then((m) => {
+			return (m as any).default ?? m;
+		})
+		.catch(() => {
+			return null;
+		})
+	)
+);
+const _getPrettierPluginYaml = async () => (
+	_prettierPluginYamlCache ?? (
+		_prettierPluginYamlCache = await import("prettier/plugins/yaml")
+		.then((m) => {
+			return (m as any).default ?? m;
+		})
+		.catch(() => {
+			return null;
+		})
+	)
+);
+const _getSqlFormatter = async () => (
+	_sqlFormatterCache ?? (
+		_sqlFormatterCache = await import("sql-formatter")
+		.then((m) => {
+			return (m as any).default ?? m;
+		})
+		.catch(() => {
+			return null;
+		})
+	)
+);
+
+export { _getPrettier as getPrettier };
+export { _getPrettierPluginJava as getPrettierPluginJava };
 export { _getPrettierPluginJsp as getPrettierPluginJsp };
+export { _getPrettierPluginYaml as getPrettierPluginYaml };
+export { _getPrettierPluginXml as getPrettierPluginXml };
+export { _getSqlFormatter as getSqlFormatter };
