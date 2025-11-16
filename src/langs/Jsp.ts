@@ -186,7 +186,7 @@ export const prettierFormat = async (
 		logger(prettier ? "debug" : "warn", `${fileExt}:prettierFormat`, prettierStatus);
 
 		// 1. parser
-		const parser = "java";
+		const parser = "html";
 
 		// 2. plugin
 		const plugin = await getPrettierPluginJsp();

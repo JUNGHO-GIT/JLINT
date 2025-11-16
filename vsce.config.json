@@ -11,8 +11,10 @@
     "prettier",
     "prettier-plugin-java",
     "prettier-plugin-jsp",
-    "@prettier",
-    "sql-formatter"
+    "@prettier/plugin-xml",
+    "@xml-tools/parser",
+    "sql-formatter",
+    "java-parser"
   ],
   "esbuildOptions": {
     "tree-shaking": true,

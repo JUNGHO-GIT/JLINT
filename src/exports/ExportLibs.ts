@@ -1,6 +1,6 @@
 // exports/ExportLibs.ts
 
-// 1. import --------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------
 import _vscode from "vscode";
 import _fs from "fs";
 import _path from "path";
@@ -19,8 +19,12 @@ import type { Options as _PrettierOptions } from "prettier";
 import type { Plugin as _PrettierPlugin } from "prettier";
 import type { Options as _StripJsonOptions } from "strip-json-comments";
 import type { Options as _StripOptions } from "strip-comments";
+import {
+  setExtensionPath as _setExtensionPath,
+  getModuleWithCache as _getModuleWithCache
+} from "@scripts/modules";
 
-// 2. export --------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------
 export { _vscode as vscode };
 export { _fs as fs };
 export { _path as path };
@@ -40,155 +44,11 @@ export type { _PrettierPlugin };
 export type { _StripJsonOptions as StripJsonOptions };
 export type { _StripOptions as StripOptions };
 
-// 3. special export -------------------------------------------------------------------------------
-let _prettierCache: any = null;
-let _prettierPluginJavaCache: any = null;
-let _prettierPluginJspCache: any = null;
-let _prettierPluginXmlCache: any = null;
-let _prettierPluginYamlCache: any = null;
-let _sqlFormatterCache: any = null;
-let _extensionPath: string = "";
-
-const _resolveModule = (moduleResult: any) => moduleResult && typeof moduleResult === "object" && "default" in moduleResult ? (
-  moduleResult.default
-) : (
-  moduleResult
-);
-export const setExtensionPath = (path: string) => {
-  _extensionPath = path;
-};
-
-const _resolveModulePath = (specifier: string) => {
-  const basePath = _path.join(_extensionPath, "out", "node_modules", specifier);
-
-  if (!_fs.existsSync(basePath)) {
-    return specifier;
-  }
-
-  const packageJsonPath = _path.join(basePath, "package.json");
-  if (_fs.existsSync(packageJsonPath)) {
-    try {
-      const packageJson = JSON.parse(_fs.readFileSync(packageJsonPath, "utf8"));
-      const mainFile = packageJson.main ? (
-        packageJson.main
-      ) : packageJson.exports?.default ? (
-        packageJson.exports.default
-      ) : (
-        "index.js"
-      );
-      return _path.join(basePath, mainFile);
-    }
-    catch (err) {
-      return _path.join(basePath, "index.js");
-    }
-  }
-
-  if (_fs.existsSync(_path.join(basePath, "index.js"))) {
-    return _path.join(basePath, "index.js");
-  }
-
-  return basePath;
-};
-const _dynamicImport = async (specifier: string) => {
-  const resolvedPath = _resolveModulePath(specifier);
-  try {
-    const requiredModule = require(resolvedPath);
-    return _resolveModule(requiredModule);
-  }
-  catch (err: any) {
-    try {
-      const fileUrl = _path.isAbsolute(resolvedPath) ? (
-        `file:///${resolvedPath.replace(/\\/g, "/")}`
-      ) : (
-        resolvedPath
-      );
-      const moduleResult = await import(fileUrl);
-      return _resolveModule(moduleResult);
-    }
-    catch (importErr: any) {
-      try {
-        const fallbackModule = require(specifier);
-        return _resolveModule(fallbackModule);
-      }
-      catch (fallbackErr: any) {
-        return null;
-      }
-    }
-  }
-};
-
-const _getPrettier = async () => {
-	return _prettierCache ? (
-		_prettierCache
-	) : await (async () => {
-		const moduleResult = await _dynamicImport("prettier");
-		return moduleResult ? (
-			_prettierCache = moduleResult,
-			moduleResult
-		) : null;
-	})();
-};
-const _getPrettierPluginJava = async () => {
-	return _prettierPluginJavaCache ? (
-		_prettierPluginJavaCache
-	) : await (async () => {
-		const moduleResult = await _dynamicImport("prettier-plugin-java");
-		return moduleResult ? (
-			_prettierPluginJavaCache = moduleResult,
-			moduleResult
-		) : null;
-	})();
-};
-const _getPrettierPluginJsp = async () => {
-	return _prettierPluginJspCache ? (
-		_prettierPluginJspCache
-	) : await (async () => {
-		const moduleResult = await _dynamicImport("prettier-plugin-jsp");
-		return moduleResult ? (
-			_prettierPluginJspCache = moduleResult,
-			moduleResult
-		) : null;
-	})();
-};
-const _getPrettierPluginXml = async () => {
-	return _prettierPluginXmlCache ? (
-		_prettierPluginXmlCache
-	) : await (async () => {
-		const moduleResult = await _dynamicImport("@prettier/plugin-xml");
-		return moduleResult ? (
-			_prettierPluginXmlCache = moduleResult,
-			moduleResult
-		) : null;
-	})();
-};
-const _getPrettierPluginYaml = async () => {
-	return _prettierPluginYamlCache ? (
-		_prettierPluginYamlCache
-	) : await (async () => {
-		const moduleResult = await _dynamicImport("prettier/plugins/yaml");
-		return moduleResult ? (
-			_prettierPluginYamlCache = moduleResult,
-			moduleResult
-		) : null;
-	})();
-};
-const _getSqlFormatter = async () => {
-	if (_sqlFormatterCache) {
-		return _sqlFormatterCache;
-	}
-	try {
-		const formatter = require("sql-formatter");
-		_sqlFormatterCache = formatter;
-		return formatter;
-	}
-	catch (err) {
-		return null;
-	}
-};
-
-export { _getPrettier as getPrettier };
-export { _getPrettierPluginJava as getPrettierPluginJava };
-export { _getPrettierPluginJsp as getPrettierPluginJsp };
-export { _getPrettierPluginYaml as getPrettierPluginYaml };
-export { _getPrettierPluginXml as getPrettierPluginXml };
-export { _getSqlFormatter as getSqlFormatter };
+// -----------------------------------------------------------------------------------------
+export { _setExtensionPath as setExtensionPath };
+export const getPrettier = async () => _getModuleWithCache("prettier");
+export const getPrettierPluginJava = async () => _getModuleWithCache("prettier-plugin-java");
+export const getPrettierPluginJsp = async () => _getModuleWithCache("prettier-plugin-jsp");
+export const getPrettierPluginXml = async () => _getModuleWithCache("@prettier/plugin-xml");
+export const getPrettierPluginYaml = async () => _getModuleWithCache("prettier/plugins/yaml");
+export const getSqlFormatter = async () => _getModuleWithCache("sql-formatter");

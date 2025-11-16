@@ -3,21 +3,10 @@
 const { spawnSync } = require(`child_process`);
 const fs = require(`fs`);
 const path = require(`path`);
-const process = require(`process`);
 
 // 인자 파싱 ------------------------------------------------------------------------------------
 const argv = process.argv.slice(2);
-const args1 = argv.find(arg => [`--npm`, `--pnpm`, `--yarn`, `--bun`].includes(arg))?.replace(`--`, ``) || ``;
-
-// 설정 파일 로드 ------------------------------------------------------------------------------
-const loadConfig = () => {
-	const configPath = path.join(process.cwd(), `vsce.config.json`);
-	return fs.existsSync(configPath) ? (
-		JSON.parse(fs.readFileSync(configPath, `utf8`))
-	) : (
-		{ external: [`vscode`], copyPackages: [], esbuildOptions: {}, vsceOptions: {} }
-	);
-};
+const args1 = argv.find(arg => [`--npm`, `--pnpm`, `--yarn`, `--bun`].includes(arg))?.replace(`--`, ``) || `npm`;
 
 // 로깅 함수 -----------------------------------------------------------------------------------
 const logger = (type = ``, message = ``) => {
@@ -71,6 +60,16 @@ const runCommand = (cmd = ``, args = [], ignoreError = false) => {
 		)
 	) : (
 		logger(`success`, `${cmd} 실행 완료`)
+	);
+};
+
+// 설정 로드 -----------------------------------------------------------------------------------
+const loadConfig = () => {
+	const configPath = path.join(process.cwd(), `vsce.config.json`);
+	return fs.existsSync(configPath) ? (
+		JSON.parse(fs.readFileSync(configPath, `utf8`))
+	) : (
+		{ external: [`vscode`], copyPackages: [], esbuildOptions: {}, vsceOptions: {} }
 	);
 };
 
@@ -128,7 +127,102 @@ const bundle = (config) => {
 	logger(`success`, `esbuild 번들링 완료`);
 };
 
-// 패키지 복사 --------------------------------------------------------------------------------
+// 패키지 및 모든 의존성 재귀 복사 -------------------------------------------------------------
+// @ts-ignore
+const getAllDependencies = (pkgName, nodeModulesSource, visited = new Set()) => {
+	visited.has(pkgName) && (
+		new Set()
+	) || (() => {
+		visited.add(pkgName);
+		const pkgJsonPath = path.join(nodeModulesSource, pkgName, `package.json`);
+
+		!fs.existsSync(pkgJsonPath) && (
+			visited
+		) || (() => {
+			const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, `utf8`));
+			const deps = pkgJson.dependencies || {};
+
+			Object.keys(deps).forEach(dep => {
+				getAllDependencies(dep, nodeModulesSource, visited);
+			});
+
+			return visited;
+		})();
+	})();
+
+	return visited;
+};
+
+// 패키지 복사 및 중첩 의존성 처리 -------------------------------------------------------------
+// @ts-ignore
+const copyPackageWithNestedDeps = (pkgPath, targetRoot, nodeModulesSource, visited = new Set()) => {
+	const pkgName = path.basename(pkgPath);
+	const scopedParent = path.basename(path.dirname(pkgPath));
+	const fullName = scopedParent.startsWith(`@`) ? `${scopedParent}/${pkgName}` : pkgName;
+
+	visited.has(fullName) && (
+		null
+	) || (() => {
+		visited.add(fullName);
+		const dest = path.join(targetRoot, fullName);
+
+		fs.existsSync(pkgPath) && (
+			fs.cpSync(pkgPath, dest, { recursive: true, force: true }),
+			logger(`info`, `복사: ${fullName}`)
+		);
+
+		const pkgJsonPath = path.join(pkgPath, `package.json`);
+		fs.existsSync(pkgJsonPath) && (() => {
+			const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, `utf8`));
+			const deps = pkgJson.dependencies || {};
+
+			Object.keys(deps).length && (() => {
+				const destNodeModules = path.join(dest, `node_modules`);
+				!fs.existsSync(destNodeModules) && fs.mkdirSync(destNodeModules, { recursive: true });
+
+				Object.keys(deps).forEach(depName => {
+					const depSrc = path.join(nodeModulesSource, depName);
+					fs.existsSync(depSrc) && !visited.has(depName) && (
+						logger(`info`, `  중첩: ${fullName} → ${depName}`),
+						copyPackageWithNestedDeps(depSrc, destNodeModules, nodeModulesSource, visited)
+					);
+				});
+			})();
+		})();
+
+		const nestedNodeModules = path.join(pkgPath, `node_modules`);
+		fs.existsSync(nestedNodeModules) && (() => {
+			fs.readdirSync(nestedNodeModules, { withFileTypes: true }).forEach(item => {
+				item.isDirectory() && (() => {
+					const items = item.name.startsWith(`@`) ? (
+						fs.readdirSync(path.join(nestedNodeModules, item.name), { withFileTypes: true })
+							.filter(sub => sub.isDirectory())
+							.map(sub => ({ name: `${item.name}/${sub.name}`, path: path.join(nestedNodeModules, item.name, sub.name) }))
+					) : (
+						[{ name: item.name, path: path.join(nestedNodeModules, item.name) }]
+					);
+
+					items.forEach(({ name, path: nestedPath }) => {
+						const pkgJson = path.join(nestedPath, `package.json`);
+						fs.existsSync(pkgJson) && (() => {
+							const deps = JSON.parse(fs.readFileSync(pkgJson, `utf8`)).dependencies || {};
+							Object.keys(deps).forEach(dep => {
+								const depSrc = path.join(nodeModulesSource, dep);
+								const depDest = path.join(dest, `node_modules`, name, `node_modules`, dep);
+								fs.existsSync(depSrc) && !fs.existsSync(depDest) && (
+									fs.mkdirSync(path.dirname(depDest), { recursive: true }),
+									fs.cpSync(depSrc, depDest, { recursive: true, force: true })
+								);
+							});
+						})();
+					});
+				})();
+			});
+		})();
+	})();
+};
+
+// 패키지 복사 메인 함수 -----------------------------------------------------------------------
 // @ts-ignore
 const copyPackages = (config) => {
 	!config.copyPackages.length && (
@@ -136,20 +230,24 @@ const copyPackages = (config) => {
 	) || (
 		logger(`info`, `패키지 복사 시작`),
 		(() => {
+			const nodeModulesSource = path.join(process.cwd(), `node_modules`);
 			const nodeModulesTarget = path.join(process.cwd(), `out`, `node_modules`);
 			!fs.existsSync(nodeModulesTarget) && fs.mkdirSync(nodeModulesTarget, { recursive: true });
 
+			const allPackages = new Set();
 			// @ts-ignore
 			config.copyPackages.forEach(pkg => {
-				const src = path.join(process.cwd(), `node_modules`, pkg);
-				const dest = path.join(nodeModulesTarget, pkg);
-				fs.existsSync(src) && (
-					fs.cpSync(src, dest, { recursive: true, force: true }),
-					logger(`info`, `복사 완료: ${pkg}`)
-				);
+				const deps = getAllDependencies(pkg, nodeModulesSource);
+				deps.forEach(dep => allPackages.add(dep));
 			});
 
-			logger(`success`, `패키지 복사 완료`);
+			const visited = new Set();
+			allPackages.forEach(pkg => {
+				const src = path.join(nodeModulesSource, pkg);
+				copyPackageWithNestedDeps(src, nodeModulesTarget, nodeModulesSource, visited);
+			});
+
+			logger(`success`, `패키지 복사 완료 (총 ${visited.size}개)`);
 		})()
 	);
 };
@@ -166,6 +264,11 @@ const copyPackages = (config) => {
 	const vsceArgs = [`package`];
 	config.vsceOptions[`no-dependencies`] && vsceArgs.push(`--no-dependencies`);
 
-	runCommand(`vsce`, vsceArgs);
+	args1 === `npm` ? (
+		runCommand(args1, [`exec`, `--`, `vsce`, ...vsceArgs])
+	) : (
+		runCommand(args1, [`exec`, `vsce`, ...vsceArgs])
+	);
+
 	logger(`success`, `VSCE 패키지 빌드 완료`);
 })();
