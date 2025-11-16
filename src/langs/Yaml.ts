@@ -1,6 +1,6 @@
 // Yaml.ts
 
-import { strip, prettier } from "@exportLibs";
+import { strip, prettier, prettierPluginYaml } from "@exportLibs";
 import type { PrettierOptions, StripOptions } from "@exportLibs";
 import type { PrettierPlugin } from "@exportLibs";
 import { logger, modal } from "@exportScripts";
@@ -62,15 +62,7 @@ export const prettierFormat = async (
 		const parser = "yaml" as prettier.BuiltInParserName;
 
 		// 2. plugin
-		const plugin = (() => {
-			try {
-				return require("prettier/plugins/yaml").default as PrettierPlugin;
-			}
-			catch (err: any) {
-				logger("error", `${fileExt}:prettierFormat`, `prettier-plugin-yaml load fail: ${err?.message || err}`);
-				return null;
-			}
-		})();
+		const plugin = prettierPluginYaml as PrettierPlugin;
 
 		// 3. options
 		const baseOptions: PrettierOptions = {

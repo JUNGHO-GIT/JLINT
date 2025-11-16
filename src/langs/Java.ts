@@ -1,6 +1,6 @@
 // Java.ts
 
-import { lodash, strip, prettier } from "@exportLibs";
+import { lodash, strip, prettier, prettierPluginJava } from "@exportLibs";
 import type { PrettierOptions, StripOptions } from "@exportLibs";
 import type { PrettierPlugin } from "@exportLibs";
 import { logger, modal } from "@exportScripts";
@@ -62,15 +62,7 @@ export const prettierFormat = async (
 		const parser = "java" as prettier.BuiltInParserName;
 
 		// 2. plugin
-		const plugin = (() => {
-			try {
-				return require("prettier-plugin-java").default as PrettierPlugin;
-			}
-			catch (err: any) {
-				logger("error", `${fileExt}:prettierFormat`, `prettier-plugin-java load fail: ${err?.message || err}`);
-				return null;
-			}
-		})();
+		const plugin = prettierPluginJava as PrettierPlugin;
 
 		// 3. options
 		const baseOptions: PrettierOptions = {

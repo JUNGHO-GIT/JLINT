@@ -1,6 +1,6 @@
 // Xml.ts
 
-import { lodash, strip, prettier } from "@exportLibs";
+import { lodash, strip, prettier, prettierPluginXml } from "@exportLibs";
 import type { PrettierOptions, StripOptions } from "@exportLibs";
 import type { PrettierPlugin } from "@exportLibs";
 import { logger, modal } from "@exportScripts";
@@ -62,15 +62,7 @@ export const prettierFormat = async (
 		const parser = "xml" as prettier.BuiltInParserName;
 
 		// 2. plugin
-		const plugin = (() => {
-			try {
-				return require("@prettier/plugin-xml").default as PrettierPlugin;
-			}
-			catch (err: any) {
-				logger("error", `${fileExt}:prettierFormat`, `prettier-plugin-xml load fail: ${err?.message || err}`);
-				return null;
-			}
-		})();
+		const plugin = prettierPluginXml as PrettierPlugin;
 
 		// 3. options
 		const baseOptions: PrettierOptions = {
