@@ -90,24 +90,10 @@ const deleteOldVsixFiles = () => {
 // esbuild 번들링 -----------------------------------------------------------------------------
 const bundle = () => {
 	logger(`info`, `esbuild 번들링 시작`);
-
-	const externalPackages = [
-		`vscode`,
-		`prettier`,
-		`prettier-plugin-java`,
-		`prettier-plugin-jsp`,
-		`@prettier/plugin-xml`,
-		`prettier/plugins/yaml`,
-		`sql-formatter`
-	];
-
-	const externalArgs = externalPackages.flatMap(pkg => [`--external:${pkg}`]);
-
 	const baseArgs = [
 		`src/extension.ts`,
 		`--bundle`,
 		`--outfile=out/extension.js`,
-		...externalArgs,
 		`--format=cjs`,
 		`--platform=node`,
 		`--sourcemap`,

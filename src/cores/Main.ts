@@ -22,7 +22,6 @@ export const main = async (
   fileEol: string,
   fileExt: string,
 ) => {
-
   logger(
     "info",
     "main",
