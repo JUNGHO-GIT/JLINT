@@ -87,14 +87,44 @@ const deleteOldVsixFiles = () => {
 	);
 };
 
+// SWC 컴파일 + tsc-alias 실행 --------------------------------------------------------------
+const compile = () => {
+	logger(`info`, `SWC 컴파일 시작`);
+
+	args1 === `npm` ? (
+		runCommand(args1, [`exec`, `--`, `swc`, `src`, `-d`, `out`, `--source-maps`, `--strip-leading-paths`]),
+		runCommand(args1, [`exec`, `--`, `tsc-alias`, `-p`, `tsconfig.json`, `-f`])
+	) : (
+		runCommand(args1, [`exec`, `swc`, `src`, `-d`, `out`, `--source-maps`, `--strip-leading-paths`]),
+		runCommand(args1, [`exec`, `tsc-alias`, `-p`, `tsconfig.json`, `-f`])
+	);
+
+	logger(`success`, `SWC 컴파일 완료`);
+};
+
 // esbuild 번들링 -----------------------------------------------------------------------------
 const bundle = () => {
 	logger(`info`, `esbuild 번들링 시작`);
 
 	args1 === `npm` ? (
-		runCommand(args1, [`exec`, `--`, `esbuild`, `src/extension.ts`, `--bundle`, `--outfile=out/extension.js`, `--external:vscode`, `--format=cjs`, `--platform=node`, `--sourcemap`, `--minify`])
+		runCommand(args1, [`exec`, `--`, `esbuild`, `out/extension.js`, `--bundle`, `--outfile=out/extension.bundle.js`, `--external:vscode`, `--format=cjs`, `--platform=node`, `--sourcemap`, `--minify`])
 	) : (
-		runCommand(args1, [`exec`, `esbuild`, `src/extension.ts`, `--bundle`, `--outfile=out/extension.js`, `--external:vscode`, `--format=cjs`, `--platform=node`, `--sourcemap`, `--minify`])
+		runCommand(args1, [`exec`, `esbuild`, `out/extension.js`, `--bundle`, `--outfile=out/extension.bundle.js`, `--external:vscode`, `--format=cjs`, `--platform=node`, `--sourcemap`, `--minify`])
+	);
+
+	fs.existsSync(path.join(process.cwd(), `out`, `extension.bundle.js`)) && (
+		fs.rmSync(path.join(process.cwd(), `out`, `extension.js`), { force: true }),
+		fs.renameSync(
+			path.join(process.cwd(), `out`, `extension.bundle.js`),
+			path.join(process.cwd(), `out`, `extension.js`)
+		),
+		fs.existsSync(path.join(process.cwd(), `out`, `extension.bundle.js.map`)) && (
+			fs.renameSync(
+				path.join(process.cwd(), `out`, `extension.bundle.js.map`),
+				path.join(process.cwd(), `out`, `extension.js.map`)
+			)
+		),
+		logger(`info`, `번들 파일 이름 변경 완료`)
 	);
 
 	logger(`success`, `esbuild 번들링 완료`);
@@ -104,6 +134,7 @@ const bundle = () => {
 (() => {
 	logger(`info`, `VSCE 패키지 빌드 시작`);
 	deleteOutDir();
+	compile();
 	bundle();
 	deleteOldVsixFiles();
 	runCommand(`vsce`, [`package`]);
