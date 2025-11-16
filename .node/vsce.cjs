@@ -91,10 +91,33 @@ const deleteOldVsixFiles = () => {
 const bundle = () => {
 	logger(`info`, `esbuild 번들링 시작`);
 
+	const externalPackages = [
+		`vscode`,
+		`prettier`,
+		`prettier-plugin-java`,
+		`prettier-plugin-jsp`,
+		`@prettier/plugin-xml`,
+		`prettier/plugins/yaml`,
+		`sql-formatter`
+	];
+
+	const externalArgs = externalPackages.flatMap(pkg => [`--external:${pkg}`]);
+
+	const baseArgs = [
+		`src/extension.ts`,
+		`--bundle`,
+		`--outfile=out/extension.js`,
+		...externalArgs,
+		`--format=cjs`,
+		`--platform=node`,
+		`--sourcemap`,
+		`--minify`
+	];
+
 	args1 === `npm` ? (
-		runCommand(args1, [`exec`, `--`, `esbuild`, `src/extension.ts`, `--bundle`, `--outfile=out/extension.js`, `--external:vscode`, `--format=cjs`, `--platform=node`, `--sourcemap`, `--minify`])
+		runCommand(args1, [`exec`, `--`, `esbuild`, ...baseArgs])
 	) : (
-		runCommand(args1, [`exec`, `esbuild`, `src/extension.ts`, `--bundle`, `--outfile=out/extension.js`, `--external:vscode`, `--format=cjs`, `--platform=node`, `--sourcemap`, `--minify`])
+		runCommand(args1, [`exec`, `esbuild`, ...baseArgs])
 	);
 
 	logger(`success`, `esbuild 번들링 완료`);
