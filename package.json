@@ -5,8 +5,9 @@
   "publisher": "JUNGHO",
   "icon": "logo.webp",
   "license": "Apache-2.0",
+  "type": "module",
   "main": "./out/extension.js",
-  "version": "2.3.3",
+  "version": "2.3.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/JUNGHO-GIT/JLINT.git"
