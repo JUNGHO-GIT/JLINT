@@ -6,7 +6,7 @@
   "icon": "logo.webp",
   "license": "Apache-2.0",
   "main": "./out/extension.js",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/JUNGHO-GIT/JLINT.git"
@@ -41,7 +41,18 @@
     "universal"
   ],
   "activationEvents": [
-    "onCommand:extension.Jlint"
+    "onLanguage:java",
+    "onLanguage:xml",
+    "onLanguage:html",
+    "onLanguage:css",
+    "onLanguage:javascript",
+    "onLanguage:typescript",
+    "onLanguage:json",
+    "onLanguage:yml",
+    "onLanguage:sql",
+    "onLanguage:jsp",
+    "onCommand:extension.Jlint",
+    "onStartupFinished"
   ],
   "contributes": {
     "outputChannels": [
