@@ -88,6 +88,7 @@ export const prettierFormat = async (
       bracketSameLine: false,
       semi: true,
       __embeddedInHtml: true,
+      filepath: fileName
     };
 
     logger("debug", `${fileExt}:prettierFormat`, "Y");

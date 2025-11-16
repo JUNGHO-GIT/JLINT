@@ -204,6 +204,7 @@ export const prettierFormat = async (
       bracketSameLine: false,
       semi: true,
       __embeddedInHtml: true,
+      filepath: fileName
     };
 
     const rules1 = (
