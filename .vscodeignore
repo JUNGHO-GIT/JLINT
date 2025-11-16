@@ -23,7 +23,6 @@
 **/esbuild.config.js
 
 # 패키지 관리자
-**/node_modules/**
 **/package-lock.json
 **/yarn.lock
 **/pnpm-lock.yaml

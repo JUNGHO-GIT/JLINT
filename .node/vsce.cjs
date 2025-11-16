@@ -87,56 +87,65 @@ const deleteOldVsixFiles = () => {
 	);
 };
 
-// SWC 컴파일 + tsc-alias 실행 --------------------------------------------------------------
-const compile = () => {
-	logger(`info`, `SWC 컴파일 시작`);
-
-	args1 === `npm` ? (
-		runCommand(args1, [`exec`, `--`, `swc`, `src`, `-d`, `out`, `--source-maps`, `--strip-leading-paths`]),
-		runCommand(args1, [`exec`, `--`, `tsc-alias`, `-p`, `tsconfig.json`, `-f`])
-	) : (
-		runCommand(args1, [`exec`, `swc`, `src`, `-d`, `out`, `--source-maps`, `--strip-leading-paths`]),
-		runCommand(args1, [`exec`, `tsc-alias`, `-p`, `tsconfig.json`, `-f`])
-	);
-
-	logger(`success`, `SWC 컴파일 완료`);
-};
-
-// esbuild 번들링 -----------------------------------------------------------------------------
+// esbuild 번들링 (src에서 직접) -----------------------------------------------------------
 const bundle = () => {
-	logger(`info`, `esbuild 번들링 시작`);
+	logger(`info`, `esbuild 번들링 시작 (src → out)`);
+
+	const externalPackages = [
+		`vscode`,
+		`prettier`,
+		`prettier-plugin-java`,
+		`prettier-plugin-jsp`,
+		`@prettier/plugin-xml`,
+		`sql-formatter`
+	];
+
+	const externalArgs = externalPackages.map(pkg => `--external:${pkg}`);
 
 	args1 === `npm` ? (
-		runCommand(args1, [`exec`, `--`, `esbuild`, `out/extension.js`, `--bundle`, `--outfile=out/extension.bundle.js`, `--external:vscode`, `--format=cjs`, `--platform=node`, `--sourcemap`, `--minify`])
+		runCommand(args1, [`exec`, `--`, `esbuild`, `src/extension.ts`, `--bundle`, `--outfile=out/extension.js`, ...externalArgs, `--format=cjs`, `--platform=node`, `--sourcemap`, `--minify`])
 	) : (
-		runCommand(args1, [`exec`, `esbuild`, `out/extension.js`, `--bundle`, `--outfile=out/extension.bundle.js`, `--external:vscode`, `--format=cjs`, `--platform=node`, `--sourcemap`, `--minify`])
-	);
-
-	fs.existsSync(path.join(process.cwd(), `out`, `extension.bundle.js`)) && (
-		fs.rmSync(path.join(process.cwd(), `out`, `extension.js`), { force: true }),
-		fs.renameSync(
-			path.join(process.cwd(), `out`, `extension.bundle.js`),
-			path.join(process.cwd(), `out`, `extension.js`)
-		),
-		fs.existsSync(path.join(process.cwd(), `out`, `extension.bundle.js.map`)) && (
-			fs.renameSync(
-				path.join(process.cwd(), `out`, `extension.bundle.js.map`),
-				path.join(process.cwd(), `out`, `extension.js.map`)
-			)
-		),
-		logger(`info`, `번들 파일 이름 변경 완료`)
+		runCommand(args1, [`exec`, `esbuild`, `src/extension.ts`, `--bundle`, `--outfile=out/extension.js`, ...externalArgs, `--format=cjs`, `--platform=node`, `--sourcemap`, `--minify`])
 	);
 
 	logger(`success`, `esbuild 번들링 완료`);
+};
+
+// Prettier 패키지 복사 -----------------------------------------------------------------------
+const copyPrettierPackages = () => {
+	logger(`info`, `Prettier 패키지 복사 시작`);
+	const nodeModulesTarget = path.join(process.cwd(), `out`, `node_modules`);
+
+	!fs.existsSync(nodeModulesTarget) && fs.mkdirSync(nodeModulesTarget, { recursive: true });
+
+	const packagesToCopy = [
+		`prettier`,
+		`prettier-plugin-java`,
+		`prettier-plugin-jsp`,
+		`@prettier`,
+		`sql-formatter`
+	];
+
+	packagesToCopy.forEach(pkg => {
+		const src = path.join(process.cwd(), `node_modules`, pkg);
+		const dest = path.join(nodeModulesTarget, pkg);
+
+		fs.existsSync(src) && (
+			fs.cpSync(src, dest, { recursive: true, force: true }),
+			logger(`info`, `복사 완료: ${pkg}`)
+		);
+	});
+
+	logger(`success`, `Prettier 패키지 복사 완료`);
 };
 
 // 메인 실행 함수 ------------------------------------------------------------------------------
 (() => {
 	logger(`info`, `VSCE 패키지 빌드 시작`);
 	deleteOutDir();
-	compile();
 	bundle();
+	copyPrettierPackages();
 	deleteOldVsixFiles();
-	runCommand(`vsce`, [`package`]);
+	runCommand(`vsce`, [`package`, `--no-dependencies`]);
 	logger(`success`, `VSCE 패키지 빌드 완료`);
 })();
