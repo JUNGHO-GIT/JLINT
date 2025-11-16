@@ -43,7 +43,7 @@ const logger = (type = ``, message = ``) => {
 
 // 명령 실행 함수 ------------------------------------------------------------------------------
 // @ts-ignore
-const runCommand = (cmd = ``, args = []) => {
+const runCommand = (cmd = ``, args = [], ignoreError = false) => {
 	logger(`info`, `실행: ${cmd} ${args.join(` `)}`);
 
 	const result = spawnSync(cmd, args, {
@@ -52,12 +52,16 @@ const runCommand = (cmd = ``, args = []) => {
 		env: process.env
 	});
 
-	result.status !== 0 && (() => {
-		logger(`error`, `${cmd} 실패 (exit code: ${result.status})`);
-		process.exit(result.status || 1);
-	})();
-
-	logger(`success`, `${cmd} 실행 완료`);
+	result.status !== 0 ? (
+		ignoreError ? (
+			logger(`warn`, `${cmd} 경고 무시 (exit code: ${result.status})`)
+		) : (
+			logger(`error`, `${cmd} 실패 (exit code: ${result.status})`),
+			process.exit(result.status || 1)
+		)
+	) : (
+		logger(`success`, `${cmd} 실행 완료`)
+	);
 };
 
 // out 디렉토리 초기화 -----------------------------------------------------------------------
@@ -76,8 +80,7 @@ const bundle = () => {
 
 	args1 === `npm` ? (
 		runCommand(args1, [`exec`, `--`, `esbuild`, `src/extension.ts`, `--bundle`, `--outfile=out/extension.js`, `--external:vscode`, `--format=cjs`, `--platform=node`, `--sourcemap`, `--minify`])
-	)
-	: (
+	) : (
 		runCommand(args1, [`exec`, `esbuild`, `src/extension.ts`, `--bundle`, `--outfile=out/extension.js`, `--external:vscode`, `--format=cjs`, `--platform=node`, `--sourcemap`, `--minify`])
 	);
 
