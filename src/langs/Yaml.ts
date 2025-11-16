@@ -1,6 +1,6 @@
 // Yaml.ts
 
-import { strip, getPrettier, prettierPluginYaml } from "@exportLibs";
+import { strip, getPrettier, getPrettierPluginYaml } from "@exportLibs";
 import type { PrettierOptions, StripOptions } from "@exportLibs";
 import type { PrettierPlugin } from "@exportLibs";
 import { logger, modal } from "@exportScripts";
@@ -64,8 +64,8 @@ export const prettierFormat = async (
 		// 1. parser
     const parser = "yaml";
 
-		// 2. plugin
-		const plugin = prettierPluginYaml as PrettierPlugin;
+    // 2. plugin (lazy dynamic import)
+    const plugin = await getPrettierPluginYaml() as PrettierPlugin;
 
 		// 3. options
 		const baseOptions: PrettierOptions = {

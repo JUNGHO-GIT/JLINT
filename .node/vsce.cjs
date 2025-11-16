@@ -103,12 +103,9 @@ const bundle = () => {
 // 메인 실행 함수 ------------------------------------------------------------------------------
 (() => {
 	logger(`info`, `VSCE 패키지 빌드 시작`);
-
 	deleteOutDir();
 	bundle();
 	deleteOldVsixFiles();
-
 	runCommand(`vsce`, [`package`]);
-
 	logger(`success`, `VSCE 패키지 빌드 완료`);
 })();

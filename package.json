@@ -6,7 +6,7 @@
   "icon": "logo.webp",
   "license": "Apache-2.0",
   "main": "./out/extension.js",
-  "version": "2.3.5",
+  "version": "2.3.6",
   "repository": {
     "type": "git",
     "url": "https://github.com/JUNGHO-GIT/JLINT.git"
@@ -173,7 +173,9 @@
     "strip-json-comments": "5.0.3",
     "terser": "5.44.1",
     "yaml": "2.8.1",
-    "@prettier/plugin-xml": "3.4.2"
+    "@prettier/plugin-xml": "3.4.2",
+    "prettier-plugin-java": "2.7.7",
+    "prettier-plugin-jsp": "1.0.13"
   },
   "devDependencies": {
     "@swc/cli": "0.7.9",
@@ -191,8 +193,6 @@
     "esbuild": "0.27.0",
     "eslint": "9.39.1",
     "mocha": "11.7.5",
-    "prettier-plugin-java": "2.7.7",
-    "prettier-plugin-jsp": "1.0.13",
     "ts-morph": "27.0.2",
     "ts-prune": "0.10.3",
     "tsc-alias": "1.8.16",
