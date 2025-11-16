@@ -100,7 +100,7 @@ export const prettierFormat = async (
       filepath: fileName,
       __embeddedInHtml: true,
     };
-    const formatterAvailable = prettier && typeof prettier.format === "function";
+    const formatterAvailable = prettier && plugin && typeof prettier.format === "function";
     logger(formatterAvailable ? "debug" : "warn", `${fileExt}:prettierFormat`, formatterAvailable ? "formatter:ready" : "formatter:missing");
     const finalResult = formatterAvailable
     ? await (async () => {

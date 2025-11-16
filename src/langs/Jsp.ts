@@ -238,7 +238,7 @@ export const prettierFormat = async (
 			`${p[1]}${p[2]}\n${p[1]}\t${p[3]}${p[4]}`
 		))
 		.value();
-		const formatterAvailable = prettier && typeof prettier.format === "function";
+		const formatterAvailable = prettier && plugin && typeof prettier.format === "function";
 		logger(formatterAvailable ? "debug" : "warn", `${fileExt}:prettierFormat`, formatterAvailable ? "formatter:ready" : "formatter:missing");
 		const finalResult = formatterAvailable
 		? await (async () => {
