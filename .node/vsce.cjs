@@ -102,10 +102,24 @@ const bundle = () => {
 
 	const externalArgs = externalPackages.map(pkg => `--external:${pkg}`);
 
+	const esbuildArgs = [
+		`src/extension.ts`,
+		`--bundle`,
+		`--outfile=out/extension.js`,
+		...externalArgs,
+		`--format=cjs`,
+		`--platform=node`,
+		`--sourcemap`,
+		`--minify`,
+		`--tree-shaking=true`,
+		`--target=node21`,
+		`--legal-comments=none`
+	];
+
 	args1 === `npm` ? (
-		runCommand(args1, [`exec`, `--`, `esbuild`, `src/extension.ts`, `--bundle`, `--outfile=out/extension.js`, ...externalArgs, `--format=cjs`, `--platform=node`, `--sourcemap`, `--minify`])
+		runCommand(args1, [`exec`, `--`, `esbuild`, ...esbuildArgs])
 	) : (
-		runCommand(args1, [`exec`, `esbuild`, `src/extension.ts`, `--bundle`, `--outfile=out/extension.js`, ...externalArgs, `--format=cjs`, `--platform=node`, `--sourcemap`, `--minify`])
+		runCommand(args1, [`exec`, `esbuild`, ...esbuildArgs])
 	);
 
 	logger(`success`, `esbuild 번들링 완료`);

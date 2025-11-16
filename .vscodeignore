@@ -1,24 +1,18 @@
 # .vscodeignore
 
-# VS Code 관련
-**/.vscode/**
-**/.vscode-test/**
-**/vsc-extension-quickstart.md
-
-# 소스 코드
+# 소스 코드 (번들링되므로 제외)
 **/src/**
 **/*.ts
 !out/**/*.js
 
-# 빌드 및 설정 파일
+# 빌드 도구 및 설정
+**/.node/**
+**/*.cjs
 **/tsconfig*.json
-**/tsconfig.json
-**/tsconfig.paths.json
 **/.eslintrc*
-**/.eslintignore
 **/.prettierrc*
-**/.editorconfig
 **/.babel*
+**/.swcrc
 **/webpack.config.js
 **/esbuild.config.js
 
@@ -26,47 +20,47 @@
 **/package-lock.json
 **/yarn.lock
 **/pnpm-lock.yaml
-**/.yarnrc*
 **/.npmrc
-**/.pnpmfile.cjs
+**/.yarnrc*
 
-# Git 관련
+# Git
 **/.git/**
-**/.gitignore
+**/.gitignore*
 **/.gitattributes
 **/.github/**
 
-# 테스트 및 커버리지
+# VS Code
+**/.vscode/**
+**/.vscode-test/**
+
+# 테스트
 **/test/**
 **/tests/**
-**/*.test.ts
-**/*.spec.ts
+**/*.test.*
+**/*.spec.*
 **/coverage/**
 **/.nyc_output/**
 
-# 임시 및 캐시 파일
+# 임시 파일
 **/.DS_Store
 **/.history/**
 **/dist/**
 **/tmp/**
 **/temp/**
-**/*.log
-**/*.map
 **/.cache/**
+**/.bookmark/**
+**/*.log
 
-# 개발 도구 및 스크립트
-**/.node/**
-**/.vscode/**
-**/scripts/**
-**/*.cjs
-!out/**
-
-# 기타
-**/.env*
-**/.dockerignore
-**/Dockerfile
-**/.editorconfig
-**/renovate.json
-**/.releaserc*
-**/pnpm-workspace.yaml
-**/.bookmark/
+# node_modules 내 불필요한 파일
+**/node_modules/**/.bin/**
+**/node_modules/**/test/**
+**/node_modules/**/tests/**
+**/node_modules/**/*.md
+**/node_modules/**/*.markdown
+**/node_modules/**/LICENSE*
+**/node_modules/**/CHANGELOG*
+**/node_modules/**/.npmignore
+**/node_modules/**/.eslintrc*
+**/node_modules/**/tsconfig.json
+**/node_modules/**/*.map
+!out/node_modules/**

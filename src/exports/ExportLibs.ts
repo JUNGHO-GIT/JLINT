@@ -12,12 +12,12 @@ import _lodash from "lodash";
 import _CleanCSS from "clean-css";
 import { minify as _jsMinify } from "terser";
 import { minify as _htmlMinify } from "html-minifier-terser";
+import _strip from "strip-comments";
+import _stripJsonComments from "strip-json-comments";
 import type { FormatOptionsWithLanguage as _FormatOptionsWithLanguage } from "sql-formatter";
 import type { Options as _PrettierOptions } from "prettier";
 import type { Plugin as _PrettierPlugin } from "prettier";
-import _stripJsonComments from "strip-json-comments";
 import type { Options as _StripJsonOptions } from "strip-json-comments";
-import _strip from "strip-comments";
 import type { Options as _StripOptions } from "strip-comments";
 
 // 2. export --------------------------------------------------------------------------------
@@ -32,12 +32,12 @@ export { _lodash as lodash };
 export { _CleanCSS as CleanCSS };
 export { _jsMinify as jsMinify };
 export { _htmlMinify as htmlMinify };
+export { _strip as strip };
+export { _stripJsonComments as stripJsonComments };
 export type { _FormatOptionsWithLanguage as FormatOptionsWithLanguage };
 export type { _PrettierOptions as PrettierOptions };
 export type { _PrettierPlugin };
-export { _stripJsonComments as stripJsonComments };
 export type { _StripJsonOptions as StripJsonOptions };
-export { _strip as strip };
 export type { _StripOptions as StripOptions };
 
 // 3. special export -------------------------------------------------------------------------------
@@ -59,29 +59,35 @@ export const setExtensionPath = (path: string) => {
 };
 
 const _resolveModulePath = (specifier: string) => {
-  const localPath = _path.join(_extensionPath, "node_modules", specifier);
+  const basePath = _path.join(_extensionPath, "out", "node_modules", specifier);
 
-  if (_fs.existsSync(localPath)) {
-    return localPath;
+  if (!_fs.existsSync(basePath)) {
+    return specifier;
   }
 
-  if (_fs.existsSync(_path.join(localPath, "index.js"))) {
-    return _path.join(localPath, "index.js");
-  }
-
-  const packageJsonPath = _path.join(localPath, "package.json");
+  const packageJsonPath = _path.join(basePath, "package.json");
   if (_fs.existsSync(packageJsonPath)) {
     try {
       const packageJson = JSON.parse(_fs.readFileSync(packageJsonPath, "utf8"));
-      const mainFile = packageJson.main || "index.js";
-      return _path.join(localPath, mainFile);
+      const mainFile = packageJson.main ? (
+        packageJson.main
+      ) : packageJson.exports?.default ? (
+        packageJson.exports.default
+      ) : (
+        "index.js"
+      );
+      return _path.join(basePath, mainFile);
     }
     catch (err) {
-      return specifier;
+      return _path.join(basePath, "index.js");
     }
   }
 
-  return specifier;
+  if (_fs.existsSync(_path.join(basePath, "index.js"))) {
+    return _path.join(basePath, "index.js");
+  }
+
+  return basePath;
 };
 const _dynamicImport = async (specifier: string) => {
   const resolvedPath = _resolveModulePath(specifier);
@@ -91,7 +97,12 @@ const _dynamicImport = async (specifier: string) => {
   }
   catch (err: any) {
     try {
-      const moduleResult = await import(resolvedPath);
+      const fileUrl = _path.isAbsolute(resolvedPath) ? (
+        `file:///${resolvedPath.replace(/\\/g, "/")}`
+      ) : (
+        resolvedPath
+      );
+      const moduleResult = await import(fileUrl);
       return _resolveModule(moduleResult);
     }
     catch (importErr: any) {
