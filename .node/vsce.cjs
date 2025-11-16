@@ -72,6 +72,16 @@ const deleteOutDir = () => {
 		fs.rmSync(outDir, { recursive: true, force: true }),
 		logger(`info`, `기존 out 디렉토리 삭제 완료`)
 	);
+
+	// node .node/swc.cjs --npm --compile 명령어 실행
+	const packageManager = args1 || `npm`;
+	const compileCommand = packageManager === `npm` ? `run compile` :
+		packageManager === `pnpm` ? `compile` :
+			packageManager === `yarn` ? `compile` :
+				packageManager === `bun` ? `run compile` : ``;
+	runCommand(packageManager, compileCommand.split(` `));
+
+	logger(`success`, `컴파일 완료`);
 };
 
 // 기존 VSIX 삭제 ---------------------------------------------------------------------------
@@ -87,33 +97,10 @@ const deleteOldVsixFiles = () => {
 	);
 };
 
-// esbuild 번들링 -----------------------------------------------------------------------------
-const bundle = () => {
-	logger(`info`, `esbuild 번들링 시작`);
-	const baseArgs = [
-		`src/extension.ts`,
-		`--bundle`,
-		`--outfile=out/extension.js`,
-		`--format=cjs`,
-		`--platform=node`,
-		`--sourcemap`,
-		`--minify`
-	];
-
-	args1 === `npm` ? (
-		runCommand(args1, [`exec`, `--`, `esbuild`, ...baseArgs])
-	) : (
-		runCommand(args1, [`exec`, `esbuild`, ...baseArgs])
-	);
-
-	logger(`success`, `esbuild 번들링 완료`);
-};
-
 // 메인 실행 함수 ------------------------------------------------------------------------------
 (() => {
 	logger(`info`, `VSCE 패키지 빌드 시작`);
 	deleteOutDir();
-	bundle();
 	deleteOldVsixFiles();
 	runCommand(`vsce`, [`package`]);
 	logger(`success`, `VSCE 패키지 빌드 완료`);
