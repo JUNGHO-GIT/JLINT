@@ -47,15 +47,19 @@ let _prettierPluginJspCache: any = null;
 let _prettierPluginXmlCache: any = null;
 let _prettierPluginYamlCache: any = null;
 let _sqlFormatterCache: any = null;
+let _extensionPath: string = "";
 
 const _resolveModule = (moduleResult: any) => moduleResult && typeof moduleResult === "object" && "default" in moduleResult ? (
   moduleResult.default
 ) : (
   moduleResult
 );
+export const setExtensionPath = (path: string) => {
+  _extensionPath = path;
+};
+
 const _resolveModulePath = (specifier: string) => {
-  const extensionPath = _path.dirname(__dirname || "");
-  const localPath = _path.join(extensionPath, "node_modules", specifier);
+  const localPath = _path.join(_extensionPath, "node_modules", specifier);
 
   if (_fs.existsSync(localPath)) {
     return localPath;
@@ -85,17 +89,17 @@ const _dynamicImport = async (specifier: string) => {
     const requiredModule = require(resolvedPath);
     return _resolveModule(requiredModule);
   }
-  catch (requireErr) {
+  catch (err: any) {
     try {
       const moduleResult = await import(resolvedPath);
       return _resolveModule(moduleResult);
     }
-    catch (importErr) {
+    catch (importErr: any) {
       try {
         const fallbackModule = require(specifier);
         return _resolveModule(fallbackModule);
       }
-      catch (fallbackErr) {
+      catch (fallbackErr: any) {
         return null;
       }
     }

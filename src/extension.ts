@@ -1,6 +1,6 @@
 // extension.ts
 
-import { path, vscode } from "@exportLibs";
+import { path, vscode, setExtensionPath } from "@exportLibs";
 import { main } from "@exportCores";
 import { logger, initLogger, notify } from "@exportScripts";
 
@@ -10,6 +10,7 @@ export const activate = (context: vscode.ExtensionContext) => {
 
 		// 0. Initialize Logger ------------------------------------------------------------------------
 		initLogger();
+		setExtensionPath(context.extensionPath);
 		logger("info", "activation", "Jlint is now active!");
 
     // 1. Get Configuration ------------------------------------------------------------------------
