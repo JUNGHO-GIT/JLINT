@@ -126,6 +126,23 @@ export const insertSpace = async (
   }
 };
 
+// 3. insertLine -----------------------------------------------------------------------------------
+export const insertLine = async (
+  contentsParam: string,
+	fileExt: string
+) => {
+  try {
+    const finalResult = contentsParam;
+
+  	logger("debug", `${fileExt}:insertLine`, "Y");
+    return finalResult
+  }
+  catch (err: any) {
+  	logger("error", `${fileExt}:insertLine`, err.message);
+    return contentsParam;
+  }
+};
+
 // 4. lineBreak ------------------------------------------------------------------------------------
 export const lineBreak = async (
   contentsParam: string,

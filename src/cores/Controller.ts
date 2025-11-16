@@ -2,6 +2,7 @@
 
 import { capitalize, singleTags, semicolon, ifElse, tryCatch } from "@exportRules";
 import { logger, notify } from "@exportScripts";
+import * as Langs from "@exportLangs";
 
 // -------------------------------------------------------------------------------------------------
 declare type ConfProps = {
@@ -22,7 +23,7 @@ export const getLanguage = async (
 	fileExt: string
 ) => {
 
-  // 동적으로 언어별 규칙 모듈 import (html -> Html)
+  // 언어별 규칙 모듈 매핑
 	const langStr = (
 		(fileExt === "css" || fileExt === "scss") ? "Css" :
 		(fileExt === "html" || fileExt === "htm") ? "Html" :
@@ -51,24 +52,29 @@ export const getLanguage = async (
     return resultContents;
   }
 
-	const langModule = await import(`../langs/${langStr}`);
-	const langRules = langModule;
+	const langRules = Langs[langStr as keyof typeof Langs] as any;
 
   if (!confParam.activateLint) {
 		return resultContents;
 	}
-	confParam.removeComments && (
+	confParam.removeComments && langRules.removeComments && (
 		resultContents = await langRules.removeComments(resultContents, fileTabSize, fileEol, fileExt)
 	);
-	confParam.activateLint && (
+	confParam.activateLint && langRules.prettierFormat && (
 		resultContents = await langRules.prettierFormat(confParam, resultContents, fileName, fileTabSize, fileEol, fileExt)
 	);
-	confParam.insertLine && (
+	confParam.insertLine && langRules.insertLine && (
 		resultContents = await langRules.insertLine(resultContents, fileExt)
 	);
-	resultContents = await langRules.insertSpace(resultContents, fileExt);
-	resultContents = await langRules.lineBreak(resultContents, fileExt);
-	resultContents = await langRules.finalCheck(resultContents, fileExt);
+	langRules.insertSpace && (
+		resultContents = await langRules.insertSpace(resultContents, fileExt)
+	);
+	langRules.lineBreak && (
+		resultContents = await langRules.lineBreak(resultContents, fileExt)
+	);
+	langRules.finalCheck && (
+		resultContents = await langRules.finalCheck(resultContents, fileExt)
+	);
 
   return resultContents;
 }
