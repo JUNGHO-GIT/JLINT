@@ -2,7 +2,7 @@
 
 import { strip } from "@exportLibs";
 import type { PrettierOptions, StripOptions } from "@exportLibs";
-import type { Plugin as PrettierPlugin } from "prettier";
+import type { PrettierPlugin } from "@exportLibs";
 import { logger, modal } from "@exportScripts";
 
 // -------------------------------------------------------------------------------------------------
