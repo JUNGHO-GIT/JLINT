@@ -159,7 +159,9 @@ export const prettierFormat = async (
     };
 
 		logger("debug", `${fileExt}:prettierFormat`, "Y");
-		const finalResult = prettier.format(contentsParam, baseOptions);
+		const finalResult = prettier && typeof prettier.format === "function"
+		? prettier.format(contentsParam, baseOptions)
+		: contentsParam;
 		return finalResult;
 	}
   catch (err: any) {

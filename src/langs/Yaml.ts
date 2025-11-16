@@ -2,7 +2,6 @@
 
 import { strip, getPrettier, getPrettierPluginYaml } from "@exportLibs";
 import type { PrettierOptions, StripOptions } from "@exportLibs";
-import type { PrettierPlugin } from "@exportLibs";
 import { logger, modal } from "@exportScripts";
 
 // -------------------------------------------------------------------------------------------------
@@ -65,7 +64,7 @@ export const prettierFormat = async (
     const parser = "yaml";
 
     // 2. plugin (lazy dynamic import)
-    const plugin = await getPrettierPluginYaml() as PrettierPlugin;
+    const plugin = await getPrettierPluginYaml();
 
 		// 3. options
 		const baseOptions: PrettierOptions = {
@@ -97,7 +96,9 @@ export const prettierFormat = async (
     };
 
 		logger("debug", `${fileExt}:prettierFormat`, "Y");
-		const finalResult = prettier.format(contentsParam, baseOptions);
+		const finalResult = prettier && typeof prettier.format === "function"
+		? prettier.format(contentsParam, baseOptions)
+		: contentsParam;
 		return finalResult;
 	}
   catch (err: any) {

@@ -234,7 +234,9 @@ export const prettierFormat = async (
 		.value();
 
 		logger("debug", `${fileExt}:prettierFormat`, "Y");
-		const finalResult = prettier.format(result, baseOptions);
+		const finalResult = prettier && typeof prettier.format === "function"
+		? prettier.format(contentsParam, baseOptions)
+		: contentsParam;
 		return finalResult;
 	}
   catch (err: any) {

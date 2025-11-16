@@ -75,7 +75,9 @@ export const prettierFormat = async (
     };
 
 		logger("debug", `${fileExt}:prettierFormat`, "Y");
-		const finalResult = sqlFormatter.format(contentsParam, baseOptions);
+		const finalResult = sqlFormatter && typeof sqlFormatter.format === "function"
+		? sqlFormatter.format(contentsParam, baseOptions)
+		: contentsParam;
 		return finalResult;
 	}
   catch (err: any) {

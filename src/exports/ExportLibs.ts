@@ -34,7 +34,7 @@ export { _jsMinify as jsMinify };
 export { _htmlMinify as htmlMinify };
 export type { _FormatOptionsWithLanguage as FormatOptionsWithLanguage };
 export type { _PrettierOptions as PrettierOptions };
-export type { _PrettierPlugin as PrettierPlugin };
+export type { _PrettierPlugin };
 export { _stripJsonComments as stripJsonComments };
 export type { _StripJsonOptions as StripJsonOptions };
 export { _strip as strip };

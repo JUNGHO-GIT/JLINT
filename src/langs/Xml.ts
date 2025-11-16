@@ -2,7 +2,6 @@
 
 import { lodash, strip, getPrettier, getPrettierPluginXml } from "@exportLibs";
 import type { PrettierOptions, StripOptions } from "@exportLibs";
-import type { PrettierPlugin } from "@exportLibs";
 import { logger, modal } from "@exportScripts";
 
 // -------------------------------------------------------------------------------------------------
@@ -65,7 +64,7 @@ export const prettierFormat = async (
     const parser = "xml";
 
     // 2. plugin (lazy dynamic import)
-    const plugin = await getPrettierPluginXml() as PrettierPlugin;
+    const plugin = await getPrettierPluginXml();
 
 		// 3. options
 		const baseOptions: PrettierOptions = {
@@ -98,7 +97,9 @@ export const prettierFormat = async (
     };
 
 		logger("debug", `${fileExt}:prettierFormat`, "Y");
-		const finalResult = prettier.format(contentsParam, baseOptions);
+		const finalResult = prettier && typeof prettier.format === "function"
+		? prettier.format(contentsParam, baseOptions)
+		: contentsParam;
 		return finalResult;
 	}
   catch (err: any) {
