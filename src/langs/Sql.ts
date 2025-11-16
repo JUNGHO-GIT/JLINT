@@ -49,8 +49,11 @@ export const prettierFormat = async (
 	fileExt: string
 ) => {
 	try {
+    logger("debug", `${fileExt}:prettierFormat`, "start");
 		// 0. prettier
 		const sqlFormatter = await getSqlFormatter();
+    const formatterStatus = sqlFormatter ? "sqlFormatter:loaded" : "sqlFormatter:missing";
+    logger(sqlFormatter ? "debug" : "warn", `${fileExt}:prettierFormat`, formatterStatus);
 
 		// 1. parser
 		const parser = "mysql";
@@ -73,11 +76,20 @@ export const prettierFormat = async (
       denseOperators: false,
       newlineBeforeSemicolon: false
     };
-
-		logger("debug", `${fileExt}:prettierFormat`, "Y");
-		const finalResult = sqlFormatter && typeof sqlFormatter.format === "function"
-		? sqlFormatter.format(contentsParam, baseOptions)
-		: contentsParam;
+    const formatterAvailable = sqlFormatter && typeof sqlFormatter.format === "function";
+    logger(formatterAvailable ? "debug" : "warn", `${fileExt}:prettierFormat`, formatterAvailable ? "formatter:ready" : "formatter:missing");
+    const finalResult = formatterAvailable
+    ? await (async () => {
+      logger("debug", `${fileExt}:prettierFormat`, "format:start");
+      const formatted = await sqlFormatter.format(contentsParam, baseOptions);
+      logger("debug", `${fileExt}:prettierFormat`, "format:success");
+      return formatted;
+    })()
+    : (() => {
+      logger("warn", `${fileExt}:prettierFormat`, "format:skipped");
+      return contentsParam;
+    })();
+    logger("debug", `${fileExt}:prettierFormat`, "end");
 		return finalResult;
 	}
   catch (err: any) {

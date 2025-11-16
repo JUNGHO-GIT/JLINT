@@ -179,14 +179,19 @@ export const prettierFormat = async (
 	fileExt: string
 ) => {
 	try {
+		logger("debug", `${fileExt}:prettierFormat`, "start");
 		// 0. prettier
 		const prettier = await getPrettier();
+		const prettierStatus = prettier ? "prettier:loaded" : "prettier:missing";
+		logger(prettier ? "debug" : "warn", `${fileExt}:prettierFormat`, prettierStatus);
 
 		// 1. parser
 		const parser = "java";
 
 		// 2. plugin
 		const plugin = await getPrettierPluginJsp();
+		const pluginStatus = plugin ? "plugin:jsp:loaded" : "plugin:jsp:missing";
+		logger(plugin ? "debug" : "warn", `${fileExt}:prettierFormat`, pluginStatus);
 
 		// 3. options
 		const baseOptions: PrettierOptions = {
@@ -233,11 +238,20 @@ export const prettierFormat = async (
 			`${p[1]}${p[2]}\n${p[1]}\t${p[3]}${p[4]}`
 		))
 		.value();
-
-		logger("debug", `${fileExt}:prettierFormat`, "Y");
-		const finalResult = prettier && typeof prettier.format === "function"
-		? prettier.format(result, baseOptions)
-		: contentsParam;
+		const formatterAvailable = prettier && typeof prettier.format === "function";
+		logger(formatterAvailable ? "debug" : "warn", `${fileExt}:prettierFormat`, formatterAvailable ? "formatter:ready" : "formatter:missing");
+		const finalResult = formatterAvailable
+		? await (async () => {
+			logger("debug", `${fileExt}:prettierFormat`, "format:start");
+			const formatted = await prettier.format(result, baseOptions);
+			logger("debug", `${fileExt}:prettierFormat`, "format:success");
+			return formatted;
+		})()
+		: (() => {
+			logger("warn", `${fileExt}:prettierFormat`, "format:skipped");
+			return contentsParam;
+		})();
+		logger("debug", `${fileExt}:prettierFormat`, "end");
 		return finalResult;
 	}
   catch (err: any) {

@@ -23,7 +23,7 @@ export const getLanguage = async (
 	fileExt: string
 ) => {
 
-  // 언어별 규칙 모듈 매핑
+  // 동적으로 언어별 규칙 모듈 import (html -> Html)
 	const langStr = (
 		(fileExt === "css" || fileExt === "scss") ? "Css" :
 		(fileExt === "html" || fileExt === "htm") ? "Html" :
@@ -48,33 +48,27 @@ export const getLanguage = async (
 	);
 
   let resultContents = initContents ? initContents : "";
-  if (!langStr) {
+  !langStr && (() => {
     return resultContents;
-  }
-
-	const langRules = Langs[langStr as keyof typeof Langs] as any;
+  })();
+	const langFactory = (Langs as any)[langStr as string];
+	const langRules = (typeof langFactory === "function") ? langFactory() : langFactory;
 
   if (!confParam.activateLint) {
 		return resultContents;
 	}
-	confParam.removeComments && langRules.removeComments && (
+	confParam.removeComments && (
 		resultContents = await langRules.removeComments(resultContents, fileTabSize, fileEol, fileExt)
 	);
-	confParam.activateLint && langRules.prettierFormat && (
+	confParam.activateLint && (
 		resultContents = await langRules.prettierFormat(confParam, resultContents, fileName, fileTabSize, fileEol, fileExt)
 	);
-	confParam.insertLine && langRules.insertLine && (
+	confParam.insertLine && (
 		resultContents = await langRules.insertLine(resultContents, fileExt)
 	);
-	langRules.insertSpace && (
-		resultContents = await langRules.insertSpace(resultContents, fileExt)
-	);
-	langRules.lineBreak && (
-		resultContents = await langRules.lineBreak(resultContents, fileExt)
-	);
-	langRules.finalCheck && (
-		resultContents = await langRules.finalCheck(resultContents, fileExt)
-	);
+	resultContents = await langRules.insertSpace(resultContents, fileExt);
+	resultContents = await langRules.lineBreak(resultContents, fileExt);
+	resultContents = await langRules.finalCheck(resultContents, fileExt);
 
   return resultContents;
 }

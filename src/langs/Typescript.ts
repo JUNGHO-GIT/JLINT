@@ -64,8 +64,11 @@ export const prettierFormat = async (
 	fileExt: string
 ) => {
   try {
+		logger("debug", `${fileExt}:prettierFormat`, "start");
 		// 0. prettier
 		const prettier = await getPrettier();
+		const prettierStatus = prettier ? "prettier:loaded" : "prettier:missing";
+		logger(prettier ? "debug" : "warn", `${fileExt}:prettierFormat`, prettierStatus);
 
 		// 1. parser
     const parser = "babel-ts";
@@ -100,11 +103,20 @@ export const prettierFormat = async (
       filepath: fileName,
       __embeddedInHtml: true,
     };
-
-		logger("debug", `${fileExt}:prettierFormat`, "Y");
-		const finalResult = prettier && typeof prettier.format === "function"
-		? prettier.format(contentsParam, baseOptions)
-		: contentsParam;
+    const formatterAvailable = prettier && typeof prettier.format === "function";
+    logger(formatterAvailable ? "debug" : "warn", `${fileExt}:prettierFormat`, formatterAvailable ? "formatter:ready" : "formatter:missing");
+    const finalResult = formatterAvailable
+    ? await (async () => {
+      logger("debug", `${fileExt}:prettierFormat`, "format:start");
+      const formatted = await prettier.format(contentsParam, baseOptions);
+      logger("debug", `${fileExt}:prettierFormat`, "format:success");
+      return formatted;
+    })()
+    : (() => {
+      logger("warn", `${fileExt}:prettierFormat`, "format:skipped");
+      return contentsParam;
+    })();
+    logger("debug", `${fileExt}:prettierFormat`, "end");
 		return finalResult;
 	}
   catch (err: any) {
