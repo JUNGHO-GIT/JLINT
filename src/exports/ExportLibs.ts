@@ -24,6 +24,7 @@ import type { Options as _StripOptions } from "strip-comments";
 import _prettierPluginYaml from "prettier/plugins/yaml";
 import _prettierPluginXml from "@prettier/plugin-xml";
 import _prettierPluginJava from "prettier-plugin-java";
+import _prettierPluginJsp from "prettier-plugin-jsp";
 
 // 2. export --------------------------------------------------------------------------------
 export { _vscode as vscode };
@@ -49,3 +50,4 @@ export type { _StripOptions as StripOptions };
 export { _prettierPluginYaml as prettierPluginYaml };
 export { _prettierPluginXml as prettierPluginXml };
 export { _prettierPluginJava as prettierPluginJava };
+export { _prettierPluginJsp as prettierPluginJsp };
