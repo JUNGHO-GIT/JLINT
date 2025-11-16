@@ -1,6 +1,6 @@
 // Css.ts
 
-import { lodash, CleanCSS, strip, prettier } from "@exportLibs";
+import { lodash, CleanCSS, strip, getPrettier } from "@exportLibs";
 import type { PrettierOptions, StripOptions } from "@exportLibs";
 import { logger, notify } from "@exportScripts";
 
@@ -121,8 +121,11 @@ export const prettierFormat = async (
 	fileExt: string
 ) => {
 	try {
+		// 0. prettier
+		const prettier = await getPrettier();
+
 		// 1. parser
-		const parser = "css" as prettier.BuiltInParserName;
+		const parser = "css";
 
 		// 2. plugin
 

@@ -1,6 +1,6 @@
 // Typescript.ts
 
-import { lodash, jsMinify, strip, prettier } from "@exportLibs";
+import { lodash, jsMinify, strip, getPrettier } from "@exportLibs";
 import type { PrettierOptions, StripOptions } from "@exportLibs";
 import { logger, modal } from "@exportScripts";
 
@@ -64,8 +64,11 @@ export const prettierFormat = async (
 	fileExt: string
 ) => {
   try {
+		// 0. prettier
+		const prettier = await getPrettier();
+
 		// 1. parser
-		const parser = "babel-ts" as prettier.BuiltInParserName;
+    const parser = "babel-ts";
 
 		// 2. plugin
 

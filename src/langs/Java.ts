@@ -1,6 +1,6 @@
 // Java.ts
 
-import { lodash, strip, prettier, prettierPluginJava } from "@exportLibs";
+import { lodash, strip, getPrettier, prettierPluginJava } from "@exportLibs";
 import type { PrettierOptions, StripOptions } from "@exportLibs";
 import type { PrettierPlugin } from "@exportLibs";
 import { logger, modal } from "@exportScripts";
@@ -22,6 +22,7 @@ export const removeComments = async (
 	fileExt: string
 ) => {
 	try {
+		const prettier = await getPrettier();
 		const minifyResult = (
 			contentsParam
 		);
@@ -58,8 +59,11 @@ export const prettierFormat = async (
 	fileExt: string
 ) => {
 	try {
+		// 0. prettier
+		const prettier = await getPrettier();
+
 		// 1. parser
-		const parser = "java" as prettier.BuiltInParserName;
+		const parser = "java";
 
 		// 2. plugin
 		const plugin = prettierPluginJava as PrettierPlugin;

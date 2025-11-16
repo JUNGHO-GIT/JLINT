@@ -1,6 +1,6 @@
 // Jsp.ts
 
-import { lodash, prettier, prettierPluginJsp } from "@exportLibs";
+import { lodash, getPrettier, prettierPluginJsp } from "@exportLibs";
 import type { PrettierOptions, PrettierPlugin } from "@exportLibs";
 import { htmlMinify, strip } from "@exportLibs";
 import type { StripOptions } from "@exportLibs";
@@ -179,8 +179,11 @@ export const prettierFormat = async (
 	fileExt: string
 ) => {
 	try {
+		// 0. prettier
+		const prettier = await getPrettier();
+
 		// 1. parser
-		const parser = "java" as prettier.BuiltInParserName;
+		const parser = "java";
 
 		// 2. plugin
 		const plugin = prettierPluginJsp as PrettierPlugin;

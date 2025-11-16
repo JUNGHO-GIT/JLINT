@@ -12,9 +12,7 @@ import _lodash from "lodash";
 import _CleanCSS from "clean-css";
 import { minify as _jsMinify } from "terser";
 import { minify as _htmlMinify } from "html-minifier-terser";
-import { format as _sqlFormatter } from "sql-formatter";
 import type { FormatOptionsWithLanguage as _FormatOptionsWithLanguage } from "sql-formatter";
-import _prettier from "prettier";
 import type { Options as _PrettierOptions } from "prettier";
 import type { Plugin as _PrettierPlugin } from "prettier";
 import _stripJsonComments from "strip-json-comments";
@@ -38,9 +36,7 @@ export { _lodash as lodash };
 export { _CleanCSS as CleanCSS };
 export { _jsMinify as jsMinify };
 export { _htmlMinify as htmlMinify };
-export { _sqlFormatter as sqlFormatter };
 export type { _FormatOptionsWithLanguage as FormatOptionsWithLanguage };
-export { _prettier as prettier };
 export type { _PrettierOptions as PrettierOptions };
 export type { _PrettierPlugin as PrettierPlugin };
 export { _stripJsonComments as stripJsonComments };
@@ -51,3 +47,12 @@ export { _prettierPluginYaml as prettierPluginYaml };
 export { _prettierPluginXml as prettierPluginXml };
 export { _prettierPluginJava as prettierPluginJava };
 export { _prettierPluginJsp as prettierPluginJsp };
+
+// 3. special export -------------------------------------------------------------------------------
+let _sqlFormatterCache: any = null;
+const _getSqlFormatter = async () => (_sqlFormatterCache ?? (_sqlFormatterCache = await import("sql-formatter")));
+export { _getSqlFormatter as getSqlFormatter };
+
+let _prettierCache: any = null;
+const _getPrettier = async () => (_prettierCache ?? (_prettierCache = await import("prettier")));
+export { _getPrettier as getPrettier };

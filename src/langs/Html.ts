@@ -1,6 +1,6 @@
 // Html.ts
 
-import { lodash, prettier } from "@exportLibs";
+import { lodash, getPrettier } from "@exportLibs";
 import type { PrettierOptions } from "@exportLibs";
 import { htmlMinify, strip } from "@exportLibs";
 import type { StripOptions } from "@exportLibs";
@@ -23,6 +23,7 @@ export const removeComments = async (
 	fileExt: string
 ) => {
   try {
+		const prettier = await getPrettier();
     // 1. `http://` -> `httpp`
     const pattern1 = (
       /("|')(\s*)(http:\/\/)([\n\s\S]*?)("|')/gm
@@ -179,8 +180,11 @@ export const prettierFormat = async (
 	fileExt: string
 ) => {
   try {
+		// 0. prettier
+		const prettier = await getPrettier();
+
 		// 1. parser
-		const parser = "html" as prettier.BuiltInParserName;
+		const parser = "html";
 
 		// 2. plugin
 

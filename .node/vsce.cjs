@@ -74,6 +74,19 @@ const deleteOutDir = () => {
 	);
 };
 
+// 기존 VSIX 삭제 ---------------------------------------------------------------------------
+const deleteOldVsixFiles = () => {
+	const cwd = process.cwd();
+	const files = fs.readdirSync(cwd).filter(f => f.endsWith(`.vsix`));
+	files.length && (
+		files.forEach(f => {
+			const full = path.join(cwd, f);
+			fs.existsSync(full) && fs.rmSync(full, { force: true });
+		}),
+		logger(`info`, `기존 VSIX 파일 삭제: ${files.join(`, `)}`)
+	);
+};
+
 // esbuild 번들링 -----------------------------------------------------------------------------
 const bundle = () => {
 	logger(`info`, `esbuild 번들링 시작`);
@@ -93,6 +106,7 @@ const bundle = () => {
 
 	deleteOutDir();
 	bundle();
+	deleteOldVsixFiles();
 
 	runCommand(`vsce`, [`package`]);
 

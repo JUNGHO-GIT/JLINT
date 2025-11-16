@@ -1,6 +1,6 @@
 // Sql.ts
 
-import { sqlFormatter } from "@exportLibs";
+import { getSqlFormatter } from "@exportLibs";
 import type { FormatOptionsWithLanguage } from "@exportLibs";
 import { logger, modal } from "@exportScripts";
 
@@ -49,6 +49,9 @@ export const prettierFormat = async (
 	fileExt: string
 ) => {
 	try {
+		// 0. prettier
+		const sqlFormatter = await getSqlFormatter();
+
 		// 1. parser
 		const parser = "mysql";
 
