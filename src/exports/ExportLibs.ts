@@ -48,70 +48,81 @@ let _prettierPluginXmlCache: any = null;
 let _prettierPluginYamlCache: any = null;
 let _sqlFormatterCache: any = null;
 
+const _resolveModule = (moduleResult: any) => moduleResult && typeof moduleResult === "object" && "default" in moduleResult ? (
+  moduleResult.default
+) : (
+  moduleResult
+);
+const _dynamicImport = async (specifier: string) => {
+  try {
+    const moduleResult = await import(specifier);
+    return _resolveModule(moduleResult);
+  }
+  catch (importErr) {
+    try {
+      const requiredModule = require(specifier);
+      return _resolveModule(requiredModule);
+    }
+    catch (requireErr) {
+      return null;
+    }
+  }
+};
+
 const _getPrettier = async () => {
-	if (_prettierCache) {
-		return _prettierCache;
-	}
-	try {
-		const prettier = require("prettier");
-		_prettierCache = prettier;
-		return prettier;
-	}
-	catch (err) {
-		return null;
-	}
+	return _prettierCache ? (
+		_prettierCache
+	) : await (async () => {
+		const moduleResult = await _dynamicImport("prettier");
+		return moduleResult ? (
+			_prettierCache = moduleResult,
+			moduleResult
+		) : null;
+	})();
 };
 const _getPrettierPluginJava = async () => {
-	if (_prettierPluginJavaCache) {
-		return _prettierPluginJavaCache;
-	}
-	try {
-		const plugin = require("prettier-plugin-java");
-		_prettierPluginJavaCache = plugin;
-		return plugin;
-	}
-	catch (err) {
-		return null;
-	}
+	return _prettierPluginJavaCache ? (
+		_prettierPluginJavaCache
+	) : await (async () => {
+		const moduleResult = await _dynamicImport("prettier-plugin-java");
+		return moduleResult ? (
+			_prettierPluginJavaCache = moduleResult,
+			moduleResult
+		) : null;
+	})();
 };
 const _getPrettierPluginJsp = async () => {
-	if (_prettierPluginJspCache) {
-		return _prettierPluginJspCache;
-	}
-	try {
-		const plugin = require("prettier-plugin-jsp");
-		_prettierPluginJspCache = plugin;
-		return plugin;
-	}
-	catch (err) {
-		return null;
-	}
+	return _prettierPluginJspCache ? (
+		_prettierPluginJspCache
+	) : await (async () => {
+		const moduleResult = await _dynamicImport("prettier-plugin-jsp");
+		return moduleResult ? (
+			_prettierPluginJspCache = moduleResult,
+			moduleResult
+		) : null;
+	})();
 };
 const _getPrettierPluginXml = async () => {
-	if (_prettierPluginXmlCache) {
-		return _prettierPluginXmlCache;
-	}
-	try {
-		const plugin = require("@prettier/plugin-xml");
-		_prettierPluginXmlCache = plugin;
-		return plugin;
-	}
-	catch (err) {
-		return null;
-	}
+	return _prettierPluginXmlCache ? (
+		_prettierPluginXmlCache
+	) : await (async () => {
+		const moduleResult = await _dynamicImport("@prettier/plugin-xml");
+		return moduleResult ? (
+			_prettierPluginXmlCache = moduleResult,
+			moduleResult
+		) : null;
+	})();
 };
 const _getPrettierPluginYaml = async () => {
-	if (_prettierPluginYamlCache) {
-		return _prettierPluginYamlCache;
-	}
-	try {
-		const plugin = require("prettier/plugins/yaml");
-		_prettierPluginYamlCache = plugin;
-		return plugin;
-	}
-	catch (err) {
-		return null;
-	}
+	return _prettierPluginYamlCache ? (
+		_prettierPluginYamlCache
+	) : await (async () => {
+		const moduleResult = await _dynamicImport("prettier/plugins/yaml");
+		return moduleResult ? (
+			_prettierPluginYamlCache = moduleResult,
+			moduleResult
+		) : null;
+	})();
 };
 const _getSqlFormatter = async () => {
 	if (_sqlFormatterCache) {

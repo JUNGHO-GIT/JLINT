@@ -32,6 +32,11 @@ export const activate = (context: vscode.ExtensionContext) => {
         return;
       }
 
+      if (editor.document.uri.scheme !== 'file') {
+        notify("error", "Jlint", "Please save the file before linting.");
+        return;
+      }
+
       const filePath = editor.document.uri.fsPath;
       const fileName = path.basename(filePath);
       const fileTabSize = getConfiguration().tabSize;
