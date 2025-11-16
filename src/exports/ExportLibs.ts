@@ -12,7 +12,7 @@ import _lodash from "lodash";
 import _CleanCSS from "clean-css";
 import { minify as _jsMinify } from "terser";
 import { minify as _htmlMinify } from "html-minifier-terser";
-import * as _sqlFormatter from "sql-formatter";
+import { format as _sqlFormatter } from "sql-formatter";
 import type { FormatOptionsWithLanguage as _FormatOptionsWithLanguage } from "sql-formatter";
 import _prettier from "prettier";
 import type { Options as _PrettierOptions } from "prettier";
