@@ -1,7 +1,7 @@
 // Jsp.ts
 
 import { lodash, getPrettier, getPrettierPluginJsp } from "@exportLibs";
-import type { PrettierOptions, PrettierPlugin } from "@exportLibs";
+import type { PrettierOptions } from "@exportLibs";
 import { htmlMinify, strip } from "@exportLibs";
 import type { StripOptions } from "@exportLibs";
 import { logger, modal } from "@exportScripts";
@@ -185,7 +185,7 @@ export const prettierFormat = async (
 		// 1. parser
 		const parser = "java";
 
-		// 2. plugin (lazy dynamic import)
+		// 2. plugin
 		const plugin = await getPrettierPluginJsp();
 
 		// 3. options
@@ -236,7 +236,7 @@ export const prettierFormat = async (
 
 		logger("debug", `${fileExt}:prettierFormat`, "Y");
 		const finalResult = prettier && typeof prettier.format === "function"
-		? prettier.format(contentsParam, baseOptions)
+		? prettier.format(result, baseOptions)
 		: contentsParam;
 		return finalResult;
 	}

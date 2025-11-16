@@ -21,7 +21,6 @@ export const removeComments = async (
 	fileExt: string
 ) => {
 	try {
-		const prettier = await getPrettier();
 		const minifyResult = (
 			contentsParam
 		);
@@ -64,7 +63,7 @@ export const prettierFormat = async (
 		// 1. parser
 		const parser = "java";
 
-		// 2. plugin (lazy dynamic import)
+		// 2. plugin
 		const plugin = await getPrettierPluginJava();
 
 		// 3. options

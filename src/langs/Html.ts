@@ -23,7 +23,6 @@ export const removeComments = async (
 	fileExt: string
 ) => {
   try {
-		const prettier = await getPrettier();
     // 1. `http://` -> `httpp`
     const pattern1 = (
       /("|')(\s*)(http:\/\/)([\n\s\S]*?)("|')/gm
@@ -235,7 +234,7 @@ export const prettierFormat = async (
 
 		logger("debug", `${fileExt}:prettierFormat`, "Y");
 		const finalResult = prettier && typeof prettier.format === "function"
-		? prettier.format(contentsParam, baseOptions)
+		? prettier.format(result, baseOptions)
 		: contentsParam;
 		return finalResult;
 	}

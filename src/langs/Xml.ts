@@ -63,7 +63,7 @@ export const prettierFormat = async (
 		// 1. parser
     const parser = "xml";
 
-    // 2. plugin (lazy dynamic import)
+    // 2. plugin
     const plugin = await getPrettierPluginXml();
 
 		// 3. options

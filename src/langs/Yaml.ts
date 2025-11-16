@@ -63,7 +63,7 @@ export const prettierFormat = async (
 		// 1. parser
     const parser = "yaml";
 
-    // 2. plugin (lazy dynamic import)
+    // 2. plugin
     const plugin = await getPrettierPluginYaml();
 
 		// 3. options
