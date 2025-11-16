@@ -31,7 +31,7 @@ export const getLanguage = async (
 		(fileExt === "json" || fileExt === "jsonc") ? "Json" :
 		(fileExt === "java" || fileExt === "jav") ? "Java" :
 		(fileExt === "sql" || fileExt === "plsql") ? "Sql" :
-		(fileExt === "yaml" || fileExt === "yml") ? "Yaml" :
+		(fileExt === "yaml" || fileExt === "yml" || fileExt === "spring-boot-properties-yaml") ? "Yaml" :
 		(fileExt === "xml" || fileExt === "mybatis") ? "Xml" :
 		(fileExt === "javascript" || fileExt === "js") ? "Javascript" :
 		(fileExt === "javascriptreact" || fileExt === "jsx") ? "Javascriptreact" :

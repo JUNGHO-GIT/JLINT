@@ -1,5 +1,6 @@
 // Sql.ts
 
+import { sqlFormatter } from "@exportLibs";
 import type { FormatOptionsWithLanguage } from "@exportLibs";
 import { logger, modal } from "@exportScripts";
 
@@ -47,9 +48,15 @@ export const prettierFormat = async (
   fileEol: string,
 	fileExt: string
 ) => {
-  try {
+	try {
+		// 1. parser
+		const parser = "mysql";
+
+		// 2. plugin
+
+		// 3. options
     const baseOptions: FormatOptionsWithLanguage = {
-      language: "mysql",
+      language: parser,
       tabWidth: confParam.tabSize,
       useTabs: true,
       keywordCase: "upper",
@@ -64,11 +71,10 @@ export const prettierFormat = async (
       newlineBeforeSemicolon: false
     };
 
-    logger("debug", `${fileExt}:prettierFormat`, "Y");
-		const sqlFormatterLib = await import("sql-formatter");
-		const finalResult = (sqlFormatterLib as any).format(contentsParam, baseOptions);
-  	return finalResult;
-  }
+		logger("debug", `${fileExt}:prettierFormat`, "Y");
+		const finalResult = sqlFormatter.format(contentsParam, baseOptions);
+		return finalResult;
+	}
   catch (err: any) {
     const msg = err.message.toString().trim().replace(/\x1B\[[0-9;]*[mGKF]/g, "");
     const msgRegex = /([\n\s\S]*)(\s*)(https)(.*?)([(])(.*?)([)])([\n\s\S]*)/gm;

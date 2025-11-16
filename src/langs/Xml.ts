@@ -1,6 +1,6 @@
 // Xml.ts
 
-import { lodash, strip } from "@exportLibs";
+import { lodash, strip, prettier } from "@exportLibs";
 import type { PrettierOptions, StripOptions } from "@exportLibs";
 import type { PrettierPlugin } from "@exportLibs";
 import { logger, modal } from "@exportScripts";
@@ -57,11 +57,25 @@ export const prettierFormat = async (
   fileEol: string,
 	fileExt: string
 ) => {
-  try {
-    // 공통 옵션
-    const baseOptions: PrettierOptions = {
-      parser: "xml",
-      plugins: [],
+	try {
+		// 1. parser
+		const parser = "xml" as prettier.BuiltInParserName;
+
+		// 2. plugin
+		const plugin = (() => {
+			try {
+				return require("@prettier/plugin-xml").default as PrettierPlugin;
+			}
+			catch (err: any) {
+				logger("error", `${fileExt}:prettierFormat`, `prettier-plugin-xml load fail: ${err?.message || err}`);
+				return null;
+			}
+		})();
+
+		// 3. options
+		const baseOptions: PrettierOptions = {
+			parser: parser,
+			plugins: plugin ? [plugin] : [],
       singleQuote: confParam.quoteType === "single",
       printWidth: 1000,
       tabWidth: confParam.tabSize,
@@ -84,54 +98,16 @@ export const prettierFormat = async (
       singleAttributePerLine: false,
       bracketSameLine: false,
       semi: true,
-      filepath: fileName
+      filepath: fileName,
+      __embeddedInHtml: true,
     };
 
-    // 1차: ESM 동적 임포트로 플러그인 객체 주입
-    try {
-      const mod = await import("@prettier/plugin-xml");
-      const xmlPlugin: PrettierPlugin = ((mod as any)?.default ?? mod) as PrettierPlugin;
-
-      if ((xmlPlugin as any)?.parsers?.xml == null) {
-        throw new Error("ParserNotRegistered");
-      }
-
-			const prettierLib = await import("prettier").then((m: any) => (m.default || m));
-			const finalResult = await prettierLib.format(contentsParam, {
-        ...baseOptions,
-        plugins: [xmlPlugin]
-      });
-      return finalResult;
-    }
-		// 2차: CJS 전용 환경에서 require로 재시도
-    catch (innerErr: any) {
-      try {
-        const maybeRequire = (globalThis as any).require ?? (typeof require !== "undefined" ? (require as any) : undefined);
-        if (!maybeRequire) {
-          throw new Error("RequireNotAvailable");
-        }
-
-        const reqMod = maybeRequire("@prettier/plugin-xml");
-        const xmlPlugin2: PrettierPlugin = (reqMod?.default ?? reqMod) as PrettierPlugin;
-
-        if ((xmlPlugin2 as any)?.parsers?.xml == null) {
-          throw new Error("ParserNotRegistered");
-        }
-
-				const prettierLib2 = await import("prettier").then((m: any) => (m.default || m));
-				const finalResult = await prettierLib2.format(contentsParam, {
-          ...baseOptions,
-          plugins: [xmlPlugin2]
-        });
-        return finalResult;
-      }
-      catch (fallbackErr: any) {
-        throw fallbackErr;
-      }
-    }
-  }
+		logger("debug", `${fileExt}:prettierFormat`, "Y");
+		const finalResult = prettier.format(contentsParam, baseOptions);
+		return finalResult;
+	}
   catch (err: any) {
-    const msg = err.message?.toString()?.trim()?.replace(/\x1B\[[0-9;]*[mGKF]/g, "") ?? "unknown";
+    const msg = err.message.toString().trim().replace(/\x1B\[[0-9;]*[mGKF]/g, "");
     const msgRegex = /([\n\s\S]*)(\s*)(https)(.*?)([(])(.*?)([)])([\n\s\S]*)/gm;
     const msgRegexReplace = `[Jlint]\n\nError Line = [ $6 ]\nError Site = $8`;
     const msgResult = msg.replace(msgRegex, msgRegexReplace);

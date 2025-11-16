@@ -1,6 +1,6 @@
 // Typescriptreact.ts
 
-import { lodash, jsMinify, strip } from "@exportLibs";
+import { lodash, jsMinify, strip, prettier } from "@exportLibs";
 import type { PrettierOptions, StripOptions } from "@exportLibs";
 import { logger, modal } from "@exportScripts";
 
@@ -63,8 +63,14 @@ export const prettierFormat = async (
 	fileExt: string
 ) => {
   try {
+		// 1. parser
+		const parser = "babel-ts" as prettier.BuiltInParserName;
+
+		// 2. plugin
+
+		// 3. options
     const baseOptions: PrettierOptions = {
-      parser: "babel-ts",
+      parser: parser,
       singleQuote: confParam.quoteType === "single",
       printWidth: 1000,
       tabWidth: confParam.tabSize,
@@ -87,15 +93,14 @@ export const prettierFormat = async (
       singleAttributePerLine: false,
       bracketSameLine: false,
       semi: true,
+      filepath: fileName,
       __embeddedInHtml: true,
-      filepath: fileName
     };
 
-    logger("debug", `${fileExt}:prettierFormat`, "Y");
-		const prettierLib = await import("prettier").then((m: any) => (m.default || m));
-		const finalResult = await prettierLib.format(contentsParam, baseOptions);
-    return finalResult;
-  }
+		logger("debug", `${fileExt}:prettierFormat`, "Y");
+		const finalResult = prettier.format(contentsParam, baseOptions);
+		return finalResult;
+	}
   catch (err: any) {
     const msg = err.message.toString().trim().replace(/\x1B\[[0-9;]*[mGKF]/g, "");
     const msgRegex = /([\n\s\S]*)(\s*)(https)(.*?)([(])(.*?)([)])([\n\s\S]*)/gm;

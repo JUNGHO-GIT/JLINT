@@ -1,6 +1,6 @@
 // Java.ts
 
-import { lodash, strip, createRequire } from "@exportLibs";
+import { lodash, strip, prettier } from "@exportLibs";
 import type { PrettierOptions, StripOptions } from "@exportLibs";
 import type { PrettierPlugin } from "@exportLibs";
 import { logger, modal } from "@exportScripts";
@@ -58,13 +58,27 @@ export const prettierFormat = async (
 	fileExt: string
 ) => {
 	try {
-		// 공통 옵션
+		// 1. parser
+		const parser = "java" as prettier.BuiltInParserName;
+
+		// 2. plugin
+		const plugin = (() => {
+			try {
+				return require("prettier-plugin-java").default as PrettierPlugin;
+			}
+			catch (err: any) {
+				logger("error", `${fileExt}:prettierFormat`, `prettier-plugin-java load fail: ${err?.message || err}`);
+				return null;
+			}
+		})();
+
+		// 3. options
 		const baseOptions: PrettierOptions = {
-			parser: "java",
-			plugins: [],
+			parser: parser,
+			plugins: plugin ? [plugin] : [],
 			singleQuote: confParam.quoteType === "single",
 			printWidth: 1000,
-			tabWidth: confParam.tabSize,
+			abWidth: confParam.tabSize,
 			useTabs: true,
 			quoteProps: "as-needed",
 			jsxSingleQuote: confParam.quoteType === "single",
@@ -84,67 +98,22 @@ export const prettierFormat = async (
 			singleAttributePerLine: false,
 			bracketSameLine: false,
 			semi: true,
+			__embeddedInHtml: true,
 			filepath: fileName
 		};
 
-		// 1차: ESM 동적 임포트로 플러그인 객체 주입
-		try {
-			const mod = await import("prettier-plugin-java");
-			const javaPlugin: PrettierPlugin = ((mod)?.default ?? mod) as PrettierPlugin;
-
-			if ((javaPlugin)?.parsers?.java == null) {
-				throw new Error("ParserNotRegistered");
-			}
-
-			const prettierLib = await import("prettier").then((m: any) => (m.default || m));
-			const formatted = await prettierLib.format(contentsParam, {
-				...baseOptions,
-				plugins: [javaPlugin]
-			});
-
-			logger("debug", `${fileExt}:prettierFormat`, "Y");
-			return formatted;
-		}
-		// 2차: CJS require 경로 해석 후 객체 주입
-		catch (innerErr: any) {
-			try {
-				const require = createRequire(typeof __filename !== "undefined" ? __filename : "");
-				const reqMod = require("prettier-plugin-java");
-				const javaPlugin2: PrettierPlugin = (reqMod?.default ?? reqMod) as PrettierPlugin;
-
-				if ((javaPlugin2)?.parsers?.java == null) {
-					throw new Error("ParserNotRegistered");
-				}
-
-				const prettierLib2 = await import("prettier").then((m: any) => (m.default || m));
-				const formatted = await prettierLib2.format(contentsParam, {
-					...baseOptions,
-					plugins: [javaPlugin2]
-				});
-
-				logger("debug", `${fileExt}:prettierFormat`, "Y");
-				return formatted;
-			}
-			catch (fallbackErr: any) {
-				logger("error", `${fileExt}:prettierFormat`, fallbackErr?.message ?? fallbackErr);
-				return contentsParam;
-			}
-		}
+		logger("debug", `${fileExt}:prettierFormat`, "Y");
+		const finalResult = prettier.format(contentsParam, baseOptions);
+		return finalResult;
 	}
 	catch (err: any) {
 		const msg = err.toString().trim().replace(/\x1B\[[0-9;]*[mGKF]/g, "");
 		const msgRegex = /(\s*)(Sad sad panda)(.*)(line[:])(\s*)(\d+)([\s\S]*?)(column[:])(\s*)(\d+)([\n\s\S]*)(->)(.*)(<-)([\s\S]*)/gm;
-		const msgMatch = msg.match(msgRegex);
 		const msgRegexReplace = `[Jlint]\n\nError Line = [ $6 ]\nError column = [ $10 ]\nError Site = [ $13 ]`;
-
-		if (!msgMatch) {
-			logger("error", `${fileExt}:prettierFormat`, msg);
-			return contentsParam;
-		}
-
 		const msgResult = msg.replace(msgRegex, msgRegexReplace);
-  	logger("error", `${fileExt}:prettierFormat`, msgResult);
-  	modal("error", fileExt, msgResult);
+
+		logger("error", `${fileExt}:prettierFormat`, msgResult);
+		modal("error", fileExt, msgResult);
 		return contentsParam;
 	}
 };

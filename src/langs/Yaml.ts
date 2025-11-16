@@ -1,6 +1,6 @@
 // Yaml.ts
 
-import { strip } from "@exportLibs";
+import { strip, prettier } from "@exportLibs";
 import type { PrettierOptions, StripOptions } from "@exportLibs";
 import type { PrettierPlugin } from "@exportLibs";
 import { logger, modal } from "@exportScripts";
@@ -57,10 +57,25 @@ export const prettierFormat = async (
   fileEol: string,
 	fileExt: string
 ) => {
-  try {
-    const baseOptions: PrettierOptions = {
-      parser: "yaml",
-      plugins: [],
+	try {
+		// 1. parser
+		const parser = "yaml" as prettier.BuiltInParserName;
+
+		// 2. plugin
+		const plugin = (() => {
+			try {
+				return require("prettier/plugins/yaml").default as PrettierPlugin;
+			}
+			catch (err: any) {
+				logger("error", `${fileExt}:prettierFormat`, `prettier-plugin-yaml load fail: ${err?.message || err}`);
+				return null;
+			}
+		})();
+
+		// 3. options
+		const baseOptions: PrettierOptions = {
+			parser: parser,
+			plugins: plugin ? [plugin] : [],
       singleQuote: confParam.quoteType === "single",
       printWidth: 1000,
       tabWidth: confParam.tabSize,
@@ -86,27 +101,10 @@ export const prettierFormat = async (
       filepath: fileName
     };
 
-    try {
-			const prettierLib = await import("prettier").then((m: any) => (m.default || m));
-			const finalResult = await prettierLib.format(contentsParam, baseOptions);
-      return finalResult;
-    }
-    catch (innerErr: any) {
-      const mod = await import("prettier/plugins/yaml");
-      const yamlPlugin: PrettierPlugin = ((mod as any)?.default ?? mod) as PrettierPlugin;
-
-      if ((yamlPlugin as any)?.parsers?.yaml == null) {
-        throw new Error("ParserNotRegistered");
-      }
-			const prettierLib2 = await import("prettier").then((m: any) => (m.default || m));
-			const finalResult = await prettierLib2.format(contentsParam, {
-        ...baseOptions,
-        plugins: [yamlPlugin]
-      });
-
-      return finalResult;
-    }
-  }
+		logger("debug", `${fileExt}:prettierFormat`, "Y");
+		const finalResult = prettier.format(contentsParam, baseOptions);
+		return finalResult;
+	}
   catch (err: any) {
     const msg = err.message.toString().trim().replace(/\x1B\[[0-9;]*[mGKF]/g, "");
     const msgRegex = /([\n\s\S]*)(\s*)(https)(.*?)([(])(.*?)([)])([\n\s\S]*)/gm;

@@ -1,10 +1,10 @@
 // Html.ts
 
-import { lodash } from "@exportLibs";
+import { lodash, prettier } from "@exportLibs";
 import type { PrettierOptions } from "@exportLibs";
-import { htmlMinify as minify, strip } from "@exportLibs";
+import { htmlMinify, strip } from "@exportLibs";
 import type { StripOptions } from "@exportLibs";
-import { logger, notify, modal } from "@exportScripts";
+import { logger, modal } from "@exportScripts";
 
 // -------------------------------------------------------------------------------------------------
 declare type ConfProps = {
@@ -53,7 +53,7 @@ export const removeComments = async (
 		.value();
 
     const minifyResult = (
-			await minify(httpResult, {
+			await htmlMinify(httpResult, {
 				html5: true,
 				minifyCSS: false,
 				minifyJS: false,
@@ -179,8 +179,14 @@ export const prettierFormat = async (
 	fileExt: string
 ) => {
   try {
-    const baseOptions: PrettierOptions = {
-      parser: "html",
+		// 1. parser
+		const parser = "html" as prettier.BuiltInParserName;
+
+		// 2. plugin
+
+		// 3. options
+		const baseOptions: PrettierOptions = {
+			parser: parser,
       singleQuote: confParam.quoteType === "single",
       printWidth: 1000,
       tabWidth: confParam.tabSize,
@@ -203,8 +209,8 @@ export const prettierFormat = async (
       singleAttributePerLine: false,
       bracketSameLine: false,
       semi: true,
+      filepath: fileName,
       __embeddedInHtml: true,
-      filepath: fileName
     };
 
     const rules1 = (
@@ -223,12 +229,10 @@ export const prettierFormat = async (
 		))
 		.value();
 
-    logger("debug", `${fileExt}:prettierFormat`, "Y");
-		const prettierLib = await import("prettier").then((m: any) => (m.default || m));
-		const finalResult = await prettierLib.format(result, baseOptions);
-
-    return finalResult;
-  }
+		logger("debug", `${fileExt}:prettierFormat`, "Y");
+		const finalResult = prettier.format(result, baseOptions);
+		return finalResult;
+	}
   catch (err: any) {
     const msg = err.message.toString().trim().replace(/\x1B\[[0-9;]*[mGKF]/g, "");
     const msgRegex = /([\n\s\S]*)(\s*)(https)(.*?)([(])(.*?)([)])([\n\s\S]*)/gm;
