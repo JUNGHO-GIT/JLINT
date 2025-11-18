@@ -6,7 +6,7 @@
   "icon": "logo.webp",
   "license": "Apache-2.0",
   "main": "./out/extension.js",
-  "version": "2.5.5",
+  "version": "2.5.6",
   "repository": {
     "type": "git",
     "url": "https://github.com/JUNGHO-GIT/JLINT.git"
@@ -139,7 +139,7 @@
     "vsce": "node .node/vsce.cjs --npm"
   },
   "engines": {
-    "vscode": "1.106.0",
+    "vscode": ">=1.106.1",
     "node": ">=21.0.0",
     "npm": ">=10.0.0",
     "pnpm": ">=9.0.0"
@@ -156,7 +156,7 @@
     "lodash": "4.17.21",
     "minimatch": "10.1.1",
     "postcss": "8.5.6",
-    "prettier": "3.4.2",
+    "prettier": "3.6.2",
     "prettier-plugin-java": "2.7.7",
     "prettier-plugin-jsp": "1.0.13",
     "sql-formatter": "15.6.10",
@@ -177,7 +177,7 @@
     "@types/mocha": "10.0.10",
     "@types/node": "24.10.1",
     "@types/strip-comments": "2.0.4",
-    "@types/vscode": "1.106.0",
+    "@types/vscode": "1.106.1",
     "@vscode/test-electron": "2.5.2",
     "@vscode/vsce": "3.7.0",
     "esbuild": "0.27.0",
