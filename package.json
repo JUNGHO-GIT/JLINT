@@ -6,7 +6,7 @@
   "icon": "logo.webp",
   "license": "Apache-2.0",
   "main": "./out/extension.js",
-  "version": "2.5.6",
+  "version": "2.5.7",
   "repository": {
     "type": "git",
     "url": "https://github.com/JUNGHO-GIT/JLINT.git"
@@ -131,12 +131,12 @@
     }
   },
   "scripts": {
-    "watch": "node .node/swc.cjs --npm --watch",
-    "compile": "node .node/swc.cjs --npm --compile",
-    "reset": "node .node/reset.cjs --npm",
-    "autofix": "node .node/autofix.cjs --fix",
-    "gcloud": "node .node/gcloud.cjs --git",
-    "vsce": "node .node/vsce.cjs --npm"
+    "watch": "bun .node/swc.cjs --bun --watch",
+    "compile": "bun .node/swc.cjs --bun --compile",
+    "reset": "bun .node/reset.cjs --bun --reset",
+    "fix": "bun .node/fix.cjs --bun --fix",
+    "gcloud": "bun .node/gcloud.cjs --bun --deploy",
+    "vsce": "bun .node/vsce.cjs --bun --package"
   },
   "engines": {
     "vscode": ">=1.106.1",
@@ -180,10 +180,10 @@
     "@types/vscode": "1.106.1",
     "@vscode/test-electron": "2.5.2",
     "@vscode/vsce": "3.7.0",
-    "esbuild": "0.27.0",
     "eslint": "9.39.1",
     "mocha": "11.7.5",
     "ts-morph": "27.0.2",
+    "esbuild": "0.27.0",
     "ts-prune": "0.10.3",
     "tsc-alias": "1.8.16",
     "typescript": "5.9.3"

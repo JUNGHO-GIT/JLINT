@@ -1,7 +1,7 @@
 // extension.ts
 
-import { path, vscode, setExtensionPath } from "@exportLibs";
 import { main } from "@exportCores";
+import { path, vscode, setExtensionPath } from "@exportLibs";
 import { logger, initLogger, notify } from "@exportScripts";
 
 // -------------------------------------------------------------------------------------------------

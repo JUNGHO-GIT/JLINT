@@ -1,7 +1,7 @@
 # 1. CORE PRINCIPLES
 
 # 1-1. Response Principles
-- Detailed, objective, professional responses
+- Detailed, objective, professional rsponses
 - Capture core intent, not literal interpretation
 - Never fabricate; acknowledge errors immediately
 
@@ -17,13 +17,14 @@
 - ALWAYS send `code format` for copy-paste
 - ALWAYS return `MODIFIED code` ONLY
 - ALWAYS exactly ONE SPACE around "=" or ":"
-- NEVER modify comments (preserve `// -----------`)
+- NEVER modify comments (prserve `// -----------`)
 - NEVER break line before semicolon
+- NEVER mid-function return; assign variable, return at end only
 
 # 1-4. Java (max v1.8)
 - Define inner classes within larger class; group related methods in inner classes
 
-#  1-5. JavaScript (ES6+)
+# 1-5. JavaScript (ES6+)
 - Prefer ternary/&& over if statements
 - Prefer arrow functions
 - Template literals: `foo` (backticks)
@@ -32,7 +33,7 @@
 # 2. FORMATTING EXAMPLES
 
 # 2-1. TERNARY CHAINS
-- Wrap each condition/result in parentheses on separate lines
+- Wrap each condition/rsult in parentheses on separate lines
 **INCORRECT:**
 ```javascript
 (!s || s === "p1") ? fn() : (s === "p2") ? fn(s, "yy") : fn(s);
@@ -50,7 +51,7 @@
 
 # 2-2. IIFE
 - Prefer IIFE over if-else when ternary insufficient
-- AVOID excessive IIFE, use simple parentheses when no scope needed
+- AVOID excessive IIFE, extract variables BEFORE final ternary
 - Use `(() => { })()` only when: isolated scope required, block scoping needed, or mid-execution return
 **INCORRECT:**
 ```javascript
@@ -60,10 +61,10 @@
 })() : (
   false
 )
-fs.existsSync(o) && (() => {
-  fs.rmSync(o, { recursive: true, force: true });
-  log(`info`, `foo`);
-})();
+return ext ? (() => {
+  const d = tp ? path.join(cwd, tp) : cwd;
+  return fs.existsSync(d) ? true : false;
+})() : false;
 ```
 **CORRECT:**
 ```javascript
@@ -72,26 +73,26 @@ fs.existsSync(o) && (() => {
 ) : (
   false
 )
-fs.existsSync(outDir) && (
-  fs.rmSync(o, { recursive: true, force: true }),
-  log(`info`, `foo`)
-)
+const d = tp ? path.join(cwd, tp) : cwd;
+const v = fs.existsSync(d);
+const rs = ext && v ? true : false;
+return rs;
 ```
 
-# 2-2. IF/ELSE & TRY/CATCH
+# 2-3. IF/ELSE & TRY/CATCH
 - ALWAYS PREFER ternary/IIFE over if-else
 - ALL if/else/try/catch MUST use braces with line breaks
 - Closing brace and else/catch on SEPARATE lines: `}\nelse {`
 **INCORRECT:**
 ```javascript
-if (p1) return res;
+if (p1) return rs;
 if (p2) {
 } else { fn(e); }
 ```
 **CORRECT:**
 ```javascript
 if (p1) {
-  return res;
+  return rs;
 }
 else {
   fn(e);
