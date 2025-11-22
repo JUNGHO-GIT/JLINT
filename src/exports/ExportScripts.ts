@@ -10,8 +10,3 @@ export {
 export {
 	notify
 } from "@scripts/notify";
-
-// -------------------------------------------------------------------------------
-export {
-	modal
-} from "@scripts/modal";

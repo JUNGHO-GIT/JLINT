@@ -2,7 +2,7 @@
 
 import { stripJsonComments, getPrettier } from "@exportLibs";
 import type { PrettierOptions, StripJsonOptions } from "@exportLibs";
-import { logger, modal } from "@exportScripts";
+import { logger, notify } from "@exportScripts";
 
 // -------------------------------------------------------------------------------------------------
 declare type ConfProps = {
@@ -116,7 +116,7 @@ export const prettierFormat = async (
     const msgResult = msg.replace(msgRegex, msgRegexReplace);
 
     logger("error", `${fileExt}:prettierFormat - ${msgResult}`);
-  	modal("error", fileExt, msgResult);
+		notify("error", `${fileExt}: Prettier Format Error:\n${msgResult}`);
     return contentsParam;
   }
 };

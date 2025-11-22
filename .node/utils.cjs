@@ -53,7 +53,7 @@ const logger = (
 	const fmtMsg = formatLog(`
 		${separator}
 		${level}
-		- ${value}
+		${value}
 	`);
 
 	type === `debug` && (

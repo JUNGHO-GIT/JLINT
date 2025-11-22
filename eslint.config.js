@@ -24,14 +24,20 @@ const COMMON_IGNORES = [
 	"**/out/**",
 	"**/*.min.js",
 	"**/*.bundle.js",
-	"**/vendor/**"
+	"**/vendor/**",
+	"**/.node/**"
 ];
 
 // 공통: JS/TS 파일 매칭 패턴 -------------------------------------------------------
 // 모든 JS/TS 소스(선언 파일 제외)에 적용
 const COMMON_JS_TS_FILES = [
-	"**/*.{js,cjs,mjs,jsx,ts,tsx}",
+	"**/*.{js,mjs,jsx,ts,tsx}",
 	"!**/*.d.ts"
+];
+
+// CJS 전용: Node 런타임용 CJS 스크립트 -------------------------------------------
+const COMMON_CJS_FILES = [
+	"**/*.cjs"
 ];
 
 // 공통: 언어 옵션 (ESM 기반 JS/TS) -------------------------------------------------
@@ -1342,7 +1348,7 @@ const TS_RULES = {
 	"@typescript-eslint/naming-convention": [
 		"off"
 	],
-	"@typescript-eslint/no-array-constructor": [
+  	"@typescript-eslint/no-array-constructor": [
 		"error"
 	],
 	"@typescript-eslint/no-confusing-non-null-assertion": [

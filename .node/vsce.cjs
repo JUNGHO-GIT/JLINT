@@ -10,7 +10,7 @@ const { logger, runCmd, delDir, delFile } = require(`./utils.cjs`);
 // 인자 파싱 ------------------------------------------------------------------------------------
 const TITLE = `vsce.cjs`;
 const argv = process.argv.slice(2);
-const args1 = argv.find(arg => [`--npm`, `--pnpm`, `--yarn`, `--bun`].includes(arg))?.replace(`--`, ``) || `npm`;
+const args1 = argv.find(arg => [`--npm`, `--pnpm`, `--yarn`, `--bun`].includes(arg))?.replace(`--`, ``) || ``;
 const args2 = argv.find(arg => [`--package`].includes(arg))?.replace(`--`, ``) || ``;
 
 // 설정 로드 -----------------------------------------------------------------------------------
@@ -141,43 +141,6 @@ const copyPackageWithNestedDeps = (pkgPath, tgtRoot, nmSrc, vis = new Set()) => 
 					);
 				});
 			})();
-		})();
-
-		const nestedNm = path.join(pkgPath, `node_modules`);
-		const hasNested = fs.existsSync(nestedNm);
-		hasNested && (() => {
-			fs.readdirSync(nestedNm, { withFileTypes: true }).forEach(item => {
-				const isDir = item.isDirectory();
-				isDir && (() => {
-					const isScoped = item.name.startsWith(`@`);
-					const items = isScoped ? (
-						fs.readdirSync(path.join(nestedNm, item.name), { withFileTypes: true })
-							.filter(sub => sub.isDirectory())
-							.map(sub => ({ name: `${item.name}/${sub.name}`, path: path.join(nestedNm, item.name, sub.name) }))
-					) : (
-						[{ name: item.name, path: path.join(nestedNm, item.name) }]
-					);
-
-					items.forEach(({ name, path: nestPath }) => {
-						const pkgJson = path.join(nestPath, `package.json`);
-						const hasJsonNest = fs.existsSync(pkgJson);
-						hasJsonNest && (() => {
-							const deps = JSON.parse(fs.readFileSync(pkgJson, `utf8`)).dependencies || {};
-							Object.keys(deps).forEach(dep => {
-								const depSrc = path.join(nmSrc, dep);
-								const depDest = path.join(dest, `node_modules`, name, `node_modules`, dep);
-								const hasSrc = fs.existsSync(depSrc);
-								const noDest = !fs.existsSync(depDest);
-								const shouldCp = hasSrc && noDest;
-								shouldCp && (
-									fs.mkdirSync(path.dirname(depDest), { recursive: true }),
-									fs.cpSync(depSrc, depDest, { recursive: true, force: true })
-								);
-							});
-						})();
-					});
-				})();
-			});
 		})();
 	})();
 };

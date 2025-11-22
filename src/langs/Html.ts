@@ -4,7 +4,7 @@ import { lodash, getPrettier } from "@exportLibs";
 import type { PrettierOptions } from "@exportLibs";
 import { htmlMinify, strip } from "@exportLibs";
 import type { StripOptions } from "@exportLibs";
-import { logger, modal } from "@exportScripts";
+import { logger, notify } from "@exportScripts";
 
 // -------------------------------------------------------------------------------------------------
 declare type ConfProps = {
@@ -256,8 +256,8 @@ export const prettierFormat = async (
     const msgRegexReplace = `[Jlint]\n\nError Line = [ $6 ]\nError Site = $8`;
     const msgResult = msg.replace(msgRegex, msgRegexReplace);
 
-	logger("error", `${fileExt}:prettierFormat - ${msgResult}`);
-  	modal("error", fileExt, msgResult);
+		logger("error", `${fileExt}:prettierFormat - ${msgResult}`);
+		notify("error", `${fileExt}: Prettier Format Error:\n${msgResult}`);
     return contentsParam;
   }
 };
