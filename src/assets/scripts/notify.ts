@@ -16,16 +16,16 @@ const showProgress = async (text: string): Promise<void> => {
 		title: text,
 		cancellable: false,
 	},
-	async (_) => {
-		await new Promise((res) => setTimeout(res, AUTO_CLOSE_MS));
-	});
+		async (_) => {
+			await new Promise((res) => setTimeout(res, AUTO_CLOSE_MS));
+		});
 };
 
 // -------------------------------------------------------------------------------------------------
-export const notify = (
+export const notify = async (
 	type: `debug` | `info` | `hint` | `warn` | `error`,
 	value: string
-): void => {
+): Promise<void> => {
 	const config = {
 		title: {
 			str: `[${MAIN}]`,
@@ -48,24 +48,9 @@ export const notify = (
 	};
 	const text = `${config.title.str} ${config[type].str} ${value}`;
 
-	type === `debug` && (
-		vscode.window.showInformationMessage(text, { modal: false }),
-		void showProgress(text)
-	);
-	type === `info` && (
-		vscode.window.showInformationMessage(text, { modal: false }),
-		void showProgress(text)
-	);
-	type === `hint` && (
-		vscode.window.showInformationMessage(text, { modal: false }),
-		void showProgress(text)
-	);
-	type === `warn` && (
-		vscode.window.showWarningMessage(text, { modal: false }),
-		void showProgress(text)
-	);
-	type === `error` && (
-		vscode.window.showErrorMessage(text, { modal: false }),
-		void showProgress(text)
-	);
+	type === `debug` && await showProgress(text);
+	type === `info` && await showProgress(text);
+	type === `hint` && await showProgress(text);
+	type === `warn` && await showProgress(text);
+	type === `error` && await showProgress(text);
 };

@@ -46,7 +46,6 @@ const bundle = (cfg) => {
 		...extArgs,
 		`--format=cjs`,
 		`--platform=node`,
-		`--sourcemap`,
 		`--minify`
 	];
 
