@@ -36,16 +36,16 @@
 - Wrap each condition/rsult in parentheses on separate lines
 **INCORRECT:**
 ```javascript
-(!s || s === "p1") ? fn() : (s === "p2") ? fn(s, "yy") : fn(s);
+(!s || s === "p1") ? f() : (s === "p2") ? f(s, "yy") : f(s);
 ```
 **CORRECT:**
 ```javascript
 !s || s === `p1` ? (
-  fn()
+  f()
 ) : s === `p2` ? (
-  fn(s, "yy")
+  f(s, "yy")
 ) : (
-  fn(s)
+  f(s)
 )
 ```
 
@@ -87,7 +87,7 @@ return rs;
 ```javascript
 if (p1) return rs;
 if (p2) {
-} else { fn(e); }
+} else { f(e); }
 ```
 **CORRECT:**
 ```javascript
@@ -95,12 +95,12 @@ if (p1) {
   return rs;
 }
 else {
-  fn(e);
+  f(e);
 }
 try {
-  fn1();
+  f1();
 }
 catch (Exception e) {
-  fn2();
+  f2();
 }
 ```
