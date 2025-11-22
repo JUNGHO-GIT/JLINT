@@ -41,10 +41,10 @@ export const getLanguage = async (
 	);
 
 	langStr ? (
-		logger("debug", `getLanguage`, `langStr:${langStr}`)
+		logger("debug", `getLanguage - langStr:${langStr}`)
 	) : (
-		logger("error", `getLanguage`, `Unsupported language: ${fileExt}`),
-		notify("error", `getLanguage`, `Unsupported language: ${fileExt}`)
+		logger("error", `getLanguage - Unsupported language: ${fileExt}`),
+		notify("error", `getLanguage - Unsupported language: ${fileExt}`)
 	);
 
   let resultContents = initContents ? initContents : "";

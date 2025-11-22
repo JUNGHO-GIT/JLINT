@@ -1,30 +1,22 @@
-// reset.cjs
+/**
+ * @file reset.cjs
+ * @since 2025-11-22
+ */
 
-const { logger, delDir, delFile, runCmd } = require(`./bundle.cjs`);
-
-// 상수 정의 -----------------------------------------------------------------------------------
-const TITLE = `reset.cjs`;
-const WAIT_TIME_MS = 200;
-const CLEANUP_TARGETS = [
-	{ name: `node_modules`, isDir: true },
-	{ name: `package-lock.json`, isDir: false },
-	{ name: `bun.lockb`, isDir: false },
-	{ name: `yarn.lock`, isDir: false },
-	{ name: `pnpm-lock.yaml`, isDir: false },
-	{ name: `pnpm-workspace.yaml`, isDir: false }
-];
+const { logger, delDir, delFile, runCmd } = require(`./utils.cjs`);
 
 // 인자 파싱 ------------------------------------------------------------------------------------
+const TITLE = `reset.cjs`;
 const argv = process.argv.slice(2);
 const args1 = argv.find(arg => [`--npm`, `--pnpm`, `--yarn`, `--bun`].includes(arg))?.replace(`--`, ``) || ``;
 const args2 = argv.find(arg => [`--reset`].includes(arg))?.replace(`--`, ``) || ``;
 
 // 1. 시스템 준비 (대기) ---------------------------------------------------------------------
 const prepareSystem = () => {
-	logger(`info`, `시스템 준비 시작 (대기: ${WAIT_TIME_MS}ms)`);
+	logger(`info`, `시스템 준비 시작 (대기: ${200}ms)`);
 
 	const start = Date.now();
-	while (Date.now() - start < WAIT_TIME_MS) {}
+	while (Date.now() - start < 200) {}
 
 	logger(`success`, `대기 완료`);
 };
@@ -33,7 +25,14 @@ const prepareSystem = () => {
 const cleanup = () => {
 	logger(`info`, `파일 삭제 시작`);
 
-	const tgts = CLEANUP_TARGETS;
+	const tgts = [
+		{ name: `node_modules`, isDir: true },
+		{ name: `package-lock.json`, isDir: false },
+		{ name: `bun.lockb`, isDir: false },
+		{ name: `yarn.lock`, isDir: false },
+		{ name: `pnpm-lock.yaml`, isDir: false },
+		{ name: `pnpm-workspace.yaml`, isDir: false }
+	];
 	tgts.forEach((tgt, idx) => {
 		logger(`info`, `${idx + 1}/${tgts.length}: ${tgt.name} 확인 중`);
 

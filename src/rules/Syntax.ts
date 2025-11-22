@@ -39,12 +39,12 @@ export const capitalize = async (
 
     return (
       fileExt !== "xml" && fileExt !== "sql"
-			? (logger("debug", `${fileExt}:capitalize`, "N"), contentsParam)
-			: (logger("debug", `${fileExt}:capitalize`, "Y"), finalResult)
+      ? (logger("debug", `${fileExt}:capitalize - N`), contentsParam)
+      : (logger("debug", `${fileExt}:capitalize - Y`), finalResult)
     );
   }
-	catch (err: any) {
-    logger("error", `${fileExt}:capitalize`, err.message);
+  catch (err: any) {
+    logger("error", `${fileExt}:capitalize - ${err.message}`);
     return contentsParam;
   }
 };
@@ -71,11 +71,11 @@ export const singleTags = async (
 		))
 		.value();
 
-		logger("debug", `${fileExt}:singleTags`, "Y");
+    logger("debug", `${fileExt}:singleTags - Y`);
     return finalResult;
   }
   catch (err: any) {
-		logger("error", `${fileExt}:singleTags`, err.message);
+    logger("error", `${fileExt}:singleTags - ${err.message}`);
     return contentsParam;
   }
 };
@@ -102,11 +102,11 @@ export const brackets = async (
 		))
 		.value();
 
-		logger("debug", `${fileExt}:brackets`, "Y");
+    logger("debug", `${fileExt}:brackets - Y`);
     return finalResult;
   }
   catch (err: any) {
-    logger("error", `${fileExt}:brackets`, err.message);
+    logger("error", `${fileExt}:brackets - ${err.message}`);
     return contentsParam;
   }
 };
@@ -127,11 +127,11 @@ export const comma = async (
 		))
 		.value();
 
-		logger("debug", `${fileExt}:comma`, "Y");
+    logger("debug", `${fileExt}:comma - Y`);
     return finalResult;
   }
   catch (err: any) {
-    logger("error", `${fileExt}:comma`, err.message);
+    logger("error", `${fileExt}:comma - ${err.message}`);
     return contentsParam;
   }
 };
@@ -152,11 +152,11 @@ export const semicolon = async (
 		))
 		.value();
 
-		logger("debug", `${fileExt}:semicolon`, "Y");
+    logger("debug", `${fileExt}:semicolon - Y`);
     return finalResult;
   }
   catch (err: any) {
-    logger("error", `${fileExt}:semicolon`, err.message);
+    logger("error", `${fileExt}:semicolon - ${err.message}`);
     return contentsParam;
   }
 }
@@ -177,11 +177,11 @@ export const quotes = async (
 		))
 		.value();
 
-		logger("debug", `${fileExt}:quotes`, "Y");
+    logger("debug", `${fileExt}:quotes - Y`);
     return finalResult;
   }
   catch (err: any) {
-    logger("error", `${fileExt}:quotes`, err.message);
+    logger("error", `${fileExt}:quotes - ${err.message}`);
     return contentsParam;
   }
 };

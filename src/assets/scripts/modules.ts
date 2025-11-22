@@ -78,7 +78,7 @@ const dynamicImport = async (specifier: string) => {
         return resolveModule(fallbackModule);
       }
       catch (fallbackErr: any) {
-        logger("error", "dynamicImport", `all attempts failed for ${specifier}: ${fallbackErr.message}`);
+        logger("error", `dynamicImport - all attempts failed for ${specifier}: ${fallbackErr.message}`);
         return null;
       }
     }

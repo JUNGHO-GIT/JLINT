@@ -1,19 +1,19 @@
-// fix.cjs
+/**
+ * @file fix.cjs
+ * @since 2025-11-22
+ */
 
 const fs = require(`fs`);
 const path = require(`path`);
 const process = require(`process`);
 const { Project } = require(`ts-morph`);
-const { logger, spawnWrapper } = require(`./bundle.cjs`);
-
-// 상수 정의 ------------------------------------------------------------------------------------
-const TITLE = `fix.cjs`;
-const BACKUP_EXT = `.bak`;
-const DEFAULT_EXPORT = `default`;
+const { logger, spawnWrapper } = require(`./utils.cjs`);
 
 // 인자 파싱 ------------------------------------------------------------------------------------
+const TITLE = `fix.cjs`;
 const argv = process.argv.slice(2);
-const args1 = argv.find(arg => [`--fix`].includes(arg))?.replace(`--`, ``) || ``;
+const args1 = argv.find(arg => [`--npm`, `--pnpm`, `--yarn`, `--bun`].includes(arg))?.replace(`--`, ``) || ``;
+const args2 = argv.find(arg => [`--fix`].includes(arg))?.replace(`--`, ``) || ``;
 
 // -----------------------------------------------------------------------------------------------
 const resolveTsPruneBinJs = () => {
@@ -235,7 +235,7 @@ const toProjectAbsolute = (fp = ``) => {
 
 // 5. 안전한 백업 생성 ---------------------------------------------------------------------------
 const safeBackup = (fp = ``) => {
-	const bkPath = fp + BACKUP_EXT;
+	const bkPath = fp + `.bak`;
 
 	try {
 		const noFile = !fs.existsSync(fp);
@@ -397,15 +397,15 @@ const processFile = (proj, fp = ``, names) => {
 			const rmSet = new Set();
 			removeNamesInExportDeclarations(sf, names);
 			removeLocalDeclarationsByNames(sf, names);
-			const hasDef = names.has(DEFAULT_EXPORT);
+			const hasDef = names.has(`default`);
 			const defRm = hasDef && removeDefaultExport(sf);
-			defRm && rmSet.add(DEFAULT_EXPORT);
+			defRm && rmSet.add(`default`);
 			// @ts-ignore
 			names.forEach((name) => rmSet.add(name));
 
 			const afterTxt = sf.getFullText();
 			const changed = beforeTxt !== afterTxt;
-			const shouldSave = changed && args1 === `fix`;
+			const shouldSave = changed && (args2 === `fix`);
 
 			shouldSave && (
 				safeBackup(absPath),
@@ -431,6 +431,7 @@ const processFile = (proj, fp = ``, names) => {
 (() => {
 	logger(`info`, `스크립트 실행: ${TITLE}`);
 	logger(`info`, `전달된 인자 1 : ${args1 || 'none'}`);
+	logger(`info`, `전달된 인자 2 : ${args2 || 'none'}`);
 
 	try {
 		const results = [];
@@ -451,7 +452,7 @@ const processFile = (proj, fp = ``, names) => {
 		}
 
 		const summary = {
-			apply: args1 === `fix`,
+			apply: args2 === `fix`,
 			totalFiles: grpByFile.size,
 			modifiedFiles: results.filter((r) => r.removed.length > 0).length,
 			skippedFiles: results.filter((r) => r.skipped).map((r) => ({

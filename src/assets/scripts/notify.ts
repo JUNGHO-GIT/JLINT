@@ -1,58 +1,71 @@
-// assets/scripts/notify.ts
+/**
+ * @file notify.ts
+ * @since 2025-11-21
+ */
 
 import { vscode } from "@exportLibs";
 
-// -----------------------------------------------------------------------------------------
-export const notify = (
-	type:
-	`debug` |
-	`info` |
-	`warn` |
-	`error`,
-	key: string,
-	value: string,
-): void => {
-	const msg = `[Jlint] [${key}] ${value}`;
+// -------------------------------------------------------------------------------------------------
+const MAIN = `Jlint`;
+const AUTO_CLOSE_MS = 1000;
 
-	if (type === `debug` || type === `info`) {
-		void vscode.window.withProgress({
-			location: vscode.ProgressLocation.Notification,
-			title: msg,
-			cancellable: false
+// -------------------------------------------------------------------------------------------------
+const showProgress = async (text: string): Promise<void> => {
+	await vscode.window.withProgress({
+		location: vscode.ProgressLocation.Notification,
+		title: text,
+		cancellable: false,
+	},
+	async (_) => {
+		await new Promise((res) => setTimeout(res, AUTO_CLOSE_MS));
+	});
+};
+
+// -------------------------------------------------------------------------------------------------
+export const notify = (
+	type: `debug` | `info` | `hint` | `warn` | `error`,
+	value: string
+): void => {
+	const config = {
+		title: {
+			str: `[${MAIN}]`,
 		},
-		async (_) => {
-			await new Promise((res) => {
-				setTimeout(res, 1000);
-			});
-		});
-		return;
-	}
-	if (type === `warn`) {
-		vscode.window.showWarningMessage(msg, { modal: false });
-		void vscode.window.withProgress({
-			location: vscode.ProgressLocation.Notification,
-			title: msg,
-			cancellable: false
+		debug: {
+			str: `[DEBUG]`,
 		},
-		async (_) => {
-			await new Promise((res) => {
-				setTimeout(res, 1000);
-			});
-		});
-		return;
-	}
-	if (type === `error`) {
-		vscode.window.showErrorMessage(msg, { modal: false });
-		void vscode.window.withProgress({
-			location: vscode.ProgressLocation.Notification,
-			title: msg,
-			cancellable: false
+		info: {
+			str: `[INFO]`,
 		},
-		async (_) => {
-			await new Promise((res) => {
-				setTimeout(res, 1000);
-			});
-		});
-		return;
-	}
+		hint: {
+			str: `[HINT]`,
+		},
+		warn: {
+			str: `[WARN]`,
+		},
+		error: {
+			str: `[ERROR]`,
+		},
+	};
+	const text = `${config.title.str} ${config[type].str} ${value}`;
+
+	type === `debug` && (
+		vscode.window.showInformationMessage(text, { modal: false }),
+		void showProgress(text)
+	);
+	type === `info` && (
+		vscode.window.showInformationMessage(text, { modal: false }),
+		void showProgress(text)
+	);
+	type === `hint` && (
+		vscode.window.showInformationMessage(text, { modal: false }),
+		void showProgress(text)
+	);
+	type === `warn` && (
+		vscode.window.showWarningMessage(text, { modal: false }),
+		void showProgress(text)
+	);
+	type === `error` && (
+		vscode.window.showErrorMessage(text, { modal: false }),
+		void showProgress(text)
+	);
 };

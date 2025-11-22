@@ -11,7 +11,7 @@ export const activate = (context: vscode.ExtensionContext) => {
 		// 0. Initialize Logger ------------------------------------------------------------------------
 		initLogger();
 		setExtensionPath(context.extensionPath);
-		logger("info", "activation", "Jlint is now active!");
+    logger("info", "activation - Jlint is now active!");
 
     // 1. Get Configuration ------------------------------------------------------------------------
     const getConfiguration = () => {
@@ -29,12 +29,12 @@ export const activate = (context: vscode.ExtensionContext) => {
     const command = vscode.commands.registerCommand("extension.Jlint", async () => {
       const editor = vscode.window.activeTextEditor;
       if (!editor) {
-        notify("error", "Jlint", "No active editor found.");
+        notify("error", "Jlint - No active editor found.");
         return;
       }
 
       if (editor.document.uri.scheme !== 'file') {
-        notify("error", "Jlint", "Please save the file before linting.");
+        notify("error", "Jlint - Please save the file before linting.");
         return;
       }
 
@@ -52,7 +52,7 @@ export const activate = (context: vscode.ExtensionContext) => {
         fileEol,
         fileExt,
       );
-      notify("info", "Linting Completed", `"${fileName}"`);
+      notify("info", `Linting Completed - "${fileName}"`);
     });
     context.subscriptions.push(command);
 
@@ -60,7 +60,7 @@ export const activate = (context: vscode.ExtensionContext) => {
     context.subscriptions.push(
       vscode.workspace.onDidChangeConfiguration((event: vscode.ConfigurationChangeEvent) => {
         if (event.affectsConfiguration("Jlint")) {
-          logger("info", "configuration", `updated: ${JSON.stringify(getConfiguration(), null, 2)}`);
+          logger("info", `configuration - updated: ${JSON.stringify(getConfiguration(), null, 2)}`);
         }
       })
     );

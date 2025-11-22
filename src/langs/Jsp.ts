@@ -160,11 +160,11 @@ export const removeComments = async (
 		))
 		.value();
 
-	logger("debug", `${fileExt}:removeComments`, "Y");
+	logger("debug", `${fileExt}:removeComments - Y`);
     return finalResult;
   }
   catch (err: any) {
-	logger("error", `${fileExt}:removeComments`, err.message);
+	logger("error", `${fileExt}:removeComments - ${err.message}`);
     return contentsParam;
   }
 };
@@ -179,11 +179,11 @@ export const prettierFormat = async (
 	fileExt: string
 ) => {
 	try {
-		logger("debug", `${fileExt}:prettierFormat`, "start");
+		logger("debug", `${fileExt}:prettierFormat - start`);
 		// 0. prettier
 		const prettier = await getPrettier();
 		const prettierStatus = prettier ? "prettier:loaded" : "prettier:missing";
-		logger(prettier ? "debug" : "warn", `${fileExt}:prettierFormat`, prettierStatus);
+		logger(prettier ? "debug" : "warn", `${fileExt}:prettierFormat - ${prettierStatus}`);
 
 		// 1. parser
 		const parser = "html";
@@ -191,7 +191,7 @@ export const prettierFormat = async (
 		// 2. plugin
 		const plugin = await getPrettierPluginJsp();
 		const pluginStatus = plugin ? "plugin:jsp:loaded" : "plugin:jsp:missing";
-		logger(plugin ? "debug" : "warn", `${fileExt}:prettierFormat`, pluginStatus);
+		logger(plugin ? "debug" : "warn", `${fileExt}:prettierFormat - ${pluginStatus}`);
 
 		// 3. options
 		const baseOptions: PrettierOptions = {
@@ -239,19 +239,19 @@ export const prettierFormat = async (
 		))
 		.value();
 		const formatterAvailable = prettier && plugin && typeof prettier.format === "function";
-		logger(formatterAvailable ? "debug" : "warn", `${fileExt}:prettierFormat`, formatterAvailable ? "formatter:ready" : "formatter:missing");
+		logger(formatterAvailable ? "debug" : "warn", `${fileExt}:prettierFormat - ${formatterAvailable ? "formatter:ready" : "formatter:missing"}`);
 		const finalResult = formatterAvailable
 		? await (async () => {
-			logger("debug", `${fileExt}:prettierFormat`, "format:start");
+			logger("debug", `${fileExt}:prettierFormat - format:start`);
 			const formatted = await prettier.format(result, baseOptions);
-			logger("debug", `${fileExt}:prettierFormat`, "format:success");
+			logger("debug", `${fileExt}:prettierFormat - format:success`);
 			return formatted;
 		})()
 		: (() => {
-			logger("warn", `${fileExt}:prettierFormat`, "format:skipped");
+			logger("warn", `${fileExt}:prettierFormat - format:skipped`);
 			return contentsParam;
 		})();
-		logger("debug", `${fileExt}:prettierFormat`, "end");
+		logger("debug", `${fileExt}:prettierFormat - end`);
 		return finalResult;
 	}
   catch (err: any) {
@@ -260,7 +260,7 @@ export const prettierFormat = async (
     const msgRegexReplace = `[Jlint]\n\nError Line = [ $6 ]\nError Site = $8`;
     const msgResult = msg.replace(msgRegex, msgRegexReplace);
 
-  	logger("error", `${fileExt}:prettierFormat`, msgResult);
+	logger("error", `${fileExt}:prettierFormat - ${msgResult}`);
   	modal("error", fileExt, msgResult);
     return contentsParam;
   }
@@ -294,11 +294,11 @@ export const insertSpace = async (
 		))
 		.value();
 
-	logger("debug", `${fileExt}:insertSpace`, "Y");
+	logger("debug", `${fileExt}:insertSpace - Y`);
     return finalResult
   }
   catch (err: any) {
-		logger("error", `${fileExt}:insertSpace`, err.message);
+		logger("error", `${fileExt}:insertSpace - ${err.message}`);
     return contentsParam;
   }
 };
@@ -385,11 +385,11 @@ export const insertLine = async (
 		})
 		.value();
 
-	logger("debug", `${fileExt}:insertLine`, "Y");
+	logger("debug", `${fileExt}:insertLine - Y`);
     return finalResult
   }
   catch (err: any) {
-		logger("error", `${fileExt}:insertLine`, err.message);
+		logger("error", `${fileExt}:insertLine - ${err.message}`);
     return contentsParam;
   }
 };
@@ -416,11 +416,11 @@ export const lineBreak = async (
 		))
 		.value();
 
-	logger("debug", `${fileExt}:lineBreak`, "Y");
+	logger("debug", `${fileExt}:lineBreak - Y`);
     return finalResult
   }
   catch (err: any) {
-	logger("error", `${fileExt}:lineBreak`, err.message);
+	logger("error", `${fileExt}:lineBreak - ${err.message}`);
     return contentsParam;
   }
 };
@@ -441,11 +441,11 @@ export const finalCheck = async (
 		))
 		.value();
 
-	logger("debug", `${fileExt}:finalCheck`, "Y");
+	logger("debug", `${fileExt}:finalCheck - Y`);
     return finalResult
   }
   catch (err: any) {
-	logger("error", `${fileExt}:finalCheck`, err.message);
+	logger("error", `${fileExt}:finalCheck - ${err.message}`);
     return contentsParam;
   }
 };

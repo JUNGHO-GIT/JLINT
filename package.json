@@ -6,7 +6,7 @@
   "icon": "logo.webp",
   "license": "Apache-2.0",
   "main": "./out/extension.js",
-  "version": "2.5.7",
+  "version": "2.5.8",
   "repository": {
     "type": "git",
     "url": "https://github.com/JUNGHO-GIT/JLINT.git"
@@ -135,7 +135,7 @@
     "compile": "bun .node/swc.cjs --bun --compile",
     "reset": "bun .node/reset.cjs --bun --reset",
     "fix": "bun .node/fix.cjs --bun --fix",
-    "gcloud": "bun .node/gcloud.cjs --bun --deploy",
+    "git": "bun .node/git.cjs --bun --push",
     "vsce": "bun .node/vsce.cjs --bun --package"
   },
   "engines": {

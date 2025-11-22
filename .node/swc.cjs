@@ -1,16 +1,14 @@
-// swc.cjs
+/**
+ * @file swc.cjs
+ * @since 2025-11-22
+ */
 
 const { spawn } = require(`child_process`);
 const process = require(`process`);
-const { logger, runCmd, validateDir, delDir } = require(`./bundle.cjs`);
-
-// 상수 정의 -----------------------------------------------------------------------------------
-const TITLE = `swc.cjs`;
-const OUT_DIR = [`out`, `dist`, `build`];
-const TS_CONFIG_FILES = [`tsconfig.json`, `tsconfig.build.json`];
-const SWC_CONFIG_FILES = [`.swcrc`, `.swcrc.json`];
+const { logger, runCmd, validateDir, delDir } = require(`./utils.cjs`);
 
 // 인자 파싱 ------------------------------------------------------------------------------------
+const TITLE = `swc.cjs`;
 const argv = process.argv.slice(2);
 const args1 = argv.find(arg => [`--npm`, `--pnpm`, `--yarn`, `--bun`].includes(arg))?.replace(`--`, ``) || ``;
 const args2 = argv.find(arg => [`--compile`, `--watch`, `--start`, `--build`].includes(arg))?.replace(`--`, ``) || ``;
@@ -19,11 +17,11 @@ const args2 = argv.find(arg => [`--compile`, `--watch`, `--start`, `--build`].in
 const runCompile  = () => {
 	logger(`info`, `컴파일 시작`);
 
-	const outDir = validateDir(OUT_DIR);
+	const outDir = validateDir([`out`, `dist`, `build`]);
 	delDir(outDir);
 
-	const tsCfg = validateDir(TS_CONFIG_FILES);
-	const swcCfg = validateDir(SWC_CONFIG_FILES);
+	const tsCfg = validateDir([`tsconfig.json`, `tsconfig.build.json`]);
+	const swcCfg = validateDir([`.swcrc`, `.swcrc.json`]);
 	const baseSwcArgs = [`src`, `-d`, outDir, `--strip-leading-paths`];
 	swcCfg && baseSwcArgs.push(`--config-file`, swcCfg);
 
@@ -77,9 +75,9 @@ const runBuild = () => {
 const runWatch = () => {
 	logger(`info`, `워치 모드 시작`);
 
-	const outDir = validateDir(OUT_DIR);
-	const tsCfg = validateDir(TS_CONFIG_FILES);
-	const swcCfg = validateDir(SWC_CONFIG_FILES);
+	const outDir = validateDir([`out`, `dist`, `build`]);
+	const tsCfg = validateDir([`tsconfig.json`, `tsconfig.build.json`]);
+	const swcCfg = validateDir([`.swcrc`, `.swcrc.json`]);
 
 	const swcArgsBase = [`src`, `-d`, outDir, `--strip-leading-paths`, `--watch`];
 	swcCfg && swcArgsBase.push(`--config-file`, swcCfg);

@@ -1,17 +1,18 @@
-// gcloud.cjs
+/**
+ * @file git.cjs
+ * @since 2025-11-22
+ */
 
 const os = require('os');
 const fs = require('fs');
 const { execSync } = require('child_process');
-const { logger } = require(`./bundle.cjs`);
-
-// 상수 정의 -----------------------------------------------------------------------------------
-const TITLE = `gcloud.cjs`;
+const { logger } = require(`./utils.cjs`);
 
 // 인자 파싱 ------------------------------------------------------------------------------------
+const TITLE = `git.cjs`;
 const argv = process.argv.slice(2);
 const args1 = argv.find(arg => [`--npm`, `--pnpm`, `--yarn`, `--bun`].includes(arg))?.replace(`--`, ``) || ``;
-const args2 = argv.find(arg => [`--git`, `--deploy`].includes(arg))?.replace(`--`, ``) || ``;
+const args2 = argv.find(arg => [`--push`].includes(arg))?.replace(`--`, ``) || ``;
 const winOrLinux = os.platform() === 'win32' ? `win` : `linux`;
 
 // changelog 수정 -------------------------------------------------------------------------------
@@ -79,39 +80,56 @@ const incrementVersion = (newVersion=``) => {
 	logger(`success`, `package.json 버전 업데이트 완료: ${newVersion}`);
 };
 
+// git remote 존재 확인 -------------------------------------------------------------------------
+const checkRemoteExists = (remoteName=``) => {
+	try {
+		execSync(`git remote get-url ${remoteName}`, { encoding: 'utf8', stdio: 'pipe' });
+		return true;
+	}
+	catch (e) {
+		return false;
+	}
+};
+
 // git push 공통 함수 ---------------------------------------------------------------------------
 const gitPush = (remoteName=``, ignoreFilePath=``, winOrLinux=``) => {
-	logger(`info`, `Git Push 시작: ${remoteName}`);
+	const remoteExists = checkRemoteExists(remoteName);
 
-	const ignorePublicFile = fs.readFileSync(`.gitignore.public`, 'utf8');
-	const ignoreContent = fs.readFileSync(ignoreFilePath, 'utf8');
-	const currentBranch = execSync(`git branch --show-current`, { encoding: 'utf8' }).trim();
+	!remoteExists ? (
+		logger(`info`, `Remote '${remoteName}' 존재하지 않음 - 건너뜀`)
+	) : (() => {
+		logger(`info`, `Git Push 시작: ${remoteName}`);
 
-	logger(`info`, `현재 브랜치: ${currentBranch}`);
-	logger(`info`, `.gitignore 파일 수정 적용: ${ignoreFilePath}`);
+		const ignorePublicFile = fs.readFileSync(`.gitignore.public`, 'utf8');
+		const ignoreContent = fs.readFileSync(ignoreFilePath, 'utf8');
+		const currentBranch = execSync(`git branch --show-current`, { encoding: 'utf8' }).trim();
 
-	fs.writeFileSync(`.gitignore`, ignoreContent, 'utf8');
-	execSync(`git rm -r -f --cached .`, { stdio: 'inherit' });
-	execSync(`git add .`, { stdio: 'inherit' });
+		logger(`info`, `현재 브랜치: ${currentBranch}`);
+		logger(`info`, `.gitignore 파일 수정 적용: ${ignoreFilePath}`);
 
-	const statusOutput = execSync(`git status --porcelain`, { encoding: 'utf8' }).trim();
-	statusOutput ? (() => {
-		logger(`info`, `변경사항 감지 - 커밋 진행`);
-		const commitMessage = winOrLinux === `win` ? (
-			`git commit -m "%date% %time:~0,8%"`
-		) : (
-			`git commit -m "$(date +%Y-%m-%d) $(date +%H:%M:%S)"`
-		);
-		execSync(commitMessage, { stdio: 'inherit' });
-		logger(`success`, `커밋 완료`);
-	})() : logger(`info`, `변경사항 없음 - 커밋 건너뜀`);
+		fs.writeFileSync(`.gitignore`, ignoreContent, 'utf8');
+		execSync(`git rm -r -f --cached .`, { stdio: 'inherit' });
+		execSync(`git add .`, { stdio: 'inherit' });
 
-	logger(`info`, `Push 진행: ${remoteName} ${currentBranch}`);
-	execSync(`git push --force ${remoteName} ${currentBranch}`, { stdio: 'inherit' });
-	logger(`success`, `Push 완료: ${remoteName}`);
+		const statusOutput = execSync(`git status --porcelain`, { encoding: 'utf8' }).trim();
+		statusOutput ? (() => {
+			logger(`info`, `변경사항 감지 - 커밋 진행`);
+			const commitMessage = winOrLinux === `win` ? (
+				`git commit -m "%date% %time:~0,8%"`
+			) : (
+				`git commit -m "$(date +%Y-%m-%d) $(date +%H:%M:%S)"`
+			);
+			execSync(commitMessage, { stdio: 'inherit' });
+			logger(`success`, `커밋 완료`);
+		})() : logger(`info`, `변경사항 없음 - 커밋 건너뜀`);
 
-	fs.writeFileSync(`.gitignore`, ignorePublicFile, 'utf8');
-	logger(`info`, `.gitignore 파일 복원`);
+		logger(`info`, `Push 진행: ${remoteName} ${currentBranch}`);
+		execSync(`git push --force ${remoteName} ${currentBranch}`, { stdio: 'inherit' });
+		logger(`success`, `Push 완료: ${remoteName}`);
+
+		fs.writeFileSync(`.gitignore`, ignorePublicFile, 'utf8');
+		logger(`info`, `.gitignore 파일 복원`);
+	})();
 };
 
 // 실행 ---------------------------------------------------------------------------------------
@@ -122,14 +140,7 @@ const gitPush = (remoteName=``, ignoreFilePath=``, winOrLinux=``) => {
 	logger(`info`, `전달된 인자 2 : ${args2 || 'none'}`);
 
 	try {
-		args2.includes(`deploy`) && (() => {
-			incrementVersion(modifyChangelog());
-			gitPush(`origin`, `.gitignore.public`, winOrLinux);
-			gitPush(`private`, `.gitignore.private`, winOrLinux);
-			logger(`success`, `전체 배포 프로세스 완료`);
-		})();
-
-		args2.includes(`git`) && (() => {
+		args2.includes(`push`) && (() => {
 			incrementVersion(modifyChangelog());
 			gitPush(`origin`, `.gitignore.public`, winOrLinux);
 			gitPush(`private`, `.gitignore.private`, winOrLinux);

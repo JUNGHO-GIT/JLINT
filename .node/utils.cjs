@@ -1,40 +1,76 @@
-// bundle.cjs
+/**
+ * @file utils.cjs
+ * @since 2025-11-22
+ */
 
 const fs = require(`fs`);
 const path = require(`path`);
 const { spawnSync } = require(`child_process`);
 
+// -------------------------------------------------------------------------------------------------
+const formatLog = (text = ``) => {
+	return text.trim().replace(/^\s+/gm, ``);
+};
+
 // 로깅 -----------------------------------------------------------------------------------
 // @ts-ignore
-const logger = (type = ``, message = ``) => {
-	const format = (text = ``) => text.trim().replace(/^\s+/gm, ``);
-	const line = `----------------------------------------`;
-	const colors = {
-		line: `\x1b[38;5;214m`,
-		info: `\x1b[36m`,
-		success: `\x1b[32m`,
-		warn: `\x1b[33m`,
-		error: `\x1b[31m`,
-		reset: `\x1b[0m`
+const logger = (
+	type = ``,
+	value = ``
+) => {
+	const config = {
+		line: {
+			str: `-----------------------------------------`,
+			color: `\u001b[38;2;255;162;0m`,
+		},
+		debug: {
+			str: `[DEBUG]`,
+			color: `\u001b[38;5;141m`,
+		},
+		info: {
+			str: `[INFO]`,
+			color: `\u001b[38;5;46m`,
+		},
+		hint: {
+			str: `[HINT]`,
+			color: `\u001b[38;5;39m`,
+		},
+		warn: {
+			str: `[WARN]`,
+			color: `\u001b[38;5;214m`,
+		},
+		error: {
+			str: `[ERROR]`,
+			color: `\u001b[38;5;196m`,
+		},
+		reset: {
+			str: ``,
+			color: `\u001b[0m`,
+		},
 	};
-	const separator = `${colors.line}${line}${colors.reset}`;
+	const separator = `${config.reset.color}${config.line.color}${config.line.str}${config.reset.color}`;
+	const level = `${config.reset.color}${config?.[type]?.color ?? ``}${config?.[type]?.str ?? ``}${config.reset.color}`;
+	const fmtMsg = formatLog(`
+		${separator}
+		${level}
+		- ${value}
+	`);
 
-	type === `info` && console.log(format(`
-		${separator}
-		${colors.info}[INFO]${colors.reset} - ${message}
-	`));
-	type === `success` && console.log(format(`
-		${separator}
-		${colors.success}[SUCCESS]${colors.reset} - ${message}
-	`));
-	type === `warn` && console.log(format(`
-		${separator}
-		${colors.warn}[WARN]${colors.reset} - ${message}
-	`));
-	type === `error` && console.log(format(`
-		${separator}
-		${colors.error}[ERROR]${colors.reset} - ${message}
-	`));
+	type === `debug` && (
+		console.debug(fmtMsg)
+	);
+	type === `info` && (
+		console.info(fmtMsg)
+	);
+	type === `hint` && (
+		console.log(fmtMsg)
+	);
+	type === `warn` && (
+		console.warn(fmtMsg)
+	);
+	type === `error` && (
+		console.error(fmtMsg)
+	);
 };
 
 // 명령 실행 ------------------------------------------------------------------------------

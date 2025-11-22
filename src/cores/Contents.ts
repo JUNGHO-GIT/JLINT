@@ -37,11 +37,11 @@ export const getContents = async (
 		.join("\n")
 		.trim();
 
-		logger("debug", `${fileExt}:getContents`, "Y");
+		logger("debug", `${fileExt}:getContents - Y`);
 		return updateContent;
   }
   catch (err: any) {
-		logger("error", `${fileExt}:getContents`, err.message);
+		logger("error", `${fileExt}:getContents - ${err.message}`);
     return dataStr;
   }
 };

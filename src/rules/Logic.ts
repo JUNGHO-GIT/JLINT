@@ -112,12 +112,12 @@ export const ifElse = async (
 
     return (
       fileExt === "xml" || fileExt === "json" || fileExt === "sql"
-			? (logger("debug", `${fileExt}:ifElse`, "N"), contentsParam)
-			: (logger("debug", `${fileExt}:ifElse`, "Y"), finalResult)
+      ? (logger("debug", `${fileExt}:ifElse - N`), contentsParam)
+      : (logger("debug", `${fileExt}:ifElse - Y`), finalResult)
     );
   }
   catch (err: any) {
-    logger("error", `${fileExt}:ifElse`, err.message);
+    logger("error", `${fileExt}:ifElse - ${err.message}`);
     return contentsParam;
   }
 };
@@ -207,12 +207,12 @@ export const tryCatch = async (
 
     return (
       fileExt === "xml" || fileExt === "json" || fileExt === "sql"
-			? (logger("debug", `${fileExt}:tryCatch`, "N"), contentsParam)
-			: (logger("debug", `${fileExt}:tryCatch`, "Y"), finalResult)
+      ? (logger("debug", `${fileExt}:tryCatch - N`), contentsParam)
+      : (logger("debug", `${fileExt}:tryCatch - Y`), finalResult)
     );
   }
   catch (err: any) {
-    logger("error", `${fileExt}:tryCatch`, err.message);
+    logger("error", `${fileExt}:tryCatch - ${err.message}`);
     return contentsParam;
   }
 };

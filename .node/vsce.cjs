@@ -1,13 +1,14 @@
-// vsce.cjs
+/**
+ * @file vsce.cjs
+ * @since 2025-11-22
+ */
 
 const fs = require(`fs`);
 const path = require(`path`);
-const { logger, runCmd, delDir, delFile } = require(`./bundle.cjs`);
-
-// 상수 정의 -----------------------------------------------------------------------------------
-const TITLE = `vsce.cjs`;
+const { logger, runCmd, delDir, delFile } = require(`./utils.cjs`);
 
 // 인자 파싱 ------------------------------------------------------------------------------------
+const TITLE = `vsce.cjs`;
 const argv = process.argv.slice(2);
 const args1 = argv.find(arg => [`--npm`, `--pnpm`, `--yarn`, `--bun`].includes(arg))?.replace(`--`, ``) || `npm`;
 const args2 = argv.find(arg => [`--package`].includes(arg))?.replace(`--`, ``) || ``;
