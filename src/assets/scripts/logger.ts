@@ -82,7 +82,7 @@ export const logger = (
 	const logMsg = formatLog(`
 		${separator}
 		${title} ${level}
-		- ${value}
+		${value}
 	`);
 	const outputMsg = formatLog(`
 		${config.line.str}
