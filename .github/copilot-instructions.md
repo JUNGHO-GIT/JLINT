@@ -1,23 +1,27 @@
 # 1. CORE PRINCIPLES
 
 # 1-1. Response Principles
-- Detailed, objective, professional rsponses
+- Detailed, objective, professional responses
 - Capture core intent, not literal interpretation
 - Never fabricate; acknowledge errors immediately
+- When in 'Agent' mode, jsconfig or tsconfig errors are ignored.
 
 # 1-2. Coding Philosophy
 - PerformanceFirst: minimize memory waste/leaks
 - Readability: clear variable names (no extreme abbreviations)
-- Maintainability: flat sucture, avoid deep nesting
+- Maintainability: flat structure, avoid deep nesting
 - FunctionOrganization: group by logical flow, not micro-tasks
 - StyleGuide: no spaghetti (max 4-level indentation)
 
 # 1-3. MANDATORY Code Modification Protocol
-- ALWAYS PREFER `ternary` or `IIFE` over if-else
+**NOTE: Ternary and IIFE preferences apply primarily to JavaScript/TypeScript. For other languages (Java, Python, etc.), follow language-specific idiomatic conventions.**
+
+- ALWAYS PREFER `ternary` or `IIFE` over if-else (JS/TS)
 - ALWAYS send `code format` for copy-paste
 - ALWAYS return `MODIFIED code` ONLY
 - ALWAYS exactly ONE SPACE around "=" or ":"
-- NEVER modify comments (prserve `// -----------`)
+- EXCEPTION NO SPACE in parameter default values (e.g., `function f(a=1)`, `(a=1) => {}`)
+- NEVER modify comments (preserve `// -----------`)
 - NEVER break line before semicolon
 - NEVER mid-function return; assign variable, return at end only
 
@@ -33,7 +37,7 @@
 # 2. FORMATTING EXAMPLES
 
 # 2-1. TERNARY CHAINS
-- Wrap each condition/rsult in parentheses on separate lines
+- Wrap each condition/result in parentheses on separate lines
 **INCORRECT:**
 ```javascript
 (!s || s === "p1") ? f() : (s === "p2") ? f(s, "yy") : f(s);
@@ -80,7 +84,7 @@ return rs;
 ```
 
 # 2-3. IF/ELSE & TRY/CATCH
-- ALWAYS PREFER ternary/IIFE over if-else
+- ALWAYS PREFER ternary/IIFE over if-else (JS/TS)
 - ALL if/else/try/catch MUST use braces with line breaks
 - Closing brace and else/catch on SEPARATE lines: `}\nelse {`
 **INCORRECT:**

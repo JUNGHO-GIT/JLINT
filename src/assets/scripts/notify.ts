@@ -16,9 +16,9 @@ const showProgress = async (text: string): Promise<void> => {
 		title: text,
 		cancellable: false,
 	},
-		async (_) => {
-			await new Promise((res) => setTimeout(res, AUTO_CLOSE_MS));
-		});
+	async (_) => {
+		await new Promise((res) => setTimeout(res, AUTO_CLOSE_MS));
+	});
 };
 
 // -------------------------------------------------------------------------------------------------

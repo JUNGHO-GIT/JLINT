@@ -6,7 +6,7 @@
   "icon": "logo.webp",
   "license": "Apache-2.0",
   "main": "./out/extension.js",
-  "version": "2.6.1",
+  "version": "2.6.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/JUNGHO-GIT/JLINT.git"
@@ -130,19 +130,20 @@
       }
     }
   },
-  "scripts": {
-    "watch": "bun .node/swc.cjs --bun --watch",
-    "compile": "bun .node/swc.cjs --bun --compile",
-    "reset": "bun .node/reset.cjs --bun --reset",
-    "fix": "bun .node/fix.cjs --bun --fix",
-    "git": "bun .node/git.cjs --bun --push",
-    "vsce": "bun .node/vsce.cjs --bun --package"
-  },
   "engines": {
     "vscode": ">=1.106.1",
     "node": ">=21.0.0",
     "npm": ">=10.0.0",
     "pnpm": ">=9.0.0"
+  },
+  "scripts": {
+    "watch": "bun .node/swc.cjs --bun --watch",
+    "compile-server": "bun .node/swc.cjs --bun --compile --server",
+    "reset": "bun .node/reset.cjs --bun --reset",
+    "fix": "bun .node/fix.cjs --bun --fix",
+    "git-fetch": "bun .node/git.cjs --bun --fetch",
+    "git-push": "bun .node/git.cjs --bun --push",
+    "vsce": "bun .node/vsce.cjs --bun --package"
   },
   "dependencies": {
     "@prettier/plugin-xml": "3.4.2",
@@ -168,18 +169,18 @@
   "devDependencies": {
     "@babel/core": "7.28.5",
     "@swc/cli": "0.7.9",
-    "@swc/core": "1.15.2",
+    "@swc/core": "1.15.3",
     "@swc/helpers": "0.5.17",
     "@types/clean-css": "4.2.11",
     "@types/html-minifier-terser": "7.0.2",
     "@types/jsdom": "27.0.0",
-    "@types/lodash": "4.17.20",
+    "@types/lodash": "4.17.21",
     "@types/mocha": "10.0.10",
     "@types/node": "24.10.1",
     "@types/strip-comments": "2.0.4",
     "@types/vscode": "1.106.1",
     "@vscode/test-electron": "2.5.2",
-    "@vscode/vsce": "3.7.0",
+    "@vscode/vsce": "3.7.1",
     "eslint": "9.39.1",
     "mocha": "11.7.5",
     "ts-morph": "27.0.2",

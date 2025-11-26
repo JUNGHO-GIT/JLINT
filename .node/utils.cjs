@@ -7,7 +7,7 @@ const fs = require(`fs`);
 const path = require(`path`);
 const { spawnSync } = require(`child_process`);
 
-// -------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------
 const formatLog = (text = ``) => {
 	return text.trim().replace(/^\s+/gm, ``);
 };
@@ -254,6 +254,46 @@ const delDir = (tp = ``, pat = ``) => {
 	return result;
 };
 
+// 프로젝트 타입 검증 --------------------------------------------------------------------------
+// @ts-ignore
+const getProjectType = (args) => {
+	const isClient = args === `client`;
+	const isServer = args === `server`;
+
+	const hasFile = (filePath = ``) => {
+		const absPath = path.isAbsolute(filePath) ? filePath : path.join(process.cwd(), filePath);
+		return fs.existsSync(absPath);
+	};
+
+	!isClient && !isServer && (
+		logger(`error`, `프로젝트 타입을 지정해주세요: --client 또는 --server`),
+		process.exit(1)
+	);
+
+	const viteConfigFiles = [`vite.config.ts`, `vite.config.js`, `vite.config.mts`, `vite.config.mjs`];
+	const hasVite = viteConfigFiles.some(file => hasFile(file));
+	const hasNext = hasFile(`next.config.js`) || hasFile(`next.config.mjs`);
+	const hasReactScripts = hasFile(path.join(`node_modules`, `react-scripts`, `bin`, `react-scripts.js`));
+	const hasIndexTs = hasFile(`index.ts`);
+
+	isClient && !hasVite && !hasNext && !hasReactScripts && (
+		logger(`warn`, `클라이언트 설정 파일을 찾을 수 없습니다 (vite.config, next.config, react-scripts)`)
+	);
+
+	isServer && !hasIndexTs && (
+		logger(`warn`, `서버 진입점 파일을 찾을 수 없습니다 (index.ts)`)
+	);
+
+	return {
+		isClient,
+		isServer,
+		hasVite,
+		hasNext,
+		hasReactScripts,
+		hasIndexTs
+	};
+};
+
 // 모듈 내보내기 -------------------------------------------------------------------------------
 module.exports = {
 	logger,
@@ -263,5 +303,6 @@ module.exports = {
 	createFile,
 	createDir,
 	delFile,
-	delDir
+	delDir,
+	getProjectType
 };
