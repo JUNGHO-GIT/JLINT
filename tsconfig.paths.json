@@ -1,0 +1,35 @@
+{
+  "$schema": "https://www.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "out",
+    "paths": {
+			"@scripts/*": ["src/assets/scripts/*"],
+			"@cores/*": ["src/cores/*"],
+			"@langs/*": ["src/langs/*"],
+			"@rules/*": ["src/rules/*"],
+      "@exportLibs": ["src/exports/ExportLibs"],
+      "@exportScripts": ["src/exports/ExportScripts"],
+      "@exportCores": ["src/exports/ExportCores"],
+      "@exportRules": ["src/exports/ExportRules"],
+      "@exportLangs": ["src/exports/ExportLangs"]
+    },
+    "types": [
+      "node"
+    ]
+  },
+  "include": [
+    "src/**/*",
+    "src/**/*.ts",
+		"src/**/*.tsx",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.d.ts",
+    "**/*.js",
+    "**/*.jsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
+  ]
+}
