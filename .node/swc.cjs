@@ -11,71 +11,42 @@ const { logger, runCmd, validateDir, delDir, getProjectType } = require(`./utils
 const TITLE = `swc.cjs`;
 const argv = process.argv.slice(2);
 const args1 = argv.find(arg => [`--npm`, `--pnpm`, `--yarn`, `--bun`].includes(arg))?.replace(`--`, ``) || ``;
-const args2 = argv.find(arg => [`--watch`, `--start`, `--compile`, `--build`].includes(arg))?.replace(`--`, ``) || ``;
+const args2 = argv.find(arg => [`--start`, `--build`].includes(arg))?.replace(`--`, ``) || ``;
 const args3 = argv.find(arg => [`--server`, `--client`].includes(arg))?.replace(`--`, ``) || ``;
 
-// 컴파일 실행 ----------------------------------------------------------------------------------
-const runCompile = () => {
-	logger(`info`, `컴파일 시작`);
+// 빌드 실행 (build-server / build-client) -------------------------------------------------------
+const runBuild = (target = ``) => {
+	const modeLabel = target === `server` ? `build-server`
+		: target === `client` ? `build-client`
+		: `build-unknown`;
 
-	const { isServer } = getProjectType(args3);
-
-	!isServer && (
-		logger(`error`, `컴파일 모드는 서버 프로젝트에서만 사용 가능합니다`),
-		process.exit(1)
-	);
-
-	const outDir = validateDir([`out`, `dist`, `build`]);
-	delDir(outDir);
-
-	const tsCfg = validateDir([`tsconfig.json`, `tsconfig.build.json`]);
-	const swcCfg = validateDir([`.swcrc`, `.swcrc.json`]);
-
-	!tsCfg && (
-		logger(`error`, `tsconfig 파일을 찾을 수 없습니다`),
-		process.exit(1)
-	);
-
-	const baseSwcArgs = [`src`, `-d`, outDir, `--strip-leading-paths`];
-	swcCfg && baseSwcArgs.push(`--config-file`, swcCfg);
-
-	try {
-		args1 === `npm` && (
-			runCmd(args1, [`exec`, `--`, `swc`, ...baseSwcArgs]),
-			runCmd(args1, [`exec`, `--`, `tsc-alias`, `-p`, tsCfg, `-f`])
-		);
-		args1 === `pnpm` && (
-			runCmd(args1, [`exec`, `swc`, ...baseSwcArgs]),
-			runCmd(args1, [`exec`, `tsc-alias`, `-p`, tsCfg, `-f`])
-		);
-		args1 === `yarn` && (
-			runCmd(args1, [`swc`, ...baseSwcArgs]),
-			runCmd(args1, [`tsc-alias`, `-p`, tsCfg, `-f`])
-		);
-		args1 === `bun` && (
-			runCmd(args1, [`x`, `swc`, ...baseSwcArgs]),
-			runCmd(args1, [`x`, `tsc-alias`, `-p`, tsCfg, `-f`])
-		);
-	}
-	catch (e) {
-		const msg = e instanceof Error ? e.message : String(e);
-		logger(`error`, `swc 컴파일 실패: ${msg}`);
-		throw e;
-	}
-
-	logger(`success`, `컴파일 완료`);
-};
-
-// 빌드 실행 ------------------------------------------------------------------------------------
-const runBuild = () => {
-	logger(`info`, `빌드 시작`);
+	logger(`info`, `${modeLabel} 모드 시작`);
 
 	const { isClient, isServer, hasVite, hasNext } = getProjectType(args3);
+
+	const isClientMode = target === `client`;
+	const isServerMode = target === `server`;
+
+	!isClientMode && !isServerMode && (
+		logger(`error`, `빌드 대상(target)을 지정해주세요: server 또는 client`),
+		process.exit(1)
+	);
+
+	isClientMode && !isClient && (
+		logger(`error`, `build-client 모드는 클라이언트 프로젝트에서만 사용 가능합니다`),
+		process.exit(1)
+	);
+
+	isServerMode && !isServer && (
+		logger(`error`, `build-server 모드는 서버 프로젝트에서만 사용 가능합니다`),
+		process.exit(1)
+	);
+
 	const outDir = validateDir([`out`, `dist`, `build`]);
 	delDir(outDir);
 
 	try {
-		isClient ? (
+		isClientMode ? (
 			hasVite ? (
 				args1 === `npm` ? (
 					runCmd(args1, [`exec`, `--`, `vite`, `build`])
@@ -104,100 +75,78 @@ const runBuild = () => {
 				logger(`error`, `클라이언트 빌드 도구를 찾을 수 없습니다`),
 				process.exit(1)
 			)
-		) : isServer ? (
-			runCompile()
+		) : isServerMode ? (
+			(() => {
+				const tsCfg = validateDir([`tsconfig.json`, `tsconfig.build.json`]);
+				const swcCfg = validateDir([`.swcrc`, `.swcrc.json`]);
+
+				!tsCfg && (
+					logger(`error`, `tsconfig 파일을 찾을 수 없습니다`),
+					process.exit(1)
+				);
+
+				const baseSwcArgs = [`src`, `-d`, outDir, `--strip-leading-paths`];
+				swcCfg && baseSwcArgs.push(`--config-file`, swcCfg);
+
+				args1 === `npm` && (
+					runCmd(args1, [`exec`, `--`, `swc`, ...baseSwcArgs]),
+					runCmd(args1, [`exec`, `--`, `tsc-alias`, `-p`, tsCfg, `-f`])
+				);
+				args1 === `pnpm` && (
+					runCmd(args1, [`exec`, `swc`, ...baseSwcArgs]),
+					runCmd(args1, [`exec`, `tsc-alias`, `-p`, tsCfg, `-f`])
+				);
+				args1 === `yarn` && (
+					runCmd(args1, [`swc`, ...baseSwcArgs]),
+					runCmd(args1, [`tsc-alias`, `-p`, tsCfg, `-f`])
+				);
+				args1 === `bun` && (
+					runCmd(args1, [`x`, `swc`, ...baseSwcArgs]),
+					runCmd(args1, [`x`, `tsc-alias`, `-p`, tsCfg, `-f`])
+				);
+			})()
 		) : (
 			null
 		);
 	}
 	catch (e) {
 		const msg = e instanceof Error ? e.message : String(e);
-		logger(`error`, `빌드 실패: ${msg}`);
+		logger(`error`, `${modeLabel} 모드 실패: ${msg}`);
 		throw e;
 	}
 
-	logger(`success`, `빌드 완료`);
+	logger(`success`, `${modeLabel} 모드 완료`);
 };
 
-// 워치 모드 ----------------------------------------------------------------------------------
-const runWatch = () => {
-	logger(`info`, `워치 모드 시작`);
+// 스타트 모드 (start-server / start-client) ----------------------------------------------------
+const runStart = (target = ``) => {
+	const modeLabel = target === `server` ? `start-server`
+		: target === `client` ? `start-client`
+		: `start-unknown`;
 
-	const { isServer } = getProjectType(args3);
-
-	!isServer && (
-		logger(`error`, `워치 모드는 서버 프로젝트에서만 사용 가능합니다`),
-		process.exit(1)
-	);
-
-	const outDir = validateDir([`out`, `dist`, `build`]);
-	const tsCfg = validateDir([`tsconfig.json`, `tsconfig.build.json`]);
-	const swcCfg = validateDir([`.swcrc`, `.swcrc.json`]);
-
-	!tsCfg && (
-		logger(`error`, `tsconfig 파일을 찾을 수 없습니다`),
-		process.exit(1)
-	);
-
-	const swcArgsBase = [`src`, `-d`, outDir, `--strip-leading-paths`, `--watch`];
-	swcCfg && swcArgsBase.push(`--config-file`, swcCfg);
-
-	const aliasArgsBase = [`tsc-alias`, `-p`, tsCfg, `-f`, `--watch`];
-
-	const swcArgs = args1 === `npm` ? [`exec`, `--`, `swc`, ...swcArgsBase]
-		: args1 === `pnpm` ? [`exec`, `swc`, ...swcArgsBase]
-		: args1 === `yarn` ? [`swc`, ...swcArgsBase]
-		: args1 === `bun` ? [`x`, `swc`, ...swcArgsBase] : [];
-
-	const aliasArgs = args1 === `npm` ? [`exec`, `--`, ...aliasArgsBase]
-		: args1 === `pnpm` ? [`exec`, ...aliasArgsBase]
-		: args1 === `yarn` ? aliasArgsBase
-		: args1 === `bun` ? [`x`, ...aliasArgsBase] : [];
-
-	const useShell = args1 !== `bun`;
-
-	const swcProc = spawn(args1, swcArgs, {
-		stdio: `inherit`,
-		shell: useShell,
-		env: process.env
-	});
-
-	const aliasProc = spawn(args1, aliasArgs, {
-		stdio: `inherit`,
-		shell: useShell,
-		env: process.env
-	});
-
-	const cleanup = () => {
-		logger(`info`, `워치 모드 종료 중...`);
-		swcProc.kill();
-		aliasProc.kill();
-		process.exit(0);
-	};
-
-	process.on(`SIGINT`, cleanup);
-	process.on(`SIGTERM`, cleanup);
-
-	swcProc.on(`close`, (code) => {
-		const hasFail = code !== 0 && code !== null;
-		hasFail && logger(`warn`, `swc 종료 (exit code: ${code})`);
-	});
-
-	aliasProc.on(`close`, (code) => {
-		const hasFail = code !== 0 && code !== null;
-		hasFail && logger(`warn`, `tsc-alias 종료 (exit code: ${code})`);
-	});
-
-	logger(`success`, `워치 모드 실행 중`);
-};
-
-// 스타트 모드 ----------------------------------------------------------------------------------
-const runStart = () => {
-	logger(`info`, `스타트 모드 시작`);
+	logger(`info`, `${modeLabel} 모드 시작`);
 
 	const { isClient, isServer, hasVite, hasNext, hasReactScripts, hasIndexTs } = getProjectType(args3);
 
-	const startArgs = isClient ? (
+	const isClientMode = target === `client`;
+	const isServerMode = target === `server`;
+
+	!isClientMode && !isServerMode && (
+		logger(`error`, `스타트 대상(target)을 지정해주세요: server 또는 client`),
+		process.exit(1)
+	);
+
+	isClientMode && !isClient && (
+		logger(`error`, `start-client 모드는 클라이언트 프로젝트에서만 사용 가능합니다`),
+		process.exit(1)
+	);
+
+	isServerMode && !isServer && (
+		logger(`error`, `start-server 모드는 서버 프로젝트에서만 사용 가능합니다`),
+		process.exit(1)
+	);
+
+	const startArgs = isClientMode ? (
 		hasVite ? (
 			args1 === `npm` ? (
 				[`exec`, `--`, `vite`, `dev`]
@@ -238,7 +187,7 @@ const runStart = () => {
 			logger(`error`, `클라이언트 개발 서버 도구를 찾을 수 없습니다`),
 			process.exit(1)
 		)
-	) : isServer ? (
+	) : isServerMode ? (
 		hasIndexTs ? (
 			args1 === `npm` ? (
 				[`exec`, `--`, `tsx`, `watch`, `--clear-screen=false`, `--ignore`, `node_modules`, `index.ts`]
@@ -272,7 +221,7 @@ const runStart = () => {
 	});
 
 	const cleanup = () => {
-		logger(`info`, `스타트 모드 종료 중...`);
+		logger(`info`, `${modeLabel} 모드 종료 중...`);
 		startProc.kill();
 		process.exit(0);
 	};
@@ -282,18 +231,18 @@ const runStart = () => {
 
 	startProc.on(`close`, (code) => {
 		const hasFail = code !== 0 && code !== null;
-		hasFail && logger(`warn`, `start 프로세스 종료 (exit code: ${code})`);
+		hasFail && logger(`warn`, `${modeLabel} 프로세스 종료 (exit code: ${code})`);
 	});
 
-	logger(`success`, isClient ? `클라이언트 개발 서버 실행 중` : `서버 개발 모드 실행 중`);
+	logger(`success`, modeLabel === `start-client` ? `클라이언트 개발 서버 실행 중` : `서버 개발 모드 실행 중`);
 };
 
 // 실행 ---------------------------------------------------------------------------------------
 (() => {
 	logger(`info`, `스크립트 실행: ${TITLE}`);
-	logger(`info`, `전달된 인자 1 : ${args1 || 'none'}`);
-	logger(`info`, `전달된 인자 2 : ${args2 || 'none'}`);
-	logger(`info`, `전달된 인자 3 : ${args3 || 'none'}`);
+	logger(`info`, `전달된 인자 1 : ${args1 || `none`}`);
+	logger(`info`, `전달된 인자 2 : ${args2 || `none`}`);
+	logger(`info`, `전달된 인자 3 : ${args3 || `none`}`);
 
 	!args1 && (
 		logger(`error`, `패키지 매니저를 지정해주세요: --npm, --pnpm, --yarn, --bun`),
@@ -301,7 +250,7 @@ const runStart = () => {
 	);
 
 	!args2 && (
-		logger(`error`, `실행 모드를 지정해주세요: --watch, --start, --compile, --build`),
+		logger(`error`, `실행 모드를 지정해주세요: --start, --build`),
 		process.exit(1)
 	);
 
@@ -311,14 +260,10 @@ const runStart = () => {
 	);
 
 	try {
-		args2 === `compile` ? (
-			runCompile()
-		) : args2 === `build` ? (
-			runBuild()
-		) : args2 === `watch` ? (
-			runWatch()
+		args2 === `build` ? (
+			runBuild(args3)
 		) : args2 === `start` ? (
-			runStart()
+			runStart(args3)
 		) : (
 			logger(`error`, `알 수 없는 실행 모드: ${args2}`),
 			process.exit(1)

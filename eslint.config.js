@@ -1325,13 +1325,13 @@ const TS_RULES = {
 		"error"
 	],
 	"@typescript-eslint/consistent-type-definitions": [
-		"warn"
+		"off"
 	],
 	"@typescript-eslint/consistent-type-exports": [
 		"off"
 	],
 	"@typescript-eslint/consistent-type-imports": [
-		"error"
+		"off"
 	],
 	"@typescript-eslint/explicit-function-return-type": [
 		"off"
@@ -1348,7 +1348,7 @@ const TS_RULES = {
 	"@typescript-eslint/naming-convention": [
 		"off"
 	],
-  	"@typescript-eslint/no-array-constructor": [
+	"@typescript-eslint/no-array-constructor": [
 		"error"
 	],
 	"@typescript-eslint/no-confusing-non-null-assertion": [
@@ -1562,6 +1562,49 @@ export default defineConfig([
 			...TS_RULES
 		},
 		// 플러그인별 커스텀 설정 자리
+		"settings": {}
+	},
+
+	// 2. node-cjs --------------------------------------------------------------
+	{
+		// 설정 블록 이름
+		"name": "node-cjs",
+		// 대상 파일: CJS (Node.js CommonJS 스크립트)
+		"files": [
+			...COMMON_CJS_FILES
+		],
+		// 언어 옵션: CommonJS 환경
+		"languageOptions": {
+			"ecmaVersion": "latest",
+			"sourceType": "commonjs",
+			"parserOptions": {
+				"ecmaVersion": "latest",
+				"sourceType": "commonjs",
+				"ecmaFeatures": {
+					"jsx": false
+				}
+			},
+			"globals": {
+				...globals.es2024,
+				...globals.node,
+				"APP_ENV": "readonly",
+				"APP_VERSION": "readonly",
+				"DEBUG": "readonly"
+			}
+		},
+		// 린터 옵션 (공통 설정 적용)
+		"linterOptions": {
+			...COMMON_LINTER_OPTIONS
+		},
+		// ESLint JS 추천 규칙 상속
+		"extends": [
+			js.configs.recommended
+		],
+		// 플러그인: (TS 플러그인 미사용)
+		"plugins": {},
+		"rules": {
+			...BASE_RULES
+		},
 		"settings": {}
 	}
 ]);

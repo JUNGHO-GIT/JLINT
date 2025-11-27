@@ -6,7 +6,7 @@
   "icon": "logo.webp",
   "license": "Apache-2.0",
   "main": "./out/extension.js",
-  "version": "2.6.5",
+  "version": "2.6.6",
   "repository": {
     "type": "git",
     "url": "https://github.com/JUNGHO-GIT/JLINT.git"
@@ -137,13 +137,16 @@
     "pnpm": ">=9.0.0"
   },
   "scripts": {
-    "watch": "bun .node/swc.cjs --bun --watch",
-    "compile-server": "bun .node/swc.cjs --bun --compile --server",
-    "reset": "bun .node/reset.cjs --bun --reset",
-    "fix": "bun .node/fix.cjs --bun --fix",
+    "start-client": "bun .node/swc.cjs --bun --start --client",
+    "start-server": "bun .node/swc.cjs --bun --start --server",
+    "build-client": "bun .node/swc.cjs --bun --build --client",
+    "build-server": "bun .node/swc.cjs --bun --build --server",
     "git-fetch": "bun .node/git.cjs --bun --fetch",
     "git-push": "bun .node/git.cjs --bun --push",
-    "vsce": "bun .node/vsce.cjs --bun --package"
+    "fix": "bun .node/fix.cjs --bun --fix",
+    "reset": "bun .node/reset.cjs --bun --reset",
+    "vsce": "bun .node/vsce.cjs --bun --package",
+    "gcloud": "bun .node/gcloud.cjs --bun --deploy"
   },
   "dependencies": {
     "@prettier/plugin-xml": "3.4.2",
