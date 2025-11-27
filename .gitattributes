@@ -1,15 +1,191 @@
 # .gitattributes
 
-# text
 * text eol=crlf
-
-# linguist-detectable
 * linguist-detectable=true
 
-# linguist-vendored
-**/libs/** linguist-detectable=false
-**/fonts/** linguist-detectable=false
-**/image/** linguist-detectable=false
-**/node_modules/** linguist-detectable=false
-**/vendor/** linguist-detectable=false
-**/.node/** linguist-detectable=false
+# ==================================================================================================
+# Directories ======================================================================================
+# ==================================================================================================
+
+build/** linguist-detectable=false
+.build/** linguist-detectable=false
+bundle/** linguist-detectable=false
+.bundle/** linguist-detectable=false
+vendor/** linguist-detectable=false
+.vendor/** linguist-detectable=false
+debug/** linguist-detectable=false
+.debug/** linguist-detectable=false
+dist/** linguist-detectable=false
+.dist/** linguist-detectable=false
+coverage/** linguist-detectable=false
+.coverage/** linguist-detectable=false
+out/** linguist-detectable=false
+.out/** linguist-detectable=false
+temp/** linguist-detectable=false
+.temp/** linguist-detectable=false
+target/** linguist-detectable=false
+.target/** linguist-detectable=false
+gradle/** linguist-detectable=false
+.gradle/** linguist-detectable=false
+bin/** linguist-detectable=false
+.bin/** linguist-detectable=false
+gen/** linguist-detectable=false
+.gen/** linguist-detectable=false
+.git/** linguist-detectable=false
+node_modules/** linguist-detectable=false
+META-INF/** linguist-detectable=false
+.META-INF/** linguist-detectable=false
+
+# 3. project directories
+admin/** linguist-detectable=false
+public/** linguist-detectable=false
+private/** linguist-detectable=false
+auth/** linguist-detectable=false
+
+# 4. ide & temp directories
+.vscode/** linguist-detectable=false
+.idea/** linguist-detectable=false
+.tmp/** linguist-detectable=false
+.cache/** linguist-detectable=false
+.nyc_output/** linguist-detectable=false
+.grunt/** linguist-detectable=false
+.gulp/** linguist-detectable=false
+.parcel-cache/** linguist-detectable=false
+.history/** linguist-detectable=false
+.bookmark/** linguist-detectable=false
+.backup/** linguist-detectable=false
+.etc/** linguist-detectable=false
+.node/** linguist-detectable=false
+.cxx/** linguist-detectable=false
+
+# ==================================================================================================
+# Files ============================================================================================
+# ==================================================================================================
+
+# 1. os-specific files
+*.swp linguist-detectable=false
+*.swo linguist-detectable=false
+*.DS_Store linguist-detectable=false
+*Thumbs.db linguist-detectable=false
+*Gemfile linguist-detectable=false
+
+# 2. log files
+*.log linguist-detectable=false
+npm-debug.log linguist-detectable=false
+yarn-debug.log linguist-detectable=false
+yarn-error.log linguist-detectable=false
+
+# 3. env files
+*.env linguist-detectable=false
+*.env.* linguist-detectable=false
+*.properties linguist-detectable=false
+*.properties.* linguist-detectable=false
+*.classpath linguist-detectable=false
+*.classpath.* linguist-detectable=false
+*.props linguist-detectable=false
+*.props.* linguist-detectable=false
+*.project linguist-detectable=false
+*.project.* linguist-detectable=false
+*.settings linguist-detectable=false
+*.settings.* linguist-detectable=false
+*.keystore linguist-detectable=false
+*.keystore.* linguist-detectable=false
+app.json linguist-detectable=false
+app.json.* linguist-detectable=false
+gradlew linguist-detectable=false
+gradlew.* linguist-detectable=false
+gradlew.bat linguist-detectable=false
+gradlew.bat.* linguist-detectable=false
+settings.gradle linguist-detectable=false
+settings.gradle.* linguist-detectable=false
+build.gradle linguist-detectable=false
+.build.gradle linguist-detectable=false
+
+# 4. temporary files
+*.tmp linguist-detectable=false
+*.tmp.* linguist-detectable=false
+*.bak linguist-detectable=false
+*.bak.* linguist-detectable=false
+*.backup linguist-detectable=false
+*.backup.* linguist-detectable=false
+*.orig linguist-detectable=false
+*.orig.* linguist-detectable=false
+*.rej linguist-detectable=false
+*.rej.* linguist-detectable=false
+
+# 6. package manager lock files
+package-lock.json linguist-detectable=false
+package-lock.json.* linguist-detectable=false
+yarn.lock linguist-detectable=false
+yarn.lock.* linguist-detectable=false
+
+# 7. config files
+tsconfig.json linguist-detectable=false
+tsconfig.json.* linguist-detectable=false
+tsconfig.paths.json linguist-detectable=false
+tsconfig.paths.json.* linguist-detectable=false
+tsconfig.default.json linguist-detectable=false
+tsconfig.default.json.* linguist-detectable=false
+tsconfig.regular.json linguist-detectable=false
+tsconfig.regular.json.* linguist-detectable=false
+jsconfig.json linguist-detectable=false
+jsconfig.json.* linguist-detectable=false
+jsconfig.paths.json linguist-detectable=false
+jsconfig.paths.json.* linguist-detectable=false
+jsconfig.default.json linguist-detectable=false
+jsconfig.default.json.* linguist-detectable=false
+jsconfig.regular.json linguist-detectable=false
+jsconfig.regular.json.* linguist-detectable=false
+metro.config.js linguist-detectable=false
+metro.config.* linguist-detectable=false
+jest.config.js linguist-detectable=false
+jest.config.* linguist-detectable=false
+babel.config.js linguist-detectable=false
+babel.config.* linguist-detectable=false
+.watchmanconfig linguist-detectable=false
+.watchmanconfig.* linguist-detectable=false
+.prettierrc linguist-detectable=false
+.prettierrc.* linguist-detectable=false
+.prettierignore linguist-detectable=false
+.prettierignore.* linguist-detectable=false
+.prettierrc.js linguist-detectable=false
+.prettierrc.js.* linguist-detectable=false
+.eslintrc linguist-detectable=false
+.eslintrc.* linguist-detectable=false
+.eslintignore linguist-detectable=false
+.eslintignore.* linguist-detectable=false
+.eslintrc.js linguist-detectable=false
+.eslintrc.js.* linguist-detectable=false
+.stylelintrc linguist-detectable=false
+.stylelintrc.* linguist-detectable=false
+.stylelintignore linguist-detectable=false
+.swcrc linguist-detectable=false
+.swcrc.* linguist-detectable=false
+
+# 8. etc files
+push.cjs linguist-detectable=false
+push.cjs.* linguist-detectable=false
+push.sh linguist-detectable=false
+push.sh.* linguist-detectable=false
+fetch.cjs linguist-detectable=false
+fetch.cjs.* linguist-detectable=false
+fetch.sh linguist-detectable=false
+fetch.sh.* linguist-detectable=false
+pull.cjs linguist-detectable=false
+pull.cjs linguist-detectable=false
+pull.sh linguist-detectable=false
+pull.sh.* linguist-detectable=false
+merge.cjs linguist-detectable=false
+merge.cjs.* linguist-detectable=false
+merge.sh linguist-detectable=false
+merge.sh.* linguist-detectable=false
+gcloud.cjs linguist-detectable=false
+gcloud.cjs.* linguist-detectable=false
+gcloud.sh linguist-detectable=false
+gcloud.sh.* linguist-detectable=false
+.gitignore.public linguist-detectable=false
+.gitignore.public.* linguist-detectable=false
+.gitignore.private linguist-detectable=false
+.gitignore.private.* linguist-detectable=false
+*.vsix linguist-detectable=false
+*.vsix.* linguist-detectable=false
