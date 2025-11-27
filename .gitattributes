@@ -6,6 +6,8 @@
 *.json.* linguist-vendored=true
 *.json linguist-generated=true
 *.json.* linguist-generated=true
+*.json binary
+*.json.* binary
 
 # ==================================================================================================
 # Directories ======================================================================================
