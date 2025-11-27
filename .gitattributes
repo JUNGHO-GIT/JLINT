@@ -1,7 +1,6 @@
 # .gitattributes
 
 * text eol=crlf
-* linguist-detectable=true
 *.json linguist-vendored=true
 *.json.* linguist-vendored=true
 *.json linguist-generated=true
@@ -41,12 +40,6 @@ gen/** linguist-vendored=true
 node_modules/** linguist-vendored=true
 META-INF/** linguist-vendored=true
 .META-INF/** linguist-vendored=true
-
-# 3. project directories
-admin/** linguist-vendored=true
-public/** linguist-vendored=true
-private/** linguist-vendored=true
-auth/** linguist-vendored=true
 
 # 4. ide & temp directories
 .vscode/** linguist-vendored=true
