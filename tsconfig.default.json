@@ -1,0 +1,157 @@
+{
+  "$schema": "https://www.schemastore.org/tsconfig",
+  "extends": "./tsconfig.paths.json",
+  "compilerOptions": {
+
+    /** in tsconfig.paths.json ********************************************************************/
+    "baseUrl": "",
+    "paths": {},
+    "rootDir": "",
+    "rootDirs": [],
+		"out": "",
+    "outDir": "",
+    "outFile": "",
+    "sourceRoot": "",
+    "mapRoot": "",
+    "declarationRoot": "",
+    "typeRoots": [],
+    "types": [],
+    "include": [],
+    "exclude": [],
+
+		"charset": "utf-8",
+		"listFilesOnly": false,
+		"declarationDir": "",
+		"erasableSyntaxOnly": false,
+		"customConditions": [],
+		"fallbackPolling": "fixedPollingInterval",
+		"libReplacement": true,
+		"moduleSuffixes": [],
+		"rewriteRelativeImportExtensions": false,
+    "allowJs": true,
+    "checkJs": true,
+    "composite": true,
+    "incremental": true,
+    "pretty": true,
+    "diagnostics": false,
+    "sourceMap": true,
+    "plugins": [],
+    "removeComments": false,
+    "newLine": "lf",
+    "assumeChangesOnlyAffectDirectDependencies": false,
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
+    "downlevelIteration": true,
+    "traceResolution": false,
+    "extendedDiagnostics": false,
+    "exactOptionalPropertyTypes": false,
+    "inlineSourceMap": false,
+    "inlineSources": false,
+    "isolatedDeclarations": false,
+    "stripInternal": false,
+    "keyofStringsOnly": false,
+    "maxNodeModuleJsDepth": 0,
+    "listFiles": false,
+    "listEmittedFiles": false,
+    "suppressExcessPropertyErrors": false,
+    "suppressImplicitAnyIndexErrors": false,
+    "generateCpuProfile": "profile.cpuprofile",
+    "tsBuildInfoFile": ".tsbuildinfo",
+    "declaration": true,
+    "declarationMap": true,
+
+    /** module ************************************************************************************/
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "esModuleInterop": true,
+    "isolatedModules": false,
+    "moduleDetection": "auto",
+    "verbatimModuleSyntax": false,
+
+    /** react *************************************************************************************/
+    "jsx": "react-jsx",
+    "jsxFactory": "React.createElement",
+    "jsxFragmentFactory": "React.Fragment",
+    "jsxImportSource": "react",
+    "reactNamespace": "React",
+
+    /** resolve ***********************************************************************************/
+    "resolveJsonModule": true,
+    "resolvePackageJsonExports": false,
+    "resolvePackageJsonImports": false,
+
+    /** skip **************************************************************************************/
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": false,
+
+    /** no ****************************************************************************************/
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noImplicitReturns": false,
+    "noFallthroughCasesInSwitch": false,
+    "noEmit": true,
+    "noEmitOnError": true,
+    "noLib": false,
+    "noResolve": false,
+    "noCheck": false,
+    "noImplicitOverride": false,
+    "noEmitHelpers": false,
+    "noErrorTruncation": false,
+    "noImplicitUseStrict": false,
+    "noPropertyAccessFromIndexSignature": false,
+    "noUncheckedIndexedAccess": false,
+    "noUncheckedSideEffectImports": false,
+    "noStrictGenericChecks": false,
+
+    /** disable ***********************************************************************************/
+    "disableReferencedProjectLoad": false,
+    "disableSolutionSearching": false,
+    "disableSourceOfProjectReferenceRedirect": false,
+    "disableSizeLimit": false,
+
+    /** preserve **********************************************************************************/
+    "preserveValueImports": false,
+    "preserveSymlinks": true,
+    "preserveConstEnums": false,
+    "preserveWatchOutput": false,
+
+    /** emit **************************************************************************************/
+    "emitBOM": false,
+    "emitDeclarationOnly": false,
+    "emitDecoratorMetadata": true,
+
+    /** allow *************************************************************************************/
+    "alwaysStrict": true,
+    "allowImportingTsExtensions": true,
+    "allowUmdGlobalAccess": false,
+    "allowSyntheticDefaultImports": true,
+    "allowArbitraryExtensions": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+
+    /** strict ************************************************************************************/
+    "strict": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "strictBuiltinIteratorReturn": false,
+
+    /** use ***************************************************************************************/
+    "useDefineForClassFields": true,
+    "useUnknownInCatchVariables": true,
+
+    /** import ************************************************************************************/
+    "importHelpers": true,
+    "importsNotUsedAsValues": "remove",
+
+    /** watch *************************************************************************************/
+    "watch": true,
+    "watchFile": "useFsEvents",
+    "watchDirectory": "useFsEvents",
+  }
+}
