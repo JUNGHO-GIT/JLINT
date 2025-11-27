@@ -3,6 +3,9 @@
 * text eol=crlf
 * linguist-detectable=true
 *.json linguist-vendored=true
+*.json.* linguist-vendored=true
+*.json linguist-generated=true
+*.json.* linguist-generated=true
 
 # ==================================================================================================
 # Directories ======================================================================================
