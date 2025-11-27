@@ -103,6 +103,20 @@ const checkRemoteExists = (remoteName = ``) => {
 	}
 };
 
+// git cache 초기화 -----------------------------------------------------------------------------
+const clearGitCache = () => {
+	try {
+		logger(`info`, `Git 캐시 초기화 시작`);
+		execSync(`git rm -r -f --cached .`, { stdio: 'inherit' });
+		logger(`success`, `Git 캐시 초기화 완료`);
+	}
+	catch (e) {
+		const msg = e instanceof Error ? e.message : String(e);
+		logger(`error`, `Git 캐시 초기화 실패: ${msg}`);
+		throw e;
+	}
+};
+
 // git fetch ------------------------------------------------------------------
 const gitFetch = () => {
 	try {
@@ -156,9 +170,9 @@ const gitPush = (remoteName = ``, ignoreFilePath = ``, winOrLinux = ``) => {
 			const ignoreContent = fs.readFileSync(ignoreFilePath, 'utf8');
 
 			logger(`info`, `.gitignore 파일 수정 적용: ${ignoreFilePath}`);
-
 			fs.writeFileSync(`.gitignore`, ignoreContent, 'utf8');
-			execSync(`git rm -r -f --cached .`, { stdio: 'inherit' });
+
+			clearGitCache();
 			execSync(`git add .`, { stdio: 'inherit' });
 
 			const statusOutput = execSync(`git status --porcelain`, { encoding: 'utf8' }).trim();
