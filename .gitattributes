@@ -1,12 +1,8 @@
 # .gitattributes
 
 * text eol=crlf
-*.json linguist-vendored=true
-*.json.* linguist-vendored=true
-*.json linguist-generated=true
-*.json.* linguist-generated=true
-*.json binary
-*.json.* binary
+*.json linguist-vendored linguist-generated
+*.json.* linguist-vendored linguist-generated
 
 # ==================================================================================================
 # Directories ======================================================================================
