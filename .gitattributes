@@ -1,1 +1,15 @@
-* text=auto eol=crlf
+# .gitattributes
+
+# text
+* text eol=crlf
+
+# linguist-detectable
+* linguist-detectable=true
+
+# linguist-vendored
+**/libs/** linguist-detectable=false
+**/fonts/** linguist-detectable=false
+**/image/** linguist-detectable=false
+**/node_modules/** linguist-detectable=false
+**/vendor/** linguist-detectable=false
+**/.node/** linguist-detectable=false
