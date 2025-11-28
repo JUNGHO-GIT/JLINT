@@ -16,7 +16,6 @@ export const main = async (
 ) => {
   logger(
     "info",
-    "main",
     `activateLint: ${commonParam.activateLint}\nremoveComments: ${commonParam.removeComments}\ninsertLine: ${commonParam.insertLine}\ntabSize: ${commonParam.tabSize}\nquoteType: ${commonParam.quoteType}\nfileName: ${fileName}\nfileExt: ${fileExt}\nfileTabSize: ${fileTabSize}\nfileEol: ${fileEol}`
   );
 

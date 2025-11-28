@@ -14,7 +14,8 @@
     "@prettier/plugin-xml",
     "@xml-tools/parser",
     "sql-formatter",
-    "java-parser"
+    "java-parser",
+    "chevrotain"
   ],
   "esbuildOptions": {
     "tree-shaking": true,

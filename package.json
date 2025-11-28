@@ -6,7 +6,7 @@
   "icon": "logo.webp",
   "license": "Apache-2.0",
   "main": "./out/extension.js",
-  "version": "2.7.9",
+  "version": "2.8.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/JUNGHO-GIT/JLINT.git"
@@ -145,8 +145,7 @@
     "git-push": "bun .node/git.cjs --bun --push",
     "fix": "bun .node/fix.cjs --bun --fix",
     "reset": "bun .node/reset.cjs --bun --reset",
-    "vsce": "bun .node/vsce.cjs --bun --package",
-    "gcloud": "bun .node/gcloud.cjs --bun --deploy"
+    "vsce": "bun .node/vsce.cjs --bun --package"
   },
   "dependencies": {
     "@prettier/plugin-xml": "3.4.2",
@@ -160,7 +159,7 @@
     "lodash": "4.17.21",
     "minimatch": "10.1.1",
     "postcss": "8.5.6",
-    "prettier": "3.7.1",
+    "prettier": "3.6.2",
     "prettier-plugin-java": "2.7.7",
     "prettier-plugin-jsp": "1.0.13",
     "sql-formatter": "15.6.10",

@@ -76,7 +76,12 @@ const getAllDependencies = (pkgName, nmSrc, vis = new Set()) => {
 		new Set()
 	) : (() => {
 		vis.add(pkgName);
-		const pkgJsonPath = path.join(nmSrc, pkgName, `package.json`);
+		const pkgPath = pkgName.startsWith(`@`) ? (
+			path.join(nmSrc, pkgName)
+		) : (
+			path.join(nmSrc, pkgName)
+		);
+		const pkgJsonPath = path.join(pkgPath, `package.json`);
 		const noPath = !fs.existsSync(pkgJsonPath);
 		const res = noPath ? (
 			vis
@@ -96,50 +101,24 @@ const getAllDependencies = (pkgName, nmSrc, vis = new Set()) => {
 	return result;
 };
 
-// 패키지 복사 및 중첩 의존성 처리 -------------------------------------------------------------
+// 패키지를 flat 구조로 복사 (중복 제거) --------------------------------------------------------
 // @ts-ignore
-const copyPackageWithNestedDeps = (pkgPath, tgtRoot, nmSrc, vis = new Set()) => {
-	const pkgName = path.basename(pkgPath);
-	const scopedPar = path.basename(path.dirname(pkgPath));
-	const fullName = scopedPar.startsWith(`@`) ? `${scopedPar}/${pkgName}` : pkgName;
-
-	const hasVis = vis.has(fullName);
+const copyPackageFlat = (pkgName, nmSrc, nmTgt, vis = new Set()) => {
+	const hasVis = vis.has(pkgName);
 	hasVis ? (
 		null
 	) : (() => {
-		vis.add(fullName);
-		const dest = path.join(tgtRoot, fullName);
+		vis.add(pkgName);
+		const src = path.join(nmSrc, pkgName);
+		const dest = path.join(nmTgt, pkgName);
+		const hasSrc = fs.existsSync(src);
 
-		const hasPath = fs.existsSync(pkgPath);
-		hasPath && (() => {
-			const realPath = fs.realpathSync(pkgPath);
+		hasSrc && (() => {
+			const destDir = path.dirname(dest);
+			!fs.existsSync(destDir) && fs.mkdirSync(destDir, { recursive: true });
+			const realPath = fs.realpathSync(src);
 			fs.cpSync(realPath, dest, { recursive: true, force: true, dereference: true });
-			logger(`info`, `복사: ${fullName}`);
-		})();
-
-		const pkgJsonPath = path.join(pkgPath, `package.json`);
-		const hasJson = fs.existsSync(pkgJsonPath);
-		hasJson && (() => {
-			const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, `utf8`));
-			const deps = pkgJson.dependencies || {};
-
-			const hasDeps = Object.keys(deps).length;
-			hasDeps && (() => {
-				const destNm = path.join(dest, `node_modules`);
-				const noDestNm = !fs.existsSync(destNm);
-				noDestNm && fs.mkdirSync(destNm, { recursive: true });
-
-				Object.keys(deps).forEach(depName => {
-					const depSrc = path.join(nmSrc, depName);
-					const hasSrc = fs.existsSync(depSrc);
-					const notVis = !vis.has(depName);
-					const shouldCp = hasSrc && notVis;
-					shouldCp && (
-						logger(`info`, `  중첩: ${fullName} → ${depName}`),
-						copyPackageWithNestedDeps(depSrc, destNm, nmSrc, vis)
-					);
-				});
-			})();
+			logger(`info`, `복사: ${pkgName}`);
 		})();
 	})();
 };
@@ -165,8 +144,7 @@ const copyPackages = (cfg) => {
 
 			const vis = new Set();
 			allPkgs.forEach(pkg => {
-				const src = path.join(nmSrc, pkg);
-				copyPackageWithNestedDeps(src, nmTgt, nmSrc, vis);
+				copyPackageFlat(pkg, nmSrc, nmTgt, vis);
 			});
 
 			logger(`success`, `패키지 복사 완료 (총 ${vis.size}개)`);
