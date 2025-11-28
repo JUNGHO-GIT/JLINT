@@ -3,15 +3,7 @@
 import { lodash, strip, getPrettier, getPrettierPluginJava } from "@exportLibs";
 import type { PrettierOptions, StripOptions } from "@exportLibs";
 import { logger, notify } from "@exportScripts";
-
-// -------------------------------------------------------------------------------------------------
-declare type ConfProps = {
-	activateLint: boolean,
-	removeComments: boolean,
-	insertLine: boolean,
-	tabSize: number,
-	quoteType: string;
-};
+import { CommonType } from "@exportTypes";
 
 // 0. removeComments -------------------------------------------------------------------------------
 export const removeComments = async (
@@ -49,7 +41,7 @@ export const removeComments = async (
 
 // 1. prettierFormat -------------------------------------------------------------------------------
 export const prettierFormat = async (
-	confParam: ConfProps,
+	commonParam: CommonType,
 	contentsParam: string,
 	fileName: string,
 	fileTabSize: number,
@@ -75,12 +67,12 @@ export const prettierFormat = async (
 		const baseOptions: PrettierOptions = {
 			parser: parser,
 			plugins: plugin ? [plugin] : [],
-			singleQuote: confParam.quoteType === "single",
+			singleQuote: commonParam.quoteType === "single",
 			printWidth: 1000,
-			tabWidth: confParam.tabSize,
+			tabWidth: commonParam.tabSize,
 			useTabs: true,
 			quoteProps: "as-needed",
-			jsxSingleQuote: confParam.quoteType === "single",
+			jsxSingleQuote: commonParam.quoteType === "single",
 			trailingComma: "all",
 			bracketSpacing: false,
 			jsxBracketSameLine: false,
@@ -104,16 +96,16 @@ export const prettierFormat = async (
 		const formatterAvailable = prettier && plugin && typeof prettier.format === "function";
 		logger(formatterAvailable ? "debug" : "warn", `${fileExt}:prettierFormat - ${formatterAvailable ? "formatter:ready" : "formatter:missing"}`);
 		const finalResult = formatterAvailable
-			? await (async () => {
-				logger("debug", `${fileExt}:prettierFormat - format:start`);
-				const formatted = await prettier.format(contentsParam, baseOptions);
-				logger("debug", `${fileExt}:prettierFormat - format:success`);
-				return formatted;
-			})()
-			: (() => {
-				logger("warn", `${fileExt}:prettierFormat - format:skipped`);
-				return contentsParam;
-			})();
+		? await (async () => {
+			logger("debug", `${fileExt}:prettierFormat - format:start`);
+			const formatted = await prettier.format(contentsParam, baseOptions);
+			logger("debug", `${fileExt}:prettierFormat - format:success`);
+			return formatted;
+		})()
+		: (() => {
+			logger("warn", `${fileExt}:prettierFormat - format:skipped`);
+			return contentsParam;
+		})();
 		logger("debug", `${fileExt}:prettierFormat - end`);
 		return finalResult;
 	}

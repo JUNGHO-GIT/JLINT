@@ -1,6 +1,6 @@
 # .gitattributes
 
-* text eol=crlf
+* text eol=lf
 *.json linguist-vendored linguist-generated
 *.json.* linguist-vendored linguist-generated
 

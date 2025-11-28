@@ -2,20 +2,12 @@
 
 import { capitalize, singleTags, semicolon, ifElse, tryCatch } from "@exportRules";
 import { logger, notify } from "@exportScripts";
+import { CommonType } from "@exportTypes";
 import * as Langs from "@exportLangs";
 
 // -------------------------------------------------------------------------------------------------
-declare type ConfProps = {
-  activateLint: boolean,
-  removeComments: boolean,
-  insertLine: boolean,
-  tabSize: number,
-  quoteType: string
-};
-
-// -------------------------------------------------------------------------------------------------
 export const getLanguage = async (
-  confParam: ConfProps,
+  commonParam: CommonType,
   initContents: string,
   fileName: string,
   fileTabSize: number,
@@ -23,7 +15,7 @@ export const getLanguage = async (
 	fileExt: string
 ) => {
 
-  // 동적으로 언어별 규칙 모듈 import (html -> Html)
+	// 동적으로 언어별 규칙 모듈 import (html -> Html)
 	const langStr = (
 		(fileExt === "css" || fileExt === "scss") ? "Css" :
 		(fileExt === "html" || fileExt === "htm") ? "Html" :
@@ -54,16 +46,16 @@ export const getLanguage = async (
 	const langFactory = (Langs as any)[langStr as string];
 	const langRules = (typeof langFactory === "function") ? langFactory() : langFactory;
 
-  if (!confParam.activateLint) {
+  if (!commonParam.activateLint) {
 		return resultContents;
 	}
-	confParam.removeComments && (
+	commonParam.removeComments && (
 		resultContents = await langRules.removeComments(resultContents, fileTabSize, fileEol, fileExt)
 	);
-	confParam.activateLint && (
-		resultContents = await langRules.prettierFormat(confParam, resultContents, fileName, fileTabSize, fileEol, fileExt)
+	commonParam.activateLint && (
+		resultContents = await langRules.prettierFormat(commonParam, resultContents, fileName, fileTabSize, fileEol, fileExt)
 	);
-	confParam.insertLine && (
+	commonParam.insertLine && (
 		resultContents = await langRules.insertLine(resultContents, fileExt)
 	);
 	resultContents = await langRules.insertSpace(resultContents, fileExt);
@@ -75,13 +67,13 @@ export const getLanguage = async (
 
 // -------------------------------------------------------------------------------------------------
 export const getSyntax = async (
-  confParam: ConfProps,
+  commonParam: CommonType,
   afterLanguageContents: string,
   fileExt: string
 ) => {
 
   let resultContents = afterLanguageContents;
-  if (!confParam.activateLint) {
+  if (!commonParam.activateLint) {
 		return resultContents;
 	}
 	resultContents = await capitalize(resultContents, fileExt);
@@ -96,13 +88,13 @@ export const getSyntax = async (
 
 // -------------------------------------------------------------------------------------------------
 export const getLogic = async (
-  confParam: ConfProps,
+  commonParam: CommonType,
   afterSyntaxContents: string,
   fileExt: string
 ) => {
 
   let resultContents = afterSyntaxContents;
-  if (!confParam.activateLint) {
+  if (!commonParam.activateLint) {
 		return resultContents;
 	}
 	resultContents = await ifElse(resultContents, fileExt);

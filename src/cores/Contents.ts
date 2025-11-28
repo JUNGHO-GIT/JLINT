@@ -1,6 +1,6 @@
 // Contents.ts
 
-import { vscode } from "@exportLibs";
+import { TextDecoder, vscode } from "@exportLibs";
 import { logger } from "@exportScripts";
 
 // -------------------------------------------------------------------------------------------------
@@ -21,7 +21,7 @@ export const getContents = async (
 		.map((line: string) => {
 			return line.trimEnd();
 		})
-		.filter((line: string, idx, arr) => {
+		.filter((line: string, idx: number, arr: string[]) => {
 			const prev = arr[idx - 1] || "";
 			return !(line === "" && prev === "");
 		})

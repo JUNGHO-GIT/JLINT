@@ -3,15 +3,7 @@
 import { lodash, strip, getPrettier, getPrettierPluginXml } from "@exportLibs";
 import type { PrettierOptions, StripOptions } from "@exportLibs";
 import { logger, notify } from "@exportScripts";
-
-// -------------------------------------------------------------------------------------------------
-declare type ConfProps = {
-  activateLint: boolean,
-  removeComments: boolean,
-  insertLine: boolean,
-  tabSize: number,
-  quoteType: string
-};
+import { CommonType } from "@exportTypes";
 
 // 0. removeComments -------------------------------------------------------------------------------
 export const removeComments = async (
@@ -49,7 +41,7 @@ export const removeComments = async (
 
 // 1. prettierFormat -------------------------------------------------------------------------------
 export const prettierFormat = async (
-  confParam: ConfProps,
+  commonParam: CommonType,
   contentsParam: string,
   fileName: string,
   fileTabSize: number,
@@ -75,12 +67,12 @@ export const prettierFormat = async (
 		const baseOptions: PrettierOptions = {
 			parser: parser,
 			plugins: plugin ? [plugin] : [],
-      singleQuote: confParam.quoteType === "single",
+      singleQuote: commonParam.quoteType === "single",
       printWidth: 1000,
-      tabWidth: confParam.tabSize,
+      tabWidth: commonParam.tabSize,
       useTabs: true,
       quoteProps: "as-needed",
-      jsxSingleQuote: confParam.quoteType === "single",
+      jsxSingleQuote: commonParam.quoteType === "single",
       trailingComma: "all",
       bracketSpacing: false,
       jsxBracketSameLine: false,

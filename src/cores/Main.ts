@@ -3,19 +3,11 @@
 import { fs } from "@exportLibs";
 import { getContents, getLanguage, getSyntax, getLogic } from "@exportCores";
 import { logger } from "@exportScripts";
-
-// -------------------------------------------------------------------------------------------------
-declare type ConfProps = {
-  activateLint: boolean,
-  removeComments: boolean,
-  insertLine: boolean,
-  tabSize: number,
-  quoteType: string
-};
+import { CommonType } from "@exportTypes";
 
 // -------------------------------------------------------------------------------------------------
 export const main = async (
-  confParam: ConfProps,
+  commonParam: CommonType,
   filePath: string,
   fileName: string,
   fileTabSize: number,
@@ -25,13 +17,13 @@ export const main = async (
   logger(
     "info",
     "main",
-    `activateLint: ${confParam.activateLint}\nremoveComments: ${confParam.removeComments}\ninsertLine: ${confParam.insertLine}\ntabSize: ${confParam.tabSize}\nquoteType: ${confParam.quoteType}\nfileName: ${fileName}\nfileExt: ${fileExt}\nfileTabSize: ${fileTabSize}\nfileEol: ${fileEol}`
+    `activateLint: ${commonParam.activateLint}\nremoveComments: ${commonParam.removeComments}\ninsertLine: ${commonParam.insertLine}\ntabSize: ${commonParam.tabSize}\nquoteType: ${commonParam.quoteType}\nfileName: ${fileName}\nfileExt: ${fileExt}\nfileTabSize: ${fileTabSize}\nfileEol: ${fileEol}`
   );
 
   let finalContents = await getContents(filePath, fileTabSize, fileEol, fileExt);
-  finalContents = await getLanguage(confParam, finalContents, fileName, fileTabSize, fileEol, fileExt);
-  finalContents = await getSyntax(confParam, finalContents, fileExt);
-  finalContents = await getLogic(confParam, finalContents, fileExt);
+  finalContents = await getLanguage(commonParam, finalContents, fileName, fileTabSize, fileEol, fileExt);
+  finalContents = await getSyntax(commonParam, finalContents, fileExt);
+  finalContents = await getLogic(commonParam, finalContents, fileExt);
 
   fs.writeFileSync(filePath, finalContents, 'utf8');
 };

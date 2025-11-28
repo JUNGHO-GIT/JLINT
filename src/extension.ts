@@ -52,11 +52,12 @@ export const activate = (context: vscode.ExtensionContext) => {
         fileEol,
         fileExt,
       );
+
       notify("info", `Linting Completed - "${fileName}"`);
     });
-    context.subscriptions.push(command);
 
     // 3. Listen for configuration changes -----------------------------------------------------------
+    context.subscriptions.push(command);
     context.subscriptions.push(
       vscode.workspace.onDidChangeConfiguration((event: vscode.ConfigurationChangeEvent) => {
         if (event.affectsConfiguration("Jlint")) {

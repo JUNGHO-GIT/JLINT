@@ -3,15 +3,7 @@
 import { getSqlFormatter } from "@exportLibs";
 import type { FormatOptionsWithLanguage } from "@exportLibs";
 import { logger, notify } from "@exportScripts";
-
-// -------------------------------------------------------------------------------------------------
-declare type ConfProps = {
-  activateLint: boolean,
-  removeComments: boolean,
-  insertLine: boolean,
-  tabSize: number,
-  quoteType: string
-};
+import { CommonType } from "@exportTypes";
 
 // 0. removeComments -------------------------------------------------------------------------------
 export const removeComments = async (
@@ -41,7 +33,7 @@ export const removeComments = async (
 
 // 1. prettierFormat -------------------------------------------------------------------------------
 export const prettierFormat = async (
-  confParam: ConfProps,
+  commonParam: CommonType,
   contentsParam: string,
   fileName: string,
   fileTabSize: number,
@@ -63,7 +55,7 @@ export const prettierFormat = async (
 		// 3. options
     const baseOptions: FormatOptionsWithLanguage = {
       language: parser,
-      tabWidth: confParam.tabSize,
+      tabWidth: commonParam.tabSize,
       useTabs: true,
       keywordCase: "upper",
       dataTypeCase: "upper",

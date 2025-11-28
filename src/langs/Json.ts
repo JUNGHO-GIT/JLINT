@@ -3,15 +3,7 @@
 import { stripJsonComments, getPrettier } from "@exportLibs";
 import type { PrettierOptions, StripJsonOptions } from "@exportLibs";
 import { logger, notify } from "@exportScripts";
-
-// -------------------------------------------------------------------------------------------------
-declare type ConfProps = {
-  activateLint: boolean,
-  removeComments: boolean,
-  insertLine: boolean,
-  tabSize: number,
-  quoteType: string
-};
+import { CommonType } from "@exportTypes";
 
 // 0. removeComments -------------------------------------------------------------------------------
 export const removeComments = async (
@@ -46,7 +38,7 @@ export const removeComments = async (
 
 // 1. prettierFormat -------------------------------------------------------------------------------
 export const prettierFormat = async (
-  confParam: ConfProps,
+  commonParam: CommonType,
   contentsParam: string,
   fileName: string,
   fileTabSize: number,
@@ -68,12 +60,12 @@ export const prettierFormat = async (
 		// 3. options
     const baseOptions: PrettierOptions = {
       parser: parser,
-      singleQuote: confParam.quoteType === "single",
+      singleQuote: commonParam.quoteType === "single",
       printWidth: 1000,
-      tabWidth: confParam.tabSize,
+      tabWidth: commonParam.tabSize,
       useTabs: true,
       quoteProps: "as-needed",
-      jsxSingleQuote: confParam.quoteType === "single",
+      jsxSingleQuote: commonParam.quoteType === "single",
       trailingComma: "all",
       bracketSpacing: false,
       jsxBracketSameLine: false,

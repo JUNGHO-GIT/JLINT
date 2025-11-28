@@ -1,4 +1,7 @@
-// exports/ExportLangs.ts
+/**
+ * @file ExportLangs.ts
+ * @since 2025-11-28
+ */
 
 // -------------------------------------------------------------------------------
 export * as Css from "@langs/Css";

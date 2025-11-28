@@ -1,4 +1,7 @@
-// exports/ExportLibs.ts
+/**
+ * @file ExportLibs.ts
+ * @since 2025-11-28
+ */
 
 // -----------------------------------------------------------------------------------------
 import _vscode from "vscode";
