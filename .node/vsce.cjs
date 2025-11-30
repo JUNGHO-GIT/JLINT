@@ -13,23 +13,95 @@ const argv = process.argv.slice(2);
 const args1 = argv.find(arg => [`--npm`, `--pnpm`, `--yarn`, `--bun`].includes(arg))?.replace(`--`, ``) || ``;
 const args2 = argv.find(arg => [`--package`].includes(arg))?.replace(`--`, ``) || ``;
 
-// 설정 로드 -----------------------------------------------------------------------------------
-const loadConfig = () => {
-	const cfgPath = path.join(process.cwd(), `vsce.config.json`);
-	const hasCfg = fs.existsSync(cfgPath);
+// 패키지가 import.meta.url 또는 createRequire를 사용하는지 검사 --------------------------------
+const hasImportMetaUsage = (pkgPath) => {
+	const checkFile = (filePath) => {
+		try {
+			const content = fs.readFileSync(filePath, `utf8`);
+			const rs = content.includes(`import.meta.url`) || /createRequire\s*\(/.test(content);
+			return rs;
+		}
+		catch { return false; }
+	};
 
-	let result;
-	hasCfg && (result = (
-		JSON.parse(fs.readFileSync(cfgPath, `utf8`))
-	));
-	!hasCfg && (result = {
-		external: [`vscode`],
-		copyPackages: [],
-		esbuildOptions: {},
-		vsceOptions: {}
+	const checkDir = (dir, depth=0) => {
+		if (depth > 3) return false;
+		try {
+			const entries = fs.readdirSync(dir, { withFileTypes: true });
+			for (const entry of entries) {
+				const fullPath = path.join(dir, entry.name);
+				if (entry.isFile() && /\.(js|cjs|mjs)$/.test(entry.name)) {
+					if (checkFile(fullPath)) return true;
+				}
+				if (entry.isDirectory() && ![`node_modules`, `.git`].includes(entry.name)) {
+					if (checkDir(fullPath, depth + 1)) return true;
+				}
+			}
+		}
+		catch { }
+		return false;
+	};
+
+	const rs = fs.existsSync(pkgPath) && checkDir(pkgPath);
+	return rs;
+};
+
+// 설정 동적 생성 ------------------------------------------------------------------------------
+const buildConfig = () => {
+	const cwd = process.cwd();
+	const pkgJsonPath = path.join(cwd, `package.json`);
+	const nmPath = path.join(cwd, `node_modules`);
+
+	!fs.existsSync(pkgJsonPath) && (
+		logger(`error`, `package.json not found`),
+		process.exit(1)
+	);
+
+	const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, `utf8`));
+	const deps = Object.keys(pkgJson.dependencies || {});
+
+	// 1. external + copyPackages: dependencies를 분석하여 자동 감지
+	const external = [`vscode`];
+	const copyPackages = [];
+
+	deps.forEach(pkg => {
+		const pkgPath = path.join(nmPath, pkg);
+		!fs.existsSync(pkgPath) && (
+			logger(`warn`, `패키지 없음: ${pkg}`)
+		);
+		fs.existsSync(pkgPath) && (() => {
+			copyPackages.push(pkg);
+			hasImportMetaUsage(pkgPath) && (() => {
+				external.push(pkg);
+				logger(`info`, `import.meta 감지 → external 추가: ${pkg}`);
+				// 해당 패키지의 dependencies도 external에 추가
+				const subPkgJson = path.join(pkgPath, `package.json`);
+				fs.existsSync(subPkgJson) && (() => {
+					const subDeps = Object.keys(JSON.parse(fs.readFileSync(subPkgJson, `utf8`)).dependencies || {});
+					subDeps.forEach(subPkg => {
+						!external.includes(subPkg) && external.push(subPkg);
+					});
+				})();
+			})();
+		})();
 	});
 
-	return result;
+	// 2. esbuildOptions
+	const esbuildOptions = {
+		"tree-shaking": true,
+		"target": `node21`,
+		"legal-comments": `none`
+	};
+
+	// 3. vsceOptions
+	const vsceOptions = {
+		"no-dependencies": true
+	};
+
+	const cfg = { external, copyPackages, esbuildOptions, vsceOptions };
+	logger(`debug`, `동적 설정: ${JSON.stringify(cfg, null, 2)}`);
+
+	return cfg;
 };
 
 // esbuild 번들링 -----------------------------------------------------------------------------
@@ -160,7 +232,7 @@ const copyPackages = (cfg) => {
 	logger(`info`, `VSCE 패키지 빌드 시작`);
 
 	try {
-		const cfg = loadConfig();
+		const cfg = buildConfig();
 		delDir(`out`);
 		bundle(cfg);
 		copyPackages(cfg);
