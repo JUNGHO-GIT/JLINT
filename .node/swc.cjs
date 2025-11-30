@@ -5,6 +5,7 @@
 
 const { spawn } = require(`child_process`);
 const process = require(`process`);
+const path = require(`path`);
 const { logger, runCmd, validateDir, delDir, getProjectType } = require(`./utils.cjs`);
 
 // 인자 파싱 ---------------------------------------------------------------------------------
@@ -13,6 +14,15 @@ const argv = process.argv.slice(2);
 const args1 = argv.find(arg => [`--npm`, `--pnpm`, `--yarn`, `--bun`].includes(arg))?.replace(`--`, ``) ?? ``;
 const args2 = argv.find(arg => [`--watch`, `--start`, `--compile`, `--build`].includes(arg))?.replace(`--`, ``) ?? ``;
 const args3 = argv.find(arg => [`--server`, `--client`].includes(arg))?.replace(`--`, ``) ?? ``;
+
+// swcrc 파일 경로 동적 결정 -----------------------------------------------------------------
+const getSwcConfig = () => {
+	const cwd = process.cwd();
+	const configName = args3 === `client` ? `.client.swcrc` : `.server.swcrc`;
+	const configPath = path.resolve(cwd, configName);
+	const fs = require(`fs`);
+	return fs.existsSync(configPath) ? configPath : null;
+};
 
 // 패키지 매니저별 명령어 생성 헬퍼 -----------------------------------------------------------
 const getPmArgs = (baseArgs=[], options={}) => {
@@ -42,7 +52,7 @@ const runCompile = () => {
 	delDir(outDir);
 
 	const tsCfg = validateDir([`tsconfig.json`, `tsconfig.build.json`]);
-	const swcCfg = validateDir([`.swcrc`, `.swcrc.json`]);
+	const swcCfg = getSwcConfig();
 	!tsCfg && (logger(`error`, `tsconfig 파일을 찾을 수 없습니다`), process.exit(1));
 
 	const baseSwcArgs = [`swc`, `src`, `-d`, outDir, `--strip-leading-paths`];
@@ -100,7 +110,7 @@ const runWatch = () => {
 
 	const outDir = validateDir([`out`, `dist`, `build`]);
 	const tsCfg = validateDir([`tsconfig.json`, `tsconfig.build.json`]);
-	const swcCfg = validateDir([`.swcrc`, `.swcrc.json`]);
+	const swcCfg = getSwcConfig();
 	!tsCfg && (logger(`error`, `tsconfig 파일을 찾을 수 없습니다`), process.exit(1));
 
 	const swcBase = [`swc`, `src`, `-d`, outDir, `--strip-leading-paths`, `--watch`];
