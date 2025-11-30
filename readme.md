@@ -1,64 +1,55 @@
-# ✨ Jlint
+# Jlint
 
-## 📚 Multiple Language Support
+A lightweight VS Code extension for code formatting and linting.  
+Format code and detect errors with visual separation of code blocks.
 
-- `JavaScript`
-- `TypeScript`
-- `Jsx`
-- `Tsx`
-- `Java`
-- `Jsp`
-- `Html`
-- `Css`
-- `Json`
-- `Xml`
+## Key Features
 
-## 🚀 Easy to Use
+| Feature | Description |
+| :--- | :--- |
+| **Multi-Language** | JavaScript, TypeScript, JSX, TSX, Java, JSP, HTML, CSS, JSON, XML |
+| **Easy to Use** | Just `Alt+Shift+F` to format or lint |
+| **Fast & Efficient** | Built with Babel and Prettier for high performance |
+| **Visual Separation** | Comment lines to separate code blocks visually |
+| **Error Modal** | Display error messages in a clear modal popup |
 
-- Just install the extension and use the shortcut `Alt + Shift + F` to
-  format your code or check for linting errors.
+## Shortcuts
 
-## 💥 Fast and Efficient
+| Command | Windows | Mac |
+| :--- | :--- | :--- |
+| Format / Lint | `Alt+Shift+F` | `Option+Shift+F` |
 
-- Built using powerful libraries and tools such as Babel and Prettier, Jlint provides
-  high performance in code formatting and linting tasks.
+## Settings
 
-## 🔥 Visual Separation of Code Blocks
+| Setting | Default | Description |
+| :--- | :--- | :--- |
+| `ActiveLint` | `true` | Enable or disable linting |
+| `RemoveComments` | `false` | Remove comments from code |
+| `InsertLine` | `true` | Insert comment vertical line to separate blocks |
 
-- Jlint uses a visual separator to separate code blocks. This makes it easier to
-  understand the code structure and identify errors.
+## Preview
 
-- Before
+### Before
 
-  <img
-    alt="Before"
-    src="https://storage.googleapis.com/jungho-bucket/JLINT/IMAGE/main/main3.webp"
-    width="400"
-  />
+<img
+	src="https://storage.googleapis.com/jungho-bucket/JLINT/IMAGE/main/main3.webp"
+	width="450"
+/>
 
-- After
+### After
 
-  <img
-    alt="After"
-    src="https://storage.googleapis.com/jungho-bucket/JLINT/IMAGE/main/main4.webp"
-    width="400"
-  />
+<img
+	src="https://storage.googleapis.com/jungho-bucket/JLINT/IMAGE/main/main4.webp"
+	width="450"
+/>
 
-## 💡 Error Message Modal
+### Error Modal
 
-- Jlint uses a modal to display error messages. This makes it easier to identify errors.
+<img
+	src="https://storage.googleapis.com/jungho-bucket/JLINT/IMAGE/main/main5.webp"
+	width="450"
+/>
 
-  <img
-    alt="Modal"
-    src="https://storage.googleapis.com/jungho-bucket/JLINT/IMAGE/main/main5.webp"
-    width="400"
-  />
+## License
 
-## 🛠️ Customization
-
-- Customize Jlint through user settings in your code editor.
-
-- `Jlint.ActiveLint`: Enable or disable linting
-- `Jlint.RemoveComments`: Enable or disable removal of comments from your code
-- `Jlint.InsertLine`: Enable or disable insertion of a 'Comment Vertical Line' to
-  visually separate code blocks.
+[Apache License 2.0](./license.md)
