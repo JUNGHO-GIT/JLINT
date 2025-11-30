@@ -1,481 +1,272 @@
 /**
- * @file fix.cjs
+ * @file git.cjs
  * @since 2025-11-22
  */
 
+const os = require(`os`);
 const fs = require(`fs`);
-const path = require(`path`);
-const process = require(`process`);
-const { Project } = require(`ts-morph`);
-const { logger, spawnWrapper } = require(`./utils.cjs`);
+const { execSync } = require(`child_process`);
+const { logger } = require(`./utils.cjs`);
+const { CONFIG } = require(`./env.cjs`);
 
-// 인자 파싱 ------------------------------------------------------------------------------------
-const TITLE = `fix.cjs`;
+// 인자 파싱 ---------------------------------------------------------------------------------
+const TITLE = `git.cjs`;
 const argv = process.argv.slice(2);
-const args1 = argv.find(arg => [`--npm`, `--pnpm`, `--yarn`, `--bun`].includes(arg))?.replace(`--`, ``) || ``;
-const args2 = argv.find(arg => [`--fix`].includes(arg))?.replace(`--`, ``) || ``;
+const args1 = argv.find(arg => [`--npm`, `--pnpm`, `--yarn`, `--bun`].includes(arg))?.replace(`--`, ``) ?? ``;
+const args2 = argv.find(arg => [`--push`, `--fetch`].includes(arg))?.replace(`--`, ``) ?? ``;
+const osType = os.platform() === `win32` ? `win` : `linux`;
 
-// -----------------------------------------------------------------------------------------------
-const resolveTsPruneBinJs = () => {
-	logger(`info`, `ts-prune 바이너리 경로 해석 시도`);
+// 원격 기본 브랜치 감지 ----------------------------------------------------------------------
+const getRemoteDefaultBranch = (remoteName=``) => {
+	const branch = remoteName === CONFIG.git.remotes.public.name
+		? CONFIG.git.remotes.public.branch
+		: remoteName === CONFIG.git.remotes.private.name
+			? CONFIG.git.remotes.private.branch
+			: ``;
 
+	branch
+		? logger(`info`, `원격 저장소 ${remoteName} 기본 브랜치(고정): ${branch}`)
+		: logger(`error`, `지원하지 않는 remote입니다: ${remoteName}`);
+
+	return branch;
+};
+
+// git remote 존재 확인 ----------------------------------------------------------------------
+const checkRemoteExists = (remoteName=``) => {
 	try {
-		const pkgPath = require.resolve(`ts-prune/package.json`, { paths: [process.cwd()] });
-		const pkgDir = path.dirname(pkgPath);
-		const pkgJson = JSON.parse(fs.readFileSync(pkgPath, `utf8`));
-
-		const binRel = (typeof pkgJson.bin === `string`) ? (
-			pkgJson.bin
-		) : (pkgJson.bin && typeof pkgJson.bin === `object`) ? (
-			(pkgJson.bin[`ts-prune`]) ? (
-				pkgJson.bin[`ts-prune`]
-			) : (() => {
-				const keys = Object.keys(pkgJson.bin);
-				const res = (keys.length > 0) ? pkgJson.bin[keys[0]] : null;
-				return res;
-			})()
-		) : (
-			null
-		);
-
-		const hasNoBin = !binRel;
-		const result = hasNoBin ? (
-			logger(`warn`, `package.json에서 bin 정보를 찾을 수 없음`),
-			null
-		) : (() => {
-			const binAbs = path.resolve(pkgDir, binRel);
-			const exists = fs.existsSync(binAbs);
-			const res = exists ? binAbs : null;
-			logger(`info`, `바이너리 경로: ${binAbs}, 존재: ${exists}`);
-			return res;
-		})();
-
-		return result;
+		execSync(`git remote get-url ${remoteName}`, { encoding: `utf8`, stdio: `pipe` });
+		return true;
 	}
-	catch (error) {
-		const msg = error instanceof Error ? error.message : String(error);
-		logger(`error`, `ts-prune 패키지 해석 실패: ${msg}`);
-		const result = null;
-		return result;
+	catch {
+		return false;
 	}
 };
 
-// 1. ts-prune 실행 ------------------------------------------------------------------------------
-const runTsPrune = () => {
-	logger(`info`, `ts-prune 실행 시작`);
-
-	const cliArgs = [`-p`, `tsconfig.json`];
-	logger(`info`, `ts-prune 명령행 인수: ${cliArgs.join(` `)}`);
-	const errors = [];
-
-	const binJs = resolveTsPruneBinJs();
-	const binRes = binJs ? (() => {
-		logger(`info`, `Node.js 바이너리로 ts-prune 실행 시도`);
-		const r = spawnWrapper(process.execPath, [binJs, ...cliArgs]);
-		const hasErr = r.error;
-		const okSts = typeof r.status === `number` ? r.status === 0 : true;
-		const res = hasErr ? (
-			errors.push(`[node-bin] ${r.error && typeof r.error === `object` && `code` in r.error ? r.error.code : `ERR`} ${r.error ? r.error.message || `` : ``}`.trim()),
-			null
-		) : !okSts ? (
-			errors.push(`[node-bin] exited ${r.status} stdout:"${(r.stdout || ``).trim()}" stderr:"${(r.stderr || ``).trim()}"`),
-			null
-		) : (
-			logger(`success`, `Node.js 바이너리 실행 성공`),
-			(r.stdout || ``)
-		);
-		return res;
-	})() : null;
-
-	const result = binRes ? (
-		binRes
-	) : (() => {
-		const tsPruneBin = `ts-prune`;
-		const tsPruneCmd = process.platform === `win32` ? `${tsPruneBin}.cmd` : tsPruneBin;
-		const localBinPath = path.join(process.cwd(), `node_modules`, `.bin`, tsPruneCmd);
-		const pnpmCmd = process.platform === `win32` ? `pnpm.cmd` : `pnpm`;
-		const npxCmd = process.platform === `win32` ? `npx.cmd` : `npx`;
-
-		const exeMths = [
-			{
-				name: `local-bin`,
-				getPath: () => localBinPath,
-				getCommand: (bp=``) => [bp, cliArgs]
-			},
-			{
-				name: `pnpm-exec`,
-				getPath: () => pnpmCmd,
-				getCommand: (cmd=``) => [cmd, [`exec`, tsPruneBin, ...cliArgs]]
-			},
-			{
-				name: `npx`,
-				getPath: () => npxCmd,
-				getCommand: (cmd=``) => [cmd, [tsPruneBin, ...cliArgs]]
-			},
-			{
-				name: `path-ts-prune`,
-				getPath: () => tsPruneCmd,
-				getCommand: (cmd=``) => [cmd, cliArgs]
-			}
-		];
-
-		let finalRes = null;
-
-		for (const mth of exeMths) {
-			const cmdPath = mth.getPath();
-			const tuple = mth.getCommand(cmdPath);
-			const cmd = tuple[0];
-			const mthArgs = Array.isArray(tuple[1]) ? tuple[1] : [tuple[1]];
-
-			const isLocal = mth.name === `local-bin`;
-			const noPath = !fs.existsSync(cmdPath);
-
-			if (isLocal && noPath) {
-				errors.push(`[${mth.name}] ${cmdPath} 없음`);
-				continue;
-			}
-
-			logger(`info`, `${mth.name}으로 ts-prune 실행 시도`);
-			// @ts-ignore
-			const r = spawnWrapper(cmd, mthArgs);
-			const hasErr = r.error;
-			const okSts = typeof r.status === `number` ? r.status === 0 : true;
-			const mthRes = hasErr ? (
-				errors.push(`[${mth.name}] ${r.error && typeof r.error === `object` && `code` in r.error ? r.error.code : `ERR`} ${r.error ? r.error.message || `` : ``}`.trim()),
-				null
-			) : !okSts ? (
-				errors.push(`[${mth.name}] exited ${r.status} stdout:"${(r.stdout || ``).trim()}" stderr:"${(r.stderr || ``).trim()}"`),
-				null
-			) : (
-				logger(`success`, `${mth.name} 실행 성공`),
-				(r.stdout || ``)
-			);
-
-			if (mthRes) {
-				finalRes = mthRes;
-				break;
-			}
-		}
-
-		const hasFinal = finalRes;
-		const res = hasFinal ? (
-			finalRes
-		) : (() => {
-			const errMsg = `ts-prune 실행 실패:\n${errors.map((e) => ` - ${e}`).join(`\n`)}`;
-			logger(`error`, errMsg);
-			throw new Error(errMsg);
-		})();
-
-		return res;
-	})();
-
-	return result;
-};
-
-// 2. ts-prune 출력 파싱 --------------------------------------------------------------------------
-const parseTsPruneOutput = (text = ``) => {
-	logger(`info`, `ts-prune 출력 파싱 시작`);
-
-	const lineRegex = /^(?<file>.+):(?<line>\d+)\s*-\s*(?<name>.+?)(?:\s*\((?<note>.+)\))?$/;
-	const output = [];
-	const lines = text.split(/\r?\n/);
-
-	for (const rawLine of lines) {
-		const line = rawLine.trim();
-		const isEmpty = line.length === 0;
-		if (isEmpty) {
-			continue;
-		}
-		const match = lineRegex.exec(line);
-		const noMatch = !match || !match.groups;
-		if (noMatch) {
-			continue;
-		}
-
-		// @ts-ignore
-		const fileNorm = path.normalize(match.groups.file);
-		// @ts-ignore
-		const symName = match.groups.name.trim();
-		// @ts-ignore
-		const note = match.groups.note ? match.groups.note.trim() : null;
-		output.push({ file: fileNorm, name: symName, note });
-	}
-
-	logger(`info`, `파싱된 항목 수: ${output.length}`);
-	return output;
-};
-
-// 3. 파일별 그룹화 -------------------------------------------------------------------------------
-// @ts-ignore
-const groupByFile = (items = []) => {
-	logger(`info`, `파일별 그룹화 시작`);
-
-	const fileMap = new Map();
-	for (const item of items) {
-		const hasKey = fileMap.has(item.file);
-		!hasKey && fileMap.set(item.file, []);
-		fileMap.get(item.file).push(item);
-	}
-
-	logger(`info`, `그룹화된 파일 수: ${fileMap.size}`);
-	return fileMap;
-};
-
-// 4. 파일 경로 유틸리티 -------------------------------------------------------------------------
-const toProjectAbsolute = (fp = ``) => {
-	const norm = fp.replace(/\//g, path.sep);
-	const isAbsWin = /^[a-zA-Z]:[\\\\/]/.test(norm) || /^\\\\/.test(norm);
-	const result = isAbsWin ? (
-		norm
-	) : (
-		path.resolve(process.cwd(), norm.replace(/^[\\\\/]+/, ``))
-	);
-	return result;
-};
-
-// 5. 안전한 백업 생성 ---------------------------------------------------------------------------
-const safeBackup = (fp = ``) => {
-	const bkPath = fp + `.bak`;
-
+// git cache 초기화 --------------------------------------------------------------------------
+const clearGitCache = () => {
+	logger(`info`, `Git 캐시 초기화 시작`);
 	try {
-		const noFile = !fs.existsSync(fp);
-		const result = noFile ? (
-			false
-		) : (
-			(() => {
-				const noBk = !fs.existsSync(bkPath);
-				noBk && fs.copyFileSync(fp, bkPath);
-				logger(`info`, `백업 생성: ${bkPath}`);
-				return true;
-			})()
-		);
-		return result;
-	}
-	catch (error) {
-		const msg = error instanceof Error ? error.message : String(error);
-		logger(`warn`, `백업 실패: ${msg}`);
-		const result = false;
-		return result;
-	}
-};
-
-// 6. Export 제거 함수 ----------------------------------------------------------------------------
-// @ts-ignore
-const removeNamesInExportDeclarations = (sf, tgtNames) => {
-	const expDecls = sf.getExportDeclarations();
-
-	for (const expDecl of expDecls) {
-		const specs = expDecl.getNamedExports();
-		const noSpecs = specs.length === 0;
-		if (noSpecs) {
-			continue;
-		}
-
-		const toRm = [];
-		for (const spec of specs) {
-			const localName = spec.getNameNode().getText();
-			const aliasNode = spec.getAliasNode();
-			const expName = aliasNode ? aliasNode.getText() : localName;
-			const shouldRm = tgtNames.has(expName) || tgtNames.has(localName);
-			shouldRm && toRm.push(spec);
-		}
-
-		toRm.forEach((spec) => spec.remove());
-		const rem = expDecl.getNamedExports().length;
-		const isNs = expDecl.isNamespaceExport && expDecl.isNamespaceExport();
-		const isEmpty = rem === 0 && !isNs;
-		isEmpty && expDecl.remove();
-	}
-};
-
-// 7. 로컬 선언 제거 함수 ----------------------------------------------------------------------------
-// @ts-ignore
-const removeLocalDeclarationsByNames = (sf, tgtNames) => {
-	// @ts-ignore
-	const varStmts = sf.getVariableStatements().filter((stmt) => stmt.hasExportKeyword());
-
-	for (const varStmt of varStmts) {
-		const decls = varStmt.getDeclarations();
-		// @ts-ignore
-		const toRm = decls.filter((decl) => tgtNames.has(decl.getName()));
-		const noRm = toRm.length === 0;
-		if (noRm) {
-			continue;
-		}
-
-		const rmAll = toRm.length === decls.length;
-		rmAll ? (
-			varStmt.remove()
-		) : (
-			// @ts-ignore
-			toRm.forEach((decl) => decl.remove())
-		);
-	}
-
-	// @ts-ignore
-	const removeExportedNodes = (nodes) => {
-		for (const node of nodes) {
-			const nodeAny = (node);
-			const nodeName = typeof nodeAny.getName === `function` ? nodeAny.getName() : null;
-			const hasName = nodeName && tgtNames.has(nodeName);
-			const isExp = typeof nodeAny.hasExportKeyword === `function` && nodeAny.hasExportKeyword();
-			const canRm = typeof nodeAny.remove === `function`;
-			const shouldRm = hasName && isExp && canRm;
-			shouldRm && nodeAny.remove();
-		}
-	};
-
-	removeExportedNodes(sf.getFunctions());
-	removeExportedNodes(sf.getClasses());
-	removeExportedNodes(sf.getEnums());
-	removeExportedNodes(sf.getInterfaces());
-	removeExportedNodes(sf.getTypeAliases());
-};
-
-// 8. 기본 내보내기 제거 함수 ----------------------------------------------------------------------
-// @ts-ignore
-const removeDefaultExport = (sf) => {
-	const assigns = sf.getExportAssignments();
-	// @ts-ignore
-	const defAssign = assigns.find((assignment) => assignment.isExportEquals() === false);
-	let removed = false;
-
-	const hasDef = defAssign;
-	hasDef && (
-		defAssign.remove(),
-		removed = true
-	);
-
-	const decls = [
-		...sf.getFunctions(),
-		...sf.getClasses()
-	];
-
-	for (const decl of decls) {
-		const hasExp = decl.hasExportKeyword && decl.hasExportKeyword();
-		if (hasExp) {
-			// @ts-ignore
-			const mods = decl.getModifiers().map((mod) => mod.getText());
-			const hasDef = mods.includes(`default`);
-			hasDef && (
-				decl.remove(),
-				removed = true
-			);
-		}
-	}
-
-	return removed;
-};
-
-// 9. 파일 처리 ----------------------------------------------------------------------------------
-// @ts-ignore
-const processFile = (proj, fp = ``, names) => {
-	const absPath = toProjectAbsolute(fp);
-	logger(`info`, `파일 처리 중: ${fp}`);
-
-	const dtsRegex = /\.d\.ts$/;
-	const isDts = dtsRegex.test(absPath);
-	const result = isDts ? (
-		{
-			file: fp,
-			removed: [],
-			skipped: true,
-			reason: `declaration-file`
-		}
-	) : (() => {
-		const sf = proj.getSourceFile(absPath) || proj.addSourceFileAtPathIfExists(absPath);
-		const noSf = !sf;
-		const res = noSf ? (
-			{
-				file: fp,
-				removed: [],
-				skipped: true,
-				reason: `file-not-found`
-			}
-		) : (() => {
-			const beforeTxt = sf.getFullText();
-			const rmSet = new Set();
-			removeNamesInExportDeclarations(sf, names);
-			removeLocalDeclarationsByNames(sf, names);
-			const hasDef = names.has(`default`);
-			const defRm = hasDef && removeDefaultExport(sf);
-			defRm && rmSet.add(`default`);
-			// @ts-ignore
-			names.forEach((name) => rmSet.add(name));
-
-			const afterTxt = sf.getFullText();
-			const changed = beforeTxt !== afterTxt;
-			const shouldSave = changed && (args2 === `fix`);
-
-			shouldSave && (
-				safeBackup(absPath),
-				sf.saveSync(),
-				logger(`success`, `파일 저장 완료: ${fp}`)
-			);
-
-			const res = {
-				file: fp,
-				removed: Array.from(rmSet),
-				skipped: false,
-				reason: ``
-			};
-			return res;
-		})();
-		return res;
-	})();
-
-	return result;
-};
-
-// 실행 ---------------------------------------------------------------------------------------
-(() => {
-	logger(`info`, `스크립트 실행: ${TITLE}`);
-	logger(`info`, `전달된 인자 1 : ${args1 || 'none'}`);
-	logger(`info`, `전달된 인자 2 : ${args2 || 'none'}`);
-
-	try {
-		const results = [];
-		const rawOut = runTsPrune();
-		const parsedItems = parseTsPruneOutput(rawOut || ``);
-		const grpByFile = groupByFile(parsedItems);
-		const proj = new Project({
-			tsConfigFilePath: path.resolve(process.cwd(), `tsconfig.json`),
-			skipAddingFilesFromTsConfig: false
-		});
-		for (const entry of grpByFile.entries()) {
-			const file = entry[0];
-			const items = entry[1];
-			// @ts-ignore
-			const nameSet = new Set(items.map((item) => item.name));
-			const res = processFile(proj, file, nameSet);
-			results.push(res);
-		}
-
-		const summary = {
-			apply: args2 === `fix`,
-			totalFiles: grpByFile.size,
-			modifiedFiles: results.filter((r) => r.removed.length > 0).length,
-			skippedFiles: results.filter((r) => r.skipped).map((r) => ({
-				file: r.file,
-				reason: r.reason
-			})),
-			details: results
-		};
-		summary.skippedFiles.length > 0 && (
-			logger(`warn`, `건너뛴 파일들:`),
-			summary.skippedFiles.forEach((skipped) => {
-				logger(`warn`, ` - ${skipped.file} (사유: ${skipped.reason})`);
-			})
-		);
-
-		logger(`success`, `ts-prune fix 완료`);
-		logger(`info`, `적용 모드: ${summary.apply}`);
-		logger(`info`, `후보 파일 수: ${summary.totalFiles}`);
-		logger(`info`, `수정된 파일 수: ${summary.modifiedFiles}`);
+		execSync(`git rm -r -f --cached .`, { stdio: `inherit` });
+		logger(`success`, `Git 캐시 초기화 완료`);
 	}
 	catch (e) {
-		const msg = e instanceof Error ? e.message : String(e);
-		logger(`error`, `${TITLE} 스크립트 실행 실패: ${msg}`);
+		logger(`error`, `Git 캐시 초기화 실패: ${e instanceof Error ? e.message : String(e)}`);
+		throw e;
+	}
+};
+
+// 파일 라인 변환 헬퍼 ------------------------------------------------------------------------
+const transformLines = (content=``, rules=[]) => {
+	const lines = content.split(/\r?\n/);
+	const transformed = lines.map(line => {
+		const matched = rules.find(r => r.match(line));
+		return matched ? matched.replace(line) : line;
+	});
+	return transformed.join(os.EOL);
+};
+
+// env 파일 및 index 파일 수정 ----------------------------------------------------------------
+const modifyEnvAndIndex = () => {
+	logger(`info`, `.env 및 index.ts 파일 수정 시작`);
+
+	const envContent = fs.readFileSync(`.env`, `utf8`);
+	const indexContent = fs.readFileSync(`index.ts`, `utf8`);
+
+	const envRules = [
+		{
+			match: (line) => line.startsWith(`CLIENT_URL=`),
+			replace: () => `CLIENT_URL=https://www.${CONFIG.domain}/${CONFIG.projectName}`
+		},
+		{
+			match: (line) => line.startsWith(`GOOGLE_CALLBACK_URL=`),
+			replace: () => `GOOGLE_CALLBACK_URL=https://www.${CONFIG.domain}/${CONFIG.projectName}/api/auth/google/callback`
+		}
+	];
+
+	const indexRules = [
+		{
+			match: (line) => line.trim().startsWith(`// const db = process.env.DB_NAME`),
+			replace: () => `const db = process.env.DB_NAME;`
+		},
+		{
+			match: (line) => line.trim().startsWith(`const db = process.env.DB_TEST`),
+			replace: () => `// const db = process.env.DB_TEST;`
+		}
+	];
+
+	fs.writeFileSync(`.env`, transformLines(envContent, envRules));
+	fs.writeFileSync(`index.ts`, transformLines(indexContent, indexRules));
+	logger(`info`, `.env 및 index.ts 파일 수정 완료`);
+};
+
+// env 파일 및 index 파일 복원 ----------------------------------------------------------------
+const restoreEnvAndIndex = () => {
+	logger(`info`, `.env 및 index.ts 파일 복원 시작`);
+
+	const envContent = fs.readFileSync(`.env`, `utf8`);
+	const indexContent = fs.readFileSync(`index.ts`, `utf8`);
+
+	const envRules = [
+		{
+			match: (line) => line.startsWith(`CLIENT_URL=`),
+			replace: () => `CLIENT_URL=http://localhost:${CONFIG.localPort.client}/${CONFIG.projectName}`
+		},
+		{
+			match: (line) => line.startsWith(`GOOGLE_CALLBACK_URL=`),
+			replace: () => `GOOGLE_CALLBACK_URL=http://localhost:${CONFIG.localPort.server}/${CONFIG.projectName}/api/auth/google/callback`
+		}
+	];
+
+	const indexRules = [
+		{
+			match: (line) => line.trim().startsWith(`const db = process.env.DB_NAME`),
+			replace: () => `// const db = process.env.DB_NAME;`
+		},
+		{
+			match: (line) => line.trim().startsWith(`// const db = process.env.DB_TEST`),
+			replace: () => `const db = process.env.DB_TEST;`
+		}
+	];
+
+	fs.writeFileSync(`.env`, transformLines(envContent, envRules));
+	fs.writeFileSync(`index.ts`, transformLines(indexContent, indexRules));
+	logger(`info`, `.env 및 index.ts 파일 복원 완료`);
+};
+
+// changelog 수정 ----------------------------------------------------------------------------
+const modifyChangelog = () => {
+	logger(`info`, `changelog.md 업데이트 시작`);
+
+	const now = new Date();
+	const dateStr = now.toLocaleDateString(`ko-KR`, { year: `numeric`, month: `2-digit`, day: `2-digit` });
+	const timeStr = now.toLocaleTimeString(`ko-KR`, { hour: `2-digit`, minute: `2-digit`, second: `2-digit`, hour12: false });
+
+	const changelog = fs.readFileSync(`changelog.md`, `utf8`);
+	const matches = [...changelog.matchAll(/(\s*)(\d+[.]\d+[.]\d+)(\s*)/g)];
+	const lastVersion = matches[matches.length - 1][2];
+	const ver = lastVersion.split(`.`).map(Number);
+
+	ver[2]++;
+	ver[2] >= 10 && (ver[2] = 0, ver[1]++);
+	ver[1] >= 10 && (ver[1] = 0, ver[0]++);
+
+	const newVersion = ver.join(`.`);
+	const formattedDateTime = `- ${dateStr} (${timeStr})`
+		.replace(/([.]\s*[(])/g, ` (`)
+		.replace(/([.]\s*)/g, `-`)
+		.replace(/[(](\W*)(\s*)/g, `(`);
+
+	const newEntry = `\n## \\[ ${newVersion} \\]\n\n${formattedDateTime}\n`;
+	fs.writeFileSync(`changelog.md`, changelog + newEntry, `utf8`);
+	logger(`success`, `changelog.md 업데이트 완료: ${newVersion}`);
+
+	return newVersion;
+};
+
+// package.json 버전 수정 --------------------------------------------------------------------
+const incrementVersion = (newVersion=``) => {
+	logger(`info`, `package.json 버전 업데이트 시작: ${newVersion}`);
+
+	const pkgPath = `package.json`;
+	const pkg = JSON.parse(fs.readFileSync(pkgPath, `utf8`));
+	pkg.version = newVersion;
+
+	fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + `\n`, `utf8`);
+	logger(`success`, `package.json 버전 업데이트 완료: ${newVersion}`);
+};
+
+// git fetch ---------------------------------------------------------------------------------
+const gitFetch = () => {
+	try {
+		const privateExists = checkRemoteExists(CONFIG.git.remotes.private.name);
+		const publicExists = checkRemoteExists(CONFIG.git.remotes.public.name);
+
+		privateExists
+			? logger(`info`, `Private remote 감지 - ${CONFIG.git.remotes.private.name}만 fetch 진행`)
+			: logger(`info`, `Private remote 없음 - ${CONFIG.git.remotes.public.name} fetch 진행`);
+
+		const targetRemote = privateExists ? CONFIG.git.remotes.private.name : CONFIG.git.remotes.public.name;
+		const targetBranch = getRemoteDefaultBranch(targetRemote);
+
+		!privateExists && !publicExists && (logger(`error`, `사용 가능한 remote가 없습니다`), process.exit(1));
+		!targetBranch && (logger(`error`, `원격 기본 브랜치를 찾을 수 없습니다`), process.exit(1));
+
+		logger(`info`, `Git Fetch 시작: ${targetRemote}`);
+		execSync(`git fetch ${targetRemote}`, { stdio: `inherit` });
+		logger(`success`, `Git Fetch 완료: ${targetRemote}`);
+
+		logger(`info`, `Git Reset Hard 시작: ${targetRemote}/${targetBranch}`);
+		execSync(`git reset --hard ${targetRemote}/${targetBranch}`, { stdio: `inherit` });
+		logger(`success`, `Git Reset Hard 완료: ${targetRemote}/${targetBranch}`);
+	}
+	catch (e) {
+		logger(`error`, `Git Fetch/Reset 실패: ${e instanceof Error ? e.message : String(e)}`);
+		throw e;
+	}
+};
+
+// git push 공통 함수 ------------------------------------------------------------------------
+const gitPush = (remoteName=``, ignoreFilePath=``) => {
+	const remoteExists = checkRemoteExists(remoteName);
+
+	!remoteExists && logger(`info`, `Remote '${remoteName}' 존재하지 않음 - 건너뜀`);
+	remoteExists && (() => {
+		const targetBranch = getRemoteDefaultBranch(remoteName);
+		!targetBranch && (logger(`error`, `원격 기본 브랜치를 찾을 수 없습니다: ${remoteName}`), process.exit(1));
+
+		logger(`info`, `Git Push 시작: ${remoteName}`);
+
+		const ignorePublicFile = fs.readFileSync(`.gitignore.public`, `utf8`);
+		const ignoreContent = fs.readFileSync(ignoreFilePath, `utf8`);
+
+		logger(`info`, `.gitignore 파일 수정 적용: ${ignoreFilePath}`);
+		fs.writeFileSync(`.gitignore`, ignoreContent, `utf8`);
+
+		clearGitCache();
+		execSync(`git add .`, { stdio: `inherit` });
+
+		const statusOutput = execSync(`git status --porcelain`, { encoding: `utf8` }).trim();
+
+		statusOutput && (() => {
+			logger(`info`, `변경사항 감지 - 커밋 진행`);
+			const commitCmd = osType === `win`
+				? `git commit -m "%date% %time:~0,8%"`
+				: `git commit -m "$(date +%Y-%m-%d) $(date +%H:%M:%S)"`;
+			execSync(commitCmd, { stdio: `inherit` });
+			logger(`success`, `커밋 완료`);
+		})();
+		!statusOutput && logger(`info`, `변경사항 없음 - 커밋 건너뜀`);
+
+		logger(`info`, `Push 진행: ${remoteName} ${targetBranch}`);
+		execSync(`git push --force ${remoteName} HEAD:${targetBranch}`, { stdio: `inherit` });
+		logger(`success`, `Push 완료: ${remoteName} ${targetBranch}`);
+
+		fs.writeFileSync(`.gitignore`, ignorePublicFile, `utf8`);
+		logger(`info`, `.gitignore 파일 복원`);
+	})();
+};
+
+// 실행 --------------------------------------------------------------------------------------
+(() => {
+	logger(`info`, `스크립트 실행: ${TITLE}`);
+	logger(`info`, `운영체제: ${osType}`);
+	logger(`info`, `전달된 인자 1: ${args1 || `none`}`);
+	logger(`info`, `전달된 인자 2: ${args2 || `none`}`);
+
+	try {
+		args2 === `fetch` && (gitFetch(), logger(`success`, `Git Fetch & Reset 완료`));
+
+		args2 === `push` && (() => {
+			modifyEnvAndIndex();
+			incrementVersion(modifyChangelog());
+			gitPush(CONFIG.git.remotes.public.name, `.gitignore.public`);
+			gitPush(CONFIG.git.remotes.private.name, `.gitignore.private`);
+			restoreEnvAndIndex();
+			logger(`success`, `Git Push 완료`);
+		})();
+	}
+	catch (e) {
+		logger(`error`, `${TITLE} 스크립트 실행 실패: ${e instanceof Error ? e.message : String(e)}`);
 		process.exit(1);
 	}
 

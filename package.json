@@ -6,7 +6,7 @@
   "icon": "logo.webp",
   "license": "Apache-2.0",
   "main": "./out/extension.js",
-  "version": "2.8.0",
+  "version": "2.8.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/JUNGHO-GIT/JLINT.git"
@@ -137,10 +137,8 @@
     "pnpm": ">=9.0.0"
   },
   "scripts": {
-    "start-client": "bun .node/swc.cjs --bun --start --client",
-    "start-server": "bun .node/swc.cjs --bun --start --server",
-    "build-client": "bun .node/swc.cjs --bun --build --client",
-    "build-server": "bun .node/swc.cjs --bun --build --server",
+    "start": "bun .node/swc.cjs --bun --start --server",
+    "build": "bun .node/swc.cjs --bun --build --server",
     "git-fetch": "bun .node/git.cjs --bun --fetch",
     "git-push": "bun .node/git.cjs --bun --push",
     "fix": "bun .node/fix.cjs --bun --fix",
