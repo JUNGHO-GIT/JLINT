@@ -2,7 +2,7 @@
 
 import { stripJsonComments, getPrettier } from "@exportLibs";
 import type { PrettierOptions, StripJsonOptions } from "@exportLibs";
-import { logger, notify } from "@exportScripts";
+import { logger, modal } from "@exportScripts";
 import { CommonType } from "@exportTypes";
 
 // 0. removeComments -------------------------------------------------------------------------------
@@ -108,7 +108,7 @@ export const prettierFormat = async (
     const msgResult = msg.replace(msgRegex, msgRegexReplace);
 
     logger("error", `${fileExt}:prettierFormat - ${msgResult}`);
-		notify("error", `${fileExt}: Prettier Format Error:\n${msgResult}`);
+		modal("error", `${fileExt}: Prettier Format Error:\n${msgResult}`);
     return contentsParam;
   }
 };
@@ -170,7 +170,7 @@ export const finalCheck = async (
 	fileExt: string
 ) => {
   try {
-  logger("debug", `${fileExt}:finalCheck - N`);
+  	logger("debug", `${fileExt}:finalCheck - N`);
     return contentsParam;
   }
   catch (err: any) {

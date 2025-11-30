@@ -2,7 +2,7 @@
 
 import { lodash, strip, getPrettier, getPrettierPluginXml } from "@exportLibs";
 import type { PrettierOptions, StripOptions } from "@exportLibs";
-import { logger, notify } from "@exportScripts";
+import { logger, modal } from "@exportScripts";
 import { CommonType } from "@exportTypes";
 
 // 0. removeComments -------------------------------------------------------------------------------
@@ -115,7 +115,7 @@ export const prettierFormat = async (
     const msgResult = msg.replace(msgRegex, msgRegexReplace);
 
     logger("error", `${fileExt}:prettierFormat - ${msgResult}`);
-		notify("error", `${fileExt}: Prettier Format Error:\n${msgResult}`);
+		modal("error", `${fileExt}: Prettier Format Error:\n${msgResult}`);
     return contentsParam;
   }
 };

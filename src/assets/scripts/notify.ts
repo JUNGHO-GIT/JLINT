@@ -17,7 +17,9 @@ const showProgress = async (text: string): Promise<void> => {
 		cancellable: false,
 	},
 	async (_) => {
-		await new Promise((res) => setTimeout(res, AUTO_CLOSE_MS));
+		await new Promise((res) => {
+			setTimeout(res, AUTO_CLOSE_MS);
+		});
 	});
 };
 
@@ -53,4 +55,25 @@ export const notify = async (
 	type === `hint` && await showProgress(text);
 	type === `warn` && await showProgress(text);
 	type === `error` && await showProgress(text);
+};
+
+// -------------------------------------------------------------------------------------------------
+export const modal = (
+	type: `info` | `warn` | `error`,
+	value: string
+): Thenable<string | undefined> => {
+	const text = `[${MAIN}] ${value}`;
+	const options = { modal: true };
+
+	const result = (
+		type === `info` ? (
+			vscode.window.showInformationMessage(text, options)
+		) : type === `warn` ? (
+			vscode.window.showWarningMessage(text, options)
+		) : (
+			vscode.window.showErrorMessage(text, options)
+		)
+	);
+
+	return result;
 };

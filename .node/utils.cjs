@@ -5,6 +5,7 @@
 
 const fs = require(`fs`);
 const path = require(`path`);
+const readline = require(`readline`);
 const {spawnSync} = require(`child_process`);
 
 // 텍스트 포맷 -------------------------------------------------------------------------------
@@ -82,6 +83,21 @@ const runCmd = (cmd = ``, args = [], ignoreError = false, useShell = true) => {
 	result.status !== 0 && (ignoreError ? logger(`warn`, `${cmd} 경고 무시 (exit code: ${result.status})`) : (logger(`error`, `${cmd} 실패 (exit code: ${result.status})`), process.exit(result.status || 1)));
 
 	logger(`success`, `${cmd} 실행 완료`);
+};
+
+// 사용자 입력 받기 --------------------------------------------------------------------------
+const runPrompt = (question=``) => {
+	const rl = readline.createInterface({
+		input: process.stdin,
+		output: process.stdout
+	});
+
+	return new Promise(resolve => {
+		rl.question(question, answer => {
+			rl.close();
+			resolve(answer.trim());
+		});
+	});
 };
 
 // spawn 래퍼 -------------------------------------------------------------------------------
@@ -207,6 +223,7 @@ const getProjectType = (args = ``) => {
 module.exports = {
 	logger,
 	runCmd,
+	runPrompt,
 	spawnWrapper,
 	validateDir,
 	createFile,

@@ -1,6 +1,6 @@
 // Controller.ts
 
-import { capitalize, singleTags, semicolon, ifElse, tryCatch } from "@exportRules";
+import { capitalize, singleTags, semicolon, space, ifElse, tryCatch } from "@exportRules";
 import { logger, notify } from "@exportScripts";
 import { CommonType } from "@exportTypes";
 import * as Langs from "@exportLangs";
@@ -79,6 +79,7 @@ export const getSyntax = async (
 	resultContents = await capitalize(resultContents, fileExt);
 	resultContents = await singleTags(resultContents, fileExt);
 	resultContents = await semicolon(resultContents, fileExt);
+	resultContents = await space(resultContents, fileExt);
 	// resultContents = await brackets(resultContents, fileExt);
 	// resultContents = await comma(resultContents, fileExt);
 	// resultContents = await quotes(afterLanguageContents, fileExt);

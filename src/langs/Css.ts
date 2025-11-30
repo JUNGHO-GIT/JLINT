@@ -2,7 +2,7 @@
 
 import { lodash, CleanCSS, strip, getPrettier } from "@exportLibs";
 import type { PrettierOptions, StripOptions } from "@exportLibs";
-import { logger, notify } from "@exportScripts";
+import { logger, modal } from "@exportScripts";
 import { CommonType } from "@exportTypes";
 
 // 0. removeComments -------------------------------------------------------------------------------
@@ -94,11 +94,11 @@ export const removeComments = async (
 			baseOptions
 		);
 
-	logger("debug", `${fileExt}:removeComments - Y`);
+		logger("debug", `${fileExt}:removeComments - Y`);
 		return finalResult;
   }
   catch (err: any) {
-	logger("error", `${fileExt}:removeComments - ${err.message}`);
+		logger("error", `${fileExt}:removeComments - ${err.message}`);
     return contentsParam;
   }
 };
@@ -175,7 +175,7 @@ export const prettierFormat = async (
     const msgResult = msg.replace(msgRegex, msgRegexReplace);
 
 		logger("error", `${fileExt}:prettierFormat - ${msgResult}`);
-		notify("error", `${fileExt} - ${msgResult}`);
+		modal("error", `${fileExt} - ${msgResult}`);
     return contentsParam;
   }
 };
@@ -188,11 +188,11 @@ export const insertSpace = async (
   try {
     const finalResult = contentsParam;
 
-	logger("debug", `${fileExt}:insertSpace - Y`);
+		logger("debug", `${fileExt}:insertSpace - Y`);
     return finalResult
   }
   catch (err: any) {
-	logger("error", `${fileExt}:insertSpace - ${err.message}`);
+		logger("error", `${fileExt}:insertSpace - ${err.message}`);
     return contentsParam;
   }
 };
@@ -205,11 +205,11 @@ export const insertLine = async (
   try {
     const finalResult = contentsParam;
 
-	logger("debug", `${fileExt}:insertLine - Y`);
+		logger("debug", `${fileExt}:insertLine - Y`);
     return finalResult
   }
   catch (err: any) {
-	logger("error", `${fileExt}:insertLine - ${err.message}`);
+		logger("error", `${fileExt}:insertLine - ${err.message}`);
     return contentsParam;
   }
 };
@@ -230,11 +230,11 @@ export const lineBreak = async (
 		))
 		.value();
 
-	logger("debug", `${fileExt}:lineBreak - Y`);
+		logger("debug", `${fileExt}:lineBreak - Y`);
     return finalResult
   }
   catch (err: any) {
-	logger("error", `${fileExt}:lineBreak - ${err.message}`);
+		logger("error", `${fileExt}:lineBreak - ${err.message}`);
     return contentsParam;
   }
 };
@@ -247,11 +247,11 @@ export const finalCheck = async (
   try {
     const finalResult = contentsParam;
 
-	logger("debug", `${fileExt}:finalCheck - Y`);
+		logger("debug", `${fileExt}:finalCheck - Y`);
     return finalResult
   }
   catch (err: any) {
-	logger("error", `${fileExt}:finalCheck - ${err.message}`);
+		logger("error", `${fileExt}:finalCheck - ${err.message}`);
     return contentsParam;
   }
 };

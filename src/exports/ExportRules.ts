@@ -10,7 +10,8 @@ export {
 	brackets,
 	comma,
 	semicolon,
-	quotes
+	space,
+	quotes,
 } from "@rules/Syntax";
 
 // -------------------------------------------------------------------------------

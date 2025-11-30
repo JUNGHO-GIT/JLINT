@@ -6,7 +6,7 @@
 const os = require(`os`);
 const fs = require(`fs`);
 const { execSync } = require(`child_process`);
-const { logger } = require(`./utils.cjs`);
+const { logger, runPrompt } = require(`./utils.cjs`);
 const { CONFIG } = require(`./env.cjs`);
 
 // 인자 파싱 ---------------------------------------------------------------------------------
@@ -18,11 +18,11 @@ const osType = os.platform() === `win32` ? `win` : `linux`;
 
 // 원격 기본 브랜치 감지 ----------------------------------------------------------------------
 const getRemoteDefaultBranch = (remoteName=``) => {
-	const branch = remoteName === CONFIG.git.remotes.public.name
-		? CONFIG.git.remotes.public.branch
-		: remoteName === CONFIG.git.remotes.private.name
-		? CONFIG.git.remotes.private.branch
-		: ``;
+	const branch = remoteName === CONFIG.git.remotes.public.name ? (
+		CONFIG.git.remotes.public.branch
+	) : remoteName === CONFIG.git.remotes.private.name ? (
+		CONFIG.git.remotes.private.branch
+	) : ``;
 
 	branch
 		? logger(`info`, `원격 저장소 ${remoteName} 기본 브랜치(고정): ${branch}`)
@@ -80,11 +80,11 @@ const modifyEnvAndIndex = () => {
 		const envContent = fs.readFileSync(`.env`, `utf8`);
 		const envRules = [
 			{
-				match: (line) => line.startsWith(`CLIENT_URL=`),
+				match: (line=``) => line.startsWith(`CLIENT_URL=`),
 				replace: () => `CLIENT_URL=https://www.${CONFIG.domain}/${CONFIG.projectName}`
 			},
 			{
-				match: (line) => line.startsWith(`GOOGLE_CALLBACK_URL=`),
+				match: (line=``) => line.startsWith(`GOOGLE_CALLBACK_URL=`),
 				replace: () => `GOOGLE_CALLBACK_URL=https://www.${CONFIG.domain}/${CONFIG.projectName}/${CONFIG.gcp.callback}`
 			}
 		];
@@ -97,11 +97,11 @@ const modifyEnvAndIndex = () => {
 		const indexContent = fs.readFileSync(`index.ts`, `utf8`);
 		const indexRules = [
 			{
-				match: (line) => line.trim().startsWith(`// const db = process.env.DB_NAME`),
+				match: (line=``) => line.trim().startsWith(`// const db = process.env.DB_NAME`),
 				replace: () => `const db = process.env.DB_NAME;`
 			},
 			{
-				match: (line) => line.trim().startsWith(`const db = process.env.DB_TEST`),
+				match: (line=``) => line.trim().startsWith(`const db = process.env.DB_TEST`),
 				replace: () => `// const db = process.env.DB_TEST;`
 			}
 		];
@@ -125,11 +125,11 @@ const restoreEnvAndIndex = () => {
 		const envContent = fs.readFileSync(`.env`, `utf8`);
 		const envRules = [
 			{
-				match: (line) => line.startsWith(`CLIENT_URL=`),
+				match: (line=``) => line.startsWith(`CLIENT_URL=`),
 				replace: () => `CLIENT_URL=http://localhost:${CONFIG.localPort.client}/${CONFIG.projectName}`
 			},
 			{
-				match: (line) => line.startsWith(`GOOGLE_CALLBACK_URL=`),
+				match: (line=``) => line.startsWith(`GOOGLE_CALLBACK_URL=`),
 				replace: () => `GOOGLE_CALLBACK_URL=http://localhost:${CONFIG.localPort.server}/${CONFIG.projectName}/${CONFIG.gcp.callback}`
 			}
 		];
@@ -142,11 +142,11 @@ const restoreEnvAndIndex = () => {
 		const indexContent = fs.readFileSync(`index.ts`, `utf8`);
 		const indexRules = [
 			{
-				match: (line) => line.trim().startsWith(`const db = process.env.DB_NAME`),
+				match: (line=``) => line.trim().startsWith(`const db = process.env.DB_NAME`),
 				replace: () => `// const db = process.env.DB_NAME;`
 			},
 			{
-				match: (line) => line.trim().startsWith(`// const db = process.env.DB_TEST`),
+				match: (line=``) => line.trim().startsWith(`// const db = process.env.DB_TEST`),
 				replace: () => `const db = process.env.DB_TEST;`
 			}
 		];
@@ -156,17 +156,13 @@ const restoreEnvAndIndex = () => {
 };
 
 // changelog 수정 ----------------------------------------------------------------------------
-const modifyChangelog = () => {
+const modifyChangelog = (msg=``) => {
 	const changelogExists = fs.existsSync(`changelog.md`);
 
 	!changelogExists && logger(`info`, `changelog.md 파일 없음 - 건너뜀`);
 
 	const result = changelogExists ? (() => {
 		logger(`info`, `changelog.md 업데이트 시작`);
-
-		const now = new Date();
-		const dateStr = now.toLocaleDateString(`ko-KR`, { year: `numeric`, month: `2-digit`, day: `2-digit` });
-		const timeStr = now.toLocaleTimeString(`ko-KR`, { hour: `2-digit`, minute: `2-digit`, second: `2-digit`, hour12: false });
 
 		const changelog = fs.readFileSync(`changelog.md`, `utf8`);
 		const matches = [...changelog.matchAll(/(\s*)(\d+[.]\d+[.]\d+)(\s*)/g)];
@@ -178,12 +174,20 @@ const modifyChangelog = () => {
 		ver[1] >= 10 && (ver[1] = 0, ver[0]++);
 
 		const newVersion = ver.join(`.`);
-		const formattedDateTime = `- ${dateStr} (${timeStr})`
-			.replace(/([.]\s*[(])/g, ` (`)
-			.replace(/([.]\s*)/g, `-`)
-			.replace(/[(](\W*)(\s*)/g, `(`);
+		const entryContent = msg ? (
+			`- ${msg}`
+		) : (() => {
+			const now = new Date();
+			const dateStr = now.toLocaleDateString(`ko-KR`, { year: `numeric`, month: `2-digit`, day: `2-digit` });
+			const timeStr = now.toLocaleTimeString(`ko-KR`, { hour: `2-digit`, minute: `2-digit`, second: `2-digit`, hour12: false });
+			const formatted = `- ${dateStr} (${timeStr})`
+				.replace(/([.]\s*[(])/g, ` (`)
+				.replace(/([.]\s*)/g, `-`)
+				.replace(/[(](\W*)(\s*)/g, `(`);
+			return formatted;
+		})();
 
-		const newEntry = `\n## \\[ ${newVersion} \\]\n\n${formattedDateTime}\n`;
+		const newEntry = `\n## \\[ ${newVersion} \\]\n\n${entryContent}\n`;
 		fs.writeFileSync(`changelog.md`, changelog + newEntry, `utf8`);
 		logger(`success`, `changelog.md 업데이트 완료: ${newVersion}`);
 
@@ -241,7 +245,7 @@ const gitFetch = () => {
 };
 
 // git push 공통 함수 ------------------------------------------------------------------------
-const gitPush = (remoteName=``, ignoreFilePath=``) => {
+const gitPush = (remoteName="", ignoreFilePath="", msg="") => {
 	const remoteExists = checkRemoteExists(remoteName);
 
 	!remoteExists && logger(`info`, `Remote '${remoteName}' 존재하지 않음 - 건너뜀`);
@@ -256,18 +260,22 @@ const gitPush = (remoteName=``, ignoreFilePath=``) => {
 
 		logger(`info`, `.gitignore 파일 수정 적용: ${ignoreFilePath}`);
 		fs.writeFileSync(`.gitignore`, ignoreContent, `utf8`);
-
 		clearGitCache();
 		execSync(`git add .`, { stdio: `inherit` });
 
 		const statusOutput = execSync(`git status --porcelain`, { encoding: `utf8` }).trim();
-
 		statusOutput && (() => {
 			logger(`info`, `변경사항 감지 - 커밋 진행`);
-			const commitCmd = osType === `win`
-				? `git commit -m "%date% %time:~0,8%"`
-				: `git commit -m "$(date +%Y-%m-%d) $(date +%H:%M:%S)"`;
-			execSync(commitCmd, { stdio: `inherit` });
+			const tempFile = `.git-commit-msg.tmp`;
+			const commitContent = msg ? msg : (() => {
+				const now = new Date();
+				const dateStr = now.toISOString().slice(0, 10);
+				const timeStr = now.toTimeString().slice(0, 8);
+				return `${dateStr} ${timeStr}`;
+			})();
+			fs.writeFileSync(tempFile, commitContent, `utf8`);
+			execSync(`git commit -F "${tempFile}"`, { stdio: `inherit` });
+			fs.unlinkSync(tempFile);
 			logger(`success`, `커밋 완료`);
 		})();
 		!statusOutput && logger(`info`, `변경사항 없음 - 커밋 건너뜀`);
@@ -282,20 +290,26 @@ const gitPush = (remoteName=``, ignoreFilePath=``) => {
 };
 
 // 실행 --------------------------------------------------------------------------------------
-(() => {
+(async () => {
 	logger(`info`, `스크립트 실행: ${TITLE}`);
 	logger(`info`, `운영체제: ${osType}`);
 	logger(`info`, `전달된 인자 1: ${args1 || `none`}`);
 	logger(`info`, `전달된 인자 2: ${args2 || `none`}`);
 
 	try {
-		args2 === `fetch` && (gitFetch(), logger(`success`, `Git Fetch & Reset 완료`));
+		args2 === `fetch` && (() => {
+			gitFetch();
+			logger(`success`, `Git Fetch 완료`);
+		})();
 
-		args2 === `push` && (() => {
+		args2 === `push` && await (async () => {
+			const commitMsg = await runPrompt(`커밋 메시지 입력 (빈값 = 날짜/시간): `);
+			logger(`info`, `커밋 메시지: ${commitMsg || `auto (date/time)`}`);
+
 			modifyEnvAndIndex();
-			incrementVersion(modifyChangelog());
-			gitPush(CONFIG.git.remotes.public.name, `.gitignore.public`);
-			gitPush(CONFIG.git.remotes.private.name, `.gitignore.private`);
+			incrementVersion(modifyChangelog(commitMsg));
+			gitPush(CONFIG.git.remotes.public.name, `.gitignore.public`, commitMsg);
+			gitPush(CONFIG.git.remotes.private.name, `.gitignore.private`, commitMsg);
 			restoreEnvAndIndex();
 			logger(`success`, `Git Push 완료`);
 		})();

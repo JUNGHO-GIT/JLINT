@@ -2,7 +2,7 @@
 
 import { lodash, strip, getPrettier, getPrettierPluginJava } from "@exportLibs";
 import type { PrettierOptions, StripOptions } from "@exportLibs";
-import { logger, notify } from "@exportScripts";
+import { logger, modal } from "@exportScripts";
 import { CommonType } from "@exportTypes";
 
 // 0. removeComments -------------------------------------------------------------------------------
@@ -116,7 +116,7 @@ export const prettierFormat = async (
 		const msgResult = msg.replace(msgRegex, msgRegexReplace);
 
 		logger("error", `${fileExt}:prettierFormat - ${msgResult}`);
-		notify("error", `${fileExt}: Prettier Format Error:\n${msgResult}`);
+		modal("error", `${fileExt}: Prettier Format Error:\n${msgResult}`);
 		return contentsParam;
 	}
 };
@@ -169,13 +169,13 @@ export const insertLine = async (
 		);
 
 		const finalResult = lodash.chain(contentsParam)
-			.replace(rules1, (...p: any[]) => {
-				const spaceSize = p[1].length + (`// `).length + (`-`).length;
-				const insertSize = 100 - spaceSize;
-				const insetLine = (`// ${"-".repeat(insertSize)}`);
-				return `${p[1]}${insetLine}\n${p[1]}${p[2]}`;
-			})
-			.value();
+		.replace(rules1, (...p: any[]) => {
+			const spaceSize = p[1].length + (`// `).length + (`-`).length;
+			const insertSize = 100 - spaceSize;
+			const insetLine = (`// ${"-".repeat(insertSize)}`);
+			return `${p[1]}${insetLine}\n${p[1]}${p[2]}`;
+		})
+		.value();
 
 		logger("debug", `${fileExt}:insertLine - Y`);
 		return finalResult;

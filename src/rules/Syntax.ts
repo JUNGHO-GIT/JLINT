@@ -159,7 +159,32 @@ export const semicolon = async (
     logger("error", `${fileExt}:semicolon - ${err.message}`);
     return contentsParam;
   }
-}
+};
+
+// -------------------------------------------------------------------------------------------------
+export const space = async (
+  contentsParam: string,
+  fileExt: string
+) => {
+  try {
+		const rules1 = (
+			/((?:function\s*[\w$]*|(?:const|let|var)\s+[\w$]+\s*=\s*(?:async\s*)?)\s*\()([^)]*)\)/gm
+		);
+
+		const finalResult = lodash.chain(contentsParam)
+		.replace(rules1, (...p: any[]) => (
+			`${p[1]}${p[2].replace(/([\w$]+)\s*=\s*/g, `$1=`)})`
+		))
+		.value();
+
+    logger("debug", `${fileExt}:space - Y`);
+    return finalResult;
+  }
+  catch (err: any) {
+    logger("error", `${fileExt}:space - ${err.message}`);
+    return contentsParam;
+  }
+};
 
 // -------------------------------------------------------------------------------------------------
 export const quotes = async (
