@@ -52,7 +52,12 @@ const settings = {
 			{
 				sourcePath: `src/public/config`,
 				targetPath: ``,
-				files: [`.client.swcrc`, `.server.swcrc`, `eslint.config.js`],
+				files: [`.server.swcrc`, `eslint.config.js`],
+			},
+			{
+				sourcePath: `src/public/config`,
+				targetPath: `client`,
+				files: [`.client.swcrc`, `eslint.config.js`],
 			},
 		],
 	},
