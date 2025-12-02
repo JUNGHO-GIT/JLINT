@@ -5,7 +5,7 @@
 
 const fs = require(`fs`);
 const path = require(`path`);
-const { logger, runCmd, delDir, delFile } = require(`./utils.cjs`);
+const { logger, runCmd, delDir, delFile } = require(`../lib/utils.cjs`);
 
 // 인자 파싱 ------------------------------------------------------------------------------------
 const TITLE = `vsce.cjs`;

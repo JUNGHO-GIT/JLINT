@@ -3,11 +3,8 @@
 * text eol=lf
 *.json linguist-vendored linguist-generated
 *.json.* linguist-vendored linguist-generated
-
-# ==================================================================================================
+ 
 # Directories ======================================================================================
-# ==================================================================================================
-
 build/** linguist-vendored linguist-generated
 .build/** linguist-vendored linguist-generated
 bundle/** linguist-vendored linguist-generated
@@ -50,13 +47,15 @@ META-INF/** linguist-vendored linguist-generated
 .bookmark/** linguist-vendored linguist-generated
 .backup/** linguist-vendored linguist-generated
 .etc/** linguist-vendored linguist-generated
+node linguist-vendored linguist-generated
+node/** linguist-vendored linguist-generated
+.node linguist-vendored linguist-generated
 .node/** linguist-vendored linguist-generated
+*.node linguist-vendored linguist-generated
+*.node.* linguist-vendored linguist-generated
 .cxx/** linguist-vendored linguist-generated
 
-# ==================================================================================================
 # Files ============================================================================================
-# ==================================================================================================
-
 # 1. os-specific files
 *.swp linguist-vendored linguist-generated
 *.swo linguist-vendored linguist-generated

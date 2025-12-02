@@ -6,7 +6,7 @@
 const { spawn } = require(`child_process`);
 const process = require(`process`);
 const path = require(`path`);
-const { logger, runCmd, validateDir, delDir, getProjectType } = require(`./utils.cjs`);
+const { logger, runCmd, validateDir, delDir, getProjectType } = require(`../lib/utils.cjs`);
 
 // 인자 파싱 ---------------------------------------------------------------------------------
 const TITLE = `swc.cjs`;

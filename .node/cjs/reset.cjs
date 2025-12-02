@@ -3,7 +3,7 @@
  * @since 2025-11-22
  */
 
-const { logger, delDir, delFile, runCmd } = require(`./utils.cjs`);
+const { logger, delDir, delFile, runCmd } = require(`../lib/utils.cjs`);
 
 // 인자 파싱 ---------------------------------------------------------------------------------
 const TITLE = `reset.cjs`;

@@ -2,8 +2,9 @@
 
 const os = require('os');
 const { execSync } = require('child_process');
-const { logger } = require(`./utils.cjs`);
-const { CONFIG } = require(`./env.cjs`);
+const { logger } = require(`../lib/utils.cjs`);
+const { env } = require(`../lib/env.cjs`);
+const { settings } = require(`../lib/settings.cjs`);
 
 // 인자 파싱 ------------------------------------------------------------------------------------
 const TITLE = `gcloud.cjs`;
@@ -13,12 +14,12 @@ const args1 = argv.find(arg => [`--npm`, `--pnpm`, `--yarn`, `--bun`].includes(a
 const args2 = argv.find(arg => [`--server`, `--client`].includes(arg))?.replace(`--`, ``) || ``;
 
 // 공통 함수 ------------------------------------------------------------------------------------
-const getKeyPath = (platform=``) => platform === `win` ? CONFIG.ssh.win.keyPath : CONFIG.ssh.linux.keyPath;
-const getServiceId = (platform=``) => platform === `win` ? CONFIG.ssh.win.serviceId : CONFIG.ssh.linux.serviceId;
+const getKeyPath = (platform=``) => platform === `win` ? env.ssh.win.keyPath : env.ssh.linux.keyPath;
+const getServiceId = (platform=``) => platform === `win` ? env.ssh.win.serviceId : env.ssh.linux.serviceId;
 const runSshCommand = (platform=``, commands=``) => {
 	const keyPath = getKeyPath(platform);
 	const serviceId = getServiceId(platform);
-	const ipAddr = CONFIG.serverIp;
+	const ipAddr = env.serverIp;
 
 	const sshCommand = platform === `win` ? (
 		`powershell -Command "ssh -i ${keyPath} ${serviceId}@${ipAddr} '${commands}'"`
@@ -26,7 +27,7 @@ const runSshCommand = (platform=``, commands=``) => {
 		`ssh -i ${keyPath} ${serviceId}@${ipAddr} '${commands}'`
 	);
 
-	logger(`info`, `SSH 명령 실행 중...`);
+	logger(`info`, `SSH 명령 ���행 중...`);
 	execSync(sshCommand, { "stdio": `inherit` });
 };
 
@@ -45,7 +46,7 @@ const compressBuild = () => {
 
 const uploadToGCP = () => {
 	logger(`info`, `GCP 업로드 시작`);
-	const gcpPath = `gs://${CONFIG.gcp.bucket}/${CONFIG.gcp.path}`;
+	const gcpPath = `gs://${env.gcp.bucket}/${env.gcp.path}`;
 	execSync(`gcloud storage cp build.tar.gz ${gcpPath}`, { "stdio": `inherit` });
 	logger(`info`, `GCP 업로드 완료: ${gcpPath}`);
 };
@@ -60,9 +61,9 @@ const deleteBuildTar = (platform=``) => {
 const runClientRemoteScript = (platform=``) => {
 	logger(`info`, `원격 서버 클라이언트 배포 스크립트 실행 시작`);
 
-	const basePath = `/var/www/${CONFIG.domain}/${CONFIG.projectName}`;
+	const basePath = `/var/www/${env.domain}/${env.projectName}`;
 	const clientPath = `${basePath}/client`;
-	const gcpPath = `gs://${CONFIG.gcp.bucket}/${CONFIG.gcp.path}`;
+	const gcpPath = `gs://${env.gcp.bucket}/${env.gcp.path}`;
 
 	const commands = [
 		`cd ${basePath}`,
@@ -90,15 +91,15 @@ const runGitPush = () => {
 const runServerRemoteScript = (platform=``) => {
 	logger(`info`, `원격 서버 서버 배포 스크립트 실행 시작`);
 
-	const serverPath = `/var/www/${CONFIG.domain}/${CONFIG.projectName}/server`;
+	const serverPath = `/var/www/${env.domain}/${env.projectName}/server`;
 
 	const commands = [
 		`cd ${serverPath}`,
 		`sudo git fetch --all`,
-		`sudo git reset --hard ${CONFIG.git.deploy.resetBranch}`,
+		`sudo git reset --hard ${settings.git.deploy.resetBranch}`,
 		`sudo rm -rf client`,
 		`sudo chmod -R 755 ${serverPath}`,
-		`if pm2 describe ${CONFIG.projectName} >/dev/null 2>&1; then sudo pm2 stop ${CONFIG.projectName} && pm2 save; fi`,
+		`if pm2 describe ${env.projectName} >/dev/null 2>&1; then sudo pm2 stop ${env.projectName} && pm2 save; fi`,
 		`sudo npm install`,
 		`sudo pm2 start ecosystem.config.cjs --env production && pm2 save`,
 		`sleep 5 && sudo pm2 save --force`
@@ -142,7 +143,7 @@ const runServerRemoteScript = (platform=``) => {
 	}
 	catch (e) {
 		const msg = e instanceof Error ? e.message : String(e);
-		logger(`error`, `${TITLE} 스크립트 실행 실패: ${msg}`);
+		logger(`error`, `${TITLE} 스크립�� 실행 실패: ${msg}`);
 		process.exit(1);
 	}
 })();
