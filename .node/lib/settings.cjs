@@ -30,14 +30,14 @@ const settings = {
 		defaultCdn: `rawGithub`,
 		folders: [
 			{
-				sourcePath: `src/public/node/cjs`,
-				targetPath: `.node/cjs`,
-				files: [`swc.cjs`, `git.cjs`, `fix.cjs`, `reset.cjs`, `gcloud.cjs`, `vsce.cjs`, `sync.cjs`],
-			},
-			{
 				sourcePath: `src/public/node/lib`,
 				targetPath: `.node/lib`,
-				files: [`utils.cjs`, `settings.cjs`],
+				files: [`settings.cjs`, `utils.cjs`],
+			},
+			{
+				sourcePath: `src/public/node/cjs`,
+				targetPath: `.node/cjs`,
+				files: [`sync.cjs`, `swc.cjs`, `git.cjs`, `fix.cjs`, `reset.cjs`, `gcloud.cjs`, `vsce.cjs`],
 			},
 			{
 				sourcePath: `src/public/github`,
@@ -48,6 +48,11 @@ const settings = {
 				sourcePath: `src/public/github`,
 				targetPath: ``,
 				files: [`.gitattributes`, `.gitignore.public`, `.gitignore.private`],
+			},
+			{
+				sourcePath: `src/public/config`,
+				targetPath: ``,
+				files: [`.client.swcrc`, `.server.swcrc`, `eslint.config.js`],
 			},
 		],
 	},

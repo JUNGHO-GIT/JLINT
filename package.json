@@ -4,7 +4,7 @@
   "description": "Universal Language formatter",
   "publisher": "JUNGHO",
   "license": "Apache-2.0",
-  "version": "2.8.9",
+  "version": "2.9.0",
   "main": "./out/extension.js",
   "icon": "logo.webp",
   "repository": {

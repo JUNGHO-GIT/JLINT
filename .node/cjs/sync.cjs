@@ -10,7 +10,7 @@ const https = require(`https`);
 const {settings} = require(`../lib/settings.cjs`);
 const {logger} = require(`../lib/utils.cjs`);
 
-// 인자 파싱 ---------------------------------------------------------------------------------
+// 인자 파싱 -------------------------------------------------------------------------------
 const TITLE = `sync.cjs`;
 const argv = process.argv.slice(2);
 const args1 = argv.find(arg => [`--npm`, `--pnpm`, `--yarn`, `--bun`].includes(arg))?.replace(`--`, ``) ?? ``;
@@ -35,8 +35,12 @@ const httpGet = (url = ``, token = ``) => new Promise((resolve, reject) => {
 			reject(new Error(`HTTP ${res.statusCode}: ${url}`))
 		) : (() => {
 			let data = ``;
-			res.on(`data`, chunk => data += chunk);
-			res.on(`end`, () => resolve(data));
+			res.on(`data`, chunk => {
+				data += chunk;
+			});
+			res.on(`end`, () => {
+				resolve(data);
+			});
 		})();
 	});
 	req.on(`error`, reject);
@@ -46,11 +50,41 @@ const httpGet = (url = ``, token = ``) => new Promise((resolve, reject) => {
 	});
 });
 
-// 모든 파일 동기화 --------------------------------------------------------------------------
+// 프로젝트 루트 탐색 (package.json + .node 기준) --------------------------------------------
+const resolveProjectRoot = (startDir = ``) => {
+	let dir = startDir;
+	let found = ``;
+	let isDone = false;
+
+	while (!isDone) {
+		const hasPkg = fs.existsSync(path.join(dir, `package.json`));
+		const hasNodeDir = fs.existsSync(path.join(dir, `.node`));
+
+		hasPkg && hasNodeDir && (
+			found = dir,
+			isDone = true
+		);
+
+		!isDone && (() => {
+			const parent = path.dirname(dir);
+			parent === dir ? (
+				isDone = true
+			) : (
+				dir = parent
+			);
+		})();
+	}
+
+	const result = found || startDir;
+	return result;
+};
+
+// 모든 파일 동기화 (settings.cdn.folders 순서 그대로, 완전 동기) ----------------------------
 const syncAll = async () => {
 	logger(`info`, `GitHub CDN 동기화 시작`);
 
 	const {cdn, git} = settings;
+
 	const isPrivate = cdn.defaultRemote === `private`;
 	const owner = cdn.owner;
 	const repo = isPrivate ? cdn.repoPrivate : cdn.repo;
@@ -58,52 +92,94 @@ const syncAll = async () => {
 	const cdnType = cdn.defaultCdn;
 	const token = isPrivate ? process.env.GITHUB_TOKEN ?? `` : ``;
 
-	// args3에 따라 루트 경로 설정
+	const buildUrl = getCdnUrls[cdnType];
+
 	const baseCwd = process.cwd();
-	const cwd = args3 === `client` ? path.join(baseCwd, `client`) : baseCwd;
+	const projectRoot = resolveProjectRoot(baseCwd);
+
+	// --server: 프로젝트 루트, --client: 프로젝트 루트의 client 폴더
+	const cwd = args3 === `client`
+		? path.join(projectRoot, `client`)
+		: projectRoot;
+
+	let canRun = true;
+
+	!buildUrl && (
+		logger(`error`, `지원하지 않는 CDN 타입: ${cdnType}`),
+		canRun = false
+	);
+
+	(!Array.isArray(cdn.folders) || cdn.folders.length === 0) && (
+		logger(`warn`, `동기화 대상 폴더가 설정되지 않았습니다 (settings.cdn.folders 비어 있음)`),
+		canRun = false
+	);
 
 	logger(`info`, `원격: ${cdn.defaultRemote}`);
 	logger(`info`, `저장소: ${owner}/${repo}`);
 	logger(`info`, `브랜치: ${branch}`);
-	logger(`info`, `대상 타입: ${args3 || `default`}`);
-	logger(`info`, `루트 경로: ${cwd}`);
+	logger(`info`, `대상 타입: ${args3 || `server(default)`}`);
+	logger(`info`, `프로젝트 루트: ${projectRoot}`);
+	logger(`info`, `동기화 루트 경로: ${cwd}`);
 
-	// 폴더별 동기화
-	for (const folder of cdn.folders) {
-		const {sourcePath, targetPath: relTargetPath, files} = folder;
-		const targetDir = relTargetPath ? path.join(cwd, relTargetPath) : cwd;
-		const isRoot = !relTargetPath;
-		const displayPath = relTargetPath || `루트`;
+	if (canRun) {
+		const folders = cdn.folders;
+		let folderIndex = 0;
 
-		logger(`info`, `대상 폴더: ${displayPath}`);
+		// folders 배열 순서 그대로 처리
+		while (folderIndex < folders.length) {
+			const folder = folders[folderIndex];
 
-		// 폴더가 없으면 생성 (기존 폴더는 유지하여 로컬 파일 보존)
-		if (!isRoot && !fs.existsSync(targetDir)) {
-			fs.mkdirSync(targetDir, {recursive: true});
-			logger(`info`, `폴더 생성: ${displayPath}`);
-		}
+			if (!folder || !Array.isArray(folder.files)) {
+				logger(`warn`, `잘못된 폴더 설정 감지, 건너뜀: ${JSON.stringify(folder)}`);
+				folderIndex += 1;
+			}
+			else {
+				const {sourcePath, targetPath: relTargetPath, files} = folder;
+				const targetDir = relTargetPath ? path.join(cwd, relTargetPath) : cwd;
+				const isRoot = !relTargetPath;
+				const displayPath = relTargetPath || `루트`;
 
-		// 파일별 다운로드
-		for (const fileName of files) {
-			const targetFilePath = path.join(targetDir, fileName);
-			const remoteFilePath = `${sourcePath}/${fileName}`;
-			const url = getCdnUrls[cdnType](owner, repo, branch, remoteFilePath);
+				logger(`info`, `대상 폴더: ${displayPath} (index: ${folderIndex})`);
 
-			logger(`info`, `다운로드: ${fileName}`);
+				!isRoot && !fs.existsSync(targetDir) && (
+					fs.mkdirSync(targetDir, {recursive: true}),
+					logger(`info`, `폴더 생성: ${displayPath} (${targetDir})`)
+				);
 
-			try {
-				const content = await httpGet(url, token);
+				let fileIndex = 0;
 
-				// 파일이 존재하면 무조건 삭제 후 다시 작성
-				if (fs.existsSync(targetFilePath)) {
-					fs.unlinkSync(targetFilePath);
+				// 폴더 내 files 배열 순서대로 동기
+				while (fileIndex < files.length) {
+					const fileName = files[fileIndex];
+
+					if (!fileName) {
+						logger(`warn`, `파일명이 비어 있어 건너뜀 (폴더: ${displayPath})`);
+						fileIndex += 1;
+					}
+					else {
+						const targetFilePath = path.join(targetDir, fileName);
+						const remoteFilePath = `${sourcePath}/${fileName}`;
+						const url = buildUrl(owner, repo, branch, remoteFilePath);
+
+						logger(`info`, `다운로드 시작: ${fileName} (${url})`);
+
+						try {
+							const content = await httpGet(url, token);
+							fs.writeFileSync(targetFilePath, content, `utf8`);
+							logger(`info`, `동기화 완료: ${fileName} → ${targetFilePath}`);
+						}
+						catch (e) {
+							logger(
+								`error`,
+								`파일 가져오기 실패: ${fileName} - ${e instanceof Error ? e.message : String(e)}`,
+							);
+						}
+
+						fileIndex += 1;
+					}
 				}
 
-				fs.writeFileSync(targetFilePath, content, `utf8`);
-				logger(`info`, `생성: ${fileName}`);
-			}
-			catch (e) {
-				logger(`error`, `파일 가져오기 실패: ${fileName} - ${e instanceof Error ? e.message : String(e)}`);
+				folderIndex += 1;
 			}
 		}
 	}
@@ -119,10 +195,14 @@ const syncAll = async () => {
 	logger(`info`, `전달된 인자 3: ${args3 || `none`}`);
 
 	try {
-		[`npm`, `pnpm`, `yarn`, `bun`].includes(args1) && args2 === `sync` && (
+		const canSync =
+			[`npm`, `pnpm`, `yarn`, `bun`].includes(args1) &&
+			args2 === `sync`;
+
+		canSync ? (
 			await syncAll(),
 			logger(`info`, `CDN 동기화 완료`)
-		);
+		) : logger(`info`, `동기화 조건 불일치로 실행하지 않음`);
 	}
 	catch (e) {
 		logger(`error`, `${TITLE} 스크립트 실행 실패: ${e instanceof Error ? e.message : String(e)}`);

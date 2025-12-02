@@ -27,7 +27,7 @@ const runSshCommand = (platform=``, commands=``) => {
 		`ssh -i ${keyPath} ${serviceId}@${ipAddr} '${commands}'`
 	);
 
-	logger(`info`, `SSH 명령 실행 중...`);
+	logger(`info`, `SSH 명령 ���행 중...`);
 	execSync(sshCommand, { "stdio": `inherit` });
 };
 
