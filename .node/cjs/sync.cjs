@@ -10,7 +10,7 @@ const https = require(`https`);
 const {settings} = require(`../lib/settings.cjs`);
 const {logger} = require(`../lib/utils.cjs`);
 
-// 인자 파싱 ---------------------------------------------------------------------------
+// 인자 파싱 ---------------------------------------------------------------------------------
 const TITLE = `sync.cjs`;
 const argv = process.argv.slice(2);
 const args1 = argv.find(arg => [`--npm`, `--pnpm`, `--yarn`, `--bun`].includes(arg))?.replace(`--`, ``) ?? ``;
@@ -18,15 +18,18 @@ const args2 = argv.find(arg => [`--sync`].includes(arg))?.replace(`--`, ``) ?? `
 const args3 = argv.find(arg => [`--server`, `--client`].includes(arg))?.replace(`--`, ``) ?? ``;
 const mode = args3 === `client` ? `client` : `server`;
 
+// 스크립트 위치 기준 프로젝트 루트 계산 ------------------------------------------------------
 const SCRIPT_DIR = __dirname;
+const NODE_ROOT = path.resolve(SCRIPT_DIR, `..`);
+const PROJECT_ROOT = path.resolve(NODE_ROOT, `..`);
 
-// CDN URL 생성 함수 -------------------------------------------------------------------
+// CDN URL 생성 함수 -------------------------------------------------------------------------
 const getCdnUrls = {
 	rawGithub: (owner, repo, branch, filePath) =>
 		`https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${filePath}`,
 };
 
-// HTTP GET 요청 (Promise) -------------------------------------------------------------
+// HTTP GET 요청 (Promise) -------------------------------------------------------------------
 const httpGet = (url = ``, token = ``) => new Promise((resolve, reject) => {
 	const headers = {"User-Agent": `JNODE-Sync`};
 	token && (headers[`Authorization`] = `token ${token}`);
@@ -53,83 +56,48 @@ const httpGet = (url = ``, token = ``) => new Promise((resolve, reject) => {
 	});
 });
 
-// 프로젝트 루트 후보 탐색 (.node/lib/settings.cjs 기준) --------------------------------
-const findProjectRootCandidate = (startDir = ``) => {
-	let dir = startDir || process.cwd();
-	let projectRoot = ``;
-	let isDone = false;
+// server / client 동기화 루트 결정 ----------------------------------------------------------
+const resolveSyncRoot = (rootMode = `server`) => {
+	const isClientRoot = path.basename(PROJECT_ROOT) === `client`;
+	const hasClientSub = fs.existsSync(path.join(PROJECT_ROOT, `client`));
+	const baseRoot = PROJECT_ROOT;
 
-	while (!isDone) {
-		const nodeDir = path.join(dir, `.node`);
-		const settingsPath = path.join(nodeDir, `lib`, `settings.cjs`);
-		const hasNodeDir = fs.existsSync(nodeDir);
-		const hasSettings = fs.existsSync(settingsPath);
-
-		hasNodeDir && hasSettings && (
-			projectRoot = dir,
-			isDone = true
-		);
-
-		!isDone && (() => {
-			const parent = path.dirname(dir);
-			parent === dir ? (
-				isDone = true
+	const syncRoot =
+		rootMode === `client` ? (
+			isClientRoot ? (
+				baseRoot
+			) : hasClientSub ? (
+				path.join(baseRoot, `client`)
 			) : (
-				dir = parent
-			);
-		})();
-	}
-
-	!projectRoot && (projectRoot = startDir || process.cwd());
-	return projectRoot;
-};
-
-// 최종 프로젝트 루트 결정 --------------------------------------------------------------
-const resolveProjectRoot = () => {
-	const scriptBase = path.resolve(SCRIPT_DIR, `..`, `..`);
-	let projectRoot = findProjectRootCandidate(process.cwd());
-
-	(!projectRoot || projectRoot === process.cwd()) && (
-		projectRoot = findProjectRootCandidate(scriptBase)
-	);
-
-	return projectRoot;
-};
-
-// server / client 동기화 루트 결정 -----------------------------------------------------
-const resolveSyncRoot = (rootMode = `server`, projectRoot = ``) => {
-	const baseRoot = projectRoot || resolveProjectRoot();
-	let syncRoot = baseRoot;
-
-	rootMode === `client` && fs.existsSync(path.join(baseRoot, `client`)) && (
-		syncRoot = path.join(baseRoot, `client`)
-	);
+				baseRoot
+			)
+		) : (
+			baseRoot
+		);
 
 	return syncRoot;
 };
 
-// 폴더/파일 스킵 규칙 -----------------------------------------------------------------
+// 폴더 스킵 규칙 ---------------------------------------------------------------------------
 const shouldSkipFolder = (rootMode = `server`, relTargetPath = ``) => {
-	let skip = false;
+	const normalized = relTargetPath ? relTargetPath.replace(/\\/g, `/`) : ``;
+	const segments = normalized ? normalized.split(`/`) : [];
+	const hasClient = segments.includes(`client`);
+	const hasServer = segments.includes(`server`);
 
-	if (relTargetPath) {
-		const segments = relTargetPath.split(/[\\/]/);
-		const isClientFolder = segments.includes(`client`);
-		const isServerFolder = segments.includes(`server`);
-
-		skip =
-			rootMode === `server` ? (
-				isClientFolder
-			) : rootMode === `client` ? (
-				isServerFolder
-			) : (
-				false
-			);
-	}
+	const skip =
+		rootMode === `server` ? (
+			hasClient
+		) : rootMode === `client` ? (
+			hasServer
+		) : (
+			false
+		);
 
 	return skip;
 };
 
+// 파일 스킵 규칙 ---------------------------------------------------------------------------
 const shouldSkipFile = (rootMode = `server`, fileName = ``) => {
 	const isClientFile = fileName.includes(`client`);
 	const isServerFile = fileName.includes(`server`);
@@ -146,7 +114,7 @@ const shouldSkipFile = (rootMode = `server`, fileName = ``) => {
 	return skip;
 };
 
-// 모든 파일 동기화 (settings.cdn.folders 순서 그대로, 동기 실행) ----------------------
+// 모든 파일 동기화 (settings.cdn.folders 순서 그대로, 동기 실행) ------------------------------
 const syncAll = async () => {
 	logger(`info`, `GitHub CDN 동기화 시작`);
 
@@ -160,9 +128,7 @@ const syncAll = async () => {
 	const token = isPrivate ? process.env.GITHUB_TOKEN ?? `` : ``;
 
 	const buildUrl = getCdnUrls[cdnType];
-
-	const projectRoot = resolveProjectRoot();
-	const syncRoot = resolveSyncRoot(mode, projectRoot);
+	const syncRoot = resolveSyncRoot(mode);
 
 	let canRun = true;
 
@@ -186,7 +152,7 @@ const syncAll = async () => {
 	logger(`info`, `브랜치: ${branch}`);
 	logger(`info`, `대상 타입: ${mode}`);
 	logger(`info`, `SCRIPT_DIR: ${SCRIPT_DIR}`);
-	logger(`info`, `프로젝트 루트: ${projectRoot}`);
+	logger(`info`, `PROJECT_ROOT: ${PROJECT_ROOT}`);
 	logger(`info`, `동기화 루트 경로: ${syncRoot}`);
 
 	if (canRun) {
@@ -201,14 +167,22 @@ const syncAll = async () => {
 			}
 
 			const {sourcePath, targetPath: relTargetPath, files} = folder;
+			const normalizedTarget = relTargetPath ? relTargetPath.replace(/\\/g, `/`) : ``;
 
 			if (shouldSkipFolder(mode, relTargetPath || ``)) {
 				logger(`info`, `모드(${mode})에서 제외된 폴더: ${relTargetPath || `루트`} (index: ${folderIndex})`);
 				continue;
 			}
 
-			const targetDir = relTargetPath ? path.join(syncRoot, relTargetPath) : syncRoot;
-			const isRoot = !relTargetPath;
+			const targetDir = !relTargetPath ? (
+				syncRoot
+			) : normalizedTarget === `client` ? (
+				syncRoot
+			) : (
+				path.join(syncRoot, relTargetPath)
+			);
+
+			const isRoot = !relTargetPath || targetDir === syncRoot;
 			const displayPath = relTargetPath || `루트`;
 
 			logger(`info`, `대상 폴더: ${displayPath} (index: ${folderIndex})`);
@@ -232,6 +206,7 @@ const syncAll = async () => {
 				}
 
 				const targetFilePath = path.join(targetDir, fileName);
+
 				const remoteFilePath = `${sourcePath}/${fileName}`;
 				const url = buildUrl(owner, repo, branch, remoteFilePath);
 
@@ -255,7 +230,7 @@ const syncAll = async () => {
 	logger(`info`, `동기화 완료`);
 };
 
-// 실행 --------------------------------------------------------------------------------
+// 실행 --------------------------------------------------------------------------------------
 (async () => {
 	logger(`info`, `스크립트 실행: ${TITLE}`);
 	logger(`info`, `전달된 인자 1: ${args1 || `none`}`);

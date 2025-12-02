@@ -217,7 +217,7 @@ const modifyEnvAndIndex = () => {
 			}
 		];
 		fs.writeFileSync(`.env`, transformLines(envContent, envRules));
-		logger(`info`, `.env 파일 수정 완���`);
+		logger(`info`, `.env 파일 수정 완료`);
 	})();
 
 	indexExists && (() => {
