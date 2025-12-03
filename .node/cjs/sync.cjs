@@ -1,54 +1,54 @@
 /**
  * @file sync.cjs
- * @since 2025-12-02
  * @description GitHub CDN에서 실시간으로 .node 폴더의 코드를 동기화
+ * @author Jungho
+ * @since 2025-12-02
  */
 
 const fs = require(`fs`);
 const path = require(`path`);
+const process = require(`process`);
 const https = require(`https`);
-const {settings} = require(`../lib/settings.cjs`);
-const {logger} = require(`../lib/utils.cjs`);
+const { settings } = require(`../lib/settings.cjs`);
+const { logger, fileExists, createDir } = require(`../lib/utils.cjs`);
 
-// 인자 파싱 ---------------------------------------------------------------------------------
-const TITLE = `sync.cjs`;
+// 1. 인자 파싱 ------------------------------------------------------------------------------
+const TITLE = path.basename(__filename);
 const argv = process.argv.slice(2);
-const args1 = argv.find(arg => [`--npm`, `--pnpm`, `--yarn`, `--bun`].includes(arg))?.replace(`--`, ``) ?? ``;
-const args2 = argv.find(arg => [`--sync`].includes(arg))?.replace(`--`, ``) ?? ``;
-const args3 = argv.find(arg => [`--server`, `--client`].includes(arg))?.replace(`--`, ``) ?? ``;
+const args1 = argv.find(arg => [`--npm`, `--pnpm`, `--yarn`, `--bun`].includes(arg))?.replace(`--`, ``) || ``;
+const args2 = argv.find(arg => [`--sync`].includes(arg))?.replace(`--`, ``) || ``;
+const args3 = argv.find(arg => [`--server`, `--client`].includes(arg))?.replace(`--`, ``) || ``;
 const mode = args3 === `client` ? `client` : `server`;
 
-// 스크립트 위치 기준 프로젝트 루트 계산 ------------------------------------------------------
+// 2. 스크립트 위치 기준 프로젝트 루트 계산 --------------------------------------------------
 const SCRIPT_DIR = __dirname;
 const NODE_ROOT = path.resolve(SCRIPT_DIR, `..`);
 const PROJECT_ROOT = path.resolve(NODE_ROOT, `..`);
 
-// CDN URL 생성 함수 -------------------------------------------------------------------------
+// 3. CDN URL 생성 함수 ----------------------------------------------------------------------
 const getCdnUrls = {
-	rawGithub: (owner, repo, branch, filePath) =>
-		`https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${filePath}`,
+	"rawGithub": (owner, repo, branch, filePath) => (
+		`https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${filePath}`
+	),
 };
 
-// HTTP GET 요청 (Promise) -------------------------------------------------------------------
-const httpGet = (url = ``, token = ``) => new Promise((resolve, reject) => {
-	const headers = {"User-Agent": `JNODE-Sync`};
+// 4. HTTP GET 요청 (Promise) ----------------------------------------------------------------
+const httpGet = (url=``, token=``) => new Promise((resolve, reject) => {
+	const headers = { "User-Agent": `JNODE-Sync` };
 	token && (headers[`Authorization`] = `token ${token}`);
 
-	const req = https.get(url, {headers}, (res) => {
+	const req = https.get(url, { headers }, res => {
 		res.statusCode >= 300 && res.statusCode < 400 && res.headers.location ? (
 			httpGet(res.headers.location, token).then(resolve).catch(reject)
 		) : res.statusCode !== 200 ? (
 			reject(new Error(`HTTP ${res.statusCode}: ${url}`))
 		) : (() => {
 			let data = ``;
-			res.on(`data`, chunk => {
-				data += chunk;
-			});
-			res.on(`end`, () => {
-				resolve(data);
-			});
+			res.on(`data`, chunk => { data += chunk; });
+			res.on(`end`, () => { resolve(data); });
 		})();
 	});
+
 	req.on(`error`, reject);
 	req.setTimeout(10000, () => {
 		req.destroy();
@@ -56,76 +56,73 @@ const httpGet = (url = ``, token = ``) => new Promise((resolve, reject) => {
 	});
 });
 
-// server / client 동기화 루트 결정 ----------------------------------------------------------
-const resolveSyncRoot = (rootMode = `server`) => {
+// 5. server / client 동기화 루트 결정 -------------------------------------------------------
+const resolveSyncRoot = (rootMode=`server`) => {
 	const isClientRoot = path.basename(PROJECT_ROOT) === `client`;
-	const hasClientSub = fs.existsSync(path.join(PROJECT_ROOT, `client`));
+	const hasClientSub = fileExists(path.join(PROJECT_ROOT, `client`));
 	const baseRoot = PROJECT_ROOT;
 
-	const syncRoot =
-		rootMode === `client` ? (
-			isClientRoot ? (
-				baseRoot
-			) : hasClientSub ? (
-				path.join(baseRoot, `client`)
-			) : (
-				baseRoot
-			)
+	const syncRoot = rootMode === `client` ? (
+		isClientRoot ? (
+			baseRoot
+		) : hasClientSub ? (
+			path.join(baseRoot, `client`)
 		) : (
 			baseRoot
-		);
+		)
+	) : (
+		baseRoot
+	);
 
 	return syncRoot;
 };
 
-// 폴더 스킵 규칙 ---------------------------------------------------------------------------
-const shouldSkipFolder = (rootMode = `server`, relTargetPath = ``) => {
+// 6. 폴더 스킵 규칙 -------------------------------------------------------------------------
+const shouldSkipFolder = (rootMode=`server`, relTargetPath=``) => {
 	const normalized = relTargetPath ? relTargetPath.replace(/\\/g, `/`) : ``;
 	const segments = normalized ? normalized.split(`/`) : [];
 	const hasClient = segments.includes(`client`);
 	const hasServer = segments.includes(`server`);
 
-	const skip =
-		rootMode === `server` ? (
-			hasClient
-		) : rootMode === `client` ? (
-			hasServer
-		) : (
-			false
-		);
+	const skip = rootMode === `server` ? (
+		hasClient
+	) : rootMode === `client` ? (
+		hasServer
+	) : (
+		false
+	);
 
 	return skip;
 };
 
-// 파일 스킵 규칙 ---------------------------------------------------------------------------
-const shouldSkipFile = (rootMode = `server`, fileName = ``) => {
+// 7. 파일 스킵 규칙 -------------------------------------------------------------------------
+const shouldSkipFile = (rootMode=`server`, fileName=``) => {
 	const isClientFile = fileName.includes(`client`);
 	const isServerFile = fileName.includes(`server`);
 
-	const skip =
-		rootMode === `server` ? (
-			isClientFile && !isServerFile
-		) : rootMode === `client` ? (
-			isServerFile && !isClientFile
-		) : (
-			false
-		);
+	const skip = rootMode === `server` ? (
+		isClientFile && !isServerFile
+	) : rootMode === `client` ? (
+		isServerFile && !isClientFile
+	) : (
+		false
+	);
 
 	return skip;
 };
 
-// 모든 파일 동기화 (settings.cdn.folders 순서 그대로, 동기 실행) ------------------------------
+// 8. 모든 파일 동기화 -----------------------------------------------------------------------
 const syncAll = async () => {
 	logger(`info`, `GitHub CDN 동기화 시작`);
 
-	const {cdn, git} = settings;
+	const { cdn, git } = settings;
 
 	const isPrivate = cdn.defaultRemote === `private`;
 	const owner = cdn.owner;
 	const repo = isPrivate ? cdn.repoPrivate : cdn.repo;
 	const branch = isPrivate ? git.remotes.private.branch : git.remotes.public.branch;
 	const cdnType = cdn.defaultCdn;
-	const token = isPrivate ? process.env.GITHUB_TOKEN ?? `` : ``;
+	const token = isPrivate ? process.env.GITHUB_TOKEN || `` : ``;
 
 	const buildUrl = getCdnUrls[cdnType];
 	const syncRoot = resolveSyncRoot(mode);
@@ -142,7 +139,7 @@ const syncAll = async () => {
 		canRun = false
 	);
 
-	!fs.existsSync(syncRoot) && (
+	!fileExists(syncRoot) && (
 		logger(`error`, `동기화 루트 경로가 존재하지 않습니다: ${syncRoot}`),
 		canRun = false
 	);
@@ -155,74 +152,74 @@ const syncAll = async () => {
 	logger(`info`, `PROJECT_ROOT: ${PROJECT_ROOT}`);
 	logger(`info`, `동기화 루트 경로: ${syncRoot}`);
 
-	if (canRun) {
-		const folders = cdn.folders;
+	if (!canRun) {
+		logger(`warn`, `동기화 조건 불충족으로 실행 중단`);
+		return;
+	}
 
-		for (let folderIndex = 0; folderIndex < folders.length; folderIndex += 1) {
-			const folder = folders[folderIndex];
+	const folders = cdn.folders;
 
-			if (!folder || !Array.isArray(folder.files)) {
-				logger(`warn`, `잘못된 폴더 설정 감지, 건너뜀: ${JSON.stringify(folder)}`);
+	for (let folderIndex = 0; folderIndex < folders.length; folderIndex += 1) {
+		const folder = folders[folderIndex];
+
+		if (!folder || !Array.isArray(folder.files)) {
+			logger(`warn`, `잘못된 폴더 설정 감지, 건너뜀: ${JSON.stringify(folder)}`);
+			continue;
+		}
+
+		const { sourcePath, targetPath: relTargetPath, files } = folder;
+		const normalizedTarget = relTargetPath ? relTargetPath.replace(/\\/g, `/`) : ``;
+
+		if (shouldSkipFolder(mode, relTargetPath || ``)) {
+			logger(`info`, `모드(${mode})에서 제외된 폴더: ${relTargetPath || `루트`} (index: ${folderIndex})`);
+			continue;
+		}
+
+		const targetDir = !relTargetPath ? (
+			syncRoot
+		) : normalizedTarget === `client` ? (
+			syncRoot
+		) : (
+			path.join(syncRoot, relTargetPath)
+		);
+
+		const isRoot = !relTargetPath || targetDir === syncRoot;
+		const displayPath = relTargetPath || `루트`;
+
+		logger(`info`, `대상 폴더: ${displayPath} (index: ${folderIndex})`);
+
+		!isRoot && !fileExists(targetDir) && (
+			fs.mkdirSync(targetDir, { "recursive": true }),
+			logger(`info`, `폴더 생성: ${displayPath} (${targetDir})`)
+		);
+
+		for (let fileIndex = 0; fileIndex < files.length; fileIndex += 1) {
+			const fileName = files[fileIndex];
+
+			if (!fileName) {
+				logger(`warn`, `파일명이 비어 있어 건너뜀 (폴더: ${displayPath})`);
 				continue;
 			}
 
-			const {sourcePath, targetPath: relTargetPath, files} = folder;
-			const normalizedTarget = relTargetPath ? relTargetPath.replace(/\\/g, `/`) : ``;
-
-			if (shouldSkipFolder(mode, relTargetPath || ``)) {
-				logger(`info`, `모드(${mode})에서 제외된 폴더: ${relTargetPath || `루트`} (index: ${folderIndex})`);
+			if (shouldSkipFile(mode, fileName)) {
+				logger(`info`, `모드(${mode})에서 제외된 파일: ${fileName} (폴더: ${displayPath})`);
 				continue;
 			}
 
-			const targetDir = !relTargetPath ? (
-				syncRoot
-			) : normalizedTarget === `client` ? (
-				syncRoot
-			) : (
-				path.join(syncRoot, relTargetPath)
-			);
+			const targetFilePath = path.join(targetDir, fileName);
+			const remoteFilePath = `${sourcePath}/${fileName}`;
+			const url = buildUrl(owner, repo, branch, remoteFilePath);
 
-			const isRoot = !relTargetPath || targetDir === syncRoot;
-			const displayPath = relTargetPath || `루트`;
+			logger(`info`, `다운로드 시작: ${fileName} (${url})`);
 
-			logger(`info`, `대상 폴더: ${displayPath} (index: ${folderIndex})`);
-
-			!isRoot && !fs.existsSync(targetDir) && (
-				fs.mkdirSync(targetDir, {recursive: true}),
-				logger(`info`, `폴더 생성: ${displayPath} (${targetDir})`)
-			);
-
-			for (let fileIndex = 0; fileIndex < files.length; fileIndex += 1) {
-				const fileName = files[fileIndex];
-
-				if (!fileName) {
-					logger(`warn`, `파일명이 비어 있어 건너뜀 (폴더: ${displayPath})`);
-					continue;
-				}
-
-				if (shouldSkipFile(mode, fileName)) {
-					logger(`info`, `모드(${mode})에서 제외된 파일: ${fileName} (폴더: ${displayPath})`);
-					continue;
-				}
-
-				const targetFilePath = path.join(targetDir, fileName);
-
-				const remoteFilePath = `${sourcePath}/${fileName}`;
-				const url = buildUrl(owner, repo, branch, remoteFilePath);
-
-				logger(`info`, `다운로드 시작: ${fileName} (${url})`);
-
-				try {
-					const content = await httpGet(url, token);
-					fs.writeFileSync(targetFilePath, content, `utf8`);
-					logger(`info`, `동기화 완료: ${fileName} → ${targetFilePath}`);
-				}
-				catch (e) {
-					logger(
-						`error`,
-						`파일 가져오기 실패: ${fileName} - ${e instanceof Error ? e.message : String(e)}`,
-					);
-				}
+			try {
+				const content = await httpGet(url, token);
+				fs.writeFileSync(targetFilePath, content, `utf8`);
+				logger(`info`, `동기화 완료: ${fileName} → ${targetFilePath}`);
+			}
+			catch (e) {
+				const errMsg = e instanceof Error ? e.message : String(e);
+				logger(`error`, `파일 가져오기 실패: ${fileName} - ${errMsg}`);
 			}
 		}
 	}
@@ -230,27 +227,26 @@ const syncAll = async () => {
 	logger(`info`, `동기화 완료`);
 };
 
-// 실행 --------------------------------------------------------------------------------------
+// 99. 실행 ----------------------------------------------------------------------------------
 (async () => {
-	logger(`info`, `스크립트 실행: ${TITLE}`);
-	logger(`info`, `전달된 인자 1: ${args1 || `none`}`);
-	logger(`info`, `전달된 인자 2: ${args2 || `none`}`);
-	logger(`info`, `전달된 인자 3: ${args3 || `none`} (mode: ${mode})`);
-
 	try {
-		const canSync =
-			[`npm`, `pnpm`, `yarn`, `bun`].includes(args1) &&
-			args2 === `sync`;
-
-		canSync ? (
-			await syncAll(),
-			logger(`info`, `CDN 동기화 완료`)
-		) : logger(`info`, `동기화 조건 불일치로 실행하지 않음`);
+		logger(`info`, `스크립트 실행: ${TITLE}`);
+		logger(`info`, `전달된 인자 1: ${args1 || `none`}`);
+		logger(`info`, `전달된 인자 2: ${args2 || `none`}`);
+		logger(`info`, `전달된 인자 3: ${args3 || `none`}`);
+	}
+	catch {
+		logger(`warn`, `인자 파싱 오류 발생`);
+		process.exit(0);
+	}
+	try {
+		args1 && await syncAll();
+		logger(`info`, `스크립트 정상 종료: ${TITLE}`);
+		process.exit(0);
 	}
 	catch (e) {
-		logger(`error`, `${TITLE} 스크립트 실행 실패: ${e instanceof Error ? e.message : String(e)}`);
+		const errMsg = e instanceof Error ? e.message : String(e);
+		logger(`error`, `${TITLE} 스크립트 실행 실패: ${errMsg}`);
 		process.exit(1);
 	}
-
-	logger(`info`, `스크립트 종료: ${TITLE}`);
 })();
