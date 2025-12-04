@@ -7,11 +7,8 @@
 export {
 	capitalize,
 	singleTags,
-	brackets,
-	comma,
 	semicolon,
-	space,
-	quotes,
+	space
 } from "@rules/Syntax";
 
 // -------------------------------------------------------------------------------

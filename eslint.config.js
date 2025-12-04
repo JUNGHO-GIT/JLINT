@@ -3,7 +3,6 @@
  * @since 2025-11-22
  */
 
-// @ts-nocheck
 import { defineConfig } from "eslint/config";
 import js from "@eslint/js";
 import tseslint from "@typescript-eslint/eslint-plugin";
@@ -25,7 +24,6 @@ const COMMON_IGNORES = [
 	"**/*.min.js",
 	"**/*.bundle.js",
 	"**/vendor/**",
-	"**/.node/**"
 ];
 
 // 공통: JS/TS 파일 매칭 패턴 -------------------------------------------------------
@@ -458,10 +456,10 @@ const BASE_RULES = {
 		}
 	],
 
-	// 줄바꿈 스타일 (CRLF)
+	// 줄바꿈 스타일 (linux)
 	"linebreak-style": [
 		"error",
-		"windows"
+		"unix"
 	],
 
 	// 주석 주변 빈 줄

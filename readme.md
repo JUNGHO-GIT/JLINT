@@ -50,6 +50,10 @@ Format code and detect errors with visual separation of code blocks.
 	width="450"
 />
 
+## Architecture
+
+[Architecture Document](./architecture.md)
+
 ## License
 
 [Apache License 2.0](./license.md)

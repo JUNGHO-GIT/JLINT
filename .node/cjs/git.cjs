@@ -34,7 +34,7 @@ const getRemoteDefaultBranch = (remoteName=``) => {
 		);
 
 		branch ? (
-			logger(`info`, `원격 저장소 ${remoteName} 기본 브랜치(고정): ${branch}`)
+			logger(`info`, `원격 저장소 ${remoteName} 기본 브��치(고정): ${branch}`)
 		) : (
 			logger(`error`, `지원하지 않는 remote입니다: ${remoteName}`)
 		);
