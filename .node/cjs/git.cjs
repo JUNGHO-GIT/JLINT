@@ -34,7 +34,7 @@ const getRemoteDefaultBranch = (remoteName=``) => {
 		);
 
 		branch ? (
-			logger(`info`, `원격 저장소 ${remoteName} 기본 브��치(고정): ${branch}`)
+			logger(`info`, `원격 저장소 ${remoteName} 기본브랜치 (고정): ${branch}`)
 		) : (
 			logger(`error`, `지원하지 않는 remote입니다: ${remoteName}`)
 		);
@@ -42,7 +42,7 @@ const getRemoteDefaultBranch = (remoteName=``) => {
 		return branch;
 	}
 	catch (e) {
-		logger(`error`, `원격 저장소 ${remoteName} 기본 브랜치 감지 실패`);
+		logger(`error`, `원격 저장소 ${remoteName} 기본브랜치 감지 실패`);
 		return null;
 	}
 };
@@ -63,11 +63,11 @@ const checkRemoteExists = (remoteName=``) => {
 // 4. 원격 기본브랜치 설정 -------------------------------------------------------------------
 const setRemoteDefaultBranch = (remoteName=``) => {
 	const remoteExists = checkRemoteExists(remoteName);
-	!remoteExists && logger(`info`, `Remote '${remoteName}' 존재하지 않음 - 기본 브랜치 설정 건너뜀`);
+	!remoteExists && logger(`info`, `Remote '${remoteName}' 존재하지 않음 - 기본브랜치 설정 건너뜀`);
 
 	remoteExists && (() => {
 		const targetBranch = getRemoteDefaultBranch(remoteName);
-		!targetBranch && (logger(`error`, `원격 기본 브랜치를 찾을 수 없습니다: ${remoteName}`), process.exit(1));
+		!targetBranch && (logger(`error`, `원격 기본브랜치를 찾을 수 없습니다: ${remoteName}`), process.exit(1));
 
 		try {
 			const remoteUrl = execSync(`git remote get-url ${remoteName}`, { "encoding": `utf8` }).trim();
@@ -364,8 +364,8 @@ const gitFetch = () => {
 		const targetRemote = privateExists ? settings.git.remotes.private.name : settings.git.remotes.public.name;
 		const targetBranch = getRemoteDefaultBranch(targetRemote);
 
-		!privateExists && !publicExists && (logger(`error`, `사용 가��한 remote가 없습니다`), process.exit(1));
-		!targetBranch && (logger(`error`, `원격 기본 브랜치를 찾을 수 없습니다`), process.exit(1));
+		!privateExists && !publicExists && (logger(`error`, `사용 가능�� remote가 없습니다`), process.exit(1));
+		!targetBranch && (logger(`error`, `원격 기본브랜치를 찾을 수 없습니다`), process.exit(1));
 
 		logger(`info`, `Git Fetch 시작: ${targetRemote}`);
 		execSync(`git fetch ${targetRemote}`, { "stdio": `inherit` });
@@ -388,7 +388,7 @@ const gitPush = (remoteName=``, ignoreFilePath=``, msg=``) => {
 
 	remoteExists && (() => {
 		const targetBranch = getRemoteDefaultBranch(remoteName);
-		!targetBranch && (logger(`error`, `원격 기본 브랜치를 찾을 수 없습니다: ${remoteName}`), process.exit(1));
+		!targetBranch && (logger(`error`, `원격 기본브랜치를 찾을 수 없습니다: ${remoteName}`), process.exit(1));
 
 		logger(`info`, `Git Push 시작: ${remoteName}`);
 

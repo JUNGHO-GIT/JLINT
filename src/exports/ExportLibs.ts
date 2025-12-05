@@ -7,8 +7,6 @@
 import _vscode from "vscode";
 import _fs from "fs";
 import _path from "path";
-import _http from "http";
-import _https from "https";
 import { TextEncoder as _TextEncoder, TextDecoder as _TextDecoder } from "util";
 import _lodash from "lodash";
 import _CleanCSS from "clean-css";

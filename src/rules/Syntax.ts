@@ -81,61 +81,7 @@ export const singleTags = async (
 };
 
 // -------------------------------------------------------------------------------------------------
-export const brackets = async (
-	contentsParam: string,
-	fileExt: string
-) => {
-	try {
-		const rules1 = (
-			/(\))(\{)/gm
-		);
-		const rules2 = (
-			/(['|"])(\s+)(>)/gm
-		);
-
-		const finalResult = lodash.chain(contentsParam)
-			.replace(rules1, (...p: any[]) => (
-				`${p[1]} ${p[2]}`
-			))
-			.replace(rules2, (...p: any[]) => (
-				`${p[1]}>`
-			))
-			.value();
-
-		logger(`debug`, `${fileExt}:brackets - Y`);
-		return finalResult;
-	}
-	catch (err: any) {
-		logger(`error`, `${fileExt}:brackets - ${err.message}`);
-		return contentsParam;
-	}
-};
-
 // -------------------------------------------------------------------------------------------------
-export const comma = async (
-	contentsParam: string,
-	fileExt: string
-) => {
-	try {
-		const rules1 = (
-			/(\s*)(,)(\s*)/gm
-		);
-
-		const finalResult = lodash.chain(contentsParam)
-			.replace(rules1, (...p: any[]) => (
-				`${p[2]} `
-			))
-			.value();
-
-		logger(`debug`, `${fileExt}:comma - Y`);
-		return finalResult;
-	}
-	catch (err: any) {
-		logger(`error`, `${fileExt}:comma - ${err.message}`);
-		return contentsParam;
-	}
-};
-
 // -------------------------------------------------------------------------------------------------
 export const semicolon = async (
 	contentsParam: string,
@@ -187,26 +133,3 @@ export const space = async (
 };
 
 // -------------------------------------------------------------------------------------------------
-export const quotes = async (
-	contentsParam: string,
-	fileExt: string
-) => {
-	try {
-		const rules1 = (
-			/(?<!(?:(?:\\['])|(?:['"'])|(?:["'"])))(\s*)(')(\s*)(?!(?:(?:\\['])|(?:['"'])|(?:["'"])))/gm
-		);
-
-		const finalResult = lodash.chain(contentsParam)
-			.replace(rules1, (...p: any[]) => (
-				`${p[1]}"${p[3]}`
-			))
-			.value();
-
-		logger(`debug`, `${fileExt}:quotes - Y`);
-		return finalResult;
-	}
-	catch (err: any) {
-		logger(`error`, `${fileExt}:quotes - ${err.message}`);
-		return contentsParam;
-	}
-};

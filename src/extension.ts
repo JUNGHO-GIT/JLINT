@@ -29,12 +29,12 @@ export const activate = (context: vscode.ExtensionContext) => {
 	const command = vscode.commands.registerCommand(`extension.Jlint`, async () => {
 		const editor = vscode.window.activeTextEditor;
 		if (!editor) {
-			notify(`error`, `Jlint - No active editor found.`);
+			await notify(`error`, `Jlint - No active editor found.`);
 			return;
 		}
 
 		if (editor.document.uri.scheme !== `file`) {
-			notify(`error`, `Jlint - Please save the file before linting.`);
+			await notify(`error`, `Jlint - Please save the file before linting.`);
 			return;
 		}
 
@@ -53,7 +53,7 @@ export const activate = (context: vscode.ExtensionContext) => {
 			fileExt
 		);
 
-		notify(`info`, `Linting Completed - "${fileName}"`);
+		await notify(`info`, `Linting Completed - "${fileName}"`);
 	});
 
 	// 3. Listen for configuration changes -----------------------------------------------------------

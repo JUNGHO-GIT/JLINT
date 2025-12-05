@@ -9,12 +9,12 @@ import { CommonType } from "@exportTypes";
 
 // 0. removeComments -------------------------------------------------------------------------------
 export const removeComments = async (
-  contentsParam: string,
-  fileTabSize: number,
-  fileEol: string,
+	contentsParam: string,
+	fileTabSize: number,
+	fileEol: string,
 	fileExt: string
 ) => {
-  try {
+	try {
 		// 1. `http://` -> `httpp`
 		const pattern1 = (
 			/("|')(\s*)(http:\/\/)([\n\s\S]*?)("|')/gm
@@ -30,19 +30,19 @@ export const removeComments = async (
 		);
 
 		const httpResult = lodash.chain(contentsParam)
-		.replace(pattern1, (...p: any[]) => (
-			`${p[1]}${p[2]}httpp${p[4]}${p[5]}`
-		))
-		.replace(pattern2, (...p: any[]) => (
-			`${p[1]}${p[2]}httpps${p[4]}${p[5]}`
-		))
-		.replace(pattern3, (...p: any[]) => (
-			`${p[1]}${p[2]}@{httpp${p[4]}${p[5]}`
-		))
-		.replace(pattern4, (...p: any[]) => (
-			`${p[1]}${p[2]}@{httpps${p[4]}${p[5]}`
-		))
-		.value();
+			.replace(pattern1, (...p: any[]) => (
+				`${p[1]}${p[2]}httpp${p[4]}${p[5]}`
+			))
+			.replace(pattern2, (...p: any[]) => (
+				`${p[1]}${p[2]}httpps${p[4]}${p[5]}`
+			))
+			.replace(pattern3, (...p: any[]) => (
+				`${p[1]}${p[2]}@{httpp${p[4]}${p[5]}`
+			))
+			.replace(pattern4, (...p: any[]) => (
+				`${p[1]}${p[2]}@{httpps${p[4]}${p[5]}`
+			))
+			.value();
 
 		const minifyResult = (
 			await htmlMinify(httpResult, {
@@ -66,14 +66,14 @@ export const removeComments = async (
 				removeScriptTypeAttributes: true,
 				caseSensitive: true,
 				useShortDoctype: true,
-				collapseBooleanAttributes:  false,
+				collapseBooleanAttributes: false,
 				decodeEntities: true,
 				collapseWhitespace: true,
 				collapseInlineTagWhitespace: true,
 				preserveLineBreaks: true,
 				conservativeCollapse: true,
 				preventAttributesEscaping: true,
-				quoteCharacter: '"',
+				quoteCharacter: `"`,
 				sortClassName: true,
 				sortAttributes: true,
 				continueOnParseError: true,
@@ -83,21 +83,21 @@ export const removeComments = async (
 		);
 
 		const baseOptions1: StripOptions = {
-			language: "html",
+			language: `html`,
 			preserveNewlines: false,
 			keepProtected: false,
 			block: true,
 			line: true,
 		};
 		const baseOptions2: StripOptions = {
-			language: "javascript",
+			language: `javascript`,
 			preserveNewlines: false,
 			keepProtected: false,
 			block: true,
 			line: true,
 		};
 		const baseOptions3: StripOptions = {
-			language: "css",
+			language: `css`,
 			preserveNewlines: false,
 			keepProtected: false,
 			block: true,
@@ -135,309 +135,309 @@ export const removeComments = async (
 		);
 
 		const finalResult = lodash.chain(stripResult3)
-		.replace(pattern1Re, (...p: any[]) => (
-			`${p[1]}${p[2]}http://${p[4]}${p[5]}`
-		))
-		.replace(pattern2Re, (...p: any[]) => (
-			`${p[1]}${p[2]}https://${p[4]}${p[5]}`
-		))
-		.replace(pattern3Re, (...p: any[]) => (
-			`${p[1]}${p[2]}@{http://${p[4]}${p[5]}`
-		))
-		.replace(pattern4Re, (...p: any[]) => (
-			`${p[1]}${p[2]}@{https://${p[4]}${p[5]}`
-		))
-		.replace(pattern5, (...p: any[]) => (
-			`${p[1]}`
-		))
-		.value();
+			.replace(pattern1Re, (...p: any[]) => (
+				`${p[1]}${p[2]}http://${p[4]}${p[5]}`
+			))
+			.replace(pattern2Re, (...p: any[]) => (
+				`${p[1]}${p[2]}https://${p[4]}${p[5]}`
+			))
+			.replace(pattern3Re, (...p: any[]) => (
+				`${p[1]}${p[2]}@{http://${p[4]}${p[5]}`
+			))
+			.replace(pattern4Re, (...p: any[]) => (
+				`${p[1]}${p[2]}@{https://${p[4]}${p[5]}`
+			))
+			.replace(pattern5, (...p: any[]) => (
+				`${p[1]}`
+			))
+			.value();
 
-		logger("debug", `${fileExt}:removeComments - Y`);
-    return finalResult;
-  }
-  catch (err: any) {
-		logger("error", `${fileExt}:removeComments - ${err.message}`);
-    return contentsParam;
-  }
+		logger(`debug`, `${fileExt}:removeComments - Y`);
+		return finalResult;
+	}
+	catch (err: any) {
+		logger(`error`, `${fileExt}:removeComments - ${err.message}`);
+		return contentsParam;
+	}
 };
 
 // 1. prettierFormat -------------------------------------------------------------------------------
 export const prettierFormat = async (
-  commonParam: CommonType,
-  contentsParam: string,
-  fileName: string,
-  fileTabSize: number,
-  fileEol: string,
+	commonParam: CommonType,
+	contentsParam: string,
+	fileName: string,
+	fileTabSize: number,
+	fileEol: string,
 	fileExt: string
 ) => {
 	try {
-		logger("debug", `${fileExt}:prettierFormat - start`);
+		logger(`debug`, `${fileExt}:prettierFormat - start`);
 		// 0. prettier
 		const prettier = await getPrettier();
-		const prettierStatus = prettier ? "prettier:loaded" : "prettier:missing";
-		logger(prettier ? "debug" : "warn", `${fileExt}:prettierFormat - ${prettierStatus}`);
+		const prettierStatus = prettier ? `prettier:loaded` : `prettier:missing`;
+		logger(prettier ? `debug` : `warn`, `${fileExt}:prettierFormat - ${prettierStatus}`);
 
 		// 1. parser
-		const parser = "html";
+		const parser = `html`;
 
 		// 2. plugin
 		const plugin = await getPrettierPluginJsp();
-		const pluginStatus = plugin ? "plugin:jsp:loaded" : "plugin:jsp:missing";
-		logger(plugin ? "debug" : "warn", `${fileExt}:prettierFormat - ${pluginStatus}`);
+		const pluginStatus = plugin ? `plugin:jsp:loaded` : `plugin:jsp:missing`;
+		logger(plugin ? `debug` : `warn`, `${fileExt}:prettierFormat - ${pluginStatus}`);
 
 		// 3. options
 		const baseOptions: PrettierOptions = {
 			parser: parser,
-			plugins: plugin ? [plugin] : [],
-      singleQuote: commonParam.quoteType === "single",
-      printWidth: 1000,
-      tabWidth: commonParam.tabSize,
-      useTabs: true,
-      quoteProps: "as-needed",
-      jsxSingleQuote: commonParam.quoteType === "single",
-      trailingComma: "all",
-      bracketSpacing: false,
-      jsxBracketSameLine: false,
-      arrowParens: "always",
-      rangeStart: 0,
-      rangeEnd: Infinity,
-      requirePragma: false,
-      insertPragma: false,
-      proseWrap: "preserve",
-      htmlWhitespaceSensitivity: "ignore",
-      vueIndentScriptAndStyle: true,
-      endOfLine: fileEol === "lf" ? "lf" : "crlf",
-      embeddedLanguageFormatting: "auto",
-      singleAttributePerLine: false,
-      bracketSameLine: false,
-      semi: true,
-      filepath: fileName,
-      __embeddedInHtml: true,
-    };
+			plugins: plugin ? [ plugin ] : [],
+			singleQuote: commonParam.quoteType === `single`,
+			printWidth: 1000,
+			tabWidth: commonParam.tabSize,
+			useTabs: true,
+			quoteProps: `as-needed`,
+			jsxSingleQuote: commonParam.quoteType === `single`,
+			trailingComma: `all`,
+			bracketSpacing: false,
+			jsxBracketSameLine: false,
+			arrowParens: `always`,
+			rangeStart: 0,
+			rangeEnd: Infinity,
+			requirePragma: false,
+			insertPragma: false,
+			proseWrap: `preserve`,
+			htmlWhitespaceSensitivity: `ignore`,
+			vueIndentScriptAndStyle: true,
+			endOfLine: fileEol === `lf` ? `lf` : `crlf`,
+			embeddedLanguageFormatting: `auto`,
+			singleAttributePerLine: false,
+			bracketSameLine: false,
+			semi: true,
+			filepath: fileName,
+			__embeddedInHtml: true,
+		};
 
-    const rules1 = (
-      /(&nbsp;)/gm
-    );
-    const rules2 = (
-      /(\s*)[^`'"](<.*>)(<)(input|label|a|b|p|span|select|div|option|bold|caption|strong)/gi
-    );
+		const rules1 = (
+			/(&nbsp;)/gm
+		);
+		const rules2 = (
+			/(\s*)[^`'"](<.*>)(<)(input|label|a|b|p|span|select|div|option|bold|caption|strong)/gi
+		);
 
-    const result = lodash.chain(contentsParam)
-		.replace(rules1, (...p: any[]) => (
-			""
-		))
-		.replace(rules2, (...p: any[]) => (
-			`${p[1]}${p[2]}\n${p[1]}\t${p[3]}${p[4]}`
-		))
-		.value();
-		const formatterAvailable = prettier && plugin && typeof prettier.format === "function";
-		logger(formatterAvailable ? "debug" : "warn", `${fileExt}:prettierFormat - ${formatterAvailable ? "formatter:ready" : "formatter:missing"}`);
+		const result = lodash.chain(contentsParam)
+			.replace(rules1, (...p: any[]) => (
+				``
+			))
+			.replace(rules2, (...p: any[]) => (
+				`${p[1]}${p[2]}\n${p[1]}\t${p[3]}${p[4]}`
+			))
+			.value();
+		const formatterAvailable = prettier && plugin && typeof prettier.format === `function`;
+		logger(formatterAvailable ? `debug` : `warn`, `${fileExt}:prettierFormat - ${formatterAvailable ? `formatter:ready` : `formatter:missing`}`);
 		const finalResult = formatterAvailable
-		? await (async () => {
-			logger("debug", `${fileExt}:prettierFormat - format:start`);
-			const formatted = await prettier.format(result, baseOptions);
-			logger("debug", `${fileExt}:prettierFormat - format:success`);
-			return formatted;
-		})()
-		: (() => {
-			logger("warn", `${fileExt}:prettierFormat - format:skipped`);
-			return contentsParam;
-		})();
-		logger("debug", `${fileExt}:prettierFormat - end`);
+			? await (async () => {
+				logger(`debug`, `${fileExt}:prettierFormat - format:start`);
+				const formatted = await prettier.format(result, baseOptions);
+				logger(`debug`, `${fileExt}:prettierFormat - format:success`);
+				return formatted;
+			})()
+			: (() => {
+					logger(`warn`, `${fileExt}:prettierFormat - format:skipped`);
+					return contentsParam;
+				})();
+		logger(`debug`, `${fileExt}:prettierFormat - end`);
 		return finalResult;
 	}
-  catch (err: any) {
-    const msg = err.message.toString().trim().replace(/\x1B\[[0-9;]*[mGKF]/g, "");
-    const msgRegex = /([\n\s\S]*)(\s*)(https)(.*?)([(])(.*?)([)])([\n\s\S]*)/gm;
-    const msgRegexReplace = `[Jlint]\n\nError Line = [ $6 ]\nError Site = $8`;
-    const msgResult = msg.replace(msgRegex, msgRegexReplace);
+	catch (err: any) {
+		const msg = err.message.toString().trim().replace(/\x1B\[[0-9;]*[mGKF]/g, ``);
+		const msgRegex = /([\n\s\S]*)(\s*)(https)(.*?)([(])(.*?)([)])([\n\s\S]*)/gm;
+		const msgRegexReplace = `[Jlint]\n\nError Line = [ $6 ]\nError Site = $8`;
+		const msgResult = msg.replace(msgRegex, msgRegexReplace);
 
-		logger("error", `${fileExt}:prettierFormat - ${msgResult}`);
-		modal("error", `${fileExt}: Prettier Format Error:\n${msgResult}`);
-    return contentsParam;
-  }
+		logger(`error`, `${fileExt}:prettierFormat - ${msgResult}`);
+		modal(`error`, `${fileExt}: Prettier Format Error:\n${msgResult}`);
+		return contentsParam;
+	}
 };
 
 // 2. insertSpace ----------------------------------------------------------------------------------
 export const insertSpace = async (
-  contentsParam: string,
+	contentsParam: string,
 	fileExt: string
 ) => {
-  try {
-    const rules1 = (
-      /(\s*)(\))(\s+)(;)/gm
-    );
-    const rules2 = (
-      /(\s*)(@)(\s*)([\s\S]*?)(\s*)(\()/gm
-    );
-    const rules3 = (
-      /(\s*?)(ception)(\{)/gm
-    );
+	try {
+		const rules1 = (
+			/(\s*)(\))(\s+)(;)/gm
+		);
+		const rules2 = (
+			/(\s*)(@)(\s*)([\s\S]*?)(\s*)(\()/gm
+		);
+		const rules3 = (
+			/(\s*?)(ception)(\{)/gm
+		);
 
-    const finalResult = lodash.chain(contentsParam)
-		.replace(rules1, (...p: any[]) => (
-			`${p[1]}${p[2]}${p[4]}`
-		))
-		.replace(rules2, (...p: any[]) => (
-			`${p[1]}${p[2]}${p[4]} ${p[6]}`
-		))
-		.replace(rules3, (...p: any[]) => (
-			`${p[2]} ${p[3]}`
-		))
-		.value();
+		const finalResult = lodash.chain(contentsParam)
+			.replace(rules1, (...p: any[]) => (
+				`${p[1]}${p[2]}${p[4]}`
+			))
+			.replace(rules2, (...p: any[]) => (
+				`${p[1]}${p[2]}${p[4]} ${p[6]}`
+			))
+			.replace(rules3, (...p: any[]) => (
+				`${p[2]} ${p[3]}`
+			))
+			.value();
 
-		logger("debug", `${fileExt}:insertSpace - Y`);
-    return finalResult
-  }
-  catch (err: any) {
-		logger("error", `${fileExt}:insertSpace - ${err.message}`);
-    return contentsParam;
-  }
+		logger(`debug`, `${fileExt}:insertSpace - Y`);
+		return finalResult;
+	}
+	catch (err: any) {
+		logger(`error`, `${fileExt}:insertSpace - ${err.message}`);
+		return contentsParam;
+	}
 };
 
 // 3. insertLine -----------------------------------------------------------------------------------
 export const insertLine = async (
-  contentsParam: string,
+	contentsParam: string,
 	fileExt: string
 ) => {
-  try {
-    const rules1 = (
-      /^(?!\/\/--)(?:\n*)(\s*)([<]head\s*.*\s*[>])(\s*?)/gm
-    );
-    const rules2 = (
-      /^(?!\/\/--)(?:\n*)(\s*)([<]body\s*.*\s*[>])(\s*?)/gm
-    );
-    const rules3 = (
-      /^(?!\/\/--)(?:\n*)(\s*)([<]header\s*.*\s*[>])(\s*?)/gm
-    );
-    const rules4 = (
-      /^(?!\/\/--)(?:\n*)(\s*)([<]main\s*.*\s*[>])(\s*?)/gm
-    );
-    const rules5 = (
-      /^(?!\/\/--)(?:\n*)(\s*)([<]footer\s*.*\s*[>])(\s*?)/gm
-    );
-    const rules6 = (
-      /^(?!\/\/--)(?:\n*)(\s*)([<]section\s*.*\s*[>])(\s*?)/gm
-    );
-    const rules7 = (
-      /^(?!\/\/--)(?:\n*)(\s*)([<]table\s*.*\s*[>])(\s*?)/gm
-    );
-    const rules8 = (
-      /^(?!\/\/--)(?:\n*)(\s*)([<]form\s*.*\s*[>])(\s*?)/gm
-    );
-    const rules9 = (
-      /^(?!\/\/--)(?:\n*)(\s*)([<]div class="row\s*.*\s*[>])(\s*?)/gm
-    );
+	try {
+		const rules1 = (
+			/^(?!\/\/--)(?:\n*)(\s*)([<]head\s*.*\s*[>])(\s*?)/gm
+		);
+		const rules2 = (
+			/^(?!\/\/--)(?:\n*)(\s*)([<]body\s*.*\s*[>])(\s*?)/gm
+		);
+		const rules3 = (
+			/^(?!\/\/--)(?:\n*)(\s*)([<]header\s*.*\s*[>])(\s*?)/gm
+		);
+		const rules4 = (
+			/^(?!\/\/--)(?:\n*)(\s*)([<]main\s*.*\s*[>])(\s*?)/gm
+		);
+		const rules5 = (
+			/^(?!\/\/--)(?:\n*)(\s*)([<]footer\s*.*\s*[>])(\s*?)/gm
+		);
+		const rules6 = (
+			/^(?!\/\/--)(?:\n*)(\s*)([<]section\s*.*\s*[>])(\s*?)/gm
+		);
+		const rules7 = (
+			/^(?!\/\/--)(?:\n*)(\s*)([<]table\s*.*\s*[>])(\s*?)/gm
+		);
+		const rules8 = (
+			/^(?!\/\/--)(?:\n*)(\s*)([<]form\s*.*\s*[>])(\s*?)/gm
+		);
+		const rules9 = (
+			/^(?!\/\/--)(?:\n*)(\s*)([<]div class="row\s*.*\s*[>])(\s*?)/gm
+		);
 
-    const finalResult = lodash.chain(contentsParam)
-		.replace(rules1, (...p: any[]) => {
-			const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
-			const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
-			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
-		})
-		.replace(rules2, (...p: any[]) => {
-			const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
-			const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
-			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
-		})
-		.replace(rules3, (...p: any[]) => {
-			const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
-			const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
-			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
-		})
-		.replace(rules4, (...p: any[]) => {
-			const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
-			const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
-			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
-		})
-		.replace(rules5, (...p: any[]) => {
-			const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
-			const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
-			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
-		})
-		.replace(rules6, (...p: any[]) => {
-			const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
-			const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
-			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
-		})
-		.replace(rules7, (...p: any[]) => {
-			const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
-			const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
-			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
-		})
-		.replace(rules8, (...p: any[]) => {
-			const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
-			const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
-			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
-		})
-		.replace(rules9, (...p: any[]) => {
-			const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
-			const insetLine = `<!--` + '-'.repeat(spaceSize) + `-->`;
-			return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
-		})
-		.value();
+		const finalResult = lodash.chain(contentsParam)
+			.replace(rules1, (...p: any[]) => {
+				const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
+				const insetLine = `<!--${`-`.repeat(spaceSize)}-->`;
+				return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
+			})
+			.replace(rules2, (...p: any[]) => {
+				const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
+				const insetLine = `<!--${`-`.repeat(spaceSize)}-->`;
+				return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
+			})
+			.replace(rules3, (...p: any[]) => {
+				const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
+				const insetLine = `<!--${`-`.repeat(spaceSize)}-->`;
+				return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
+			})
+			.replace(rules4, (...p: any[]) => {
+				const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
+				const insetLine = `<!--${`-`.repeat(spaceSize)}-->`;
+				return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
+			})
+			.replace(rules5, (...p: any[]) => {
+				const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
+				const insetLine = `<!--${`-`.repeat(spaceSize)}-->`;
+				return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
+			})
+			.replace(rules6, (...p: any[]) => {
+				const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
+				const insetLine = `<!--${`-`.repeat(spaceSize)}-->`;
+				return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
+			})
+			.replace(rules7, (...p: any[]) => {
+				const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
+				const insetLine = `<!--${`-`.repeat(spaceSize)}-->`;
+				return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
+			})
+			.replace(rules8, (...p: any[]) => {
+				const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
+				const insetLine = `<!--${`-`.repeat(spaceSize)}-->`;
+				return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
+			})
+			.replace(rules9, (...p: any[]) => {
+				const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
+				const insetLine = `<!--${`-`.repeat(spaceSize)}-->`;
+				return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
+			})
+			.value();
 
-		logger("debug", `${fileExt}:insertLine - Y`);
-    return finalResult
-  }
-  catch (err: any) {
-		logger("error", `${fileExt}:insertLine - ${err.message}`);
-    return contentsParam;
-  }
+		logger(`debug`, `${fileExt}:insertLine - Y`);
+		return finalResult;
+	}
+	catch (err: any) {
+		logger(`error`, `${fileExt}:insertLine - ${err.message}`);
+		return contentsParam;
+	}
 };
 
 // 4. lineBreak ------------------------------------------------------------------------------------
 export const lineBreak = async (
-  contentsParam: string,
+	contentsParam: string,
 	fileExt: string
 ) => {
-  try {
-    const rules1 = (
-      /(?:\n*)(\s*)(<\/body>)(\s*?)/gm
-    );
-    const rules2 = (
-      /(.*?)(\n*)(\s*)(\/\/ -.*>)/gm
-    );
+	try {
+		const rules1 = (
+			/(?:\n*)(\s*)(<\/body>)(\s*?)/gm
+		);
+		const rules2 = (
+			/(.*?)(\n*)(\s*)(\/\/ -.*>)/gm
+		);
 
-    const finalResult = lodash.chain(contentsParam)
-		.replace(rules1, (...p: any[]) => (
-			`\n\n${p[1]}${p[2]}${p[3]}`
-		))
-		.replace(rules2, (...p: any[]) => (
-			`${p[1]}\n\n${p[3]}${p[4]}`
-		))
-		.value();
+		const finalResult = lodash.chain(contentsParam)
+			.replace(rules1, (...p: any[]) => (
+				`\n\n${p[1]}${p[2]}${p[3]}`
+			))
+			.replace(rules2, (...p: any[]) => (
+				`${p[1]}\n\n${p[3]}${p[4]}`
+			))
+			.value();
 
-		logger("debug", `${fileExt}:lineBreak - Y`);
-    return finalResult
-  }
-  catch (err: any) {
-		logger("error", `${fileExt}:lineBreak - ${err.message}`);
-    return contentsParam;
-  }
+		logger(`debug`, `${fileExt}:lineBreak - Y`);
+		return finalResult;
+	}
+	catch (err: any) {
+		logger(`error`, `${fileExt}:lineBreak - ${err.message}`);
+		return contentsParam;
+	}
 };
 
 // 5. finalCheck -----------------------------------------------------------------------------------
 export const finalCheck = async (
-  contentsParam: string,
+	contentsParam: string,
 	fileExt: string
 ) => {
-  try {
-    const rules1 = (
-      /(\s*)(<!)(--.*?)(>)(\s*)(\n)(\s*)(<!)(--.*?)(>)([\s\S])/gm
-    );
+	try {
+		const rules1 = (
+			/(\s*)(<!)(--.*?)(>)(\s*)(\n)(\s*)(<!)(--.*?)(>)([\s\S])/gm
+		);
 
-    const finalResult = lodash.chain(contentsParam)
-		.replace(rules1, (...p: any[]) => (
-			`${p[1]}${p[2]}${p[3]}${p[4]}${p[11]}`
-		))
-		.value();
+		const finalResult = lodash.chain(contentsParam)
+			.replace(rules1, (...p: any[]) => (
+				`${p[1]}${p[2]}${p[3]}${p[4]}${p[11]}`
+			))
+			.value();
 
-		logger("debug", `${fileExt}:finalCheck - Y`);
-    return finalResult
-  }
-  catch (err: any) {
-		logger("error", `${fileExt}:finalCheck - ${err.message}`);
-    return contentsParam;
-  }
+		logger(`debug`, `${fileExt}:finalCheck - Y`);
+		return finalResult;
+	}
+	catch (err: any) {
+		logger(`error`, `${fileExt}:finalCheck - ${err.message}`);
+		return contentsParam;
+	}
 };

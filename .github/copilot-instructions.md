@@ -44,10 +44,7 @@ const f = () => {}
 **INCORRECT:**
 ```js
 // ==== f ====
-// -------
-...
-// f
-// -------
+const f = () => {}
 ```
 
 # 2-1. TERNARY CHAINS
