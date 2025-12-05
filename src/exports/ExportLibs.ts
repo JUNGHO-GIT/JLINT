@@ -7,7 +7,7 @@
 import _vscode from "vscode";
 import _fs from "fs";
 import _path from "path";
-import { TextEncoder as _TextEncoder, TextDecoder as _TextDecoder } from "util";
+import { TextDecoder as _TextDecoder } from "util";
 import _lodash from "lodash";
 import _CleanCSS from "clean-css";
 import { minify as _jsMinify } from "terser";
@@ -16,12 +16,11 @@ import _strip from "strip-comments";
 import _stripJsonComments from "strip-json-comments";
 import type { FormatOptionsWithLanguage as _FormatOptionsWithLanguage } from "sql-formatter";
 import type { Options as _PrettierOptions } from "prettier";
-import type { Plugin as _PrettierPlugin } from "prettier";
 import type { Options as _StripJsonOptions } from "strip-json-comments";
 import type { Options as _StripOptions } from "strip-comments";
 import {
-  setExtensionPath as _setExtensionPath,
-  getModuleWithCache as _getModuleWithCache
+	setExtensionPath as _setExtensionPath,
+	getModuleWithCache as _getModuleWithCache,
 } from "@scripts/modules";
 
 // -----------------------------------------------------------------------------------------
@@ -42,9 +41,9 @@ export type { _StripOptions as StripOptions };
 
 // -----------------------------------------------------------------------------------------
 export { _setExtensionPath as setExtensionPath };
-export const getPrettier = async () => _getModuleWithCache("prettier");
-export const getPrettierPluginJava = async () => _getModuleWithCache("prettier-plugin-java");
-export const getPrettierPluginJsp = async () => _getModuleWithCache("prettier-plugin-jsp");
-export const getPrettierPluginXml = async () => _getModuleWithCache("@prettier/plugin-xml");
-export const getPrettierPluginYaml = async () => _getModuleWithCache("prettier/plugins/yaml");
-export const getSqlFormatter = async () => _getModuleWithCache("sql-formatter");
+export const getPrettier = async () => _getModuleWithCache(`prettier`);
+export const getPrettierPluginJava = async () => _getModuleWithCache(`prettier-plugin-java`);
+export const getPrettierPluginJsp = async () => _getModuleWithCache(`prettier-plugin-jsp`);
+export const getPrettierPluginXml = async () => _getModuleWithCache(`@prettier/plugin-xml`);
+export const getPrettierPluginYaml = async () => _getModuleWithCache(`prettier/plugins/yaml`);
+export const getSqlFormatter = async () => _getModuleWithCache(`sql-formatter`);
