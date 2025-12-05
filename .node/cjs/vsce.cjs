@@ -71,17 +71,29 @@ const buildConfig = () => {
 
 	const external = [`vscode`];
 	const copyPackages = [];
+	const forceExternal = [
+		`prettier`,
+		`prettier-plugin-java`,
+		`prettier-plugin-jsp`,
+		`@prettier/plugin-xml`,
+		`sql-formatter`,
+		`html-minifier-terser`
+	];
 
 	deps.forEach(pkg => {
 		const pkgPath = path.join(nmPath, pkg);
 		!fileExists(pkgPath) && logger(`warn`, `패키지 없음: ${pkg}`);
 
 		fileExists(pkgPath) && (() => {
-			copyPackages.push(pkg);
+			const isForceExternal = forceExternal.includes(pkg);
+			const isImportMeta = hasImportMetaUsage(pkgPath);
 
-			hasImportMetaUsage(pkgPath) && (() => {
-				external.push(pkg);
-				logger(`info`, `import.meta 감지 → external 추가: ${pkg}`);
+			(isForceExternal || isImportMeta) && (() => {
+				!external.includes(pkg) && external.push(pkg);
+				!copyPackages.includes(pkg) && copyPackages.push(pkg);
+				
+				isImportMeta && logger(`info`, `import.meta 감지 → external 추가: ${pkg}`);
+				isForceExternal && logger(`info`, `강제 external 추가: ${pkg}`);
 
 				const subPkgJson = path.join(pkgPath, `package.json`);
 				fileExists(subPkgJson) && (() => {
@@ -177,8 +189,46 @@ const copyPackageFlat = (pkgName=``, nmSrc=``, nmTgt=``, vis=new Set()) => {
 	!fileExists(destDir) && fs.mkdirSync(destDir, { "recursive": true });
 
 	const realPath = fs.realpathSync(src);
-	fs.cpSync(realPath, dest, { "recursive": true, "force": true, "dereference": true });
-	logger(`info`, `복사: ${pkgName}`);
+	
+	// 수동 재귀 복사 함수
+	const copyRecursive = (source, target) => {
+		const stats = fs.statSync(source);
+		
+		if (stats.isDirectory()) {
+			const basename = path.basename(source);
+			if ([`test`, `tests`, `__tests__`, `doc`, `docs`, `example`, `examples`, `bin`, `coverage`, `.github`, `.vscode`].includes(basename)) return;
+
+			!fs.existsSync(target) && fs.mkdirSync(target, { "recursive": true });
+			
+			fs.readdirSync(source).forEach(child => {
+				copyRecursive(path.join(source, child), path.join(target, child));
+			});
+		} else if (stats.isFile()) {
+			const basename = path.basename(source);
+			
+			// 파일 필터링
+			if (basename.startsWith(`.`)) return;
+			if (basename.endsWith(`.md`) || basename.endsWith(`.markdown`) || basename.endsWith(`.txt`)) return;
+			if (basename.endsWith(`.ts`) && !basename.endsWith(`.d.ts`)) return;
+			if (basename.endsWith(`.map`)) return;
+			if (basename.endsWith(`.log`)) return;
+			if (basename.endsWith(`.lock`)) return;
+			if (basename.endsWith(`.yml`) || basename.endsWith(`.yaml`)) return;
+			
+			const lowerName = basename.toLowerCase();
+			if (lowerName.includes(`license`) || lowerName.includes(`changelog`) || lowerName.includes(`history`) || lowerName.includes(`authors`)) return;
+			if (lowerName === `makefile` || lowerName === `gulpfile.js` || lowerName === `gruntfile.js`) return;
+
+			fs.copyFileSync(source, target);
+		}
+	};
+
+	try {
+		copyRecursive(realPath, dest);
+		logger(`info`, `복사: ${pkgName}`);
+	} catch (e) {
+		logger(`warn`, `복사 실패 (${pkgName}): ${e.message}`);
+	}
 };
 
 // 7. 패키지 복사 메인 함수 ------------------------------------------------------------------
