@@ -4,7 +4,7 @@
   "description": "Universal Language formatter",
   "publisher": "JUNGHO",
   "license": "Apache-2.0",
-  "version": "2.9.5",
+  "version": "2.9.6",
   "main": "./out/extension.js",
   "icon": "logo.webp",
   "repository": {
@@ -148,23 +148,16 @@
   },
   "dependencies": {
     "@prettier/plugin-xml": "3.4.2",
-    "astring": "1.9.0",
-    "cheerio": "1.1.2",
-    "chevrotain": "11.0.3",
     "clean-css": "5.3.3",
-    "fast-xml-parser": "5.3.2",
     "html-minifier-terser": "7.2.0",
-    "jsdom": "27.2.0",
     "lodash": "4.17.21",
-    "postcss": "8.5.6",
     "prettier": "3.6.2",
     "prettier-plugin-java": "2.7.7",
     "prettier-plugin-jsp": "1.0.13",
     "sql-formatter": "15.6.10",
     "strip-comments": "2.0.1",
     "strip-json-comments": "5.0.3",
-    "terser": "5.44.1",
-    "yaml": "2.8.2"
+    "terser": "5.44.1"
   },
   "devDependencies": {
     "@swc/cli": "0.7.9",
@@ -172,7 +165,6 @@
     "@swc/helpers": "0.5.17",
     "@types/clean-css": "4.2.11",
     "@types/html-minifier-terser": "7.0.2",
-    "@types/jsdom": "27.0.0",
     "@types/lodash": "4.17.21",
     "@types/mocha": "10.0.10",
     "@types/node": "24.10.1",

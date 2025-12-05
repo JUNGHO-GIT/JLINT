@@ -70,4 +70,4 @@
 **/node_modules/**/.eslintrc*
 **/node_modules/**/tsconfig.json
 **/node_modules/**/*.map
-!out/node_modules/**
+# !out/node_modules/**  <-- 이 줄을 제거하거나 주석 처리하여 위 규칙들이 out 폴더에도 적용되도록 함
