@@ -67,6 +67,13 @@ export const settings = {
 				"sourcePath": `src/public/config`,
 				"targetPath": ``,
 				"files": [
+					`package.default.json`,
+				],
+			},
+			{
+				"sourcePath": `src/public/config`,
+				"targetPath": ``,
+				"files": [
 					`.server.swcrc`,
 					`eslint.config.mjs`,
 				],

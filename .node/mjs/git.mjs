@@ -30,8 +30,8 @@ const args2 = argv.find(arg => [
 	`--fetch`,
 ].includes(arg))?.replace(`--`, ``) || ``;
 const args3 = argv.find(arg => [
-	`--my`,
-	`--mn`,
+	`--y`,
+	`--n`,
 ].includes(arg))?.replace(`--`, ``) || ``;
 
 // 2. 원격 기본브랜치 감지 -------------------------------------------------------------------
@@ -400,7 +400,7 @@ const gitPush = (remoteName = ``, ignoreFilePath = ``, msg = ``) => {
 
 	remoteExists && (() => {
 		const targetBranch = getRemoteDefaultBranch(remoteName);
-		!targetBranch && (logger(`error`, `원격 ���본브랜치를 찾을 수 없습니다: ${remoteName}`), process.exit(1));
+		!targetBranch && (logger(`error`, `원격 기본브랜치를 찾을 수 없습니다: ${remoteName}`), process.exit(1));
 
 		logger(`info`, `Git Push 시작: ${remoteName}`);
 
@@ -440,7 +440,7 @@ const gitPush = (remoteName = ``, ignoreFilePath = ``, msg = ``) => {
 
 // 14. Push 프로세스 실행 --------------------------------------------------------------------
 const runPushProcess = async () => {
-	const commitMsg = args3 === `mn` ? (
+	const commitMsg = args3.includes(`n`) ? (
 		``
 	) : (
 		await runPrompt(`커밋 메시지 입력 (빈값 = 날짜/시간): `)

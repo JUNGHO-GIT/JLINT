@@ -28,7 +28,7 @@ const args2 = argv.find(arg => [
 const prepareSystem = () => {
 	logger(`info`, `시스템 준비 시작 (대기: 200ms)`);
 	const start = Date.now();
-	while (Date.now() - start < 200) {}
+	while (Date.now() - start < 200) { /* empty */ }
 
 	logger(`success`, `대기 완료`);
 };

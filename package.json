@@ -4,7 +4,7 @@
   "description": "Universal Language formatter",
   "publisher": "JUNGHO",
   "license": "Apache-2.0",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "main": "./out/extension.js",
   "icon": "logo.webp",
   "repository": {
@@ -143,8 +143,8 @@
     "fix": "bun .node/mjs/fix.mjs --bun --fix",
     "reset": "bun .node/mjs/reset.mjs --bun --reset",
     "vsce": "bun .node/mjs/vsce.mjs --bun --package",
-    "git-push-my": "bun .node/mjs/git.mjs --bun --push --my",
-    "git-push-mn": "bun .node/mjs/git.mjs --bun --push --mn"
+    "git-push-y": "bun .node/mjs/git.mjs --bun --push --y",
+    "git-push-n": "bun .node/mjs/git.mjs --bun --push --n"
   },
   "dependencies": {
     "@prettier/plugin-xml": "3.4.2",
@@ -174,7 +174,6 @@
     "@types/vscode": "1.106.1",
     "@typescript-eslint/eslint-plugin": "8.48.1",
     "@typescript-eslint/parser": "8.48.1",
-    "@vscode/test-electron": "2.5.2",
     "@vscode/vsce": "3.7.1",
     "esbuild": "0.27.1",
     "eslint": "9.39.1",
