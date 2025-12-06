@@ -6,11 +6,11 @@
 // -------------------------------------------------------------------------------
 export {
 	logger,
-	initLogger
+	initLogger,
 } from "@scripts/logger";
 
 // -------------------------------------------------------------------------------
 export {
 	notify,
-	modal
+	modal,
 } from "@scripts/notify";

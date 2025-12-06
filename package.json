@@ -4,7 +4,7 @@
   "description": "Universal Language formatter",
   "publisher": "JUNGHO",
   "license": "Apache-2.0",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "main": "./out/extension.js",
   "icon": "logo.webp",
   "repository": {
@@ -137,14 +137,14 @@
     "pnpm": ">=9.0.0"
   },
   "scripts": {
-    "sync": "bun .node/cjs/sync.cjs --bun --sync --server",
-    "start": "bun .node/cjs/swc.cjs --bun --start --server",
-    "build": "bun .node/cjs/swc.cjs --bun --build --server",
-    "fix": "bun .node/cjs/fix.cjs --bun --fix",
-    "reset": "bun .node/cjs/reset.cjs --bun --reset",
-    "vsce": "bun .node/cjs/vsce.cjs --bun --package",
-    "git-fetch": "bun .node/cjs/git.cjs --bun --fetch",
-    "git-push": "bun .node/cjs/git.cjs --bun --push"
+    "sync": "bun .node/mjs/sync.mjs --bun --sync --server",
+    "start": "bun .node/mjs/swc.mjs --bun --start --server",
+    "build": "bun .node/mjs/swc.mjs --bun --build --server",
+    "fix": "bun .node/mjs/fix.mjs --bun --fix",
+    "reset": "bun .node/mjs/reset.mjs --bun --reset",
+    "vsce": "bun .node/mjs/vsce.mjs --bun --package",
+    "git-push-my": "bun .node/mjs/git.mjs --bun --push --my",
+    "git-push-mn": "bun .node/mjs/git.mjs --bun --push --mn"
   },
   "dependencies": {
     "@prettier/plugin-xml": "3.4.2",
@@ -160,24 +160,26 @@
     "terser": "5.44.1"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.1",
     "@swc/cli": "0.7.9",
     "@swc/core": "1.15.3",
     "@swc/helpers": "0.5.17",
     "@types/clean-css": "4.2.11",
+    "@types/eslint": "^9.6.1",
+    "@types/eslint__js": "^9.14.0",
     "@types/html-minifier-terser": "7.0.2",
     "@types/lodash": "4.17.21",
-    "@types/mocha": "10.0.10",
     "@types/node": "24.10.1",
     "@types/strip-comments": "2.0.4",
     "@types/vscode": "1.106.1",
-    "@vscode/test-electron": "2.5.2",
     "@typescript-eslint/eslint-plugin": "8.48.1",
     "@typescript-eslint/parser": "8.48.1",
+    "@vscode/test-electron": "2.5.2",
     "@vscode/vsce": "3.7.1",
-    "eslint": "9.39.1",
-    "mocha": "11.7.5",
-    "ts-morph": "27.0.2",
     "esbuild": "0.27.1",
+    "eslint": "9.39.1",
+    "globals": "^16.5.0",
+    "ts-morph": "27.0.2",
     "ts-prune": "0.10.3",
     "tsc-alias": "1.8.16",
     "typescript": "5.9.3"

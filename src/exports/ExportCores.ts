@@ -5,17 +5,17 @@
 
 // -------------------------------------------------------------------------------
 export {
-	main
+	main,
 } from "@cores/Main";
 
 // -------------------------------------------------------------------------------
 export {
-	getContents
+	getContents,
 } from "@cores/Contents";
 
 // -------------------------------------------------------------------------------
 export {
 	getLanguage,
 	getSyntax,
-	getLogic
+	getLogic,
 } from "@cores/Controller";

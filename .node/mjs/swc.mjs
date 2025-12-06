@@ -1,22 +1,37 @@
 /**
- * @file swc.cjs
- * @description SWC 컴파일 및 빌드 스크립트
+ * @file swc.mjs
+ * @description SWC 컴파일 및 빌드 스크립트 (ESM)
  * @author Jungho
  * @since 2025-12-03
  */
 
-const fs = require(`fs`);
-const path = require(`path`);
-const process = require(`process`);
-const { spawn } = require(`child_process`);
-const { logger, runCmd, validateDir, delDir, getProjectType, getPmArgs } = require(`../lib/utils.cjs`);
+import fs from 'fs';
+import path from 'path';
+import process from 'process';
+import { spawn } from 'child_process';
+import { fileURLToPath } from 'url';
+import { logger, runCmd, validateDir, delDir, getProjectType, getPmArgs } from '../lib/utils.mjs';
 
 // 1. 인자 파싱 ------------------------------------------------------------------------------
+const __filename = fileURLToPath(import.meta.url);
 const TITLE = path.basename(__filename);
 const argv = process.argv.slice(2);
-const args1 = argv.find(arg => [`--npm`, `--pnpm`, `--yarn`, `--bun`].includes(arg))?.replace(`--`, ``) ?? ``;
-const args2 = argv.find(arg => [`--watch`, `--start`, `--compile`, `--build`].includes(arg))?.replace(`--`, ``) ?? ``;
-const args3 = argv.find(arg => [`--server`, `--client`].includes(arg))?.replace(`--`, ``) ?? ``;
+const args1 = argv.find(arg => [
+	`--npm`,
+	`--pnpm`,
+	`--yarn`,
+	`--bun`,
+].includes(arg))?.replace(`--`, ``) ?? ``;
+const args2 = argv.find(arg => [
+	`--watch`,
+	`--start`,
+	`--compile`,
+	`--build`,
+].includes(arg))?.replace(`--`, ``) ?? ``;
+const args3 = argv.find(arg => [
+	`--server`,
+	`--client`,
+].includes(arg))?.replace(`--`, ``) ?? ``;
 
 // 2. swcrc 파일 경로 동적 결정 --------------------------------------------------------------
 const getSwcConfig = () => {
@@ -28,7 +43,7 @@ const getSwcConfig = () => {
 };
 
 // 3. 프로세스 생성 헬퍼 ---------------------------------------------------------------------
-const spawnProcess = (pmArgs=[]) => {
+const spawnProcess = (pmArgs = []) => {
 	const useShell = args1 !== `bun`;
 	const result = spawn(args1, pmArgs, { "stdio": `inherit`, "shell": useShell, "env": process.env });
 	return result;
@@ -44,22 +59,39 @@ const runCompile = () => {
 		process.exit(1)
 	);
 
-	const outDir = validateDir([`out`, `dist`, `build`]);
+	const outDir = validateDir([
+		`out`,
+		`dist`,
+		`build`,
+	]);
 	delDir(outDir);
-
-	const tsCfg = validateDir([`tsconfig.json`, `tsconfig.build.json`]);
+	const tsCfg = validateDir([
+		`tsconfig.json`,
+		`tsconfig.build.json`,
+	]);
 	const swcCfg = getSwcConfig();
 	!tsCfg && (
 		logger(`error`, `tsconfig 파일을 찾을 수 없습니다`),
 		process.exit(1)
 	);
 
-	const baseSwcArgs = [`swc`, `src`, `-d`, outDir, `--strip-leading-paths`];
+	const baseSwcArgs = [
+		`swc`,
+		`src`,
+		`-d`,
+		outDir,
+		`--strip-leading-paths`,
+	];
 	swcCfg && baseSwcArgs.push(`--config-file`, swcCfg);
 
 	try {
 		runCmd(args1, getPmArgs(args1, baseSwcArgs));
-		runCmd(args1, getPmArgs(args1, [`tsc-alias`, `-p`, tsCfg, `-f`]));
+		runCmd(args1, getPmArgs(args1, [
+			`tsc-alias`,
+			`-p`,
+			tsCfg,
+			`-f`,
+		]));
 	}
 	catch (e) {
 		const errMsg = e instanceof Error ? e.message : String(e);
@@ -73,14 +105,23 @@ const runCompile = () => {
 // 5. 빌드 실행 ------------------------------------------------------------------------------
 const runBuild = () => {
 	logger(`info`, `빌드 시작`);
-
 	const { isClient, isServer, hasVite, hasNext } = getProjectType(args3);
-	const outDir = validateDir([`out`, `dist`, `build`]);
+	const outDir = validateDir([
+		`out`,
+		`dist`,
+		`build`,
+	]);
 	delDir(outDir);
 
 	try {
-		isClient && hasVite && runCmd(args1, getPmArgs(args1, [`vite`, `build`]));
-		isClient && !hasVite && hasNext && runCmd(args1, getPmArgs(args1, [`next`, `build`]));
+		isClient && hasVite && runCmd(args1, getPmArgs(args1, [
+			`vite`,
+			`build`,
+		]));
+		isClient && !hasVite && hasNext && runCmd(args1, getPmArgs(args1, [
+			`next`,
+			`build`,
+		]));
 		isClient && !hasVite && !hasNext && (
 			logger(`error`, `클라이언트 빌드 도구를 찾을 수 없습니다`),
 			process.exit(1)
@@ -99,26 +140,45 @@ const runBuild = () => {
 // 6. 워치 모드 ------------------------------------------------------------------------------
 const runWatch = () => {
 	logger(`info`, `워치 모드 시작`);
-
 	const { isServer } = getProjectType(args3);
 	!isServer && (
 		logger(`error`, `워치 모드는 서버 프로젝트에서만 사용 가능합니다`),
 		process.exit(1)
 	);
 
-	const outDir = validateDir([`out`, `dist`, `build`]);
-	const tsCfg = validateDir([`tsconfig.json`, `tsconfig.build.json`]);
+	const outDir = validateDir([
+		`out`,
+		`dist`,
+		`build`,
+	]);
+	const tsCfg = validateDir([
+		`tsconfig.json`,
+		`tsconfig.build.json`,
+	]);
 	const swcCfg = getSwcConfig();
 	!tsCfg && (
 		logger(`error`, `tsconfig 파일을 찾을 수 없습니다`),
 		process.exit(1)
 	);
 
-	const swcBase = [`swc`, `src`, `-d`, outDir, `--strip-leading-paths`, `--watch`];
+	const swcBase = [
+		`swc`,
+		`src`,
+		`-d`,
+		outDir,
+		`--strip-leading-paths`,
+		`--watch`,
+	];
 	swcCfg && swcBase.push(`--config-file`, swcCfg);
 
 	const swcProc = spawnProcess(getPmArgs(args1, swcBase));
-	const aliasProc = spawnProcess(getPmArgs(args1, [`tsc-alias`, `-p`, tsCfg, `-f`, `--watch`]));
+	const aliasProc = spawnProcess(getPmArgs(args1, [
+		`tsc-alias`,
+		`-p`,
+		tsCfg,
+		`-f`,
+		`--watch`,
+	]));
 
 	const cleanup = () => {
 		logger(`info`, `워치 모드 종료 중...`);
@@ -129,7 +189,6 @@ const runWatch = () => {
 
 	process.on(`SIGINT`, cleanup);
 	process.on(`SIGTERM`, cleanup);
-
 	swcProc.on(`close`, code => code && code !== 0 && logger(`warn`, `swc 종료 (exit code: ${code})`));
 	aliasProc.on(`close`, code => code && code !== 0 && logger(`warn`, `tsc-alias 종료 (exit code: ${code})`));
 
@@ -139,21 +198,37 @@ const runWatch = () => {
 // 7. 스타트 모드 ----------------------------------------------------------------------------
 const runStart = () => {
 	logger(`info`, `스타트 모드 시작`);
-
 	const { isClient, isServer, hasVite, hasNext, hasReactScripts, hasIndexTs } = getProjectType(args3);
-
 	const clientArgs = isClient && (
-		hasVite ? getPmArgs(args1, [`vite`, `dev`])
-			: hasNext ? getPmArgs(args1, [`next`, `dev`])
-			: hasReactScripts ? getPmArgs(args1, [`react-scripts`, `start`])
-			: null
+		hasVite ? getPmArgs(args1, [
+			`vite`,
+			`dev`,
+		])
+			: hasNext ? getPmArgs(args1, [
+				`next`,
+				`dev`,
+			])
+				: hasReactScripts ? getPmArgs(args1, [
+					`react-scripts`,
+					`start`,
+				])
+					: null
 	);
-
 	const serverArgs = isServer && hasIndexTs && (
 		args1 === `bun` ? (
-			[`--watch`, `index.ts`]
+			[
+				`--watch`,
+				`index.ts`,
+			]
 		) : (
-			getPmArgs(args1, [`tsx`, `watch`, `--clear-screen=false`, `--ignore`, `node_modules`, `index.ts`])
+			getPmArgs(args1, [
+				`tsx`,
+				`watch`,
+				`--clear-screen=false`,
+				`--ignore`,
+				`node_modules`,
+				`index.ts`,
+			])
 		)
 	);
 
@@ -161,7 +236,6 @@ const runStart = () => {
 		logger(`error`, `클라이언트 개발 서버 도구를 찾을 수 없습니다`),
 		process.exit(1)
 	);
-
 	isServer && !serverArgs && (
 		logger(`error`, `서버 진입점 파일(index.ts)을 찾을 수 없습니다`),
 		process.exit(1)
@@ -174,7 +248,6 @@ const runStart = () => {
 	);
 
 	const startProc = spawnProcess(startArgs);
-
 	const cleanup = () => {
 		logger(`info`, `스타트 모드 종료 중...`);
 		startProc.kill();
@@ -190,7 +263,7 @@ const runStart = () => {
 };
 
 // 99. 실행 ----------------------------------------------------------------------------------
-(() => {
+void (async () => {
 	try {
 		logger(`info`, `스크립트 실행: ${TITLE}`);
 		logger(`info`, `전달된 인자 1: ${args1 || `none`}`);

@@ -8,11 +8,11 @@ export {
 	capitalize,
 	singleTags,
 	semicolon,
-	space
+	space,
 } from "@rules/Syntax";
 
 // -------------------------------------------------------------------------------
 export {
 	ifElse,
-	tryCatch
+	tryCatch,
 } from "@rules/Logic";

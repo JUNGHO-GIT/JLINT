@@ -1,24 +1,33 @@
 /**
- * @file vsce.cjs
- * @description VSCE 패키지 빌드 스크립트
+ * @file vsce.mjs
+ * @description VSCE 패키지 빌드 스크립트 (ESM)
  * @author Jungho
  * @since 2025-12-03
  */
 
-const fs = require(`fs`);
-const path = require(`path`);
-const process = require(`process`);
-const { logger, runCmd, delDir, delFile, fileExists, getPmArgs } = require(`../lib/utils.cjs`);
+import fs from 'fs';
+import path from 'path';
+import process from 'process';
+import { fileURLToPath } from 'url';
+import { logger, runCmd, delDir, delFile, fileExists, getPmArgs } from '../lib/utils.mjs';
 
 // 1. 인자 파싱 ------------------------------------------------------------------------------
+const __filename = fileURLToPath(import.meta.url);
 const TITLE = path.basename(__filename);
 const argv = process.argv.slice(2);
-const args1 = argv.find(arg => [`--npm`, `--pnpm`, `--yarn`, `--bun`].includes(arg))?.replace(`--`, ``) || ``;
-const args2 = argv.find(arg => [`--package`].includes(arg))?.replace(`--`, ``) || ``;
+const args1 = argv.find(arg => [
+	`--npm`,
+	`--pnpm`,
+	`--yarn`,
+	`--bun`,
+].includes(arg))?.replace(`--`, ``) || ``;
+const args2 = argv.find(arg => [
+	`--package`,
+].includes(arg))?.replace(`--`, ``) || ``;
 
 // 2. import.meta.url 사용 여부 검사 ---------------------------------------------------------
-const hasImportMetaUsage = (pkgPath=``) => {
-	const checkFile = (filePath=``) => {
+const hasImportMetaUsage = (pkgPath = ``) => {
+	const checkFile = (filePath = ``) => {
 		try {
 			const content = fs.readFileSync(filePath, `utf8`);
 			const result = content.includes(`import.meta.url`) || /createRequire\s*\(/.test(content);
@@ -29,7 +38,7 @@ const hasImportMetaUsage = (pkgPath=``) => {
 		}
 	};
 
-	const checkDir = (dir=``, depth=0) => {
+	const checkDir = (dir = ``, depth = 0) => {
 		if (depth > 3) return false;
 
 		try {
@@ -41,7 +50,10 @@ const hasImportMetaUsage = (pkgPath=``) => {
 				if (entry.isFile() && /\.(js|cjs|mjs)$/.test(entry.name)) {
 					if (checkFile(fullPath)) return true;
 				}
-				if (entry.isDirectory() && ![`node_modules`, `.git`].includes(entry.name)) {
+				if (entry.isDirectory() && ![
+					`node_modules`,
+					`.git`,
+				].includes(entry.name)) {
 					if (checkDir(fullPath, depth + 1)) return true;
 				}
 			}
@@ -69,7 +81,9 @@ const buildConfig = () => {
 	const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, `utf8`));
 	const deps = Object.keys(pkgJson.dependencies || {});
 
-	const external = [`vscode`];
+	const external = [
+		`vscode`,
+	];
 	const copyPackages = [];
 	const forceExternal = [
 		`prettier`,
@@ -77,7 +91,7 @@ const buildConfig = () => {
 		`prettier-plugin-jsp`,
 		`@prettier/plugin-xml`,
 		`sql-formatter`,
-		`html-minifier-terser`
+		`html-minifier-terser`,
 	];
 
 	deps.forEach(pkg => {
@@ -91,7 +105,7 @@ const buildConfig = () => {
 			(isForceExternal || isImportMeta) && (() => {
 				!external.includes(pkg) && external.push(pkg);
 				!copyPackages.includes(pkg) && copyPackages.push(pkg);
-				
+
 				isImportMeta && logger(`info`, `import.meta 감지 → external 추가: ${pkg}`);
 				isForceExternal && logger(`info`, `강제 external 추가: ${pkg}`);
 
@@ -109,11 +123,11 @@ const buildConfig = () => {
 	const esbuildOptions = {
 		"tree-shaking": true,
 		"target": `node21`,
-		"legal-comments": `none`
+		"legal-comments": `none`,
 	};
 
 	const vsceOptions = {
-		"no-dependencies": true
+		"no-dependencies": true,
 	};
 
 	const cfg = { external, copyPackages, esbuildOptions, vsceOptions };
@@ -123,9 +137,8 @@ const buildConfig = () => {
 };
 
 // 4. esbuild 번들링 -------------------------------------------------------------------------
-const bundle = (cfg={}) => {
+const bundle = (cfg = {}) => {
 	logger(`info`, `esbuild 번들링 시작 (src → out)`);
-
 	const extArgs = cfg.external.map(pkg => `--external:${pkg}`);
 	const esbArgs = [
 		`src/extension.ts`,
@@ -134,7 +147,7 @@ const bundle = (cfg={}) => {
 		...extArgs,
 		`--format=cjs`,
 		`--platform=node`,
-		`--minify`
+		`--minify`,
 	];
 
 	cfg.esbuildOptions[`tree-shaking`] && esbArgs.push(`--tree-shaking=true`);
@@ -142,7 +155,10 @@ const bundle = (cfg={}) => {
 	cfg.esbuildOptions[`legal-comments`] && esbArgs.push(`--legal-comments=${cfg.esbuildOptions[`legal-comments`]}`);
 
 	try {
-		runCmd(args1, getPmArgs(args1, [`esbuild`, ...esbArgs]));
+		runCmd(args1, getPmArgs(args1, [
+			`esbuild`,
+			...esbArgs,
+		]));
 	}
 	catch (e) {
 		const errMsg = e instanceof Error ? e.message : String(e);
@@ -154,9 +170,8 @@ const bundle = (cfg={}) => {
 };
 
 // 5. 패키지 및 모든 의존성 재귀 수집 --------------------------------------------------------
-const getAllDependencies = (pkgName=``, nmSrc=``, vis=new Set()) => {
+const getAllDependencies = (pkgName = ``, nmSrc = ``, vis = new Set()) => {
 	if (vis.has(pkgName)) return vis;
-
 	vis.add(pkgName);
 
 	const pkgPath = path.join(nmSrc, pkgName);
@@ -175,11 +190,10 @@ const getAllDependencies = (pkgName=``, nmSrc=``, vis=new Set()) => {
 };
 
 // 6. 패키지를 평탄하게 복사 -------------------------------------------------------------------
-const copyPackageFlat = (pkgName=``, nmSrc=``, nmTgt=``, vis=new Set()) => {
+const copyPackageFlat = (pkgName = ``, nmSrc = ``, nmTgt = ``, vis = new Set()) => {
 	if (vis.has(pkgName)) return;
 
 	vis.add(pkgName);
-
 	const src = path.join(nmSrc, pkgName);
 	const dest = path.join(nmTgt, pkgName);
 
@@ -189,23 +203,34 @@ const copyPackageFlat = (pkgName=``, nmSrc=``, nmTgt=``, vis=new Set()) => {
 	!fileExists(destDir) && fs.mkdirSync(destDir, { "recursive": true });
 
 	const realPath = fs.realpathSync(src);
-	
 	// 수동 재귀 복사 함수
 	const copyRecursive = (source, target) => {
 		const stats = fs.statSync(source);
-		
+
 		if (stats.isDirectory()) {
 			const basename = path.basename(source);
-			if ([`test`, `tests`, `__tests__`, `doc`, `docs`, `example`, `examples`, `bin`, `coverage`, `.github`, `.vscode`].includes(basename)) return;
+			if ([
+				`test`,
+				`tests`,
+				`__tests__`,
+				`doc`,
+				`docs`,
+				`example`,
+				`examples`,
+				`bin`,
+				`coverage`,
+				`.github`,
+				`.vscode`,
+			].includes(basename)) return;
 
 			!fs.existsSync(target) && fs.mkdirSync(target, { "recursive": true });
-			
 			fs.readdirSync(source).forEach(child => {
 				copyRecursive(path.join(source, child), path.join(target, child));
 			});
-		} else if (stats.isFile()) {
+		}
+		else if (stats.isFile()) {
 			const basename = path.basename(source);
-			
+
 			// 파일 필터링
 			if (basename.startsWith(`.`)) return;
 			if (basename.endsWith(`.md`) || basename.endsWith(`.markdown`) || basename.endsWith(`.txt`)) return;
@@ -214,11 +239,10 @@ const copyPackageFlat = (pkgName=``, nmSrc=``, nmTgt=``, vis=new Set()) => {
 			if (basename.endsWith(`.log`)) return;
 			if (basename.endsWith(`.lock`)) return;
 			if (basename.endsWith(`.yml`) || basename.endsWith(`.yaml`)) return;
-			
+
 			const lowerName = basename.toLowerCase();
 			if (lowerName.includes(`license`) || lowerName.includes(`changelog`) || lowerName.includes(`history`) || lowerName.includes(`authors`)) return;
 			if (lowerName === `makefile` || lowerName === `gulpfile.js` || lowerName === `gruntfile.js`) return;
-
 			fs.copyFileSync(source, target);
 		}
 	};
@@ -226,13 +250,14 @@ const copyPackageFlat = (pkgName=``, nmSrc=``, nmTgt=``, vis=new Set()) => {
 	try {
 		copyRecursive(realPath, dest);
 		logger(`info`, `복사: ${pkgName}`);
-	} catch (e) {
+	}
+	catch (e) {
 		logger(`warn`, `복사 실패 (${pkgName}): ${e.message}`);
 	}
 };
 
 // 7. 패키지 복사 메인 함수 ------------------------------------------------------------------
-const copyPackages = (cfg={}) => {
+const copyPackages = (cfg = {}) => {
 	if (!cfg.copyPackages?.length) {
 		logger(`info`, `복사할 패키지 없음`);
 		return;
@@ -254,7 +279,6 @@ const copyPackages = (cfg={}) => {
 	allPkgs.forEach(pkg => {
 		copyPackageFlat(pkg, nmSrc, nmTgt, vis);
 	});
-
 	logger(`success`, `패키지 복사 완료 (총 ${vis.size}개)`);
 };
 
@@ -265,14 +289,19 @@ const runVsceProcess = (cfg) => {
 	copyPackages(cfg);
 	delFile(process.cwd(), `.vsix`);
 
-	const vsceArgs = [`package`];
+	const vsceArgs = [
+		`package`,
+	];
 	cfg.vsceOptions?.[`no-dependencies`] && vsceArgs.push(`--no-dependencies`);
 
-	runCmd(args1, getPmArgs(args1, [`vsce`, ...vsceArgs]));
+	runCmd(args1, getPmArgs(args1, [
+		`vsce`,
+		...vsceArgs,
+	]));
 };
 
 // 99. 실행 ----------------------------------------------------------------------------------
-(() => {
+void (async () => {
 	try {
 		logger(`info`, `스크립트 실행: ${TITLE}`);
 		logger(`info`, `전달된 인자 1: ${args1 || `none`}`);

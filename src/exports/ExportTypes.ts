@@ -5,5 +5,5 @@
 
 // -------------------------------------------------------------------------------
 export {
-	type CommonType
-} from "@types-domain/common";
+	type CommonType,
+} from "@type/common";

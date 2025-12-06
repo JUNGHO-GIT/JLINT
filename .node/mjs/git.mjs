@@ -1,30 +1,43 @@
 /**
- * @file git.cjs
- * @description Git 관련 자동화 스크립트
+ * @file git.mjs
+ * @description Git 관련 자동화 스크립트 (ESM)
  * @author Jungho
  * @since 2025-12-03
  */
 
-const os = require(`os`);
-const fs = require(`fs`);
-const path = require(`path`);
-const process = require(`process`);
-const { execSync } = require(`child_process`);
-const { logger, runPrompt, fileExists } = require(`../lib/utils.cjs`);
-const { env } = require(`../lib/env.cjs`);
-const { settings } = require(`../lib/settings.cjs`);
+import os from 'os';
+import fs from 'fs';
+import path from 'path';
+import process from 'process';
+import { execSync } from 'child_process';
+import { fileURLToPath } from 'url';
+import { logger, runPrompt, fileExists } from '../lib/utils.mjs';
+import { env } from '../lib/env.mjs';
+import { settings } from '../lib/settings.mjs';
 
 // 1. 인자 파싱 ------------------------------------------------------------------------------
+const __filename = fileURLToPath(import.meta.url);
 const TITLE = path.basename(__filename);
 const argv = process.argv.slice(2);
-const args1 = argv.find(arg => [`--npm`, `--pnpm`, `--yarn`, `--bun`].includes(arg))?.replace(`--`, ``) || ``;
-const args2 = argv.find(arg => [`--push`, `--fetch`].includes(arg))?.replace(`--`, ``) || ``;
+const args1 = argv.find(arg => [
+	`--npm`,
+	`--pnpm`,
+	`--yarn`,
+	`--bun`,
+].includes(arg))?.replace(`--`, ``) || ``;
+const args2 = argv.find(arg => [
+	`--push`,
+	`--fetch`,
+].includes(arg))?.replace(`--`, ``) || ``;
+const args3 = argv.find(arg => [
+	`--my`,
+	`--mn`,
+].includes(arg))?.replace(`--`, ``) || ``;
 
 // 2. 원격 기본브랜치 감지 -------------------------------------------------------------------
-const getRemoteDefaultBranch = (remoteName=``) => {
+const getRemoteDefaultBranch = (remoteName = ``) => {
 	try {
 		logger(`info`, `원격 저장소 ${remoteName} 기본브랜치 감지 시작`);
-
 		const branch = remoteName === settings.git.remotes.public.name ? (
 			settings.git.remotes.public.branch
 		) : remoteName === settings.git.remotes.private.name ? (
@@ -48,7 +61,7 @@ const getRemoteDefaultBranch = (remoteName=``) => {
 };
 
 // 3. git remote 존재 확인 -------------------------------------------------------------------
-const checkRemoteExists = (remoteName=``) => {
+const checkRemoteExists = (remoteName = ``) => {
 	try {
 		logger(`info`, `원격 저장소 ${remoteName} 존재 여부 확인`);
 		execSync(`git remote get-url ${remoteName}`, { "encoding": `utf8`, "stdio": `pipe` });
@@ -61,10 +74,9 @@ const checkRemoteExists = (remoteName=``) => {
 };
 
 // 4. 원격 기본브랜치 설정 -------------------------------------------------------------------
-const setRemoteDefaultBranch = (remoteName=``) => {
+const setRemoteDefaultBranch = (remoteName = ``) => {
 	const remoteExists = checkRemoteExists(remoteName);
 	!remoteExists && logger(`info`, `Remote '${remoteName}' 존재하지 않음 - 기본브랜치 설정 건너뜀`);
-
 	remoteExists && (() => {
 		const targetBranch = getRemoteDefaultBranch(remoteName);
 		!targetBranch && (logger(`error`, `원격 기본브랜치를 찾을 수 없습니다: ${remoteName}`), process.exit(1));
@@ -75,7 +87,10 @@ const setRemoteDefaultBranch = (remoteName=``) => {
 			!match && logger(`warn`, `GitHub URL 파싱 실패: ${remoteUrl}`);
 
 			match && (() => {
-				const [, owner, repo] = match;
+				const [
+					, owner,
+					repo,
+				] = match;
 				logger(`info`, `GitHub default branch 변경 시도: ${owner}/${repo} → ${targetBranch}`);
 
 				execSync(`gh api repos/${owner}/${repo} -X PATCH -f default_branch=${targetBranch}`, { "stdio": `pipe` });
@@ -101,12 +116,13 @@ const setRemoteDefaultBranch = (remoteName=``) => {
 // 5. 불필요한 브랜치 삭제 (로컬 + 원격) ------------------------------------------------------
 const cleanupBranches = () => {
 	logger(`info`, `불필요한 브랜치 정리 시작`);
-
 	const localDefaultBranches = [
 		settings.git.remotes.public.branch,
-		settings.git.remotes.private.branch
+		settings.git.remotes.private.branch,
 	].filter(Boolean);
-	const uniqueDefaults = [...new Set(localDefaultBranches)];
+	const uniqueDefaults = [
+		...new Set(localDefaultBranches),
+	];
 
 	// 5-1. 로컬 브랜치 정리
 	(() => {
@@ -141,7 +157,10 @@ const cleanupBranches = () => {
 	})();
 
 	// 5-2. 원격 브랜치 정리
-	[settings.git.remotes.public.name, settings.git.remotes.private.name].forEach(remoteName => {
+	[
+		settings.git.remotes.public.name,
+		settings.git.remotes.private.name,
+	].forEach(remoteName => {
 		const remoteExists = checkRemoteExists(remoteName);
 		!remoteExists && logger(`info`, `Remote '${remoteName}' 존재하지 않음 - 원격 브랜치 정리 건너뜀`);
 
@@ -179,7 +198,6 @@ const cleanupBranches = () => {
 			})();
 		})();
 	});
-
 	logger(`success`, `브랜치 정리 완료`);
 };
 
@@ -197,7 +215,7 @@ const clearGitCache = () => {
 };
 
 // 7. 파일 라인 변환 헬퍼 --------------------------------------------------------------------
-const transformLines = (content=``, rules=[]) => {
+const transformLines = (content = ``, rules = []) => {
 	const lines = content.split(/\r?\n/);
 	const transformed = lines.map(line => {
 		const matched = rules.find(r => r.match(line));
@@ -213,36 +231,34 @@ const modifyEnvAndIndex = () => {
 	const indexExists = fileExists(`index.ts`);
 
 	!envExists && !indexExists && logger(`info`, `.env 및 index.ts 파일 없음 - 건너뜀`);
-
 	envExists && (() => {
 		logger(`info`, `.env 파일 수정 시작`);
 		const envContent = fs.readFileSync(`.env`, `utf8`);
 		const envRules = [
 			{
-				"match": (line=``) => line.startsWith(`CLIENT_URL=`),
-				"replace": () => `CLIENT_URL=https://www.${env.domain}/${env.projectName}`
+				"match": (line = ``) => line.startsWith(`CLIENT_URL=`),
+				"replace": () => `CLIENT_URL=https://www.${env.domain}/${env.projectName}`,
 			},
 			{
-				"match": (line=``) => line.startsWith(`GOOGLE_CALLBACK_URL=`),
-				"replace": () => `GOOGLE_CALLBACK_URL=https://www.${env.domain}/${env.projectName}/${env.gcp.callback}`
-			}
+				"match": (line = ``) => line.startsWith(`GOOGLE_CALLBACK_URL=`),
+				"replace": () => `GOOGLE_CALLBACK_URL=https://www.${env.domain}/${env.projectName}/${env.gcp.callback}`,
+			},
 		];
 		fs.writeFileSync(`.env`, transformLines(envContent, envRules));
 		logger(`info`, `.env 파일 수정 완료`);
 	})();
-
 	indexExists && (() => {
 		logger(`info`, `index.ts 파일 수정 시작`);
 		const indexContent = fs.readFileSync(`index.ts`, `utf8`);
 		const indexRules = [
 			{
-				"match": (line=``) => line.trim().startsWith(`// const db = process.env.DB_NAME`),
-				"replace": () => `const db = process.env.DB_NAME;`
+				"match": (line = ``) => line.trim().startsWith(`// const db = process.env.DB_NAME`),
+				"replace": () => `const db = process.env.DB_NAME;`,
 			},
 			{
-				"match": (line=``) => line.trim().startsWith(`const db = process.env.DB_TEST`),
-				"replace": () => `// const db = process.env.DB_TEST;`
-			}
+				"match": (line = ``) => line.trim().startsWith(`const db = process.env.DB_TEST`),
+				"replace": () => `// const db = process.env.DB_TEST;`,
+			},
 		];
 		fs.writeFileSync(`index.ts`, transformLines(indexContent, indexRules));
 		logger(`info`, `index.ts 파일 수정 완료`);
@@ -255,36 +271,34 @@ const restoreEnvAndIndex = () => {
 	const indexExists = fileExists(`index.ts`);
 
 	!envExists && !indexExists && logger(`info`, `.env 및 index.ts 파일 없음 - 복원 건너뜀`);
-
 	envExists && (() => {
 		logger(`info`, `.env 파일 복원 시작`);
 		const envContent = fs.readFileSync(`.env`, `utf8`);
 		const envRules = [
 			{
-				"match": (line=``) => line.startsWith(`CLIENT_URL=`),
-				"replace": () => `CLIENT_URL=http://localhost:${env.localPort.client}/${env.projectName}`
+				"match": (line = ``) => line.startsWith(`CLIENT_URL=`),
+				"replace": () => `CLIENT_URL=http://localhost:${env.localPort.client}/${env.projectName}`,
 			},
 			{
-				"match": (line=``) => line.startsWith(`GOOGLE_CALLBACK_URL=`),
-				"replace": () => `GOOGLE_CALLBACK_URL=http://localhost:${env.localPort.server}/${env.projectName}/${env.gcp.callback}`
-			}
+				"match": (line = ``) => line.startsWith(`GOOGLE_CALLBACK_URL=`),
+				"replace": () => `GOOGLE_CALLBACK_URL=http://localhost:${env.localPort.server}/${env.projectName}/${env.gcp.callback}`,
+			},
 		];
 		fs.writeFileSync(`.env`, transformLines(envContent, envRules));
 		logger(`info`, `.env 파일 복원 완료`);
 	})();
-
 	indexExists && (() => {
 		logger(`info`, `index.ts 파일 복원 시작`);
 		const indexContent = fs.readFileSync(`index.ts`, `utf8`);
 		const indexRules = [
 			{
-				"match": (line=``) => line.trim().startsWith(`const db = process.env.DB_NAME`),
-				"replace": () => `// const db = process.env.DB_NAME;`
+				"match": (line = ``) => line.trim().startsWith(`const db = process.env.DB_NAME`),
+				"replace": () => `// const db = process.env.DB_NAME;`,
 			},
 			{
-				"match": (line=``) => line.trim().startsWith(`// const db = process.env.DB_TEST`),
-				"replace": () => `const db = process.env.DB_TEST;`
-			}
+				"match": (line = ``) => line.trim().startsWith(`// const db = process.env.DB_TEST`),
+				"replace": () => `const db = process.env.DB_TEST;`,
+			},
 		];
 		fs.writeFileSync(`index.ts`, transformLines(indexContent, indexRules));
 		logger(`info`, `index.ts 파일 복원 완료`);
@@ -292,7 +306,7 @@ const restoreEnvAndIndex = () => {
 };
 
 // 10. changelog 수정 ------------------------------------------------------------------------
-const modifyChangelog = (msg=``) => {
+const modifyChangelog = (msg = ``) => {
 	const changelogExists = fileExists(`changelog.md`);
 	!changelogExists && logger(`info`, `changelog.md 파일 없음 - 건너뜀`);
 
@@ -300,7 +314,9 @@ const modifyChangelog = (msg=``) => {
 		logger(`info`, `changelog.md 업데이트 시작`);
 
 		const changelog = fs.readFileSync(`changelog.md`, `utf8`);
-		const matches = [...changelog.matchAll(/(\s*)(\d+[.]\d+[.]\d+)(\s*)/g)];
+		const matches = [
+			...changelog.matchAll(/(\s*)(\d+[.]\d+[.]\d+)(\s*)/g),
+		];
 		const lastVersion = matches[matches.length - 1][2];
 		const ver = lastVersion.split(`.`).map(Number);
 
@@ -333,18 +349,16 @@ const modifyChangelog = (msg=``) => {
 };
 
 // 11. package.json 버전 수정 ----------------------------------------------------------------
-const incrementVersion = (newVersion=``) => {
+const incrementVersion = (newVersion = ``) => {
 	const pkgPath = `package.json`;
 	const pkgExists = fileExists(pkgPath);
-
 	!newVersion && logger(`info`, `버전 정보 없음 - package.json 업데이트 건너뜀`);
 	!pkgExists && newVersion && logger(`info`, `package.json 파일 없음 - 건너뜀`);
-
 	pkgExists && newVersion && (() => {
 		logger(`info`, `package.json 버전 업데이트 시작: ${newVersion}`);
 		const pkg = JSON.parse(fs.readFileSync(pkgPath, `utf8`));
 		pkg.version = newVersion;
-		fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + `\n`, `utf8`);
+		fs.writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`, `utf8`);
 		logger(`success`, `package.json 버전 업데이트 완료: ${newVersion}`);
 	})();
 };
@@ -354,7 +368,6 @@ const gitFetch = () => {
 	try {
 		const privateExists = checkRemoteExists(settings.git.remotes.private.name);
 		const publicExists = checkRemoteExists(settings.git.remotes.public.name);
-
 		privateExists ? (
 			logger(`info`, `Private remote 감지 - ${settings.git.remotes.private.name}만 fetch 진행`)
 		) : (
@@ -363,8 +376,7 @@ const gitFetch = () => {
 
 		const targetRemote = privateExists ? settings.git.remotes.private.name : settings.git.remotes.public.name;
 		const targetBranch = getRemoteDefaultBranch(targetRemote);
-
-		!privateExists && !publicExists && (logger(`error`, `사용 가능�� remote가 없습니다`), process.exit(1));
+		!privateExists && !publicExists && (logger(`error`, `사용 가능한 remote가 없습니다`), process.exit(1));
 		!targetBranch && (logger(`error`, `원격 기본브랜치를 찾을 수 없습니다`), process.exit(1));
 
 		logger(`info`, `Git Fetch 시작: ${targetRemote}`);
@@ -382,13 +394,13 @@ const gitFetch = () => {
 };
 
 // 13. git push 공통 함수 --------------------------------------------------------------------
-const gitPush = (remoteName=``, ignoreFilePath=``, msg=``) => {
+const gitPush = (remoteName = ``, ignoreFilePath = ``, msg = ``) => {
 	const remoteExists = checkRemoteExists(remoteName);
 	!remoteExists && logger(`info`, `Remote '${remoteName}' 존재하지 않음 - 건너뜀`);
 
 	remoteExists && (() => {
 		const targetBranch = getRemoteDefaultBranch(remoteName);
-		!targetBranch && (logger(`error`, `원격 기본브랜치를 찾을 수 없습니다: ${remoteName}`), process.exit(1));
+		!targetBranch && (logger(`error`, `원격 ���본브랜치를 찾을 수 없습니다: ${remoteName}`), process.exit(1));
 
 		logger(`info`, `Git Push 시작: ${remoteName}`);
 
@@ -404,7 +416,7 @@ const gitPush = (remoteName=``, ignoreFilePath=``, msg=``) => {
 		statusOutput && (() => {
 			logger(`info`, `변경사항 감지 - 커밋 진행`);
 			const tempFile = `.git-commit-msg.tmp`;
-			const commitContent = msg ? msg : (() => {
+			const commitContent = msg || (() => {
 				const now = new Date();
 				const dateStr = now.toISOString().slice(0, 10);
 				const timeStr = now.toTimeString().slice(0, 8);
@@ -428,7 +440,11 @@ const gitPush = (remoteName=``, ignoreFilePath=``, msg=``) => {
 
 // 14. Push 프로세스 실행 --------------------------------------------------------------------
 const runPushProcess = async () => {
-	const commitMsg = await runPrompt(`커밋 메시지 입력 (빈값 = 날짜/시간): `);
+	const commitMsg = args3 === `mn` ? (
+		``
+	) : (
+		await runPrompt(`커밋 메시지 입력 (빈값 = 날짜/시간): `)
+	);
 	logger(`info`, `커밋 메시지: ${commitMsg || `auto (date/time)`}`);
 
 	modifyEnvAndIndex();
@@ -440,7 +456,7 @@ const runPushProcess = async () => {
 };
 
 // 99. 실행 ----------------------------------------------------------------------------------
-(async () => {
+void (async () => {
 	try {
 		logger(`info`, `스크립트 실행: ${TITLE}`);
 		logger(`info`, `전달된 인자 1: ${args1 || `none`}`);
@@ -451,18 +467,18 @@ const runPushProcess = async () => {
 		process.exit(0);
 	}
 	try {
-		args2 === `fetch` && (
-			setRemoteDefaultBranch(settings.git.remotes.public.name),
-			setRemoteDefaultBranch(settings.git.remotes.private.name),
-			cleanupBranches(),
-			gitFetch()
-		);
-		args2 === `push` && (
-			setRemoteDefaultBranch(settings.git.remotes.public.name),
-			setRemoteDefaultBranch(settings.git.remotes.private.name),
-			cleanupBranches(),
-			await runPushProcess()
-		);
+		args2 === `fetch` && (() => {
+			setRemoteDefaultBranch(settings.git.remotes.public.name);
+			setRemoteDefaultBranch(settings.git.remotes.private.name);
+			cleanupBranches();
+			gitFetch();
+		})();
+		args2 === `push` && void (async () => {
+			setRemoteDefaultBranch(settings.git.remotes.public.name);
+			setRemoteDefaultBranch(settings.git.remotes.private.name);
+			cleanupBranches();
+			await runPushProcess();
+		})();
 		logger(`info`, `스크립트 정상 종료: ${TITLE}`);
 		process.exit(0);
 	}

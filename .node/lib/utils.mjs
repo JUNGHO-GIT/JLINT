@@ -1,20 +1,20 @@
 /**
- * @file utils.cjs
- * @description 공통 유틸리티 함수 모음
+ * @file utils.mjs
+ * @description 공통 유틸리티 함수 모음 (ESM)
  * @author Jungho
  * @since 2025-11-22
  */
 
-const fs = require(`fs`);
-const path = require(`path`);
-const readline = require(`readline`);
-const { spawnSync } = require(`child_process`);
+import fs from 'fs';
+import path from 'path';
+import readline from 'readline';
+import { spawnSync, execSync } from 'child_process';
 
 // 1. 텍스트 포맷 ----------------------------------------------------------------------------
-const formatLog = (text=``) => text.trim().replace(/^\s+/gm, ``);
+export const formatLog = (text = ``) => text.trim().replace(/^\s+/gm, ``);
 
 // 2. 로깅 -----------------------------------------------------------------------------------
-const logger = (type=``, value=``) => {
+export const logger = (type = ``, value = ``) => {
 	const config = {
 		"line": { "str": `-----------------------------------------`, "color": `\u001b[38;2;255;162;0m` },
 		"debug": { "str": `[DEBUG]`, "color": `\u001b[38;5;141m` },
@@ -23,16 +23,16 @@ const logger = (type=``, value=``) => {
 		"hint": { "str": `[HINT]`, "color": `\u001b[38;5;39m` },
 		"warn": { "str": `[WARN]`, "color": `\u001b[38;5;214m` },
 		"error": { "str": `[ERROR]`, "color": `\u001b[38;5;196m` },
-		"reset": { "str": ``, "color": `\u001b[0m` }
+		"reset": { "str": ``, "color": `\u001b[0m` },
 	};
 
 	const separator = `${config.reset.color}${config.line.color}${config.line.str}${config.reset.color}`;
 	const level = `${config.reset.color}${config?.[type]?.color ?? ``}${config?.[type]?.str ?? ``}${config.reset.color}`;
 	const fmtMsg = formatLog(`
-		${separator}
-		${level}
-		${value}
-	`);
+    ${separator}
+    ${level}
+    ${value}
+  `);
 
 	type === `debug` && console.debug(fmtMsg);
 	type === `info` && console.info(fmtMsg);
@@ -43,7 +43,7 @@ const logger = (type=``, value=``) => {
 };
 
 // 3. 명령 실행 ------------------------------------------------------------------------------
-const runCmd = (cmd=``, args=[], ignoreError=false, useShell=true) => {
+export const runCmd = (cmd = ``, args = [], ignoreError = false, useShell = true) => {
 	logger(`info`, `실행: ${cmd} ${args.join(` `)}`);
 
 	const shouldUseShell = cmd !== `bun` && useShell;
@@ -67,7 +67,7 @@ const runCmd = (cmd=``, args=[], ignoreError=false, useShell=true) => {
 };
 
 // 4. 사용자 입력 받기 -----------------------------------------------------------------------
-const runPrompt = (question=``) => {
+export const runPrompt = (question = ``) => {
 	const rl = readline.createInterface({ "input": process.stdin, "output": process.stdout });
 	const result = new Promise(resolve => {
 		rl.question(question, answer => {
@@ -79,7 +79,7 @@ const runPrompt = (question=``) => {
 };
 
 // 5. spawn 래퍼 -----------------------------------------------------------------------------
-const spawnWrapper = (cmd=``, args=[]) => {
+export const spawnWrapper = (cmd = ``, args = []) => {
 	const binDir = path.join(process.cwd(), `node_modules`, `.bin`);
 	const envPath = process.env.PATH || process.env.Path || ``;
 	const pathParts = envPath.split(path.delimiter).filter(Boolean);
@@ -95,7 +95,7 @@ const spawnWrapper = (cmd=``, args=[]) => {
 };
 
 // 6. 디렉토리 유효성 검사 -------------------------------------------------------------------
-const validateDir = (list=[]) => {
+export const validateDir = (list = []) => {
 	const isArr = Array.isArray(list);
 	const found = isArr ? list.find(name => fs.existsSync(path.join(process.cwd(), name))) : null;
 
@@ -110,7 +110,7 @@ const validateDir = (list=[]) => {
 };
 
 // 7. 특정파일 생성 --------------------------------------------------------------------------
-const createFile = (tp=``, content=``) => {
+export const createFile = (tp = ``, content = ``) => {
 	const full = path.isAbsolute(tp) ? tp : path.join(process.cwd(), tp);
 	const dir = path.dirname(full);
 	const exists = fs.existsSync(full);
@@ -127,7 +127,7 @@ const createFile = (tp=``, content=``) => {
 };
 
 // 8. 특정폴더 생성 --------------------------------------------------------------------------
-const createDir = (tp=``) => {
+export const createDir = (tp = ``) => {
 	const full = path.isAbsolute(tp) ? tp : path.join(process.cwd(), tp);
 	const exists = fs.existsSync(full);
 
@@ -141,7 +141,7 @@ const createDir = (tp=``) => {
 };
 
 // 9. 특정파일 삭제 --------------------------------------------------------------------------
-const delFile = (tp=``, ext=``) => {
+export const delFile = (tp = ``, ext = ``) => {
 	const full = path.isAbsolute(tp) ? tp : path.join(process.cwd(), tp);
 	const dir = tp ? full : process.cwd();
 	const isValidDir = fs.existsSync(dir) && fs.statSync(dir).isDirectory();
@@ -152,7 +152,7 @@ const delFile = (tp=``, ext=``) => {
 
 		!files.length && logger(`warn`, `삭제할 파일 없음 (패턴: ${ext}) - 경로: ${dir}`);
 		files.length && (
-			files.forEach(name => fs.unlinkSync(path.join(dir, name))),
+			files.forEach(name => { fs.unlinkSync(path.join(dir, name)); }),
 			logger(`success`, `파일 삭제 (패턴: ${ext}) - 경로: ${dir}, 개수: ${files.length}`)
 		);
 
@@ -177,7 +177,7 @@ const delFile = (tp=``, ext=``) => {
 };
 
 // 10. 특정폴더 삭제 -------------------------------------------------------------------------
-const delDir = (tp=``, pat=``) => {
+export const delDir = (tp = ``, pat = ``) => {
 	const full = path.isAbsolute(tp) ? tp : path.join(process.cwd(), tp);
 	const dir = tp ? full : process.cwd();
 	const isValidDir = fs.existsSync(dir) && fs.statSync(dir).isDirectory();
@@ -189,7 +189,7 @@ const delDir = (tp=``, pat=``) => {
 
 		!tgts.length && logger(`warn`, `삭제할 폴더 없음 (패턴: ${pat}) - 경로: ${dir}`);
 		tgts.length && (
-			tgts.forEach(d => fs.rmSync(path.join(dir, d.name), { "recursive": true, "force": true })),
+			tgts.forEach(d => { fs.rmSync(path.join(dir, d.name), { "recursive": true, "force": true }); }),
 			logger(`success`, `폴더 삭제 (패턴: ${pat}) - 경로: ${dir}, 개수: ${tgts.length}`)
 		);
 
@@ -214,17 +214,22 @@ const delDir = (tp=``, pat=``) => {
 };
 
 // 11. 프로젝트 타입 검증 --------------------------------------------------------------------
-const getProjectType = (args=``) => {
+export const getProjectType = (args = ``) => {
 	const isClient = args === `client`;
 	const isServer = args === `server`;
-	const hasFile = (fp=``) => fs.existsSync(path.isAbsolute(fp) ? fp : path.join(process.cwd(), fp));
+	const hasFile = (fp = ``) => fs.existsSync(path.isAbsolute(fp) ? fp : path.join(process.cwd(), fp));
 
 	!isClient && !isServer && (
 		logger(`error`, `프로젝트 타입을 지정해주세요: --client 또는 --server`),
 		process.exit(1)
 	);
 
-	const viteConfigs = [`vite.config.ts`, `vite.config.js`, `vite.config.mts`, `vite.config.mjs`];
+	const viteConfigs = [
+		`vite.config.ts`,
+		`vite.config.js`,
+		`vite.config.mts`,
+		`vite.config.mjs`,
+	];
 	const hasVite = viteConfigs.some(hasFile);
 	const hasNext = hasFile(`next.config.js`) || hasFile(`next.config.mjs`);
 	const hasReactScripts = hasFile(path.join(`node_modules`, `react-scripts`, `bin`, `react-scripts.js`));
@@ -242,20 +247,30 @@ const getProjectType = (args=``) => {
 };
 
 // 12. 플랫폼 감지 ---------------------------------------------------------------------------
-const getPlatform = () => process.platform === `win32` ? `win` : `linux`;
+export const getPlatform = () => process.platform === `win32` ? `win` : `linux`;
 
 // 13. 패키지 매니저 인자 생성 ---------------------------------------------------------------
-const getPmArgs = (mgr=``, baseArgs=[], options={}) => {
+export const getPmArgs = (mgr = ``, baseArgs = [], options = {}) => {
 	const { execPrefix = true } = options;
 
 	const result = mgr === `npm` ? (
-		execPrefix ? [`exec`, `--`, ...baseArgs] : baseArgs
+		execPrefix ? [
+			`exec`,
+			`--`,
+			...baseArgs,
+		] : baseArgs
 	) : mgr === `pnpm` ? (
-		execPrefix ? [`exec`, ...baseArgs] : baseArgs
+		execPrefix ? [
+			`exec`,
+			...baseArgs,
+		] : baseArgs
 	) : mgr === `yarn` ? (
 		baseArgs
 	) : mgr === `bun` ? (
-		[`x`, ...baseArgs]
+		[
+			`x`,
+			...baseArgs,
+		]
 	) : (
 		[]
 	);
@@ -264,9 +279,7 @@ const getPmArgs = (mgr=``, baseArgs=[], options={}) => {
 };
 
 // 14. 명령 실행 헬퍼 (설명 포함) ------------------------------------------------------------
-const execCommand = (cmd=``, desc=``) => {
-	const { execSync } = require(`child_process`);
-
+export const execCommand = (cmd = ``, desc = ``) => {
 	logger(`info`, `${desc} 시작`);
 
 	try {
@@ -282,25 +295,7 @@ const execCommand = (cmd=``, desc=``) => {
 };
 
 // 15. 파일 존재 확인 ------------------------------------------------------------------------
-const fileExists = (fp=``) => {
+export const fileExists = (fp = ``) => {
 	const full = path.isAbsolute(fp) ? fp : path.join(process.cwd(), fp);
 	return fs.existsSync(full);
-};
-
-// 99. 모듈 내보내기 -------------------------------------------------------------------------
-module.exports = {
-	"logger": logger,
-	"runCmd": runCmd,
-	"runPrompt": runPrompt,
-	"spawnWrapper": spawnWrapper,
-	"validateDir": validateDir,
-	"createFile": createFile,
-	"createDir": createDir,
-	"delFile": delFile,
-	"delDir": delDir,
-	"getProjectType": getProjectType,
-	"getPlatform": getPlatform,
-	"getPmArgs": getPmArgs,
-	"execCommand": execCommand,
-	"fileExists": fileExists
 };
