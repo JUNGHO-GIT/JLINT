@@ -5,27 +5,31 @@ import { path, vscode, setExtensionPath } from "@exportLibs";
 import { logger, initLogger, notify } from "@exportScripts";
 
 // -------------------------------------------------------------------------------------------------
-export const deactivate = () => {};
-export const activate = (context: vscode.ExtensionContext) => {
+export const deactivate = () => {
+	logger(`info`, `Jlint is now deactivated`);
+};
 
-	// 0. Initialize Logger ------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------
+export const activate = (context: vscode.ExtensionContext) => {
+	
+	// 0. Initialize Logger
 	initLogger();
 	setExtensionPath(context.extensionPath);
-	logger(`info`, `activation - Jlint is now active!`);
+	logger(`info`, `Jlint is now active!`);
 
-	// 1. Get Configuration ------------------------------------------------------------------------
+	// 1. Get Configuration
 	const getConfiguration = () => {
 		const config = vscode.workspace.getConfiguration(`Jlint`);
 		return {
-			activateLint: config.get(`activateLint`, true) as boolean,
-			removeComments: config.get(`removeComments`, true) as boolean,
-			insertLine: config.get(`insertLine`, true) as boolean,
-			tabSize: config.get(`tabSize`, 2) as number,
-			quoteType: config.get(`quoteType`, `double`) as string,
+			"activateLint": config.get(`activateLint`, true) as boolean,
+			"removeComments": config.get(`removeComments`, true) as boolean,
+			"insertLine": config.get(`insertLine`, true) as boolean,
+			"tabSize": config.get(`tabSize`, 2) as number,
+			"quoteType": config.get(`quoteType`, `double`) as string,
 		};
 	};
 
-	// 2. Register Command ---------------------------------------------------------------------------
+	// 2. Register Command
 	const command = vscode.commands.registerCommand(`extension.Jlint`, async () => {
 		const editor = vscode.window.activeTextEditor;
 		if (!editor) {

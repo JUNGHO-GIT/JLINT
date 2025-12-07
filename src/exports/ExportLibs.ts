@@ -18,10 +18,7 @@ import type { FormatOptionsWithLanguage as _FormatOptionsWithLanguage } from "sq
 import type { Options as _PrettierOptions } from "prettier";
 import type { Options as _StripJsonOptions } from "strip-json-comments";
 import type { Options as _StripOptions } from "strip-comments";
-import {
-	setExtensionPath as _setExtensionPath,
-	getModuleWithCache as _getModuleWithCache,
-} from "@scripts/modules";
+import { setExtensionPath as _setExtensionPath, getModuleWithCache as _getModuleWithCache } from "@scripts/modules";
 
 // -----------------------------------------------------------------------------------------
 export { _vscode as vscode };

@@ -9,10 +9,18 @@
 export const settings = {
 	"git": {
 		"remotes": {
-			"public": {"name": `public`, "branch": `public/main`},
-			"private": {"name": `private`, "branch": `private/main`},
+			"public": {
+				"name": `public`,
+				"branch": `public/main`,
+			},
+			"private": {
+				"name": `private`,
+				"branch": `private/main`,
+			},
 		},
-		"deploy": {"resetBranch": `private/private/main`},
+		"deploy": {
+			"resetBranch": `private/private/main`,
+		},
 	},
 	"cdn": {
 		"owner": `JUNGHO-GIT`,
@@ -41,6 +49,7 @@ export const settings = {
 					`reset.mjs`,
 					`gcloud.mjs`,
 					`vsce.mjs`,
+					`convert.mjs`,
 				],
 			},
 

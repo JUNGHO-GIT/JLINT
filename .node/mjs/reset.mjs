@@ -5,22 +5,22 @@
  * @since 2025-12-03
  */
 
-import path from 'path';
-import process from 'process';
-import { fileURLToPath } from 'url';
-import { logger, delDir, delFile, runCmd } from '../lib/utils.mjs';
+import path from "path";
+import process from "process";
+import { fileURLToPath } from "url";
+import { logger, delDir, delFile, runCmd } from "../lib/utils.mjs";
 
 // 1. 인자 파싱 ------------------------------------------------------------------------------
 const __filename = fileURLToPath(import.meta.url);
 const TITLE = path.basename(__filename);
 const argv = process.argv.slice(2);
-const args1 = argv.find(arg => [
+const args1 = argv.find((arg) => [
 	`--npm`,
 	`--pnpm`,
 	`--yarn`,
 	`--bun`,
 ].includes(arg))?.replace(`--`, ``) || ``;
-const args2 = argv.find(arg => [
+const args2 = argv.find((arg) => [
 	`--reset`,
 ].includes(arg))?.replace(`--`, ``) || ``;
 
@@ -28,8 +28,9 @@ const args2 = argv.find(arg => [
 const prepareSystem = () => {
 	logger(`info`, `시스템 준비 시작 (대기: 200ms)`);
 	const start = Date.now();
-	while (Date.now() - start < 200) { /* empty */ }
-
+	while (Date.now() - start < 200) {
+		/* empty */
+	}
 	logger(`success`, `대기 완료`);
 };
 
@@ -37,12 +38,30 @@ const prepareSystem = () => {
 const cleanup = () => {
 	logger(`info`, `파일 삭제 시작`);
 	const tgts = [
-		{ "name": `node_modules`, "isDir": true },
-		{ "name": `package-lock.json`, "isDir": false },
-		{ "name": `bun.lockb`, "isDir": false },
-		{ "name": `yarn.lock`, "isDir": false },
-		{ "name": `pnpm-lock.yaml`, "isDir": false },
-		{ "name": `pnpm-workspace.yaml`, "isDir": false },
+		{
+			"name": `node_modules`,
+			"isDir": true,
+		},
+		{
+			"name": `package-lock.json`,
+			"isDir": false,
+		},
+		{
+			"name": `bun.lockb`,
+			"isDir": false,
+		},
+		{
+			"name": `yarn.lock`,
+			"isDir": false,
+		},
+		{
+			"name": `pnpm-lock.yaml`,
+			"isDir": false,
+		},
+		{
+			"name": `pnpm-workspace.yaml`,
+			"isDir": false,
+		},
 	];
 
 	tgts.forEach((tgt, idx) => {
@@ -73,7 +92,6 @@ const installPmg = (mgr = ``) => {
 		logger(`error`, `${mgr}로 의존성 설치 실패: ${errMsg}`);
 		throw e;
 	}
-
 	logger(`success`, `${mgr}로 의존성 설치 완료`);
 };
 
@@ -86,18 +104,19 @@ const runResetProcess = (mgr = ``) => {
 };
 
 // 99. 실행 ----------------------------------------------------------------------------------
-void (async () => {
+(async () => {
 	try {
 		logger(`info`, `스크립트 실행: ${TITLE}`);
 		logger(`info`, `전달된 인자 1: ${args1 || `none`}`);
 		logger(`info`, `전달된 인자 2: ${args2 || `none`}`);
+		// logger(`info`, `전달된 인자 3: ${args3 || `none`}`);
 	}
 	catch {
 		logger(`warn`, `인자 파싱 오류 발생`);
 		process.exit(0);
 	}
 	try {
-		args1 && runResetProcess(args1);
+		args2 === `reset` && runResetProcess(args1);
 		logger(`info`, `스크립트 정상 종료: ${TITLE}`);
 		process.exit(0);
 	}

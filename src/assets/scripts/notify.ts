@@ -12,9 +12,9 @@ const AUTO_CLOSE_MS = 1000;
 // -------------------------------------------------------------------------------------------------
 const showProgress = async (text: string): Promise<void> => {
 	await vscode.window.withProgress({
-		location: vscode.ProgressLocation.Notification,
-		title: text,
-		cancellable: false,
+		"location": vscode.ProgressLocation.Notification,
+		"title": text,
+		"cancellable": false,
 	},
 	async (_) => {
 		await new Promise((res) => {
@@ -29,23 +29,23 @@ export const notify = async (
 	value: string
 ): Promise<void> => {
 	const config = {
-		title: {
-			str: `[${MAIN}]`,
+		"title": {
+			"str": `[${MAIN}]`,
 		},
-		debug: {
-			str: `[DEBUG]`,
+		"debug": {
+			"str": `[DEBUG]`,
 		},
-		info: {
-			str: `[INFO]`,
+		"info": {
+			"str": `[INFO]`,
 		},
-		hint: {
-			str: `[HINT]`,
+		"hint": {
+			"str": `[HINT]`,
 		},
-		warn: {
-			str: `[WARN]`,
+		"warn": {
+			"str": `[WARN]`,
 		},
-		error: {
-			str: `[ERROR]`,
+		"error": {
+			"str": `[ERROR]`,
 		},
 	};
 	const text = `${config.title.str} ${config[type].str} ${value}`;
@@ -63,7 +63,9 @@ export const modal = (
 	value: string
 ): Thenable<string | undefined> => {
 	const text = `[${MAIN}] ${value}`;
-	const options = { modal: true };
+	const options = {
+		"modal": true,
+	};
 
 	const result = (
 		type === `info` ? (

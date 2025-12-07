@@ -5,23 +5,23 @@
  * @since 2025-12-03
  */
 
-import fs from 'fs';
-import path from 'path';
-import process from 'process';
-import { fileURLToPath } from 'url';
-import { logger, runCmd, delDir, delFile, fileExists, getPmArgs } from '../lib/utils.mjs';
+import fs from "fs";
+import path from "path";
+import process from "process";
+import { fileURLToPath } from "url";
+import { logger, runCmd, delDir, delFile, fileExists, getPmArgs } from "../lib/utils.mjs";
 
 // 1. 인자 파싱 ------------------------------------------------------------------------------
 const __filename = fileURLToPath(import.meta.url);
 const TITLE = path.basename(__filename);
 const argv = process.argv.slice(2);
-const args1 = argv.find(arg => [
+const args1 = argv.find((arg) => [
 	`--npm`,
 	`--pnpm`,
 	`--yarn`,
 	`--bun`,
 ].includes(arg))?.replace(`--`, ``) || ``;
-const args2 = argv.find(arg => [
+const args2 = argv.find((arg) => [
 	`--package`,
 ].includes(arg))?.replace(`--`, ``) || ``;
 
@@ -39,27 +39,33 @@ const hasImportMetaUsage = (pkgPath = ``) => {
 	};
 
 	const checkDir = (dir = ``, depth = 0) => {
-		if (depth > 3) return false;
-
+		if (depth > 3) {
+			return false;
+		}
 		try {
-			const entries = fs.readdirSync(dir, { "withFileTypes": true });
+			const entries = fs.readdirSync(dir, {
+				"withFileTypes": true,
+			});
 
 			for (const entry of entries) {
 				const fullPath = path.join(dir, entry.name);
 
 				if (entry.isFile() && /\.(js|cjs|mjs)$/.test(entry.name)) {
-					if (checkFile(fullPath)) return true;
+					if (checkFile(fullPath)) {
+						return true;
+					}
 				}
 				if (entry.isDirectory() && ![
 					`node_modules`,
 					`.git`,
 				].includes(entry.name)) {
-					if (checkDir(fullPath, depth + 1)) return true;
+					if (checkDir(fullPath, depth + 1)) {
+						return true;
+					}
 				}
 			}
 		}
 		catch {}
-
 		return false;
 	};
 
@@ -73,10 +79,10 @@ const buildConfig = () => {
 	const pkgJsonPath = path.join(cwd, `package.json`);
 	const nmPath = path.join(cwd, `node_modules`);
 
-	!fileExists(pkgJsonPath) && (
-		logger(`error`, `package.json not found`),
-		process.exit(1)
-	);
+	!fileExists(pkgJsonPath) && (() => {
+		logger(`error`, `package.json not found`);
+		process.exit(1);
+	})();
 
 	const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, `utf8`));
 	const deps = Object.keys(pkgJson.dependencies || {});
@@ -85,6 +91,8 @@ const buildConfig = () => {
 		`vscode`,
 	];
 	const copyPackages = [];
+
+	// TODO: 여기에 강제 external 패키지명을 추가
 	const forceExternal = [
 		`prettier`,
 		`prettier-plugin-java`,
@@ -94,7 +102,7 @@ const buildConfig = () => {
 		`html-minifier-terser`,
 	];
 
-	deps.forEach(pkg => {
+	deps.forEach((pkg) => {
 		const pkgPath = path.join(nmPath, pkg);
 		!fileExists(pkgPath) && logger(`warn`, `패키지 없음: ${pkg}`);
 
@@ -112,7 +120,7 @@ const buildConfig = () => {
 				const subPkgJson = path.join(pkgPath, `package.json`);
 				fileExists(subPkgJson) && (() => {
 					const subDeps = Object.keys(JSON.parse(fs.readFileSync(subPkgJson, `utf8`)).dependencies || {});
-					subDeps.forEach(subPkg => {
+					subDeps.forEach((subPkg) => {
 						!external.includes(subPkg) && external.push(subPkg);
 					});
 				})();
@@ -130,7 +138,12 @@ const buildConfig = () => {
 		"no-dependencies": true,
 	};
 
-	const cfg = { external, copyPackages, esbuildOptions, vsceOptions };
+	const cfg = {
+		external,
+		copyPackages,
+		esbuildOptions,
+		vsceOptions,
+	};
 	logger(`debug`, `동적 설정: ${JSON.stringify(cfg, null, 2)}`);
 
 	return cfg;
@@ -139,7 +152,7 @@ const buildConfig = () => {
 // 4. esbuild 번들링 -------------------------------------------------------------------------
 const bundle = (cfg = {}) => {
 	logger(`info`, `esbuild 번들링 시작 (src → out)`);
-	const extArgs = cfg.external.map(pkg => `--external:${pkg}`);
+	const extArgs = cfg.external.map((pkg) => `--external:${pkg}`);
 	const esbArgs = [
 		`src/extension.ts`,
 		`--bundle`,
@@ -165,24 +178,26 @@ const bundle = (cfg = {}) => {
 		logger(`error`, `esbuild 번들링 실패: ${errMsg}`);
 		throw e;
 	}
-
 	logger(`success`, `esbuild 번들링 완료`);
 };
 
 // 5. 패키지 및 모든 의존성 재귀 수집 --------------------------------------------------------
 const getAllDependencies = (pkgName = ``, nmSrc = ``, vis = new Set()) => {
-	if (vis.has(pkgName)) return vis;
+	if (vis.has(pkgName)) {
+		return vis;
+	}
 	vis.add(pkgName);
 
 	const pkgPath = path.join(nmSrc, pkgName);
 	const pkgJsonPath = path.join(pkgPath, `package.json`);
 
-	if (!fileExists(pkgJsonPath)) return vis;
-
+	if (!fileExists(pkgJsonPath)) {
+		return vis;
+	}
 	const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, `utf8`));
 	const deps = pkgJson.dependencies || {};
 
-	Object.keys(deps).forEach(dep => {
+	Object.keys(deps).forEach((dep) => {
 		getAllDependencies(dep, nmSrc, vis);
 	});
 
@@ -191,16 +206,20 @@ const getAllDependencies = (pkgName = ``, nmSrc = ``, vis = new Set()) => {
 
 // 6. 패키지를 평탄하게 복사 -------------------------------------------------------------------
 const copyPackageFlat = (pkgName = ``, nmSrc = ``, nmTgt = ``, vis = new Set()) => {
-	if (vis.has(pkgName)) return;
-
+	if (vis.has(pkgName)) {
+		return;
+	}
 	vis.add(pkgName);
 	const src = path.join(nmSrc, pkgName);
 	const dest = path.join(nmTgt, pkgName);
 
-	if (!fileExists(src)) return;
-
+	if (!fileExists(src)) {
+		return;
+	}
 	const destDir = path.dirname(dest);
-	!fileExists(destDir) && fs.mkdirSync(destDir, { "recursive": true });
+	!fileExists(destDir) && fs.mkdirSync(destDir, {
+		"recursive": true,
+	});
 
 	const realPath = fs.realpathSync(src);
 	// 수동 재귀 복사 함수
@@ -221,10 +240,13 @@ const copyPackageFlat = (pkgName = ``, nmSrc = ``, nmTgt = ``, vis = new Set()) 
 				`coverage`,
 				`.github`,
 				`.vscode`,
-			].includes(basename)) return;
-
-			!fs.existsSync(target) && fs.mkdirSync(target, { "recursive": true });
-			fs.readdirSync(source).forEach(child => {
+			].includes(basename)) {
+				return;
+			}
+			!fs.existsSync(target) && fs.mkdirSync(target, {
+				"recursive": true,
+			});
+			fs.readdirSync(source).forEach((child) => {
 				copyRecursive(path.join(source, child), path.join(target, child));
 			});
 		}
@@ -232,18 +254,42 @@ const copyPackageFlat = (pkgName = ``, nmSrc = ``, nmTgt = ``, vis = new Set()) 
 			const basename = path.basename(source);
 
 			// 파일 필터링
-			if (basename.startsWith(`.`)) return;
-			if (basename.endsWith(`.md`) || basename.endsWith(`.markdown`) || basename.endsWith(`.txt`)) return;
-			if (basename.endsWith(`.ts`) && !basename.endsWith(`.d.ts`)) return;
-			if (basename.endsWith(`.map`)) return;
-			if (basename.endsWith(`.log`)) return;
-			if (basename.endsWith(`.lock`)) return;
-			if (basename.endsWith(`.yml`) || basename.endsWith(`.yaml`)) return;
-
+			if (basename.startsWith(`.`)) {
+				return;
+			}
+			if (basename.endsWith(`.md`) || basename.endsWith(`.markdown`) || basename.endsWith(`.txt`)) {
+				return;
+			}
+			if (basename.endsWith(`.ts`) && !basename.endsWith(`.d.ts`)) {
+				return;
+			}
+			if (basename.endsWith(`.map`)) {
+				return;
+			}
+			if (basename.endsWith(`.log`)) {
+				return;
+			}
+			if (basename.endsWith(`.lock`)) {
+				return;
+			}
+			if (basename.endsWith(`.yml`) || basename.endsWith(`.yaml`)) {
+				return;
+			}
 			const lowerName = basename.toLowerCase();
-			if (lowerName.includes(`license`) || lowerName.includes(`changelog`) || lowerName.includes(`history`) || lowerName.includes(`authors`)) return;
-			if (lowerName === `makefile` || lowerName === `gulpfile.js` || lowerName === `gruntfile.js`) return;
-			fs.copyFileSync(source, target);
+			if (lowerName.includes(`license`) || lowerName.includes(`changelog`) || lowerName.includes(`history`) || lowerName.includes(`authors`)) {
+				return;
+			}
+			if (lowerName === `makefile` || lowerName === `gulpfile.js` || lowerName === `gruntfile.js`) {
+				return;
+			}
+			// .js 파일인 경우 파일 끝의 sourceMappingURL 주석만 제거
+			basename.endsWith(`.js`) ? (() => {
+				const content = fs.readFileSync(source, `utf8`);
+				const cleaned = content.replace(/\n?\/\/[#@]\s*sourceMappingURL=[^\n]+\s*$/, ``);
+				fs.writeFileSync(target, cleaned, `utf8`);
+			})() : (
+				fs.copyFileSync(source, target)
+			);
 		}
 	};
 
@@ -262,21 +308,24 @@ const copyPackages = (cfg = {}) => {
 		logger(`info`, `복사할 패키지 없음`);
 		return;
 	}
-
 	logger(`info`, `패키지 복사 시작`);
 
 	const nmSrc = path.join(process.cwd(), `node_modules`);
 	const nmTgt = path.join(process.cwd(), `out`, `node_modules`);
-	!fileExists(nmTgt) && fs.mkdirSync(nmTgt, { "recursive": true });
+	!fileExists(nmTgt) && fs.mkdirSync(nmTgt, {
+		"recursive": true,
+	});
 
 	const allPkgs = new Set();
-	cfg.copyPackages.forEach(pkg => {
+	cfg.copyPackages.forEach((pkg) => {
 		const deps = getAllDependencies(pkg, nmSrc);
-		deps.forEach(dep => allPkgs.add(dep));
+		deps.forEach((dep) => {
+			allPkgs.add(dep);
+		});
 	});
 
 	const vis = new Set();
-	allPkgs.forEach(pkg => {
+	allPkgs.forEach((pkg) => {
 		copyPackageFlat(pkg, nmSrc, nmTgt, vis);
 	});
 	logger(`success`, `패키지 복사 완료 (총 ${vis.size}개)`);
@@ -301,18 +350,19 @@ const runVsceProcess = (cfg) => {
 };
 
 // 99. 실행 ----------------------------------------------------------------------------------
-void (async () => {
+(async () => {
 	try {
 		logger(`info`, `스크립트 실행: ${TITLE}`);
 		logger(`info`, `전달된 인자 1: ${args1 || `none`}`);
 		logger(`info`, `전달된 인자 2: ${args2 || `none`}`);
+		// logger(`info`, `전달된 인자 3: ${args3 || `none`}`);
 	}
 	catch {
 		logger(`warn`, `인자 파싱 오류 발생`);
 		process.exit(0);
 	}
 	try {
-		args1 && runVsceProcess(buildConfig());
+		args2 === `package` && runVsceProcess(buildConfig());
 		logger(`info`, `스크립트 정상 종료: ${TITLE}`);
 		process.exit(0);
 	}

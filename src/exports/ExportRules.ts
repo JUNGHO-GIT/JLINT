@@ -20,5 +20,8 @@ export {
 
 // -------------------------------------------------------------------------------
 export {
-	finalCheck,
+	globalRules,
+	ternaryRules,
+	iifeRules,
+	langSpecificRules,
 } from "@rules/FinalCheck";

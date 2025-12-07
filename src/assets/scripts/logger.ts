@@ -7,16 +7,19 @@ import { vscode } from "@exportLibs";
 
 // -------------------------------------------------------------------------------------------------
 const MAIN = `Jlint`;
-const logLevelMap = { off: 0, debug: 1, info: 2, hint: 3, warn: 4, error: 5 };
+const logLevelMap = {
+	"off": 0,
+	"debug": 1,
+	"info": 2,
+	"hint": 3,
+	"warn": 4,
+	"error": 5,
+};
 let outputChannel: vscode.OutputChannel | null = null;
 
 // -------------------------------------------------------------------------------------------------
 export const initLogger = (): void => {
-	!outputChannel ? (
-		outputChannel = vscode.window.createOutputChannel(MAIN)
-	) : (
-		void 0
-	);
+	!outputChannel ? outputChannel = vscode.window.createOutputChannel(MAIN) : null;
 };
 
 // -------------------------------------------------------------------------------------------------
@@ -33,9 +36,7 @@ const appendOutput = (levelKey: keyof typeof logLevelMap, msg: string): void => 
 };
 
 // -------------------------------------------------------------------------------------------------
-const formatLog = (text = ``): string => {
-	return text.trim().replace(/^\s+/gm, ``);
-};
+const formatLog = (text = ``): string => text.trim().replace(/^\s+/gm, ``);
 
 // -------------------------------------------------------------------------------------------------
 export const logger = (
@@ -43,37 +44,37 @@ export const logger = (
 	value: string
 ): void => {
 	const config = {
-		line: {
-			str: `-----------------------------------------`,
-			color: `\u001b[38;2;255;162;0m`,
+		"line": {
+			"str": `-----------------------------------------`,
+			"color": `\u001b[38;2;255;162;0m`,
 		},
-		title: {
-			str: `[${MAIN}]`,
-			color: `\u001b[38;2;78;201;176m`,
+		"title": {
+			"str": `[${MAIN}]`,
+			"color": `\u001b[38;2;78;201;176m`,
 		},
-		debug: {
-			str: `[DEBUG]`,
-			color: `\u001b[38;5;141m`,
+		"debug": {
+			"str": `[DEBUG]`,
+			"color": `\u001b[38;5;141m`,
 		},
-		info: {
-			str: `[INFO]`,
-			color: `\u001b[38;5;46m`,
+		"info": {
+			"str": `[INFO]`,
+			"color": `\u001b[38;5;46m`,
 		},
-		hint: {
-			str: `[HINT]`,
-			color: `\u001b[38;5;39m`,
+		"hint": {
+			"str": `[HINT]`,
+			"color": `\u001b[38;5;39m`,
 		},
-		warn: {
-			str: `[WARN]`,
-			color: `\u001b[38;5;214m`,
+		"warn": {
+			"str": `[WARN]`,
+			"color": `\u001b[38;5;214m`,
 		},
-		error: {
-			str: `[ERROR]`,
-			color: `\u001b[38;5;196m`,
+		"error": {
+			"str": `[ERROR]`,
+			"color": `\u001b[38;5;196m`,
 		},
-		reset: {
-			str: ``,
-			color: `\u001b[0m`,
+		"reset": {
+			"str": ``,
+			"color": `\u001b[0m`,
 		},
 	};
 	const separator = `${config.reset.color}${config.line.color}${config.line.str}${config.reset.color}`;

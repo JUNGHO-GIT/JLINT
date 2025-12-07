@@ -2,7 +2,7 @@
 
 import { capitalize, singleTags, semicolon, space, lineBreak } from "@exportRules";
 import { ifElse, tryCatch } from "@exportRules";
-import { finalCheck } from "@exportRules";
+import { globalRules, ternaryRules, iifeRules, langSpecificRules } from "@exportRules";
 import { logger, notify } from "@exportScripts";
 import { CommonType } from "@exportTypes";
 import * as Langs from "@exportLangs";
@@ -19,47 +19,45 @@ export const getLanguage = async (
 
 	// 동적으로 언어별 규칙 모듈 import (html -> Html)
 	const langStr = (
-		(fileExt === `css` || fileExt === `scss`) ? `Css` :
-		(fileExt === `html` || fileExt === `htm`) ? `Html` :
-		(fileExt === `jsp` || fileExt === `jspx`) ? `Jsp` :
-		(fileExt === `json` || fileExt === `jsonc`) ? `Json` :
-		(fileExt === `java` || fileExt === `jav`) ? `Java` :
-		(fileExt === `sql` || fileExt === `plsql`) ? `Sql` :
-		(fileExt === `yaml` || fileExt === `yml` || fileExt === `spring-boot-properties-yaml`) ? `Yaml` :
-		(fileExt === `xml` || fileExt === `mybatis`) ? `Xml` :
-		(fileExt === `javascript` || fileExt === `js`) ? `Javascript` :
-		(fileExt === `javascriptreact` || fileExt === `jsx`) ? `Javascriptreact` :
-		(fileExt === `typescript` || fileExt === `ts`) ? `Typescript` :
-		(fileExt === `typescriptreact` || fileExt === `tsx`) ? `Typescriptreact` :
+		(fileExt === "css" || fileExt === "scss") ? "Css" :
+		(fileExt === "html" || fileExt === "htm") ? "Html" :
+		(fileExt === "jsp" || fileExt === "jspx") ? "Jsp" :
+		(fileExt === "json" || fileExt === "jsonc") ? "Json" :
+		(fileExt === "java" || fileExt === "jav") ? "Java" :
+		(fileExt === "sql" || fileExt === "plsql") ? "Sql" :
+		(fileExt === "yaml" || fileExt === "yml" || fileExt === "spring-boot-properties-yaml") ? "Yaml" :
+		(fileExt === "xml" || fileExt === "mybatis") ? "Xml" :
+		(fileExt === "javascript" || fileExt === "js") ? "Javascript" :
+		(fileExt === "javascriptreact" || fileExt === "jsx") ? "Javascriptreact" :
+		(fileExt === "typescript" || fileExt === "ts") ? "Typescript" :
+		(fileExt === "typescriptreact" || fileExt === "tsx") ? "Typescriptreact" :
 		null
 	);
 
-	langStr ? (() => {
-		logger(`debug`, `getLanguage - langStr:${langStr}`);
-	})() : (() => {
-		logger(`error`, `getLanguage - Unsupported language: ${fileExt}`);
-		notify(`error`, `getLanguage - Unsupported language: ${fileExt}`);
-	})();
+	langStr ? (
+		logger(`debug`, `getLanguage - langStr:${langStr}`)
+	) : (
+		logger(`error`, `getLanguage - Unsupported language: ${fileExt}`),
+		notify(`error`, `getLanguage - Unsupported language: ${fileExt}`)
+	);
 
 	let resultContents = initContents || ``;
+	!langStr && (() => resultContents)();
+	const langFactory = (Langs as any)[langStr as string];
+	const langRules = (typeof langFactory === `function`) ? langFactory() : langFactory;
+
 	if (!commonParam.activateLint) {
 		return resultContents;
 	}
-	if (!langStr) {
-		return resultContents;
-	}
-	let langFactory = (Langs as any)[langStr as string];
-	let langRules = (typeof langFactory === `function`) ? langFactory() : langFactory;
-
-	if (commonParam.activateLint) {
-		resultContents = await langRules.prettierFormat(commonParam, resultContents, fileName, fileTabSize, fileEol, fileExt);
-	}
-	if (commonParam.removeComments) {
-		resultContents = await langRules.removeComments(resultContents, fileTabSize, fileEol, fileExt);
-	}
-	if (commonParam.insertLine) {
-		resultContents = await langRules.insertLine(resultContents, fileExt);
-	}
+	commonParam.removeComments && (
+		resultContents = await langRules.removeComments(resultContents, fileTabSize, fileEol, fileExt)
+	);
+	commonParam.activateLint && (
+		resultContents = await langRules.prettierFormat(commonParam, resultContents, fileName, fileTabSize, fileEol, fileExt)
+	);
+	commonParam.insertLine && (
+		resultContents = await langRules.insertLine(resultContents, fileExt)
+	);
 	resultContents = await langRules.insertSpace(resultContents, fileExt);
 
 	return resultContents;
@@ -71,7 +69,6 @@ export const getSyntax = async (
 	afterLanguageContents: string,
 	fileExt: string
 ) => {
-
 	let resultContents = afterLanguageContents;
 	if (!commonParam.activateLint) {
 		return resultContents;
@@ -92,7 +89,6 @@ export const getLogic = async (
 	afterSyntaxContents: string,
 	fileExt: string
 ) => {
-
 	let resultContents = afterSyntaxContents;
 	if (!commonParam.activateLint) {
 		return resultContents;
@@ -115,7 +111,10 @@ export const getFinalCheck = async (
 		return resultContents;
 	}
 
-	resultContents = await finalCheck(resultContents, fileExt);
+	resultContents = await langSpecificRules(resultContents, fileExt);
+	resultContents = await globalRules(resultContents, fileExt);
+	resultContents = await ternaryRules(resultContents, fileExt);
+	resultContents = await iifeRules(resultContents, fileExt);
 
 	return resultContents;
 };

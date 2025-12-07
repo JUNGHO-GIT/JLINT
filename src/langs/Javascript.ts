@@ -21,7 +21,7 @@ export const removeComments = async (
 					comments: false,
 				},
 			})
-				.then((result: any) => {
+				.then((result: unknown) => {
 					return result.code;
 				})
 		);
