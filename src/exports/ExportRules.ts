@@ -9,7 +9,7 @@ export {
 	singleTags,
 	semicolon,
 	space,
-	finalCheck,
+	lineBreak,
 } from "@rules/Syntax";
 
 // -------------------------------------------------------------------------------
@@ -17,3 +17,8 @@ export {
 	ifElse,
 	tryCatch,
 } from "@rules/Logic";
+
+// -------------------------------------------------------------------------------
+export {
+	finalCheck,
+} from "@rules/FinalCheck";

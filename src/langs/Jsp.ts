@@ -30,16 +30,16 @@ export const removeComments = async (
 		);
 
 		const httpResult = lodash.chain(contentsParam)
-			.replace(pattern1, (...p: any[]) => (
+			.replace(pattern1, (...p: unknown[]) => (
 				`${p[1]}${p[2]}httpp${p[4]}${p[5]}`
 			))
-			.replace(pattern2, (...p: any[]) => (
+			.replace(pattern2, (...p: unknown[]) => (
 				`${p[1]}${p[2]}httpps${p[4]}${p[5]}`
 			))
-			.replace(pattern3, (...p: any[]) => (
+			.replace(pattern3, (...p: unknown[]) => (
 				`${p[1]}${p[2]}@{httpp${p[4]}${p[5]}`
 			))
-			.replace(pattern4, (...p: any[]) => (
+			.replace(pattern4, (...p: unknown[]) => (
 				`${p[1]}${p[2]}@{httpps${p[4]}${p[5]}`
 			))
 			.value();
@@ -135,19 +135,19 @@ export const removeComments = async (
 		);
 
 		const finalResult = lodash.chain(stripResult3)
-			.replace(pattern1Re, (...p: any[]) => (
+			.replace(pattern1Re, (...p: unknown[]) => (
 				`${p[1]}${p[2]}http://${p[4]}${p[5]}`
 			))
-			.replace(pattern2Re, (...p: any[]) => (
+			.replace(pattern2Re, (...p: unknown[]) => (
 				`${p[1]}${p[2]}https://${p[4]}${p[5]}`
 			))
-			.replace(pattern3Re, (...p: any[]) => (
+			.replace(pattern3Re, (...p: unknown[]) => (
 				`${p[1]}${p[2]}@{http://${p[4]}${p[5]}`
 			))
-			.replace(pattern4Re, (...p: any[]) => (
+			.replace(pattern4Re, (...p: unknown[]) => (
 				`${p[1]}${p[2]}@{https://${p[4]}${p[5]}`
 			))
-			.replace(pattern5, (...p: any[]) => (
+			.replace(pattern5, (...p: unknown[]) => (
 				`${p[1]}`
 			))
 			.value();
@@ -155,8 +155,8 @@ export const removeComments = async (
 		logger(`debug`, `${fileExt}:removeComments - Y`);
 		return finalResult;
 	}
-	catch (err: any) {
-		logger(`error`, `${fileExt}:removeComments - ${err.message}`);
+	catch (err: unknown) {
+		logger(`error`, `${fileExt}:removeComments - ${(err as Error).message}`);
 		return contentsParam;
 	}
 };
@@ -223,10 +223,10 @@ export const prettierFormat = async (
 		);
 
 		const result = lodash.chain(contentsParam)
-			.replace(rules1, (...p: any[]) => (
+			.replace(rules1, (...p: unknown[]) => (
 				``
 			))
-			.replace(rules2, (...p: any[]) => (
+			.replace(rules2, (...p: unknown[]) => (
 				`${p[1]}${p[2]}\n${p[1]}\t${p[3]}${p[4]}`
 			))
 			.value();
@@ -246,7 +246,7 @@ export const prettierFormat = async (
 		logger(`debug`, `${fileExt}:prettierFormat - end`);
 		return finalResult;
 	}
-	catch (err: any) {
+	catch (err: unknown) {
 		const msg = err.message.toString().trim().replace(/\x1B\[[0-9;]*[mGKF]/g, ``);
 		const msgRegex = /([\n\s\S]*)(\s*)(https)(.*?)([(])(.*?)([)])([\n\s\S]*)/gm;
 		const msgRegexReplace = `[Jlint]\n\nError Line = [ $6 ]\nError Site = $8`;
@@ -258,44 +258,7 @@ export const prettierFormat = async (
 	}
 };
 
-// 2. insertSpace ----------------------------------------------------------------------------------
-export const insertSpace = async (
-	contentsParam: string,
-	fileExt: string
-) => {
-	try {
-		const rules1 = (
-			/(\s*)(\))(\s+)(;)/gm
-		);
-		const rules2 = (
-			/(\s*)(@)(\s*)([\s\S]*?)(\s*)(\()/gm
-		);
-		const rules3 = (
-			/(\s*?)(ception)(\{)/gm
-		);
-
-		const finalResult = lodash.chain(contentsParam)
-			.replace(rules1, (...p: any[]) => (
-				`${p[1]}${p[2]}${p[4]}`
-			))
-			.replace(rules2, (...p: any[]) => (
-				`${p[1]}${p[2]}${p[4]} ${p[6]}`
-			))
-			.replace(rules3, (...p: any[]) => (
-				`${p[2]} ${p[3]}`
-			))
-			.value();
-
-		logger(`debug`, `${fileExt}:insertSpace - Y`);
-		return finalResult;
-	}
-	catch (err: any) {
-		logger(`error`, `${fileExt}:insertSpace - ${err.message}`);
-		return contentsParam;
-	}
-};
-
-// 3. insertLine -----------------------------------------------------------------------------------
+// 2. insertLine -----------------------------------------------------------------------------------
 export const insertLine = async (
 	contentsParam: string,
 	fileExt: string
@@ -330,47 +293,47 @@ export const insertLine = async (
 		);
 
 		const finalResult = lodash.chain(contentsParam)
-			.replace(rules1, (...p: any[]) => {
+			.replace(rules1, (...p: unknown[]) => {
 				const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
 				const insetLine = `<!--${`-`.repeat(spaceSize)}-->`;
 				return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
 			})
-			.replace(rules2, (...p: any[]) => {
+			.replace(rules2, (...p: unknown[]) => {
 				const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
 				const insetLine = `<!--${`-`.repeat(spaceSize)}-->`;
 				return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
 			})
-			.replace(rules3, (...p: any[]) => {
+			.replace(rules3, (...p: unknown[]) => {
 				const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
 				const insetLine = `<!--${`-`.repeat(spaceSize)}-->`;
 				return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
 			})
-			.replace(rules4, (...p: any[]) => {
+			.replace(rules4, (...p: unknown[]) => {
 				const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
 				const insetLine = `<!--${`-`.repeat(spaceSize)}-->`;
 				return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
 			})
-			.replace(rules5, (...p: any[]) => {
+			.replace(rules5, (...p: unknown[]) => {
 				const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
 				const insetLine = `<!--${`-`.repeat(spaceSize)}-->`;
 				return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
 			})
-			.replace(rules6, (...p: any[]) => {
+			.replace(rules6, (...p: unknown[]) => {
 				const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
 				const insetLine = `<!--${`-`.repeat(spaceSize)}-->`;
 				return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
 			})
-			.replace(rules7, (...p: any[]) => {
+			.replace(rules7, (...p: unknown[]) => {
 				const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
 				const insetLine = `<!--${`-`.repeat(spaceSize)}-->`;
 				return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
 			})
-			.replace(rules8, (...p: any[]) => {
+			.replace(rules8, (...p: unknown[]) => {
 				const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
 				const insetLine = `<!--${`-`.repeat(spaceSize)}-->`;
 				return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
 			})
-			.replace(rules9, (...p: any[]) => {
+			.replace(rules9, (...p: unknown[]) => {
 				const spaceSize = 100 - (p[1].length + `<!--`.length + `-`.length);
 				const insetLine = `<!--${`-`.repeat(spaceSize)}-->`;
 				return `\n${p[1]}${insetLine}\n${p[1]}${p[2]}${p[3]}`;
@@ -380,64 +343,45 @@ export const insertLine = async (
 		logger(`debug`, `${fileExt}:insertLine - Y`);
 		return finalResult;
 	}
-	catch (err: any) {
-		logger(`error`, `${fileExt}:insertLine - ${err.message}`);
+	catch (err: unknown) {
+		logger(`error`, `${fileExt}:insertLine - ${(err as Error).message}`);
 		return contentsParam;
 	}
 };
 
-// 4. lineBreak ------------------------------------------------------------------------------------
-export const lineBreak = async (
+// 3. insertSpace ----------------------------------------------------------------------------------
+export const insertSpace = async (
 	contentsParam: string,
 	fileExt: string
 ) => {
 	try {
 		const rules1 = (
-			/(?:\n*)(\s*)(<\/body>)(\s*?)/gm
+			/(\s*)(\))(\s+)(;)/gm
 		);
 		const rules2 = (
-			/(.*?)(\n*)(\s*)(\/\/ -.*>)/gm
+			/(\s*)(@)(\s*)([\s\S]*?)(\s*)(\()/gm
+		);
+		const rules3 = (
+			/(\s*?)(ception)(\{)/gm
 		);
 
 		const finalResult = lodash.chain(contentsParam)
-			.replace(rules1, (...p: any[]) => (
-				`\n\n${p[1]}${p[2]}${p[3]}`
+			.replace(rules1, (...p: unknown[]) => (
+				`${p[1]}${p[2]}${p[4]}`
 			))
-			.replace(rules2, (...p: any[]) => (
-				`${p[1]}\n\n${p[3]}${p[4]}`
+			.replace(rules2, (...p: unknown[]) => (
+				`${p[1]}${p[2]}${p[4]} ${p[6]}`
 			))
-			.value();
-
-		logger(`debug`, `${fileExt}:lineBreak - Y`);
-		return finalResult;
-	}
-	catch (err: any) {
-		logger(`error`, `${fileExt}:lineBreak - ${err.message}`);
-		return contentsParam;
-	}
-};
-
-// 5. finalCheck -----------------------------------------------------------------------------------
-export const finalCheck = async (
-	contentsParam: string,
-	fileExt: string
-) => {
-	try {
-		const rules1 = (
-			/(\s*)(<!)(--.*?)(>)(\s*)(\n)(\s*)(<!)(--.*?)(>)([\s\S])/gm
-		);
-
-		const finalResult = lodash.chain(contentsParam)
-			.replace(rules1, (...p: any[]) => (
-				`${p[1]}${p[2]}${p[3]}${p[4]}${p[11]}`
+			.replace(rules3, (...p: unknown[]) => (
+				`${p[2]} ${p[3]}`
 			))
 			.value();
 
-		logger(`debug`, `${fileExt}:finalCheck - Y`);
+		logger(`debug`, `${fileExt}:insertSpace - Y`);
 		return finalResult;
 	}
-	catch (err: any) {
-		logger(`error`, `${fileExt}:finalCheck - ${err.message}`);
+	catch (err: unknown) {
+		logger(`error`, `${fileExt}:insertSpace - ${(err as Error).message}`);
 		return contentsParam;
 	}
 };

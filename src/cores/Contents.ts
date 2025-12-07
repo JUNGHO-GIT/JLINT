@@ -40,8 +40,8 @@ export const getContents = async (
 		logger(`debug`, `${fileExt}:getContents - Y`);
 		return updateContent;
 	}
-	catch (err: any) {
-		logger(`error`, `${fileExt}:getContents - ${err.message}`);
+	catch (err: unknown) {
+		logger(`error`, `${fileExt}:getContents - ${(err as Error).message}`);
 		return dataStr;
 	}
 };

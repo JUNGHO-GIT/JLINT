@@ -9,115 +9,107 @@ export const ifElse = async (
 	fileExt: string
 ) => {
 	try {
-		// 1. if( => if (
+		// 1. if( / if (  => if (
 		const rules1 = (
-			/\bif\(/gm
+			/\bif\s*\(/gm
 		);
 
-		// 2. else if( => else if (
+		// 2. else if( / else if (  => else if (
 		const rules2 = (
-			/\belse\s+if\(/gm
+			/\belse\s+if\s*\(/gm
 		);
 
 		// 3. } 뒤의 여러 줄바꿈을 하나로 통합 (CRLF 대응, 다음 줄 들여쓰기 보존)
 		const rules3 = (
-			/\}\r?\n+([^\S\r\n]*)/gm
+			/\}\r?\n+(?=[^\S\r\n]*\S)/gm
 		);
 
-		// 4. } else if (...) { => }\nelse if (...) {
+		// 4. } 와 else / else if 사이 줄바꿈 정규화 (동일 라인 / 복수 라인 모두 처리)
+		//    } else if (...) {   /   } \n\n else if (...) {   =>  }\nelse if (...) {
 		const rules4 = (
-			/^(\s*)\}\s*(else\s+if)\s*\((.*?)\)\s*\{/gm
+			/(^(\s*)\})[^\S\r\n]*(?:\r?\n[^\S\r\n]*)*(else(?:\s+if)?[^\r\n]*\{)/gm
 		);
 
-		// 5. } else { => }\nelse {
+		// 5. 한 줄 if / else if 블록을 여러 줄로 변환
+		//    if (...) { stmt; }  =>  if (...) { \n \tstmt; \n }
 		const rules5 = (
-			/^(\s*)\}\s*(else)(?!\s+if)\s*\{/gm
+			/^(\s*)(if|else\s+if)\s*\((.*?)\)\s*\{\s*([^{}]+?)\s*\}\s*$/gm
 		);
 
-		// 6. 한 줄 if 블록을 여러 줄로 변환
+		// 6. 한 줄 else 블록을 여러 줄로 변환
+		//    else { stmt; }  =>  else { \n \tstmt; \n }
 		const rules6 = (
-			/^(\s*)(if|else\s+if)\s*\((.*?)\)\s*\{\s*([^{}]+?)\s*\}$/gm
+			/^(\s*)else(?!\s+if)\s*\{\s*([^{}]+?)\s*\}\s*$/gm
 		);
 
-		// 7. 한 줄 else 블록을 여러 줄로 변환
+		// 7. { 뒤의 불필요한 빈 줄 제거 (CRLF 대응)
 		const rules7 = (
-			/^(\s*)\}\s*else(?!\s+if)\s*\{\s*([^{}]+?)\s*\}$/gm
-		);
-
-		// 8. { 뒤의 불필요한 빈 줄 제거 (CRLF 대응)
-		const rules8 = (
 			/\{[^\S\r\n]*\r?\n+/gm
 		);
 
-		// 9. } 앞의 불필요한 빈 줄 제거 (CRLF 대응, 이전 줄 들여쓰기 보존)
-		const rules9 = (
+		// 8. } 앞의 불필요한 빈 줄 제거 (CRLF 대응, 이전 줄 들여쓰기 보존)
+		const rules8 = (
 			/(\r?\n)+([^\S\r\n]*)\}/gm
 		);
 
-		// 10. } 다음 else 줄나눔 1개로 통합 (CRLF 대응)
-		const rules10 = (
-			/(^\s*)(\})(\s*)(\r?\n*)(\s*)(else.*)(\s*)(\{)/gm
-		);
-
-		// 11. } 와 else 사이의 과도한 빈 줄 제거 (CRLF 대응, else if 제외)
-		const rules11 = (
-			/(^([\s]*)\})(?:\r?\n){2,}[^\S\r\n]*(else)([^\S\r\n]*)\{/gm
-		);
-
-		const finalResult = lodash.chain(contentsParam)
-			.replace(rules1, (...p: any[]) => (
+		let finalResult = lodash.chain(contentsParam)
+			// if / else if 헤더 정규화
+			.replace(rules1, (...p: unknown[]) => (
 				`if (`
 			))
-			.replace(rules2, (...p: any[]) => (
+			.replace(rules2, (...p: unknown[]) => (
 				`else if (`
 			))
-			.replace(rules3, (...p: any[]) => (
-				`}\n${p[1]}`
+
+			// } 뒤 연속 개행 정리
+			.replace(rules3, (...p: unknown[]) => (
+				`}\n`
 			))
-			.replace(rules4, (...p: any[]) => {
-				const indent = p[1];
-				const keyword = p[2];
-				const condition = p[3];
-				return `${indent}}\n${indent}${keyword} (${condition}) {`;
+
+			// } 와 else / else if 정렬 (같은 줄 / 여러 줄 모두 처리)
+			.replace(rules4, (...p: unknown[]) => {
+				const indent = p[2] as string;
+				const header = p[3] as string;
+				return `${indent}}\n${indent}${header}`;
 			})
-			.replace(rules5, (...p: any[]) => {
-				const indent = p[1];
-				return `${indent}}\n${indent}else {`;
-			})
-			.replace(rules6, (...p: any[]) => {
-				const indent = p[1];
-				const keyword = p[2];
-				const condition = p[3];
-				const content = p[4].trim();
+
+			// 한 줄 if / else if 블록 분리
+			.replace(rules5, (...p: unknown[]) => {
+				const indent = p[1] as string;
+				const keyword = p[2] as string;
+				const condition = p[3] as string;
+				const content = (p[4] as string).trim();
 				return `${indent}${keyword} (${condition}) {\n${indent}\t${content}\n${indent}}`;
 			})
-			.replace(rules7, (...p: any[]) => {
-				const indent = p[1];
-				const content = p[2].trim();
-				return `${indent}}\n${indent}else {\n${indent}\t${content}\n${indent}}`;
+
+			// 한 줄 else 블록 분리
+			.replace(rules6, (...p: unknown[]) => {
+				const indent = p[1] as string;
+				const content = (p[2] as string).trim();
+				return `${indent}else {\n${indent}\t${content}\n${indent}}`;
 			})
-			.replace(rules8, (...p: any[]) => (
+
+			// { / } 주변 빈 줄 정리
+			.replace(rules7, (...p: unknown[]) => (
 				`{\n`
 			))
-			.replace(rules9, (...p: any[]) => (
+			.replace(rules8, (...p: unknown[]) => (
 				`\n${p[2]}}`
-			))
-			.replace(rules10, (...p: any[]) => (
-				`${p[1]}${p[2]}\n${p[1]}${p[6]}${p[7]}${p[8]}`
-			))
-			.replace(rules11, (...p: any[]) => (
-				`${p[2]}}\n${p[2]}else {`
 			))
 			.value();
 
-		return (
+		finalResult = (
 			fileExt === `xml` || fileExt === `json` || fileExt === `sql`
-				? (logger(`debug`, `${fileExt}:ifElse - N`), contentsParam)
-				: (logger(`debug`, `${fileExt}:ifElse - Y`), finalResult)
+		) ? (
+			logger(`debug`, `${fileExt}:ifElse - N`), contentsParam
+		) : (
+			logger(`debug`, `${fileExt}:ifElse - Y`), finalResult
 		);
+
+		return finalResult;
 	}
-	catch (err: any) {
-		logger(`error`, `${fileExt}:ifElse - ${err.message}`);
+	catch (err: unknown) {
+		logger(`error`, `${fileExt}:ifElse - ${(err as Error).message}`);
 		return contentsParam;
 	}
 };
@@ -138,81 +130,108 @@ export const tryCatch = async (
 			/\bcatch\s*\(/gm
 		);
 
-		// 3. } catch => }\ncatch (같은 줄에 있는 경우)
+		// 3. finally{ => finally {
 		const rules3 = (
-			/^(\s*)\}\s*(catch)\s*\(/gm
+			/\bfinally\s*\{/gm
 		);
 
-		// 4. } finally => }\nfinally (같은 줄에 있는 경우)
+		// 4. } catch ...  (같은 줄 패턴 정리)
+		//    } catch (e) {  =>  }\ncatch (e) {
 		const rules4 = (
-			/^(\s*)\}\s*(finally)\s*\{/gm
+			/^(\s*)\}\s*(catch[^\r\n]*\{?)/gm
 		);
 
-		// 5. { 뒤의 불필요한 빈 줄 제거 (CRLF 대응)
+		// 5. } finally ...  (같은 줄 패턴 정리)
+		//    } finally {  =>  }\nfinally {
 		const rules5 = (
+			/^(\s*)\}\s*(finally[^\r\n]*\{)/gm
+		);
+
+		// 6. } 뒤의 여러 줄바꿈을 하나로 통합 (CRLF 대응, 다음 줄 들여쓰기 보존)
+		const rules6 = (
+			/\}\r?\n+(?=[^\S\r\n]*\S)/gm
+		);
+
+		// 7. } 와 catch 사이에 여러 줄이 있어도 한 줄로 정리
+		//    } \n\n   catch (e) {  =>  }\ncatch (e) {
+		const rules7 = (
+			/(^(\s*)\})[^\S\r\n]*(?:\r?\n[^\S\r\n]*)*(catch[^\r\n]*\{?)/gm
+		);
+
+		// 8. } 와 finally 사이에 여러 줄이 있어도 한 줄로 정리
+		//    } \n\n   finally {  =>  }\nfinally {
+		const rules8 = (
+			/(^(\s*)\})[^\S\r\n]*(?:\r?\n[^\S\r\n]*)*(finally[^\r\n]*\{)/gm
+		);
+
+		// 9. { 뒤의 불필요한 빈 줄 제거 (CRLF 대응)
+		const rules9 = (
 			/\{[^\S\r\n]*\r?\n+/gm
 		);
 
-		// 6. } 앞의 불필요한 빈 줄 제거 (CRLF 대응, 이전 줄 들여쓰기 보존)
-		const rules6 = (
+		// 10. } 앞의 불필요한 빈 줄 제거 (CRLF 대응, 이전 줄 들여쓰기 보존)
+		const rules10 = (
 			/(\r?\n)+([^\S\r\n]*)\}/gm
 		);
 
-		// 7. } 다음 catch 줄나눔 1개로 통합 (CRLF 대응)
-		const rules7 = (
-			/(^\s*)(\})(\s*)(\r?\n+)(\s*)(catch)/gm
-		);
-
-		// 8. } 다음 finally 줄나눔 1개로 통합 (CRLF 대응)
-		const rules8 = (
-			/(^\s*)(\})(\s*)(\r?\n+)(\s*)(finally)/gm
-		);
-
-		// 9. } 뒤의 여러 줄바꿈을 하나로 통합 (CRLF 대응, catch/finally 제외 의도)
-		const rules9 = (
-			/\}\r?\n\r?\n+/gm
-		);
-
-		const finalResult = lodash.chain(contentsParam)
-			.replace(rules1, (...p: any[]) => (
+		let finalResult = lodash.chain(contentsParam)
+		// try / catch / finally 헤더 기본 정규화
+			.replace(rules1, (...p: unknown[]) => (
 				`try {`
 			))
-			.replace(rules2, (...p: any[]) => (
+			.replace(rules2, (...p: unknown[]) => (
 				`catch (`
 			))
-			.replace(rules3, (...p: any[]) => {
-				const indent = p[1];
-				return `${indent}}\n${indent}catch (`;
+			.replace(rules3, (...p: unknown[]) => (
+				`finally {`
+			))
+
+		// } catch / } finally 같은 줄 정리
+			.replace(rules4, (...p: unknown[]) => (
+				`${p[1]}}\n${p[1]}${p[2]}`
+			))
+			.replace(rules5, (...p: unknown[]) => (
+				`${p[1]}}\n${p[1]}${p[2]}`
+			))
+
+		// } 뒤 연속 개행 정리
+			.replace(rules6, (...p: unknown[]) => (
+				`}\n`
+			))
+
+		// } 와 catch / finally 사이에 여러 줄이 끼어 있어도 한 줄로 정리
+			.replace(rules7, (...p: unknown[]) => {
+				const indent = p[2] as string;
+				const header = p[3] as string;
+				return `${indent}}\n${indent}${header}`;
 			})
-			.replace(rules4, (...p: any[]) => {
-				const indent = p[1];
-				return `${indent}}\n${indent}finally {`;
+			.replace(rules8, (...p: unknown[]) => {
+				const indent = p[2] as string;
+				const header = p[3] as string;
+				return `${indent}}\n${indent}${header}`;
 			})
-			.replace(rules5, (...p: any[]) => (
+
+		// { / } 주변 빈 줄 정리
+			.replace(rules9, (...p: unknown[]) => (
 				`{\n`
 			))
-			.replace(rules6, (...p: any[]) => (
+			.replace(rules10, (...p: unknown[]) => (
 				`\n${p[2]}}`
-			))
-			.replace(rules7, (...p: any[]) => (
-				`${p[1]}${p[2]}\n${p[1]}${p[6]}`
-			))
-			.replace(rules8, (...p: any[]) => (
-				`${p[1]}${p[2]}\n${p[1]}${p[6]}`
-			))
-			.replace(rules9, (...p: any[]) => (
-				`}\n`
 			))
 			.value();
 
-		return (
+		finalResult = (
 			fileExt === `xml` || fileExt === `json` || fileExt === `sql`
-				? (logger(`debug`, `${fileExt}:tryCatch - N`), contentsParam)
-				: (logger(`debug`, `${fileExt}:tryCatch - Y`), finalResult)
+		) ? (
+			logger(`debug`, `${fileExt}:tryCatch - N`), contentsParam
+		) : (
+			logger(`debug`, `${fileExt}:tryCatch - Y`), finalResult
 		);
+
+		return finalResult;
 	}
-	catch (err: any) {
-		logger(`error`, `${fileExt}:tryCatch - ${err.message}`);
+	catch (err: unknown) {
+		logger(`error`, `${fileExt}:tryCatch - ${(err as Error).message}`);
 		return contentsParam;
 	}
 };

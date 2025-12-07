@@ -3,7 +3,7 @@
 import { lodash } from "@exportLibs";
 import { logger } from "@exportScripts";
 
-// -------------------------------------------------------------------------------------------------
+// 1. capitalize -----------------------------------------------------------------------------------
 export const capitalize = async (
 	contentsParam: string,
 	fileExt: string
@@ -23,16 +23,16 @@ export const capitalize = async (
 		);
 
 		const finalResult = lodash.chain(contentsParam)
-			.replace(rules1, (...p: any[]) => (
+			.replace(rules1, (...p: unknown[]) => (
 				`${p[1]}${p[2]}${p[3].toUpperCase()}${p[4]}${p[5]}`
 			))
-			.replace(rules2, (...p: any[]) => (
+			.replace(rules2, (...p: unknown[]) => (
 				`${p[1]}${p[2]}${p[3].toUpperCase()}${p[4]}${p[5]}`
 			))
-			.replace(rules3, (...p: any[]) => (
+			.replace(rules3, (...p: unknown[]) => (
 				`${p[1]}${p[2]}${p[3].toUpperCase()}${p[4]}${p[5]}`
 			))
-			.replace(rules4, (...p: any[]) => (
+			.replace(rules4, (...p: unknown[]) => (
 				`${p[1]}${p[2]}${p[3].toUpperCase()}${p[4]}${p[5]}`
 			))
 			.value();
@@ -43,13 +43,13 @@ export const capitalize = async (
 				: (logger(`debug`, `${fileExt}:capitalize - Y`), finalResult)
 		);
 	}
-	catch (err: any) {
-		logger(`error`, `${fileExt}:capitalize - ${err.message}`);
+	catch (err: unknown) {
+		logger(`error`, `${fileExt}:capitalize - ${(err as Error).message}`);
 		return contentsParam;
 	}
 };
 
-// -------------------------------------------------------------------------------------------------
+// 2. singleTags -----------------------------------------------------------------------------------
 export const singleTags = async (
 	contentsParam: string,
 	fileExt: string
@@ -63,10 +63,10 @@ export const singleTags = async (
 		);
 
 		const finalResult = lodash.chain(contentsParam)
-			.replace(rules1, (...p: any[]) => (
+			.replace(rules1, (...p: unknown[]) => (
 				`${p[1]}${p[2]}${p[3]}${p[4]}/>`
 			))
-			.replace(rules2, (...p: any[]) => (
+			.replace(rules2, (...p: unknown[]) => (
 				`${p[1]}${p[2]} />`
 			))
 			.value();
@@ -74,13 +74,13 @@ export const singleTags = async (
 		logger(`debug`, `${fileExt}:singleTags - Y`);
 		return finalResult;
 	}
-	catch (err: any) {
-		logger(`error`, `${fileExt}:singleTags - ${err.message}`);
+	catch (err: unknown) {
+		logger(`error`, `${fileExt}:singleTags - ${(err as Error).message}`);
 		return contentsParam;
 	}
 };
 
-// -------------------------------------------------------------------------------------------------
+// 3. semicolon -----------------------------------------------------------------------------------
 export const semicolon = async (
 	contentsParam: string,
 	fileExt: string
@@ -91,7 +91,7 @@ export const semicolon = async (
 		);
 
 		const finalResult = lodash.chain(contentsParam)
-			.replace(rules1, (...p: any[]) => (
+			.replace(rules1, (...p: unknown[]) => (
 				`${p[1]}${p[2]};`
 			))
 			.value();
@@ -99,13 +99,13 @@ export const semicolon = async (
 		logger(`debug`, `${fileExt}:semicolon - Y`);
 		return finalResult;
 	}
-	catch (err: any) {
-		logger(`error`, `${fileExt}:semicolon - ${err.message}`);
+	catch (err: unknown) {
+		logger(`error`, `${fileExt}:semicolon - ${(err as Error).message}`);
 		return contentsParam;
 	}
 };
 
-// -------------------------------------------------------------------------------------------------
+// 4. space ---------------------------------------------------------------------------------------
 export const space = async (
 	contentsParam: string,
 	fileExt: string
@@ -116,7 +116,7 @@ export const space = async (
 		);
 
 		const finalResult = lodash.chain(contentsParam)
-			.replace(rules1, (...p: any[]) => (
+			.replace(rules1, (...p: unknown[]) => (
 				`${p[1]}${p[2].replace(/([\w$]+)\s*=\s*/g, `$1=`)})`
 			))
 			.value();
@@ -124,45 +124,121 @@ export const space = async (
 		logger(`debug`, `${fileExt}:space - Y`);
 		return finalResult;
 	}
-	catch (err: any) {
-		logger(`error`, `${fileExt}:space - ${err.message}`);
+	catch (err: unknown) {
+		logger(`error`, `${fileExt}:space - ${(err as Error).message}`);
 		return contentsParam;
 	}
 };
 
-// -------------------------------------------------------------------------------------------------
-export const finalCheck = async (
+// 5. lineBreak ------------------------------------------------------------------------------------
+export const lineBreak = async (
 	contentsParam: string,
 	fileExt: string
 ) => {
 	try {
 		const rules1 = (
-			/(\s*)([&][&]|[|][|]|[?][?])(\n+)(\s*)(.*)/gm
+			/(>)(\n*)(?:\})(?:\n*)(function)/gm
 		);
 		const rules2 = (
-			/(\s*)(\w+)(\s*)([=])(\s*)(\n+)(\s*)(.*)/gm
+			/(?:\n*)(\s*)(<\/body>)(\s*?)/gm
 		);
 		const rules3 = (
-			/([&]{2}|[|]{2}|[?]{2}|=(?![=>]))[ \t]*\n\s*/gm
+			/(.*?)(\n*)(\s*)(\/\/ -.*>)/gm
+		);
+		const rules4 = (
+			/(?<!package.*)(\s*)(;)(\s*)(\n?)(\s*)(import)/gm
+		);
+		const rules5 = (
+			/(^\s*?)(import)([\s\S]*?)((;)|(\n+)?)(\s?)(\/\/)([\s\S]*?)(\n+?)(?=import)/gm
+		);
+		const rules6 = (
+			/(^\s*?)(import)([\s\S]*?)(;)(\s*)(\n*)(^\s*?)(@)(\s*)(\S*)/gm
+		);
+		const rules7 = (
+			/(import.*)(;)(\n*)(\/\/ --)/gm
+		);
+		const rules8 = (
+			/(import.*;)(\n)(^public)/gm
+		);
+		const rules9 = (
+			/(?<=^.\s*)(return)(\s*?)(\S*?)(\s*)(\n)(\s*)(\})/gm
+		);
+		const rules10 = (
+			/(\n+)(^.)(\s*)(\})(\s*)(\n)(\s*)(\/\/)/gm
+		);
+		const rules11 = (
+			/(.*?)(\n*)(.*?)(\n*)(?<=^.\s*)(return)(\s*?)(\S*?)(\s*)(\n)(\s*)(\})/gm
+		);
+		const rules12 = (
+			/(^\s*)(@Value)(\s*)(\()(.*)(\n+)(.*)(\))/gm
+		);
+		const rules13 = (
+			/(^\s*)(.*;)(\n)(?!\n)(\s*)(@Autowired|@Value|@RequestMapping|@GetMapping|@PostMapping|@PutMapping|@DeleteMapping)/gm
+		);
+		const rules14 = (
+			/(\s*)(@Override)(\n|\n+)(.*)(\n|\n+)(\s*)(public|private)/gm
 		);
 
-		const finalResult = lodash.chain(contentsParam)
-			.replace(rules1, (...p: any[]) => (
-				`${p[1]}${p[2]} ${p[5]}`
-			))
-			.replace(rules2, (...p: any[]) => (
-				`${p[1]}${p[2]} ${p[4]} ${p[8]}`
-			))
-			.replace(rules3, (...p: any[]) => (
-				`${p[1]} `
+		let finalResult = lodash.chain(contentsParam)
+			.replace(rules1, (...p: unknown[]) => (
+				`${p[1]}\n${p[3]}`
 			))
 			.value();
 
-		logger(`debug`, `${fileExt}:finalCheck - Y`);
+		if (fileExt === `html` || fileExt === `jsp`) {
+			finalResult = lodash.chain(finalResult)
+				.replace(rules2, (...p: unknown[]) => (
+					`\n\n${p[1]}${p[2]}${p[3]}`
+				))
+				.replace(rules3, (...p: unknown[]) => (
+					`${p[1]}\n\n${p[3]}${p[4]}`
+				))
+				.value();
+		}
+
+		if (fileExt === `java`) {
+			finalResult = lodash.chain(finalResult)
+				.replace(rules4, (...p: unknown[]) => (
+					`${p[1]}${p[2]}\n${p[6]}`
+				))
+				.replace(rules5, (...p: unknown[]) => (
+					`${p[1]}${p[2]}${p[3]}${p[4]}\n`
+				))
+				.replace(rules6, (...p: unknown[]) => (
+					`${p[1]}${p[2]}${p[3]}${p[4]}\n\n${p[8]}${p[10]}`
+				))
+				.replace(rules7, (...p: unknown[]) => (
+					`${p[1]}${p[2]}\n\n${p[4]}`
+				))
+				.replace(rules8, (...p: unknown[]) => (
+					`${p[1]}${p[2]}\n${p[3]}`
+				))
+				.replace(rules9, (...p: unknown[]) => (
+					`${p[1]} ${p[3]}\n${p[6]}${p[7]}`
+				))
+				.replace(rules10, (...p: unknown[]) => (
+					`${p[1]}${p[2]}${p[3]}${p[4]}\n\n${p[7]}${p[8]}`
+				))
+				.replace(rules11, (...p: unknown[]) => (
+					`${p[1]}\n${p[3]}${p[4]}${p[5]}${p[6]}${p[7]}${p[8]}${p[9]}${p[10]}${p[11]}`
+				))
+				.replace(rules12, (...p: unknown[]) => (
+					`${p[1]}${p[2]} (${p[5]}${p[7]})`
+				))
+				.replace(rules13, (...p: unknown[]) => (
+					`${p[1]}${p[2]}\n\n${p[4]}${p[5]}`
+				))
+				.replace(rules14, (...p: unknown[]) => (
+					`${p[1]}${p[2]}\n${p[6]}${p[7]}`
+				))
+				.value();
+		}
+
+		logger(`debug`, `${fileExt}:lineBreak - Y`);
 		return finalResult;
 	}
-	catch (err: any) {
-		logger(`error`, `${fileExt}:finalCheck - ${err.message}`);
+	catch (err: unknown) {
+		logger(`error`, `${fileExt}:lineBreak - ${(err as Error).message}`);
 		return contentsParam;
 	}
 };

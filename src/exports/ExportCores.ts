@@ -18,4 +18,5 @@ export {
 	getLanguage,
 	getSyntax,
 	getLogic,
+	getFinalCheck,
 } from "@cores/Controller";

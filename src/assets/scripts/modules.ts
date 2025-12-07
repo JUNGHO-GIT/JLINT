@@ -62,7 +62,7 @@ const dynamicImport = async (specifier: string) => {
 		const requiredModule = require(resolvedPath);
 		return resolveModule(requiredModule);
 	}
-	catch (err: any) {
+	catch (err: unknown) {
 		try {
 			const fileUrl = _path.isAbsolute(resolvedPath) ? (
 				`file:///${resolvedPath.replace(/\\/g, `/`)}`
