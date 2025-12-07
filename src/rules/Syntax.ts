@@ -81,8 +81,6 @@ export const singleTags = async (
 };
 
 // -------------------------------------------------------------------------------------------------
-// -------------------------------------------------------------------------------------------------
-// -------------------------------------------------------------------------------------------------
 export const semicolon = async (
 	contentsParam: string,
 	fileExt: string
@@ -133,3 +131,38 @@ export const space = async (
 };
 
 // -------------------------------------------------------------------------------------------------
+export const finalCheck = async (
+	contentsParam: string,
+	fileExt: string
+) => {
+	try {
+		const rules1 = (
+			/(\s*)([&][&]|[|][|]|[?][?])(\n+)(\s*)(.*)/gm
+		);
+		const rules2 = (
+			/(\s*)(\w+)(\s*)([=])(\s*)(\n+)(\s*)(.*)/gm
+		);
+		const rules3 = (
+			/([&]{2}|[|]{2}|[?]{2}|=(?![=>]))[ \t]*\n\s*/gm
+		);
+
+		const finalResult = lodash.chain(contentsParam)
+			.replace(rules1, (...p: any[]) => (
+				`${p[1]}${p[2]} ${p[5]}`
+			))
+			.replace(rules2, (...p: any[]) => (
+				`${p[1]}${p[2]} ${p[4]} ${p[8]}`
+			))
+			.replace(rules3, (...p: any[]) => (
+				`${p[1]} `
+			))
+			.value();
+
+		logger(`debug`, `${fileExt}:finalCheck - Y`);
+		return finalResult;
+	}
+	catch (err: any) {
+		logger(`error`, `${fileExt}:finalCheck - ${err.message}`);
+		return contentsParam;
+	}
+};

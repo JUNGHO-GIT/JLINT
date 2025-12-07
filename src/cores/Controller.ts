@@ -1,6 +1,7 @@
 // Controller.ts
 
-import { capitalize, singleTags, semicolon, space, ifElse, tryCatch } from "@exportRules";
+import { capitalize, singleTags, semicolon, space, finalCheck } from "@exportRules";
+import { ifElse, tryCatch } from "@exportRules";
 import { logger, notify } from "@exportScripts";
 import { CommonType } from "@exportTypes";
 import * as Langs from "@exportLangs";
@@ -66,6 +67,23 @@ export const getLanguage = async (
 }
 
 // -------------------------------------------------------------------------------------------------
+export const getLogic = async (
+  commonParam: CommonType,
+  afterSyntaxContents: string,
+  fileExt: string
+) => {
+
+  let resultContents = afterSyntaxContents;
+  if (!commonParam.activateLint) {
+		return resultContents;
+	}
+	resultContents = await ifElse(resultContents, fileExt);
+	resultContents = await tryCatch(resultContents, fileExt);
+
+  return resultContents;
+};
+
+// -------------------------------------------------------------------------------------------------
 export const getSyntax = async (
   commonParam: CommonType,
   afterLanguageContents: string,
@@ -80,26 +98,7 @@ export const getSyntax = async (
 	resultContents = await singleTags(resultContents, fileExt);
 	resultContents = await semicolon(resultContents, fileExt);
 	resultContents = await space(resultContents, fileExt);
-	// resultContents = await brackets(resultContents, fileExt);
-	// resultContents = await comma(resultContents, fileExt);
-	// resultContents = await quotes(afterLanguageContents, fileExt);
-
-  return resultContents;
-};
-
-// -------------------------------------------------------------------------------------------------
-export const getLogic = async (
-  commonParam: CommonType,
-  afterSyntaxContents: string,
-  fileExt: string
-) => {
-
-  let resultContents = afterSyntaxContents;
-  if (!commonParam.activateLint) {
-		return resultContents;
-	}
-	resultContents = await ifElse(resultContents, fileExt);
-	resultContents = await tryCatch(resultContents, fileExt);
+	resultContents = await finalCheck(resultContents, fileExt);
 
   return resultContents;
 };

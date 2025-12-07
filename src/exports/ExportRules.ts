@@ -9,6 +9,7 @@ export {
 	singleTags,
 	semicolon,
 	space,
+	finalCheck,
 } from "@rules/Syntax";
 
 // -------------------------------------------------------------------------------
