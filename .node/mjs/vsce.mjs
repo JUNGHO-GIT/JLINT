@@ -92,30 +92,78 @@ const buildConfig = () => {
 	];
 	const copyPackages = [];
 
-	// TODO: 여기에 강제 external 패키지명을 추가
-	const forceExternal = [
-		`prettier`,
-		`prettier-plugin-java`,
-		`prettier-plugin-jsp`,
-		`@prettier/plugin-xml`,
-		`sql-formatter`,
-		`html-minifier-terser`,
-	];
+	// 패키지가 ESM 전용인지 검사
+	const isEsmOnly = (pkgPath = ``) => {
+		const subPkgJsonPath = path.join(pkgPath, `package.json`);
+		if (!fileExists(subPkgJsonPath)) {
+			return false;
+		}
+		const subPkgJson = JSON.parse(fs.readFileSync(subPkgJsonPath, `utf8`));
+
+		// type: "module"이면 ESM 전용
+		if (subPkgJson.type === `module`) {
+			return true;
+		}
+		// exports 필드가 있고 require 진입점이 없으면 ESM 전용
+		const exports = subPkgJson.exports;
+		if (exports && typeof exports === `object`) {
+			const hasRequire = JSON.stringify(exports).includes(`require`);
+			const hasImport = JSON.stringify(exports).includes(`import`);
+			if (hasImport && !hasRequire) {
+				return true;
+			}
+		}
+		return false;
+	};
+
+	// native addon (.node 파일) 포함 여부 검사
+	const hasNativeAddon = (pkgPath = ``) => {
+		const checkDir = (dir = ``, depth = 0) => {
+			if (depth > 3) {
+				return false;
+			}
+			try {
+				const entries = fs.readdirSync(dir, {
+					"withFileTypes": true,
+				});
+				for (const entry of entries) {
+					const fullPath = path.join(dir, entry.name);
+					if (entry.isFile() && entry.name.endsWith(`.node`)) {
+						return true;
+					}
+					if (entry.isDirectory() && ![
+						`node_modules`,
+						`.git`,
+					].includes(entry.name)) {
+						if (checkDir(fullPath, depth + 1)) {
+							return true;
+						}
+					}
+				}
+			}
+			catch {}
+			return false;
+		};
+		return checkDir(pkgPath);
+	};
 
 	deps.forEach((pkg) => {
 		const pkgPath = path.join(nmPath, pkg);
 		!fileExists(pkgPath) && logger(`warn`, `패키지 없음: ${pkg}`);
 
 		fileExists(pkgPath) && (() => {
-			const isForceExternal = forceExternal.includes(pkg);
 			const isImportMeta = hasImportMetaUsage(pkgPath);
+			const isEsm = isEsmOnly(pkgPath);
+			const isNative = hasNativeAddon(pkgPath);
+			const needsExternal = isImportMeta || isEsm || isNative;
 
-			(isForceExternal || isImportMeta) && (() => {
+			needsExternal && (() => {
 				!external.includes(pkg) && external.push(pkg);
 				!copyPackages.includes(pkg) && copyPackages.push(pkg);
 
 				isImportMeta && logger(`info`, `import.meta 감지 → external 추가: ${pkg}`);
-				isForceExternal && logger(`info`, `강제 external 추가: ${pkg}`);
+				isEsm && logger(`info`, `ESM 전용 패키지 → external 추가: ${pkg}`);
+				isNative && logger(`info`, `native addon 감지 → external 추가: ${pkg}`);
 
 				const subPkgJson = path.join(pkgPath, `package.json`);
 				fileExists(subPkgJson) && (() => {
@@ -287,9 +335,7 @@ const copyPackageFlat = (pkgName = ``, nmSrc = ``, nmTgt = ``, vis = new Set()) 
 				const content = fs.readFileSync(source, `utf8`);
 				const cleaned = content.replace(/\n?\/\/[#@]\s*sourceMappingURL=[^\n]+\s*$/, ``);
 				fs.writeFileSync(target, cleaned, `utf8`);
-			})() : (
-				fs.copyFileSync(source, target)
-			);
+			})() : fs.copyFileSync(source, target);
 		}
 	};
 

@@ -189,7 +189,7 @@ const syncAll = async () => {
 			const remoteFilePath = `${sourcePath}/${fileName}`;
 			const url = buildUrl(owner, repo, branch, remoteFilePath);
 
-			logger(`info`, `다운로��� 시작: ${fileName} (${url})`);
+			logger(`info`, `다운로드 시작: ${fileName} (${url})`);
 
 			try {
 				const content = await httpGet(url, token);
