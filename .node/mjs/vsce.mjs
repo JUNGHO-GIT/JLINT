@@ -474,7 +474,6 @@ const copyPackageFlat = (pkgName = ``, nmSrc = ``, nmTgt = ``, vis = new Set(), 
 
 	// 제외 디렉토리/파일 목록
 	const excludeDirs = [
-		`node_modules`,
 		`test`,
 		`tests`,
 		`__tests__`,
