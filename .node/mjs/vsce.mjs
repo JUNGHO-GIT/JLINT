@@ -407,34 +407,60 @@ const bundle = (cfg = {}) => {
 };
 
 // 6. 패키지 의존성 재귀 수집 ----------------------------------------------------------------
-const getAllDependencies = (pkgName = ``, nmSrc = ``, vis = new Set()) => {
+const findPackagePath = (pkgName = ``, searchPaths = []) => {
+	for (const basePath of searchPaths) {
+		const pkgPath = path.join(basePath, pkgName);
+		if (fileExists(path.join(pkgPath, `package.json`))) {
+			return pkgPath;
+		}
+	}
+	return null;
+};
+
+const getAllDependencies = (pkgName = ``, nmSrc = ``, vis = new Set(), searchPaths = null) => {
 	if (vis.has(pkgName)) {
 		return vis;
 	}
 	vis.add(pkgName);
 
-	const pkgJsonPath = path.join(nmSrc, pkgName, `package.json`);
-	if (!fileExists(pkgJsonPath)) {
+	const paths = searchPaths || [
+		nmSrc,
+	];
+	const pkgPath = findPackagePath(pkgName, paths);
+	if (!pkgPath) {
 		return vis;
 	}
 
+	const pkgJsonPath = path.join(pkgPath, `package.json`);
 	const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, `utf8`));
-	Object.keys(pkgJson.dependencies || {}).forEach((dep) => {
-		getAllDependencies(dep, nmSrc, vis);
+	const deps = Object.keys(pkgJson.dependencies || {});
+
+	// 중첩된 node_modules 경로 추가
+	const nestedNm = path.join(pkgPath, `node_modules`);
+	const newPaths = fileExists(nestedNm) ? [
+		nestedNm,
+		...paths,
+	] : paths;
+
+	deps.forEach((dep) => {
+		getAllDependencies(dep, nmSrc, vis, newPaths);
 	});
 
 	return vis;
 };
 
 // 7. 패키지 평탄 복사 -----------------------------------------------------------------------
-const copyPackageFlat = (pkgName = ``, nmSrc = ``, nmTgt = ``, vis = new Set()) => {
+const copyPackageFlat = (pkgName = ``, nmSrc = ``, nmTgt = ``, vis = new Set(), searchPaths = null) => {
 	if (vis.has(pkgName)) {
 		return;
 	}
 	vis.add(pkgName);
 
-	const src = path.join(nmSrc, pkgName);
-	if (!fileExists(src)) {
+	const paths = searchPaths || [
+		nmSrc,
+	];
+	const src = findPackagePath(pkgName, paths);
+	if (!src) {
 		return;
 	}
 
@@ -448,6 +474,7 @@ const copyPackageFlat = (pkgName = ``, nmSrc = ``, nmTgt = ``, vis = new Set()) 
 
 	// 제외 디렉토리/파일 목록
 	const excludeDirs = [
+		`node_modules`,
 		`test`,
 		`tests`,
 		`__tests__`,
@@ -553,16 +580,49 @@ const copyPackages = (cfg = {}) => {
 		"recursive": true,
 	});
 
-	const allPkgs = new Set();
+	// 모든 의존성 수집 (중첩 node_modules 포함)
+	const allPkgs = new Map(); // pkgName -> [searchPaths]
+	const visitedPaths = new Set(); // 실제 경로로 중복 체크
 	cfg.copyPackages.forEach((pkg) => {
-		getAllDependencies(pkg, nmSrc).forEach((dep) => {
-			allPkgs.add(dep);
-		});
+		const searchPaths = [
+			nmSrc,
+		];
+		const collectDeps = (pkgName, paths) => {
+			const pkgPath = findPackagePath(pkgName, paths);
+			if (!pkgPath) {
+				return;
+			}
+
+			// 실제 경로로 중복 체크
+			const realPkgPath = fs.realpathSync(pkgPath);
+			if (visitedPaths.has(realPkgPath)) {
+				return;
+			}
+			visitedPaths.add(realPkgPath);
+
+			// 패키지 이름별로 searchPaths 저장 (평탄 복사용)
+			!allPkgs.has(pkgName) && allPkgs.set(pkgName, [
+				...paths,
+			]);
+
+			const pkgJsonPath = path.join(pkgPath, `package.json`);
+			const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, `utf8`));
+			const deps = Object.keys(pkgJson.dependencies || {});
+
+			const nestedNm = path.join(pkgPath, `node_modules`);
+			const newPaths = fileExists(nestedNm) ? [
+				nestedNm,
+				...paths,
+			] : paths;
+
+			deps.forEach((dep) => collectDeps(dep, newPaths));
+		};
+		collectDeps(pkg, searchPaths);
 	});
 
 	const vis = new Set();
-	allPkgs.forEach((pkg) => {
-		copyPackageFlat(pkg, nmSrc, nmTgt, vis);
+	allPkgs.forEach((searchPaths, pkg) => {
+		copyPackageFlat(pkg, nmSrc, nmTgt, vis, searchPaths);
 	});
 
 	logger(`success`, `패키지 복사 완료 (총 ${vis.size}개)`);

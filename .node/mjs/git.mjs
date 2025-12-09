@@ -501,7 +501,7 @@ const runPushProcess = async () => {
 		logger(`info`, `전달된 인자 3: ${args3 || `none`}`);
 	}
 	catch {
-		logger(`warn`, `인자 파싱 오류 발생`);
+		logger(`warn`, `인자 파�� 오류 발생`);
 		process.exit(0);
 	}
 	try {

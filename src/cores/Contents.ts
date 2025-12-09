@@ -13,7 +13,8 @@ export const getContents = async (filePath: string, fileTabSize: number, fileEol
 		const updateContent = dataStr
 			.split(fileEol === `lf` ? `\n` : `\r\n`)
 			.map((line: string) => line.trimEnd())
-			.filter((line: string, idx: number, arr: string[]) => {
+			.filter((line: string, idx: number, arr: string[]) => { 
+				
 				const prev = arr[idx - 1] || ``;
 				return !(line === `` && prev === ``);
 			})

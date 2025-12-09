@@ -38,9 +38,11 @@ export const capitalize = async (
 			.value();
 
 		return (
-			fileExt !== `xml` && fileExt !== `sql`
-				? (logger(`debug`, `${fileExt}:capitalize - N`), contentsParam)
-				: (logger(`debug`, `${fileExt}:capitalize - Y`), finalResult)
+			(fileExt !== `xml` && fileExt !== `sql`) ? (
+				logger(`debug`, `${fileExt}:capitalize - N`), contentsParam
+			) : (
+				logger(`debug`, `${fileExt}:capitalize - Y`), finalResult
+			)
 		);
 	}
 	catch (err: unknown) {

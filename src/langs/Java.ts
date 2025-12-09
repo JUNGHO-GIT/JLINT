@@ -18,11 +18,11 @@ export const removeComments = async (
 		);
 
 		const baseOptions: StripOptions = {
-			language: `java`,
-			preserveNewlines: false,
-			keepProtected: false,
-			block: true,
-			line: true,
+			"language": `java`,
+			"preserveNewlines": false,
+			"keepProtected": false,
+			"block": true,
+			"line": true,
 		};
 
 		const finalResult = strip(
@@ -65,32 +65,34 @@ export const prettierFormat = async (
 
 		// 3. options
 		const baseOptions: PrettierOptions = {
-			parser: parser,
-			plugins: plugin ? [ plugin ] : [],
-			singleQuote: commonParam.quoteType === `single`,
-			printWidth: 1000,
-			tabWidth: commonParam.tabSize,
-			useTabs: true,
-			quoteProps: `as-needed`,
-			jsxSingleQuote: commonParam.quoteType === `single`,
-			trailingComma: `all`,
-			bracketSpacing: false,
-			jsxBracketSameLine: false,
-			arrowParens: `always`,
-			rangeStart: 0,
-			rangeEnd: Infinity,
-			requirePragma: false,
-			insertPragma: false,
-			proseWrap: `preserve`,
-			htmlWhitespaceSensitivity: `ignore`,
-			vueIndentScriptAndStyle: true,
-			endOfLine: fileEol === `lf` ? `lf` : `crlf`,
-			embeddedLanguageFormatting: `auto`,
-			singleAttributePerLine: false,
-			bracketSameLine: false,
-			semi: true,
-			__embeddedInHtml: true,
-			filepath: fileName,
+			"parser": parser,
+			"plugins": plugin ? [
+				plugin,
+			] : [],
+			"singleQuote": commonParam.quoteType === `single`,
+			"printWidth": 1000,
+			"tabWidth": commonParam.tabSize,
+			"useTabs": true,
+			"quoteProps": `as-needed`,
+			"jsxSingleQuote": commonParam.quoteType === `single`,
+			"trailingComma": `all`,
+			"bracketSpacing": false,
+			"jsxBracketSameLine": false,
+			"arrowParens": `always`,
+			"rangeStart": 0,
+			"rangeEnd": Infinity,
+			"requirePragma": false,
+			"insertPragma": false,
+			"proseWrap": `preserve`,
+			"htmlWhitespaceSensitivity": `ignore`,
+			"vueIndentScriptAndStyle": true,
+			"endOfLine": fileEol === `lf` ? `lf` : `crlf`,
+			"embeddedLanguageFormatting": `auto`,
+			"singleAttributePerLine": false,
+			"bracketSameLine": false,
+			"semi": true,
+			"__embeddedInHtml": true,
+			"filepath": fileName,
 		};
 
 		const formatterAvailable = prettier && plugin && typeof prettier.format === `function`;
