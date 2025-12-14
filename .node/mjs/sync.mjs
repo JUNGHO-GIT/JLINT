@@ -5,11 +5,11 @@
  * @since 2025-12-02
  */
 
-import fs from "fs";
-import path from "path";
-import process from "process";
-import https from "https";
-import { fileURLToPath } from "url";
+import fs from "node:fs";
+import path from "node:path";
+import process from "node:process";
+import https from "node:https";
+import { fileURLToPath } from "node:url";
 import { settings } from "../lib/settings.mjs";
 import { logger, fileExists } from "../lib/utils.mjs";
 
@@ -37,37 +37,27 @@ const mode = args3 === `client` ? `client` : `server`;
 const SCRIPT_DIR = __dirname;
 const NODE_ROOT = path.resolve(SCRIPT_DIR, `..`);
 const PROJECT_ROOT = path.resolve(NODE_ROOT, `..`);
-const CDN = {
-	"rawGithub": (owner, repo, branch, filePath) => `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${filePath}`,
-};
+const CDN = { rawGithub: (owner, repo, branch, filePath) => `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${filePath}` };
 
 // 4. HTTP GET 요청 (Promise) ----------------------------------------------------------------
 const httpGet = (url = ``, token = ``) => new Promise((resolve, reject) => {
-	const headers = {
-		"User-Agent": `JNODE-Sync`,
-	};
+	const headers = { "User-Agent": `JNODE-Sync` };
 	token && (headers.Authorization = `token ${token}`);
 
-	const req = https.get(
-		url,
-		{
-			headers,
-		},
-		(res) => {
-			res.statusCode >= 300 && res.statusCode < 400 && res.headers.location ? httpGet(res.headers.location, token).then(resolve).catch(reject) : res.statusCode !== 200 ? reject(new Error(`HTTP ${res.statusCode}: ${url}`)) : (() => {
-				let data = ``;
-				res.on(`data`, (chunk) => {
-					data += chunk;
-				});
-				res.on(`end`, () => {
-					resolve(data);
-				});
-			})();
-		}
-	);
+	const req = https.get(url, { headers: headers }, (res) => {
+		res.statusCode >= 300 && res.statusCode < 400 && res.headers.location ? httpGet(res.headers.location, token).then(resolve).catch(reject) : res.statusCode !== 200 ? reject(new Error(`HTTP ${res.statusCode}: ${url}`)) : (() => {
+			let data = ``;
+			res.on(`data`, (chunk) => {
+				data += chunk;
+			});
+			res.on(`end`, () => {
+				resolve(data);
+			});
+		})();
+	});
 
 	req.on(`error`, reject);
-	req.setTimeout(10000, () => {
+	req.setTimeout(10_000, () => {
 		req.destroy();
 		reject(new Error(`Timeout: ${url}`));
 	});
@@ -86,7 +76,7 @@ const resolveSyncRoot = (rootMode = `server`) => {
 
 // 6. 폴더 스킵 규칙 -------------------------------------------------------------------------
 const shouldSkipFolder = (rootMode = `server`, relTargetPath = ``) => {
-	const normalized = relTargetPath ? relTargetPath.replace(/\\/g, `/`) : ``;
+	const normalized = relTargetPath ? relTargetPath.replaceAll(`\\`, `/`) : ``;
 	const segments = normalized ? normalized.split(`/`) : [];
 	const hasClient = segments.includes(`client`);
 	const hasServer = segments.includes(`server`);
@@ -100,7 +90,13 @@ const shouldSkipFile = (rootMode = `server`, fileName = ``) => {
 	const isClientFile = fileName.includes(`client`);
 	const isServerFile = fileName.includes(`server`);
 
-	const skip = rootMode === `server` ? isClientFile && !isServerFile : rootMode === `client` ? isServerFile && !isClientFile : false;
+	const skip = rootMode === `server` ? (
+		isClientFile && !isServerFile
+	) : rootMode === `client` ? (
+		isServerFile && !isClientFile
+	) : (
+		false
+	);
 
 	return skip;
 };
@@ -108,9 +104,7 @@ const shouldSkipFile = (rootMode = `server`, fileName = ``) => {
 // 8. 모든 파일 동기화 -----------------------------------------------------------------------
 const syncAll = async () => {
 	logger(`info`, `GitHub CDN 동기화 시작`);
-	const {
-		cdn, git,
-	} = settings;
+	const { cdn, git } = settings;
 
 	const isPrivate = cdn.defaultRemote === `private`;
 	const owner = cdn.owner;
@@ -150,16 +144,15 @@ const syncAll = async () => {
 		return;
 	}
 	const folders = cdn.folders;
-	for (let folderIndex = 0; folderIndex < folders.length; folderIndex += 1) {
-		const folder = folders[folderIndex];
+	for (const [folderIndex, folder] of folders.entries()) {
 		if (!folder || !Array.isArray(folder.files)) {
 			logger(`warn`, `잘못된 폴더 설정 감지, 건너뜀: ${JSON.stringify(folder)}`);
 			continue;
 		}
 		const {
-			sourcePath, "targetPath": relTargetPath, files,
+			sourcePath, targetPath: relTargetPath, files,
 		} = folder;
-		const normalizedTarget = relTargetPath ? relTargetPath.replace(/\\/g, `/`) : ``;
+		const normalizedTarget = relTargetPath ? relTargetPath.replaceAll(`\\`, `/`) : ``;
 		if (shouldSkipFolder(mode, relTargetPath || ``)) {
 			logger(`info`, `모드(${mode})에서 제외된 폴더: ${relTargetPath || `루트`} (index: ${folderIndex})`);
 			continue;
@@ -171,9 +164,7 @@ const syncAll = async () => {
 
 		logger(`info`, `대상 폴더: ${displayPath} (index: ${folderIndex})`);
 		!isRoot && !fileExists(targetDir) && (() => {
-			fs.mkdirSync(targetDir, {
-				"recursive": true,
-			});
+			fs.mkdirSync(targetDir, { recursive: true });
 			logger(`info`, `폴더 생성: ${displayPath} (${targetDir})`);
 		})();
 		for (const fileName of files) {
@@ -196,8 +187,8 @@ const syncAll = async () => {
 				fs.writeFileSync(targetFilePath, content, `utf8`);
 				logger(`info`, `동기화 완료: ${fileName} → ${targetFilePath}`);
 			}
-			catch (e) {
-				const errMsg = e instanceof Error ? e.message : String(e);
+			catch (error) {
+				const errMsg = error instanceof Error ? error.message : String(error);
 				logger(`error`, `파일 가져오기 실패: ${fileName} - ${errMsg}`);
 
 				// 원격에 존재하지 않음(404)인 경우 로컬 파일 처리
@@ -213,9 +204,9 @@ const syncAll = async () => {
 					fs.unlinkSync(targetFilePath);
 					logger(`warn`, `[삭제 성공] 원격 미존재로 로컬 파일 삭제: ${targetFilePath}`);
 				}
-				catch (delErr) {
+				catch (error) {
 					// 3. 권한 문제(EBUSY, EPERM) 등으로 삭제 실패 시 에러 출력
-					logger(`error`, `[삭제 실패] 파일 삭제 중 오류 발생: ${delErr.message}`);
+					logger(`error`, `[삭제 실패] 파일 삭제 중 오류 발생: ${error.message}`);
 				}
 			}
 		}
@@ -236,12 +227,12 @@ const syncAll = async () => {
 		process.exit(0);
 	}
 	try {
-		args2 === `sync` && (await syncAll());
+		args2 === `sync` && await syncAll();
 		logger(`info`, `스크립트 정상 종료: ${TITLE}`);
 		process.exit(0);
 	}
-	catch (e) {
-		const errMsg = e instanceof Error ? e.message : String(e);
+	catch (error) {
+		const errMsg = error instanceof Error ? error.message : String(error);
 		logger(`error`, `${TITLE} 스크립트 실행 실패: ${errMsg}`);
 		process.exit(1);
 	}

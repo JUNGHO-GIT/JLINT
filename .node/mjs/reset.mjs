@@ -5,9 +5,9 @@
  * @since 2025-12-03
  */
 
-import path from "path";
-import process from "process";
-import { fileURLToPath } from "url";
+import path from "node:path";
+import process from "node:process";
+import { fileURLToPath } from "node:url";
 import { logger, delDir, delFile, runCmd } from "../lib/utils.mjs";
 
 // 1. 인자 파싱 ------------------------------------------------------------------------------
@@ -39,28 +39,28 @@ const cleanup = () => {
 	logger(`info`, `파일 삭제 시작`);
 	const tgts = [
 		{
-			"name": `node_modules`,
-			"isDir": true,
+			name: `node_modules`,
+			isDir: true,
 		},
 		{
-			"name": `package-lock.json`,
-			"isDir": false,
+			name: `package-lock.json`,
+			isDir: false,
 		},
 		{
-			"name": `bun.lockb`,
-			"isDir": false,
+			name: `bun.lockb`,
+			isDir: false,
 		},
 		{
-			"name": `yarn.lock`,
-			"isDir": false,
+			name: `yarn.lock`,
+			isDir: false,
 		},
 		{
-			"name": `pnpm-lock.yaml`,
-			"isDir": false,
+			name: `pnpm-lock.yaml`,
+			isDir: false,
 		},
 		{
-			"name": `pnpm-workspace.yaml`,
-			"isDir": false,
+			name: `pnpm-workspace.yaml`,
+			isDir: false,
 		},
 	];
 
@@ -70,10 +70,10 @@ const cleanup = () => {
 		try {
 			tgt.isDir ? delDir(tgt.name) : delFile(tgt.name);
 		}
-		catch (e) {
-			const errMsg = e instanceof Error ? e.message : String(e);
+		catch (error) {
+			const errMsg = error instanceof Error ? error.message : String(error);
 			logger(`error`, `${tgt.name} 삭제 실패: ${errMsg}`);
-			throw e;
+			throw error;
 		}
 	});
 	logger(`success`, `파일 삭제 완료`);
@@ -83,14 +83,12 @@ const cleanup = () => {
 const installPmg = (mgr = ``) => {
 	logger(`info`, `${mgr}로 의존성 설치 시도`);
 	try {
-		runCmd(mgr, [
-			`install`,
-		]);
+		runCmd(mgr, [`install`]);
 	}
-	catch (e) {
-		const errMsg = e instanceof Error ? e.message : String(e);
+	catch (error) {
+		const errMsg = error instanceof Error ? error.message : String(error);
 		logger(`error`, `${mgr}로 의존성 설치 실패: ${errMsg}`);
-		throw e;
+		throw error;
 	}
 	logger(`success`, `${mgr}로 의존성 설치 완료`);
 };
@@ -120,8 +118,8 @@ const runResetProcess = (mgr = ``) => {
 		logger(`info`, `스크립트 정상 종료: ${TITLE}`);
 		process.exit(0);
 	}
-	catch (e) {
-		const errMsg = e instanceof Error ? e.message : String(e);
+	catch (error) {
+		const errMsg = error instanceof Error ? error.message : String(error);
 		logger(`error`, `${TITLE} 스크립트 실행 실패: ${errMsg}`);
 		process.exit(1);
 	}

@@ -5,12 +5,12 @@
  * @since 2025-12-4
  */
 
-import fs from "fs";
-import path from "path";
-import process from "process";
+import fs from "node:fs";
+import path from "node:path";
+import process from "node:process";
 import { Project } from "ts-morph";
-import { fileURLToPath } from "url";
-import { createRequire } from "module";
+import { fileURLToPath } from "node:url";
+import { createRequire } from "node:module";
 import { logger, spawnWrapper } from "../lib/utils.mjs";
 
 // 1. 인자 파싱 ------------------------------------------------------------------------------
@@ -31,7 +31,7 @@ const args2 = argv.find((arg) => [
 // 2. 설정 -----------------------------------------------------------------------------------
 const IGNORE_PATTERNS = [
 	/extension\.ts$/,
-	/src[\\/]exports[\\/]/,
+	/src[/\\]exports[/\\]/,
 	/\.d\.ts$/,
 ];
 
@@ -40,13 +40,11 @@ const resolveTsPruneBinJs = () => {
 	logger(`info`, `ts-prune 바이너리 경로 해석 시도`);
 	try {
 		const pkgPath = require.resolve(`ts-prune/package.json`, {
-			"paths": [
-				process.cwd(),
-			],
+			paths: [process.cwd()],
 		});
 		const pkgDir = path.dirname(pkgPath);
 		const pkgJson = JSON.parse(fs.readFileSync(pkgPath, `utf8`));
-		const binRel = typeof pkgJson.bin === `string` ? pkgJson.bin : pkgJson.bin && typeof pkgJson.bin === `object` ? pkgJson.bin[`ts-prune`] ? pkgJson.bin[`ts-prune`] : (() => {
+		const binRel = typeof pkgJson.bin === `string` ? pkgJson.bin : pkgJson.bin && typeof pkgJson.bin === `object` ? pkgJson.bin[`ts-prune`] ?? (() => {
 			const keys = Object.keys(pkgJson.bin);
 			return keys.length > 0 ? pkgJson.bin[keys[0]] : null;
 		})() : null;
@@ -104,17 +102,17 @@ const runTsPrune = () => {
 	const npxCmd = process.platform === `win32` ? `npx.cmd` : `npx`;
 	const exeMths = [
 		{
-			"name": `local-bin`,
-			"getPath": () => localBinPath,
-			"getCommand": (bp) => [
+			name: `local-bin`,
+			getPath: () => localBinPath,
+			getCommand: (bp) => [
 				bp,
 				cliArgs,
 			],
 		},
 		{
-			"name": `pnpm-exec`,
-			"getPath": () => pnpmCmd,
-			"getCommand": (cmd) => [
+			name: `pnpm-exec`,
+			getPath: () => pnpmCmd,
+			getCommand: (cmd) => [
 				cmd,
 				[
 					`exec`,
@@ -124,9 +122,9 @@ const runTsPrune = () => {
 			],
 		},
 		{
-			"name": `npx`,
-			"getPath": () => npxCmd,
-			"getCommand": (cmd) => [
+			name: `npx`,
+			getPath: () => npxCmd,
+			getCommand: (cmd) => [
 				cmd,
 				[
 					tsPruneBin,
@@ -135,9 +133,9 @@ const runTsPrune = () => {
 			],
 		},
 		{
-			"name": `path-ts-prune`,
-			"getPath": () => tsPruneCmd,
-			"getCommand": (cmd) => [
+			name: `path-ts-prune`,
+			getPath: () => tsPruneCmd,
+			getCommand: (cmd) => [
 				cmd,
 				cliArgs,
 			],
@@ -155,9 +153,7 @@ const runTsPrune = () => {
 			continue;
 		}
 		logger(`info`, `${mth.name}으로 ts-prune 실행 시도`);
-		const args = Array.isArray(mthArgs) ? mthArgs : [
-			mthArgs,
-		];
+		const args = Array.isArray(mthArgs) ? mthArgs : [mthArgs];
 		const r = spawnWrapper(cmd, args);
 		const err = r.error;
 		if (r.error) {
@@ -209,9 +205,9 @@ const parseTsPruneOutput = (text = ``) => {
 		const note = noteMatch[2] ? noteMatch[2].trim() : null;
 
 		output.push({
-			"file": fileNorm,
-			"name": symName,
-			"note": note,
+			file: fileNorm,
+			name: symName,
+			note: note,
 		});
 	}
 	logger(`info`, `파싱된 항목 수: ${output.length}`);
@@ -235,9 +231,9 @@ const groupByFile = (items = []) => {
 
 // 7. 파일 경로 유틸리티 ---------------------------------------------------------------------
 const toProjectAbsolute = (fp = ``) => {
-	const norm = fp.replace(/\//g, path.sep);
-	const isAbsWin = /^[a-zA-Z]:[\\\\/]/.test(norm) || /^\\\\/.test(norm);
-	return isAbsWin ? norm : path.resolve(process.cwd(), norm.replace(/^[\\\\/]+/, ``));
+	const norm = fp.replaceAll(`/`, path.sep);
+	const isAbsWin = /^[A-Za-z]:[/\\]/.test(norm) || /^\\\\/.test(norm);
+	return isAbsWin ? norm : path.resolve(process.cwd(), norm.replace(/^[/\\]+/, ``));
 };
 
 // 8. 안전한 백업 생성 -----------------------------------------------------------------------
@@ -378,10 +374,10 @@ const processFile = (proj, fp = ``, names) => {
 	for (const pattern of IGNORE_PATTERNS) {
 		if (pattern.test(fp) || pattern.test(absPath)) {
 			return {
-				"file": fp,
-				"removed": [],
-				"skipped": true,
-				"reason": `ignored-pattern`,
+				file: fp,
+				removed: [],
+				skipped: true,
+				reason: `ignored-pattern`,
 			};
 		}
 	}
@@ -389,10 +385,10 @@ const processFile = (proj, fp = ``, names) => {
 
 	if (!sf) {
 		return {
-			"file": fp,
-			"removed": [],
-			"skipped": true,
-			"reason": `file-not-found`,
+			file: fp,
+			removed: [],
+			skipped: true,
+			reason: `file-not-found`,
 		};
 	}
 	const beforeTxt = sf.getFullText();
@@ -423,10 +419,10 @@ const processFile = (proj, fp = ``, names) => {
 		logger(`success`, `파일 저장 완료: ${fp}`);
 	}
 	return {
-		"file": fp,
-		"removed": Array.from(rmSet),
-		"skipped": false,
-		"reason": ``,
+		file: fp,
+		removed: [...rmSet],
+		skipped: false,
+		reason: ``,
 	};
 };
 
@@ -437,8 +433,8 @@ const runFixProcess = () => {
 	const parsedItems = parseTsPruneOutput(rawOut || ``);
 	const grpByFile = groupByFile(parsedItems);
 	const proj = new Project({
-		"tsConfigFilePath": path.resolve(process.cwd(), `tsconfig.json`),
-		"skipAddingFilesFromTsConfig": false,
+		tsConfigFilePath: path.resolve(process.cwd(), `tsconfig.json`),
+		skipAddingFilesFromTsConfig: false,
 	});
 
 	for (const [
@@ -450,14 +446,14 @@ const runFixProcess = () => {
 		results.push(res);
 	}
 	const summary = {
-		"apply": args2 === `fix`,
-		"totalFiles": grpByFile.size,
-		"modifiedFiles": results.filter((r) => !r.skipped && r.removed.length > 0).length,
-		"skippedFiles": results.filter((r) => r.skipped).map((r) => ({
-			"file": r.file,
-			"reason": r.reason,
+		apply: args2 === `fix`,
+		totalFiles: grpByFile.size,
+		modifiedFiles: results.filter((r) => !r.skipped && r.removed.length > 0).length,
+		skippedFiles: results.filter((r) => r.skipped).map((r) => ({
+			file: r.file,
+			reason: r.reason,
 		})),
-		"details": results,
+		details: results,
 	};
 
 	if (summary.skippedFiles.length > 0) {
@@ -489,8 +485,8 @@ const runFixProcess = () => {
 		logger(`info`, `스크립트 정상 종료: ${TITLE}`);
 		process.exit(0);
 	}
-	catch (e) {
-		const errMsg = e instanceof Error ? e.message : String(e);
+	catch (error) {
+		const errMsg = error instanceof Error ? error.message : String(error);
 		logger(`error`, `${TITLE} 스크립트 실행 실패: ${errMsg}`);
 		process.exit(1);
 	}

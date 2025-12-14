@@ -4,7 +4,7 @@
   "description": "Universal Language formatter",
   "publisher": "JUNGHO",
   "license": "Apache-2.0",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "main": "./out/extension.js",
   "icon": "logo.webp",
   "repository": {
@@ -62,12 +62,6 @@
     ],
     "menus": {
       "commandPalette": [
-        {
-          "command": "extension.Jlint",
-          "when": "editorTextFocus"
-        }
-      ],
-      "editor/context": [
         {
           "command": "extension.Jlint",
           "when": "editorTextFocus"
@@ -154,33 +148,37 @@
     "prettier": "3.6.2",
     "prettier-plugin-java": "2.7.7",
     "prettier-plugin-jsp": "1.0.13",
-    "sql-formatter": "15.6.10",
+    "sql-formatter": "15.6.11",
     "strip-comments": "2.0.1",
     "strip-json-comments": "5.0.3",
     "terser": "5.44.1"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.1",
+    "@eslint/js": "9.39.2",
+    "@stylistic/eslint-plugin": "5.6.1",
     "@swc/cli": "0.7.9",
-    "@swc/core": "1.15.3",
+    "@swc/core": "1.15.4",
     "@swc/helpers": "0.5.17",
     "@types/clean-css": "4.2.11",
-    "@types/eslint": "^9.6.1",
-    "@types/eslint__js": "^9.14.0",
+    "@types/eslint": "9.6.1",
+    "@types/eslint__js": "9.14.0",
     "@types/html-minifier-terser": "7.0.2",
     "@types/lodash": "4.17.21",
-    "@types/node": "24.10.2",
+    "@types/node": "25.0.2",
     "@types/strip-comments": "2.0.4",
     "@types/vscode": "1.106.1",
     "@typescript-eslint/eslint-plugin": "8.49.0",
     "@typescript-eslint/parser": "8.49.0",
     "@vscode/vsce": "3.7.1",
     "esbuild": "0.27.1",
-    "eslint": "9.39.1",
-    "globals": "^16.5.0",
+    "eslint": "9.39.2",
+    "eslint-define-config": "2.1.0",
+    "eslint-plugin-unicorn": "62.0.0",
+    "globals": "16.5.0",
     "ts-morph": "27.0.2",
     "ts-prune": "0.10.3",
     "tsc-alias": "1.8.16",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.49.0"
   }
 }

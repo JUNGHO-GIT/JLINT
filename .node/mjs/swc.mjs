@@ -5,11 +5,11 @@
  * @since 2025-12-03
  */
 
-import fs from "fs";
-import path from "path";
-import process from "process";
-import { spawn } from "child_process";
-import { fileURLToPath } from "url";
+import fs from "node:fs";
+import path from "node:path";
+import process from "node:process";
+import { spawn } from "node:child_process";
+import { fileURLToPath } from "node:url";
 import { logger, runCmd, validateDir, delDir, getProjectType, getPmArgs } from "../lib/utils.mjs";
 
 // 1. 인자 파싱 ------------------------------------------------------------------------------
@@ -46,9 +46,9 @@ const getSwcConfig = () => {
 const spawnProcess = (pmArgs = []) => {
 	const useShell = args1 !== `bun`;
 	const result = spawn(args1, pmArgs, {
-		"stdio": `inherit`,
-		"shell": useShell,
-		"env": process.env,
+		stdio: `inherit`,
+		shell: useShell,
+		env: process.env,
 	});
 	return result;
 };
@@ -57,9 +57,7 @@ const spawnProcess = (pmArgs = []) => {
 const runCompile = () => {
 	logger(`info`, `컴파일 시작`);
 
-	const {
-		isServer,
-	} = getProjectType(args3);
+	const { isServer } = getProjectType(args3);
 	const outDir = validateDir([
 		`out`,
 		`dist`,
@@ -102,10 +100,10 @@ const runCompile = () => {
 			]));
 			logger(`success`, `컴파일 완료`);
 		}
-		catch (e) {
-			const errMsg = e instanceof Error ? e.message : String(e);
+		catch (error) {
+			const errMsg = error instanceof Error ? error.message : String(error);
 			logger(`error`, `swc 컴파일 실패: ${errMsg}`);
-			throw e;
+			throw error;
 		}
 	})();
 };
@@ -142,10 +140,10 @@ const runBuild = () => {
 				process.exit(1);
 			})();
 		}
-		catch (e) {
-			const errMsg = e instanceof Error ? e.message : String(e);
+		catch (error) {
+			const errMsg = error instanceof Error ? error.message : String(error);
 			logger(`error`, `클라이언트 빌드 실패: ${errMsg}`);
-			throw e;
+			throw error;
 		}
 	})();
 
@@ -153,10 +151,10 @@ const runBuild = () => {
 		try {
 			runCompile();
 		}
-		catch (e) {
-			const errMsg = e instanceof Error ? e.message : String(e);
+		catch (error) {
+			const errMsg = error instanceof Error ? error.message : String(error);
 			logger(`error`, `서버 빌드 실패: ${errMsg}`);
-			throw e;
+			throw error;
 		}
 	})();
 };
@@ -165,9 +163,7 @@ const runBuild = () => {
 const runWatch = () => {
 	logger(`info`, `워치 모드 시작`);
 
-	const {
-		isServer,
-	} = getProjectType(args3);
+	const { isServer } = getProjectType(args3);
 	const outDir = validateDir([
 		`out`,
 		`dist`,
@@ -179,13 +175,7 @@ const runWatch = () => {
 	]);
 	const swcCfg = getSwcConfig();
 
-	!isServer ? (
-		logger(`error`, `워치 모드는 서버 프로젝트에서만 사용 가능합니다`),
-		process.exit(1)
-	) : !tsCfg ? (
-		logger(`error`, `tsconfig 파일을 찾을 수 없습니다`),
-		process.exit(1)
-	) : (() => {
+	isServer ? (() => {
 		const swcBase = [
 			`swc`,
 			`src`,
@@ -218,6 +208,9 @@ const runWatch = () => {
 		aliasProc.on(`close`, (code) => code && code !== 0 && logger(`warn`, `tsc-alias 종료 (exit code: ${code})`));
 
 		logger(`success`, `워치 모드 실행 중`);
+	})() : (() => {
+		logger(`error`, `tsconfig 파일을 찾을 수 없습니다`);
+		process.exit(1);
 	})();
 };
 
@@ -257,7 +250,17 @@ const runStart = () => {
 	const startArgs = clientArgs || serverArgs;
 
 	// 실행 로직
-	isClient && !clientArgs ? (logger(`error`, `클라이언트 개발 서버 도구를 찾을 수 없습니다`), process.exit(1)) : isServer && !serverArgs ? (logger(`error`, `서버 진입점 파일(index.ts)을 찾을 수 없습니다`), process.exit(1)) : !startArgs ? (logger(`error`, `시작 명령어를 생성할 수 없습니다`), process.exit(1)) : (() => {
+	(isClient && !clientArgs) && (() => {
+		logger(`error`, `클라이언트 개발 서버 도구를 찾을 수 없습니다`);
+		process.exit(1);
+	})();
+
+	(isServer && !serverArgs) && (() => {
+		logger(`error`, `서버 진입점 파일(index.ts)을 찾을 수 없습니다`);
+		process.exit(1);
+	})();
+
+	startArgs ? (() => {
 		const startProc = spawnProcess(startArgs);
 		const cleanup = () => {
 			logger(`info`, `스타트 모드 종료 중...`);
@@ -269,13 +272,16 @@ const runStart = () => {
 		process.on(`SIGTERM`, cleanup);
 		startProc.on(`close`, (code) => code && code !== 0 && logger(`warn`, `start 프로세스 종료 (exit code: ${code})`));
 
-		const modeMsg = isClient ? `클라이언트 개발 서버 실행 중` : `서버 개발 모드 실행 중`;
+		const modeMsg = isClient ? `클라이언트 개발 서버 ��행 중` : `서버 개발 모드 실행 중`;
 		logger(`success`, modeMsg);
+	})() : (() => {
+		logger(`error`, `실행할 수 있는 모드를 찾을 수 없습니다`);
+		process.exit(1);
 	})();
 };
 
 // 99. 메인 실행 -----------------------------------------------------------------------------
-(async () => {
+(() => {
 	try {
 		logger(`info`, `스크립트 실행: ${TITLE}`);
 		logger(`info`, `전달된 인자 1: ${args1 || `none`}`);
@@ -298,8 +304,8 @@ const runStart = () => {
 			process.exit(0);
 		})();
 	}
-	catch (e) {
-		const errMsg = e instanceof Error ? e.message : String(e);
+	catch (error) {
+		const errMsg = error instanceof Error ? error.message : String(error);
 		logger(`error`, `${TITLE} 스크립트 실행 실패: ${errMsg}`);
 		process.exit(1);
 	}

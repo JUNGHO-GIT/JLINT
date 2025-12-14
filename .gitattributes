@@ -4,7 +4,7 @@
 *.json linguist-vendored linguist-generated
 *.json.* linguist-vendored linguist-generated
  
-# Directories ======================================================================================
+# Directories --------------------------------------------------------------------------------------
 build/** linguist-vendored linguist-generated
 .build/** linguist-vendored linguist-generated
 bundle/** linguist-vendored linguist-generated
@@ -55,7 +55,7 @@ node/** linguist-vendored linguist-generated
 *.node.* linguist-vendored linguist-generated
 .cxx/** linguist-vendored linguist-generated
 
-# Files ============================================================================================
+# Files --------------------------------------------------------------------------------------------
 # 1. os-specific files
 *.swp linguist-vendored linguist-generated
 *.swo linguist-vendored linguist-generated

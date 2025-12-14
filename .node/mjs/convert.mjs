@@ -5,11 +5,11 @@
  * @since 2025-12-07
  */
 
-import fs from "fs";
-import path from "path";
-import process from "process";
-import { fileURLToPath } from "url";
-import { createInterface } from "readline";
+import fs from "node:fs";
+import path from "node:path";
+import process from "node:process";
+import { fileURLToPath } from "node:url";
+import { createInterface } from "node:readline";
 import { logger } from "../lib/utils.mjs";
 
 // 1. 인자 파싱 ------------------------------------------------------------------------------
@@ -30,9 +30,7 @@ const args2 = argv.find((arg) => [
 
 // 2. 배열 정렬 -------------------------------------------------------------------------------
 const sortArray = (input) => {
-	const cloned = Array.isArray(input) ? [
-		...input,
-	] : [];
+	const cloned = Array.isArray(input) ? [...input] : [];
 
 	const result = cloned
 		.sort((a, b) => {
@@ -108,8 +106,8 @@ const saveResult = (content, fileName, modeParam) => {
 		logger(`info`, `정렬된 결과가 파일에 저장되었습니다.`);
 		isSaved = true;
 	}
-	catch (e) {
-		const errMsg = e instanceof Error ? e.message : String(e);
+	catch (error) {
+		const errMsg = error instanceof Error ? error.message : String(error);
 		logger(`error`, `파일 저장 중 오류가 발생했습니다: ${errMsg}`);
 	}
 	const result = isSaved;
@@ -189,9 +187,9 @@ const processData = (input, modeParam) => {
 	})();
 
 	const result = {
-		"canRun": canRun,
-		"outputContent": outputContent,
-		"fileName": fileName,
+		canRun: canRun,
+		outputContent: outputContent,
+		fileName: fileName,
 	};
 	return result;
 };
@@ -201,8 +199,8 @@ const runConvert = (modeParam) => new Promise((resolve, reject) => {
 	const modeLabel = modeParam === `array` ? `배열(Array)` : modeParam === `object` ? `객체(Object)` : `알 수 없음`;
 
 	const rl = createInterface({
-		"input": process.stdin,
-		"output": process.stdout,
+		input: process.stdin,
+		output: process.stdout,
 	});
 
 	logger(`info`, `${modeLabel} 데이터를 입력하세요 (입력 완료 후 Ctrl+D 또는 빈 줄 2번 입력):`);
@@ -234,11 +232,11 @@ const runConvert = (modeParam) => new Promise((resolve, reject) => {
 			try {
 				parsedInput = new Function(`return ${inputData}`)();
 			}
-			catch (e) {
-				const errMsg = e instanceof Error ? e.message : String(e);
+			catch (error) {
+				const errMsg = error instanceof Error ? error.message : String(error);
 				logger(`error`, `입력 데이터 파싱 중 오류 발생: ${errMsg}`);
 				hasError = true;
-				errorObj = e instanceof Error ? e : new Error(errMsg);
+				errorObj = error instanceof Error ? error : new Error(errMsg);
 			}
 			!hasError && (() => {
 				try {
@@ -248,11 +246,11 @@ const runConvert = (modeParam) => new Promise((resolve, reject) => {
 						errorObj = new Error(`CONVERT_FAILED`);
 					})();
 				}
-				catch (e2) {
-					const errMsg2 = e2 instanceof Error ? e2.message : String(e2);
+				catch (error) {
+					const errMsg2 = error instanceof Error ? error.message : String(error);
 					logger(`error`, `데이터 처리 중 오류 발생: ${errMsg2}`);
 					hasError = true;
-					errorObj = e2 instanceof Error ? e2 : new Error(errMsg2);
+					errorObj = error instanceof Error ? error : new Error(errMsg2);
 				}
 			})();
 		})();
@@ -291,8 +289,8 @@ const runConvert = (modeParam) => new Promise((resolve, reject) => {
 		logger(`info`, `스크립트 정상 종료: ${TITLE}`);
 		process.exit(0);
 	}
-	catch (e) {
-		const errMsg = e instanceof Error ? e.message : String(e);
+	catch (error) {
+		const errMsg = error instanceof Error ? error.message : String(error);
 		logger(`error`, `${TITLE} 스크립트 실행 실패: ${errMsg}`);
 		process.exit(1);
 	}

@@ -7,41 +7,39 @@
 
 // 1. 프로젝트 설정 --------------------------------------------------------------------------
 export const settings = {
-	"git": {
-		"remotes": {
-			"public": {
-				"name": `public`,
-				"branch": `public/main`,
+	git: {
+		remotes: {
+			public: {
+				name: `public`,
+				branch: `public/main`,
 			},
-			"private": {
-				"name": `private`,
-				"branch": `private/main`,
+			private: {
+				name: `private`,
+				branch: `private/main`,
 			},
 		},
-		"deploy": {
-			"resetBranch": `private/private/main`,
-		},
+		deploy: { resetBranch: `private/private/main` },
 	},
-	"cdn": {
-		"owner": `JUNGHO-GIT`,
-		"repo": `JNODE`,
-		"repoPrivate": `JNODE_PRIVATE`,
-		"defaultRemote": `private`,
-		"defaultCdn": `rawGithub`,
-		"folders": [
+	cdn: {
+		owner: `JUNGHO-GIT`,
+		repo: `JNODE`,
+		repoPrivate: `JNODE_PRIVATE`,
+		defaultRemote: `private`,
+		defaultCdn: `rawGithub`,
+		folders: [
 			// 1. node -------------------------------------------------------------------------------
 			{
-				"sourcePath": `src/public/node/lib`,
-				"targetPath": `.node/lib`,
-				"files": [
+				sourcePath: `src/public/node/lib`,
+				targetPath: `.node/lib`,
+				files: [
 					`settings.mjs`,
 					`utils.mjs`,
 				],
 			},
 			{
-				"sourcePath": `src/public/node/mjs`,
-				"targetPath": `.node/mjs`,
-				"files": [
+				sourcePath: `src/public/node/mjs`,
+				targetPath: `.node/mjs`,
+				files: [
 					`sync.mjs`,
 					`swc.mjs`,
 					`git.mjs`,
@@ -55,16 +53,14 @@ export const settings = {
 
 			// 2. github --------------------------------------------------------------------------------
 			{
-				"sourcePath": `src/public/github`,
-				"targetPath": `.github`,
-				"files": [
-					`copilot-instructions.md`,
-				],
+				sourcePath: `src/public/github`,
+				targetPath: `.github`,
+				files: [`copilot-instructions.md`],
 			},
 			{
-				"sourcePath": `src/public/github`,
-				"targetPath": ``,
-				"files": [
+				sourcePath: `src/public/github`,
+				targetPath: ``,
+				files: [
 					`.gitattributes`,
 					`.gitignore.public`,
 					`.gitignore.private`,
@@ -73,26 +69,26 @@ export const settings = {
 
 			// 3. config --------------------------------------------------------------------------------
 			{
-				"sourcePath": `src/public/config`,
-				"targetPath": ``,
-				"files": [
-					`package.default.json`,
-				],
+				sourcePath: `src/public/config`,
+				targetPath: ``,
+				files: [`package.default.json`],
 			},
 			{
-				"sourcePath": `src/public/config`,
-				"targetPath": ``,
-				"files": [
+				sourcePath: `src/public/config`,
+				targetPath: ``,
+				files: [
 					`.server.swcrc`,
 					`eslint.config.mjs`,
+					`tsconfig.default.json`,
 				],
 			},
 			{
-				"sourcePath": `src/public/config`,
-				"targetPath": `client`,
-				"files": [
+				sourcePath: `src/public/config`,
+				targetPath: `client`,
+				files: [
 					`.client.swcrc`,
 					`eslint.config.mjs`,
+					`tsconfig.default.json`,
 				],
 			},
 		],

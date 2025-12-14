@@ -5,48 +5,48 @@
  * @since 2025-11-22
  */
 
-import fs from "fs";
-import path from "path";
-import readline from "readline";
-import { spawnSync, execSync } from "child_process";
+import fs from "node:fs";
+import path from "node:path";
+import readline from "node:readline";
+import { spawnSync, execSync } from "node:child_process";
 
 // 1. 텍스트 포맷 ----------------------------------------------------------------------------
-export const formatLog = (text = ``) => text.trim().replace(/^\s+/gm, ``);
+export const formatLog = (text = ``) => text.trim().replaceAll(/^\s+/gm, ``);
 
 // 2. 로깅 -----------------------------------------------------------------------------------
 export const logger = (type = ``, value = ``) => {
 	const config = {
-		"line": {
-			"str": `-----------------------------------------`,
-			"color": `\u001b[38;2;255;162;0m`,
+		line: {
+			str: `-----------------------------------------`,
+			color: `\u001B[38;2;255;162;0m`,
 		},
-		"debug": {
-			"str": `[DEBUG]`,
-			"color": `\u001b[38;5;141m`,
+		debug: {
+			str: `[DEBUG]`,
+			color: `\u001B[38;5;141m`,
 		},
-		"info": {
-			"str": `[INFO]`,
-			"color": `\u001b[38;5;46m`,
+		info: {
+			str: `[INFO]`,
+			color: `\u001B[38;5;46m`,
 		},
-		"success": {
-			"str": `[SUCCESS]`,
-			"color": `\u001b[38;5;82m`,
+		success: {
+			str: `[SUCCESS]`,
+			color: `\u001B[38;5;82m`,
 		},
-		"hint": {
-			"str": `[HINT]`,
-			"color": `\u001b[38;5;39m`,
+		hint: {
+			str: `[HINT]`,
+			color: `\u001B[38;5;39m`,
 		},
-		"warn": {
-			"str": `[WARN]`,
-			"color": `\u001b[38;5;214m`,
+		warn: {
+			str: `[WARN]`,
+			color: `\u001B[38;5;214m`,
 		},
-		"error": {
-			"str": `[ERROR]`,
-			"color": `\u001b[38;5;196m`,
+		error: {
+			str: `[ERROR]`,
+			color: `\u001B[38;5;196m`,
 		},
-		"reset": {
-			"str": ``,
-			"color": `\u001b[0m`,
+		reset: {
+			str: ``,
+			color: `\u001B[0m`,
 		},
 	};
 
@@ -72,9 +72,9 @@ export const runCmd = (cmd = ``, args = [], ignoreError = false, useShell = true
 
 	const shouldUseShell = cmd !== `bun` && useShell;
 	const result = spawnSync(cmd, args, {
-		"stdio": `inherit`,
-		"shell": shouldUseShell,
-		"env": process.env,
+		stdio: `inherit`,
+		shell: shouldUseShell,
+		env: process.env,
 	});
 
 	result.error && (() => {
@@ -97,8 +97,8 @@ export const runCmd = (cmd = ``, args = [], ignoreError = false, useShell = true
 // 4. 사용자 입력 받기 -----------------------------------------------------------------------
 export const runPrompt = (question = ``) => {
 	const rl = readline.createInterface({
-		"input": process.stdin,
-		"output": process.stdout,
+		input: process.stdin,
+		output: process.stdout,
 	});
 	const result = new Promise((resolve) => {
 		rl.question(question, (answer) => {
@@ -117,15 +117,13 @@ export const spawnWrapper = (cmd = ``, args = []) => {
 
 	!pathParts.includes(binDir) && pathParts.unshift(binDir);
 
-	const newEnv = {
-		...process.env,
-	};
+	const newEnv = { ...process.env };
 	const pathKey = process.platform === `win32` ? `Path` : `PATH`;
 	newEnv[pathKey] = pathParts.join(path.delimiter);
 
 	const result = spawnSync(cmd, args, {
-		"encoding": `utf8`,
-		"env": newEnv,
+		encoding: `utf8`,
+		env: newEnv,
 	});
 	return result;
 };
@@ -147,15 +145,11 @@ export const createFile = (tp = ``, content = ``) => {
 	const dir = path.dirname(full);
 	const exists = fs.existsSync(full);
 
-	!fs.existsSync(dir) && fs.mkdirSync(dir, {
-		"recursive": true,
-	});
+	!fs.existsSync(dir) && fs.mkdirSync(dir, { recursive: true });
 
 	exists && logger(`info`, `이미 존재하는 파일: ${full}`);
 	!exists && (() => {
-		fs.writeFileSync(full, content, {
-			"encoding": `utf8`,
-		});
+		fs.writeFileSync(full, content, { encoding: `utf8` });
 		logger(`success`, `파일 생성: ${full}`);
 	})();
 
@@ -169,9 +163,7 @@ export const createDir = (tp = ``) => {
 
 	exists && logger(`info`, `이미 존재하는 폴더: ${full}`);
 	!exists && (() => {
-		fs.mkdirSync(full, {
-			"recursive": true,
-		});
+		fs.mkdirSync(full, { recursive: true });
 		logger(`success`, `폴더 생성: ${full}`);
 	})();
 
@@ -188,8 +180,11 @@ export const delFile = (tp = ``, ext = ``) => {
 	const patternResult = ext && isValidDir && (() => {
 		const files = fs.readdirSync(dir).filter((name) => name.includes(ext));
 
-		!files.length && logger(`warn`, `삭제할 파일 없음 (패턴: ${ext}) - 경로: ${dir}`);
-		files.length && (() => {
+		files.length === 0 && (() => {
+			logger(`warn`, `삭제할 파일 없음 (패턴: ${ext}) - 경로: ${dir}`);
+		})();
+
+		files.length > 0 && (() => {
 			files.forEach((name) => {
 				fs.unlinkSync(path.join(dir, name));
 			});
@@ -224,17 +219,18 @@ export const delDir = (tp = ``, pat = ``) => {
 
 	// 패턴 삭제 모드
 	const patternResult = pat && isValidDir && (() => {
-		const ents = fs.readdirSync(dir, {
-			"withFileTypes": true,
-		});
+		const ents = fs.readdirSync(dir, { withFileTypes: true });
 		const tgts = ents.filter((e) => e.isDirectory() && e.name.includes(pat));
 
-		!tgts.length && logger(`warn`, `삭제할 폴더 없음 (패턴: ${pat}) - 경로: ${dir}`);
-		tgts.length && (() => {
+		tgts.length === 0 && (() => {
+			logger(`warn`, `삭제할 폴더 없음 (패턴: ${pat}) - 경로: ${dir}`);
+		})();
+
+		tgts.length > 0 && (() => {
 			tgts.forEach((d) => {
 				fs.rmSync(path.join(dir, d.name), {
-					"recursive": true,
-					"force": true,
+					recursive: true,
+					force: true,
 				});
 			});
 			logger(`success`, `폴더 삭제 (패턴: ${pat}) - 경로: ${dir}, 개수: ${tgts.length}`);
@@ -250,8 +246,8 @@ export const delDir = (tp = ``, pat = ``) => {
 		!dirExists && logger(`warn`, `삭제할 폴더 없음: ${full}`);
 		dirExists && (() => {
 			fs.rmSync(full, {
-				"recursive": true,
-				"force": true,
+				recursive: true,
+				force: true,
 			});
 			logger(`success`, `폴더 삭제: ${full}`);
 		})();
@@ -280,7 +276,7 @@ export const getProjectType = (args = ``) => {
 		`vite.config.mts`,
 		`vite.config.mjs`,
 	];
-	const hasVite = viteConfigs.some(hasFile);
+	const hasVite = viteConfigs.some((element) => hasFile(element));
 	const hasNext = hasFile(`next.config.js`) || hasFile(`next.config.mjs`);
 	const hasReactScripts = hasFile(path.join(`node_modules`, `react-scripts`, `bin`, `react-scripts.js`));
 	const hasIndexTs = hasFile(`index.ts`);
@@ -289,12 +285,12 @@ export const getProjectType = (args = ``) => {
 	isServer && !hasIndexTs && logger(`warn`, `서버 진입점 파일을 찾을 수 없습니다 (index.ts)`);
 
 	const result = {
-		isClient,
-		isServer,
-		hasVite,
-		hasNext,
-		hasReactScripts,
-		hasIndexTs,
+		isClient: isClient,
+		isServer: isServer,
+		hasVite: hasVite,
+		hasNext: hasNext,
+		hasReactScripts: hasReactScripts,
+		hasIndexTs: hasIndexTs,
 	};
 	return result;
 };
@@ -325,16 +321,14 @@ export const getPmArgs = (mgr = ``, baseArgs = [], options = {}) => {
 export const execCommand = (cmd = ``, desc = ``) => {
 	logger(`info`, `${desc} 시작`);
 	try {
-		execSync(cmd, {
-			"stdio": `inherit`,
-		});
+		execSync(cmd, { stdio: `inherit` });
 		logger(`info`, `${desc} 완료`);
 		return true;
 	}
-	catch (e) {
-		const errMsg = e instanceof Error ? e.message : String(e);
+	catch (error) {
+		const errMsg = error instanceof Error ? error.message : String(error);
 		logger(`error`, `${desc} 실패: ${errMsg}`);
-		throw e;
+		throw error;
 	}
 };
 

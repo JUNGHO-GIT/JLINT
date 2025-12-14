@@ -5,10 +5,10 @@
  * @since 2025-12-03
  */
 
-import path from "path";
-import process from "process";
-import { execSync } from "child_process";
-import { fileURLToPath } from "url";
+import path from "node:path";
+import process from "node:process";
+import { execSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 import { logger, getPlatform, execCommand, fileExists } from "../lib/utils.mjs";
 import { env } from "../lib/env.mjs";
 import { settings } from "../lib/settings.mjs";
@@ -55,9 +55,7 @@ const runSshCommand = (pf = ``, commands = ``) => {
 	const sshCommand = pf === `win` ? `powershell -Command "ssh -i ${keyPath} ${serviceId}@${ipAddr} '${commands}'"` : `ssh -i ${keyPath} ${serviceId}@${ipAddr} '${commands}'`;
 
 	logger(`info`, `SSH 명령 실행 중...`);
-	execSync(sshCommand, {
-		"stdio": `inherit`,
-	});
+	execSync(sshCommand, { stdio: `inherit` });
 	logger(`info`, `SSH 명령 실행 완료`);
 };
 
@@ -190,8 +188,8 @@ const runServerRemoteScript = (pf = ``) => {
 		logger(`info`, `스크립트 정상 종료: ${TITLE}`);
 		process.exit(0);
 	}
-	catch (e) {
-		const errMsg = e instanceof Error ? e.message : String(e);
+	catch (error) {
+		const errMsg = error instanceof Error ? error.message : String(error);
 		logger(`error`, `${TITLE} 스크립트 실행 실패: ${errMsg}`);
 		process.exit(1);
 	}
