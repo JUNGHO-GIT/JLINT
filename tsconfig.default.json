@@ -1,0 +1,32 @@
+{
+  "$schema": "https://www.schemastore.org/tsconfig",
+	"extends": "./tsconfig.paths.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+			"@type/*": ["src/assets/type/domain/*"],
+    },
+    "typeRoots": [
+			"node_modules/@types",
+			"src/assets/type/dist"
+    ],
+		"types": [
+			"node"
+		]
+  },
+  "include": [
+    "**/*.js",
+		"**/*.cjs",
+		"**/*.mjs",
+		"**/*.jsx",
+		"**/*.ts",
+		"**/*.cts",
+		"**/*.mts",
+		"**/*.tsx",
+		"**/*.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
+  ]
+}
