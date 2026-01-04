@@ -1,9 +1,11 @@
 /**
  * @file ExportTypes.ts
- * @since 2025-11-28
+ * @description foo
+ * @author Jungho
+ * @since 2026-1-4
  */
 
 // -------------------------------------------------------------------------------
 export {
-	type CommonType,
+  type CommonType,
 } from "@type/common";

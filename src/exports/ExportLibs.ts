@@ -1,43 +1,28 @@
 /**
  * @file ExportLibs.ts
- * @since 2025-11-28
+ * @description foo
+ * @author Jungho
+ * @since 2026-1-4
  */
 
 // -----------------------------------------------------------------------------------------
-import _vscode from "vscode";
-import _fs from "fs";
-import _path from "path";
-import { TextDecoder as _TextDecoder } from "util";
-import _lodash from "lodash";
-import _CleanCSS from "clean-css";
-import { minify as _jsMinify } from "terser";
-import { minify as _htmlMinify } from "html-minifier-terser";
-import _strip from "strip-comments";
-import _stripJsonComments from "strip-json-comments";
-import type { FormatOptionsWithLanguage as _FormatOptionsWithLanguage } from "sql-formatter";
-import type { Options as _PrettierOptions } from "prettier";
-import type { Options as _StripJsonOptions } from "strip-json-comments";
-import type { Options as _StripOptions } from "strip-comments";
-import { setExtensionPath as _setExtensionPath, getModuleWithCache as _getModuleWithCache } from "@scripts/modules";
+import { getModuleWithCache as _getModuleWithCache } from "@scripts/modules";
+export { setExtensionPath } from "@scripts/modules";
 
 // -----------------------------------------------------------------------------------------
-export { _vscode as vscode };
-export { _fs as fs };
-export { _path as path };
-export { _TextDecoder as TextDecoder };
-export { _lodash as lodash };
-export { _CleanCSS as CleanCSS };
-export { _jsMinify as jsMinify };
-export { _htmlMinify as htmlMinify };
-export { _strip as strip };
-export { _stripJsonComments as stripJsonComments };
-export type { _FormatOptionsWithLanguage as FormatOptionsWithLanguage };
-export type { _PrettierOptions as PrettierOptions };
-export type { _StripJsonOptions as StripJsonOptions };
-export type { _StripOptions as StripOptions };
+export { default as vscode } from "vscode";
+export { default as fs } from "node:fs";
+export { default as path } from "node:path";
+export { TextDecoder } from "node:util";
+export { default as CleanCSS } from "clean-css";
+export { minify as jsMinify } from "terser";
+export { minify as htmlMinify } from "html-minifier-terser";
+export { default as strip, type Options as StripOptions } from "strip-comments";
+export { default as stripJsonComments, type Options as StripJsonOptions } from "strip-json-comments";
+export { type FormatOptionsWithLanguage } from "sql-formatter";
+export { type Options as PrettierOptions } from "prettier";
 
 // -----------------------------------------------------------------------------------------
-export { _setExtensionPath as setExtensionPath };
 export const getPrettier = async () => _getModuleWithCache(`prettier`);
 export const getPrettierPluginJava = async () => _getModuleWithCache(`prettier-plugin-java`);
 export const getPrettierPluginJsp = async () => _getModuleWithCache(`prettier-plugin-jsp`);

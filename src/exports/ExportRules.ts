@@ -1,27 +1,29 @@
 /**
  * @file ExportRules.ts
- * @since 2025-11-28
+ * @description foo
+ * @author Jungho
+ * @since 2026-1-4
  */
 
 // -------------------------------------------------------------------------------
 export {
-	capitalize,
-	singleTags,
-	semicolon,
-	space,
-	lineBreak,
+  capitalize,
+  singleTags,
+  semicolon,
+  space,
+  lineBreak,
 } from "@rules/Syntax";
 
 // -------------------------------------------------------------------------------
 export {
-	ifElse,
-	tryCatch,
+  ifElse,
+  tryCatch,
 } from "@rules/Logic";
 
 // -------------------------------------------------------------------------------
 export {
-	globalRules,
-	ternaryRules,
-	iifeRules,
-	langSpecificRules,
+  globalRules,
+  ternaryRules,
+  iifeRules,
+  langSpecificRules,
 } from "@rules/FinalCheck";

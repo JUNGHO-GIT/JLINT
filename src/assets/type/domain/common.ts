@@ -1,12 +1,16 @@
 /**
  * @file common.ts
- * @since 2025-11-28
+ * @description foo
+ * @author Jungho
+ * @since 2026-1-4
  */
 
+// -------------------------------------------------------------------------------------------------
 export declare type CommonType = {
-  activateLint: boolean,
-  removeComments: boolean,
-  insertLine: boolean,
-  tabSize: number,
-  quoteType: string
+  activateLint: boolean;
+  removeComments: boolean;
+  insertLine: boolean;
+  useTabs: boolean;
+  indentSize: number;
+  quoteType: string;
 };

@@ -1,18 +1,20 @@
 /**
  * @file .server.swcrc
- * @description swc 설정 (서버)
+ * @description swc 설정 (서버) - Schema 기반 누락 옵션 추가 및 최적화
  * @author Jungho
  * @since 2025-11-30
+ * @updated 2025-12-14
  */
 
 {
-	// 0. common -----------------------------------------------------------------------------------------------------
+  // 0. common -----------------------------------------------------------------------------------------------------
   "$schema": "https://swc.rs/schema.json",
   "inlineSourcesContent": false, // 소스맵에 원본 소스 포함 여부 (기본값 true – 여기선 명시적으로 비활성)
   "isModule": true, // 모듈로 취급할지 여부 (true/false/'unknown')
   "minify": false, // 서버 코드는 기본적으로 minify 비활성화 (디버깅 우선)
   "sourceMaps": false, // 소스맵 생성 여부 (true / false / 'inline')
   "exclude": [], // 변환에서 제외할 패턴 배열 (정규식 문자열)
+
   // "configFile": ".server.swcrc", // [CLI 미지원] 설정 파일 경로
   // "cwd": "", // [CLI 미지원] 작업 디렉터리 (빈 문자열이면 process.cwd())
   // "envName": "", // [CLI 미지원] 환경 이름 (SWC_ENV / NODE_ENV 기반)
@@ -32,56 +34,57 @@
   //   "name": "" // 호출자 이름
   // },
 
-	// 1. module -----------------------------------------------------------------------------------------------------
+  // 2. module -----------------------------------------------------------------------------------------------------
   "module": {
     "type": "commonjs", // 모듈 타입 ('commonjs' – Node/Express용)
-    "strict": false, // __esModule 플래그 제거 여부 (true면 내보내지 않음)
+    "strict": true, // __esModule 호환성 강화 (true 권장)
     "strictMode": true, // 'use strict' 디렉티브 출력 여부
     "lazy": false, // lazy import 활성화 여부 (배열일 경우 특정 모듈만)
-    "noInterop": false // interop 헬퍼 완전 비활성화 여부
+    "noInterop": false, // interop 헬퍼 완전 비활성화 여부
+    "importInterop": "swc", // CJS <-> ESM interop 방식 ('swc' | 'node' | 'none')
+    "ignoreDynamic": false // 동적 import 유지 (Node.js 지원 시 false 권장)
     // "allowTopLevelThis": false, // [CLI 미지원] 최상위 this 허용 여부
     // "exportInteropAnnotation": false, // [CLI 미지원] cjs-module-lexer 애노테이션 추가 여부
-    // "ignoreDynamic": false, // [CLI 미지원] dynamic import 변환을 무시할지 여부
-    // "importInterop": "swc", // [CLI 미지원] CJS <-> ESM interop 방식 ('swc' | 'node' | 'none')
     // "moduleId": "", // [CLI 미지원] AMD/UMD 모듈 ID (CJS에서는 사용 안 함)
     // "outFileExtension": "js", // [CLI 미지원] 출력 확장자 ('js' | 'cjs' | 'mjs')
     // "preserveImportMeta": false, // [CLI 미지원] import.meta 유지 여부
     // "resolveFully": false // [CLI 미지원] .mjs 등까지 경로 완전 해석 여부
   },
 
-	// 3. jsc --------------------------------------------------------------------------------------------------------
+  // 3. jsc --------------------------------------------------------------------------------------------------------
   "jsc": {
 
-		// 3-0. common --------------------------------------------------------------------------------
+    // 3-0. common --------------------------------------------------------------------------------
     "baseUrl": "./", // paths 해석 기준 경로
-    "target": "esnext", // 출력 타겟 JS 버전 (번들러가 추가 다운레벨링 가능)
-    "loose": true, // 전역 loose 모드 사용 여부
+    "target": "es2022", // Node.js 18+ 안정적 지원 버전 (esnext -> es2022)
+    "loose": true, // 전역 loose 모드 사용 여부 (성능 유리)
     "externalHelpers": false, // @swc/helpers 외부 모듈 사용 여부
-    "keepClassNames": false, // 클래스 이름 유지 여부
+    "keepClassNames": true, // 서버 로그/TypeORM 등에서 클래스명 유지 필수
     "preserveAllComments": false, // true면 모든 주석 보존
     "paths": {}, // 모듈 alias 매핑 (TS paths 와 동일 개념)
 
-		// 3-2. parser --------------------------------------------------------------------------------
+    // 3-2. parser --------------------------------------------------------------------------------
     "parser": {
       "syntax": "typescript", // 파서 문법 ('typescript' | 'ecmascript')
       "tsx": false, // 서버 기본: TSX 미사용 (SSR 등에서는 true 로 변경 가능)
-      "decorators": true, // 데코레이터 문법 허용 여부 (NestJS 등 대비)
+      "decorators": true, // 데코레이터 문법 허용 여부
       "dynamicImport": true // import() 문법 허용 여부
+      // "importAssertions": false // [추가] import assertions 구문 허용 여부
     },
 
-		// 3-4. minify --------------------------------------------------------------------------------
+    // 3-4. minify --------------------------------------------------------------------------------
     "minify": {
       "compress": {
         "unused": true, // 사용되지 않는 변수/함수 제거
         "dead_code": true, // 도달 불가(dead) 코드 제거
-        "drop_console": false, // console.* 제거 여부
+        "drop_console": false, // 서버 로그 유지를 위해 false
         "drop_debugger": true // debugger 제거 여부
       },
       "mangle": {
-        "keep_classnames": false, // 난독화 시 클래스 이름 유지 여부
-        "keep_fnames": false // 난독화 시 함수 이름 유지 여부
+        "keep_classnames": true, // 클래스 이름 유지 (서버 에러 트레이킹용)
+        "keep_fnames": true // 함수 이름 유지
       }
-      // "ecma": 5, // [CLI 미지원] minify 시 기준 ES 버전
+      // "ecma": 2022, // [CLI 미지원] minify 시 기준 ES 버전
       // "inlineSourcesContent": false, // [CLI 미지원] 소스맵에 원본 소스 포함 여부
       // "keep_classnames": false, // [CLI 미지원] 전역 클래스 이름 유지 여부
       // "keep_fnames": false, // [CLI 미지원] 전역 함수 이름 유지 여부
@@ -95,24 +98,26 @@
       // }
     },
 
-		// 3-5. transform ----------------------------------------------------------------------------
+    // 3-5. transform ----------------------------------------------------------------------------
     "transform": {
-      "decoratorMetadata": false, // TS decorator metadata emit 여부
-      "legacyDecorator": false, // 구버전 decorator 동작 호환 여부
+      "legacyDecorator": true, // NestJS 등 서버 프레임워크 호환 (true)
+      "decoratorMetadata": true, // Reflection 사용 시 필수 (true)
+      "useDefineForClassFields": false, // TS 표준(defineProperty) 대신 할당 사용 (legacyDecorator와 궁합)
+      "treatConstEnumAsEnum": false, // const enum을 일반 enum으로 보존할지 여부
+      "verbatimModuleSyntax": false, // import/export 문법을 그대로 유지할지 여부
+
       "react": {
-        "runtime": "classic", // JSX runtime ('classic' | 'automatic')
-        "pragma": "React.createElement", // classic runtime JSX 팩토리 함수
-        "pragmaFrag": "React.Fragment" // classic runtime Fragment 이름
+        "runtime": "automatic", // React 17+ 신규 런타임
+        "useBuiltins": true, // Object.assign 등 내장 사용 여부
+        "refresh": false // 서버 사이드이므로 Refresh 비활성
+        // "pragma": "React.createElement", // [automatic에선 미사용] classic runtime JSX 팩토리 함수
+        // "pragmaFrag": "React.Fragment", // [automatic에선 미사용] classic runtime Fragment 이름
         // "development": false, // [CLI 미지원] 개발 모드용 transform 활성화 여부
         // "importSource": "react", // [CLI 미지원] automatic runtime 사용 시 jsx/jsxs import 소스
-        // "refresh": false, // [CLI 미지원] React Fast Refresh 활성화 여부
-        // "throwIfNamespace": true, // [CLI 미지원] JSX namespace 사용 시 에러 여부
-        // "useBuiltins": false // [CLI 미지원] Object.assign 등 내장 사용 여부
+        // "throwIfNamespace": true // [CLI 미지원] JSX namespace 사용 시 에러 여부
       }
-      // "decoratorVersion": "2022-03", // [CLI 미지원] decorator 사양 버전
-      // "treatConstEnumAsEnum": false, // [CLI 미지원] const enum 을 일반 enum 으로 남길지 여부
-      // "useDefineForClassFields": false, // [CLI 미지원] class field 를 defineProperty 기반으로 emit
-      // "verbatimModuleSyntax": false, // [CLI 미지원] TS verbatimModuleSyntax 와 동일 동작 여부
+      // "decoratorVersion": "2022-03", // [CLI 미지원] decorator 사양 버전 (legacyDecorator가 true면 무시됨)
+      // "tsEnumIsMutable": false, // [추가] TS enum을 수정 가능한 객체로 컴파일할지 여부
       // "constModules": { // [CLI 미지원]
       //   "globals": {} // constModules 변환용 전역 상수 매핑
       // },
@@ -128,45 +133,45 @@
       //   }
       // }
 
-			// 3-3. experimental --------------------------------------------------------------------------
-			// "experimental": { // [CLI 미지원]
-			//   "cacheRoot": "", // SWC 캐시 경로 (빈 문자열이면 기본 .swc 사용)
-			//   "disableAllLints": false, // 내장 lint 전체 비활성화
-			//   "disableBuiltinTransformsForInternalTesting": false, // 내장 transform 비활성화 (테스트용)
-			//   "emitAssertForImportAttributes": false, // import attributes 를 assert 로 출력
-			//   "emitIsolatedDts": false, // 모듈별 독립 .d.ts 생성 여부
-			//   "keepImportAssertions": false, // import assertions 유지 여부
-			//   "keepImportAttributes": false, // import/export attributes 유지 여부
-			//   "optimizeHygiene": false, // 변수 이름 hygiene 최적화
-			//   "runPluginFirst": false, // 플러그인을 TS/JS transform 보다 먼저 실행할지 여부
-			//   "plugins": [] // wasm 기반 플러그인 목록
-			// },
+      // 3-3. experimental --------------------------------------------------------------------------
+      // "experimental": { // [CLI 미지원]
+      //   "cacheRoot": "", // SWC 캐시 경로 (빈 문자열이면 기본 .swc 사용)
+      //   "disableAllLints": false, // 내장 lint 전체 비활성화
+      //   "disableBuiltinTransformsForInternalTesting": false, // 내장 transform 비활성화 (테스트용)
+      //   "emitAssertForImportAttributes": false, // import attributes 를 assert 로 출력
+      //   "emitIsolatedDts": false, // 모듈별 독립 .d.ts 생성 여부
+      //   "keepImportAssertions": false, // import assertions 유지 여부
+      //   "keepImportAttributes": false, // import/export attributes 유지 여부
+      //   "optimizeHygiene": false, // 변수 이름 hygiene 최적화
+      //   "runPluginFirst": false, // 플러그인을 TS/JS transform 보다 먼저 실행할지 여부
+      //   "plugins": [] // wasm 기반 플러그인 목록
+      // },
 
-			// 3-1. output --------------------------------------------------------------------------------
-			// "output": { // [CLI 미지원]
-			//   "charset": "utf8" // 출력 인코딩 ('utf8' | 'ascii')
-			// },
+      // 3-1. output --------------------------------------------------------------------------------
+      // "output": { // [CLI 미지원]
+      //   "charset": "utf8" // 출력 인코딩 ('utf8' | 'ascii')
+      // },
     }
 
-		// 2. env --------------------------------------------------------------------------------------------------------
-		// [주의] env 와 jsc.target 은 함께 사용 불가 – jsc.target 사용 시 env 전체 주석 처리
-		// "env": {
-		//   "bugfixes": true, // 최신 문법 버그 패치 transform 활성화 여부
-		//   "coreJs": "", // core-js 버전 문자열 (예: '3.36') – 빈 문자열이면 사용 안 함
-		//   "debug": false, // env 변환 디버그 로그 출력 여부
-		//   "dynamicImport": true, // dynamic import 관련 env transform 활성화 여부
-		//   "forceAllTransforms": true, // 가능한 모든 transform 강제 적용 여부
-		//   "loose": false, // env transform 을 loose 모드로 적용할지 여부
-		//   "mode": "usage", // polyfill 모드 ('usage' | 'entry')
-		//   "path": "", // polyfill 로드 경로 prefix
-		//   "shippedProposals": false, // 구현된 proposal 도 변환할지 여부
-		//   "targets": {}, // 타겟 환경 (browserslist / node 버전 등)
-		//   "exclude": [], // 적용하지 않을 transform 이름 목록
-		//   "include": [], // 항상 포함할 transform 이름 목록
-		//   "skip": [] // 특정 타깃에서만 건너뛸 transform 목록
-		// },
+    // 2. env --------------------------------------------------------------------------------------------------------
+    // [주의] env 와 jsc.target 은 함께 사용 불가 – jsc.target 사용 시 env 전체 주석 처리
+    // "env": {
+    //   "bugfixes": true, // 최신 문법 버그 패치 transform 활성화 여부
+    //   "coreJs": "", // core-js 버전 문자열 (예: '3.36') – 빈 문자열이면 사용 안 함
+    //   "debug": false, // env 변환 디버그 로그 출력 여부
+    //   "dynamicImport": true, // dynamic import 관련 env transform 활성화 여부
+    //   "forceAllTransforms": true, // 가능한 모든 transform 강제 적용 여부
+    //   "loose": false, // env transform 을 loose 모드로 적용할지 여부
+    //   "mode": "usage", // polyfill 모드 ('usage' | 'entry')
+    //   "path": "", // polyfill 로드 경로 prefix
+    //   "shippedProposals": false, // 구현된 proposal 도 변환할지 여부
+    //   "targets": {}, // 타겟 환경 (browserslist / node 버전 등)
+    //   "exclude": [], // 적용하지 않을 transform 이름 목록
+    //   "include": [], // 항상 포함할 transform 이름 목록
+    //   "skip": [] // 특정 타깃에서만 건너뛸 transform 목록
+    // },
 
-		// 3-6. assumptions ---------------------------------------------------------------------------
+    // 3-6. assumptions ---------------------------------------------------------------------------
     // "assumptions": { // [CLI 미지원]
     //   "arrayLikeIsIterable": false, // ArrayLike 를 iterable 로 가정
     //   "constantReexports": false, // 재노출 export 를 상수로 가정
