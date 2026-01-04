@@ -1974,7 +1974,7 @@ const RULES_STYLISTIC = {
     `error`,
     `always`,
     {
-      exceptAfterSingleLine: false,
+      exceptAfterSingleLine: true,
     },
   ],
   "@stylistic/max-statements-per-line": [ `error`, { max: 1 }],

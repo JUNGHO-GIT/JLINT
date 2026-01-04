@@ -27,6 +27,7 @@
 **/.bin/** linguist-vendored linguist-generated
 
 # 2. Dependencies / package artifacts
+**/.node/** linguist-vendored linguist-generated
 **/node_modules/** linguist-vendored linguist-generated
 **/vendor/** linguist-vendored linguist-generated
 **/.vendor/** linguist-vendored linguist-generated
@@ -150,6 +151,12 @@
 **/bun.lock.* linguist-vendored linguist-generated
 
 # 7. etc
+**/eslint.config.* linguist-vendored linguist-generated
+**/eslint.config.js linguist-vendored linguist-generated
+**/eslint.config.cjs linguist-vendored linguist-generated
+**/eslint.config.mjs linguist-vendored linguist-generated
+**/tsconfig*.json linguist-vendored linguist-generated
+**/tsconfig*.json.* linguist-vendored linguist-generated
 **/ecosystem.config.js linguist-vendored linguist-generated
 **/ecosystem.config.* linguist-vendored linguist-generated
 

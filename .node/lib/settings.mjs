@@ -76,7 +76,6 @@ export const settings = {
         files: [
           `.server.swcrc`,
           `eslint.config.mjs`,
-          `ecosystem.config.cjs`,
           `package.default.json`,
           `.editorconfig`,
           `license.md`,
@@ -93,7 +92,6 @@ export const settings = {
     rmFiles: [
       `client/.server.swcrc`,
       `client/eslint.config.mjs`,
-      `client/ecosystem.config.cjs`,
       `client/package.default.json`,
       `client/.gitignore`,
       `client/.gitignore.public`,
