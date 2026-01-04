@@ -1,100 +1,125 @@
-# .gitignore.public
+# .gitignore.private
 
 # Directories --------------------------------------------------------------------------------=
 
-# 1. build directories
+# 1. Build outputs
 **/build/
 **/.build/
-**/bundle/
-**/.bundle/
-**/vendor/
-**/.vendor/
-**/debug/
-**/.debug/
 **/dist/
 **/.dist/
-**/coverage/
-**/.coverage/
 **/out/
 **/.out/
-**/temp/
-**/.temp/
 **/target/
 **/.target/
-**/gradle/
-**/.gradle/
-**/bin/
-**/.bin/
+**/coverage/
+**/.coverage/
+**/debug/
+**/.debug/
+**/temp/
+**/.temp/
+**/bundle/
+**/.bundle/
 **/gen/
 **/.gen/
-**/.git/
+**/bin/
+**/.bin/
+
+# 2. Dependencies / package artifacts
 **/node_modules/
-**/META-INF/
-**/.META-INF/
+**/vendor/
+**/.vendor/
 
-# 3. project directories
-**/admin/
-**/private/
-**/auth/
-
-# 4. ide & temp directories
-**/.vscode/
-**/.idea/
-**/.tmp/
-**/.cache/
+# 3. Framework / tool caches
+# **/.next/
+# **/.nuxt/
+# **/.svelte-kit/
+# **/.turbo/
+# **/.vite/
+**/.parcel-cache/
 **/.nyc_output/
+**/.cache/
+**/.pnpm-store/
+**/.yarn/
+**/.pnp/
+**/.gradle/
+
+# 4. VCS / misc
+**/.git/
+**/.direnv/
+
+# 5. Project-private areas
+# **/admin/
+# **/private/
+# **/auth/
+
+# 6. IDE / editor
+# **/.vscode/
+# **/.idea/
+**/.history/
+**/.backup/
+**/.bookmark/
+**/.tmp/
+**/.etc/
 **/.grunt/
 **/.gulp/
-**/.parcel-cache/
-**/.backup/
-**/.history/
-**/.bookmark/
-**/.etc/
+
+# 7. Java / runtime artifacts
+# **/META-INF/
+# **/.META-INF/
+**/hs_err_pid*/
+**/replay_pid*/
 
 # Files --------------------------------------------------------------------------------------=
 
-# 1. os-specific files
+# 1. OS / editor noise
 **/*.swp
 **/*.swo
-**/*.DS_Store
-**/*Thumbs.db
-**/*Gemfile
+**/.DS_Store
+**/Thumbs.db
+**/Desktop.ini
 
-# 2. log files
+# 2. Logs
 **/*.log
 **/npm-debug.log
 **/yarn-debug.log
 **/yarn-error.log
+**/pnpm-debug.log
+**/lerna-debug.log
 
-# 3. env files
-**/env.*
-**/*env.*
-**/*.env
-**/*.env.*
-**/*.properties
-**/*.properties.*
-**/*.classpath
-**/*.classpath.*
-**/*.props
-**/*.props.*
-**/*.project
-**/*.project.*
-**/*.settings
-**/*.settings.*
-**/*.keystore
-**/*.keystore.*
-**/app.json
-**/app.json.*
-**/gradlew
-**/gradlew.*
-**/gradlew.bat
-**/gradlew.bat.*
-**/settings.gradle
-**/settings.gradle.*
-**/build.gradle
-**/.build.gradle
+# 3. Secrets / env / credentials
+# **/env.*
+# **/*env.*
+# **/*.env
+# **/*.env.*
+# **/.envrc
+# **/*.properties
+# **/*.properties.*
+# **/*.props
+# **/*.props.*
+# **/app.json
+# **/app.json.*
+# **/*.keystore
+# **/*.keystore.*
+# **/*.jks
+# **/*.jks.*
+# **/*.p12
+# **/*.p12.*
+# **/*.pem
+# **/*.pem.*
+# **/*.key
+# **/*.key.*
 
-# 4. temporary files
+# 4. Java/IDE project files
+**/.classpath
+**/.classpath.*
+**/.project
+**/.project.*
+**/.settings/
+**/*.iml
+**/*.ipr
+**/*.iws
+
+# 5. Temporary / patch files
 **/*.tmp
 **/*.tmp.*
 **/*.bak
@@ -105,78 +130,23 @@
 **/*.orig.*
 **/*.rej
 **/*.rej.*
+**/*.pid
+**/*.pid.*
 
-# 6. package manager lock files
+# 6. Lock files (common)
 **/package-lock.json
 **/package-lock.json.*
+**/npm-shrinkwrap.json
+**/npm-shrinkwrap.json.*
 **/yarn.lock
 **/yarn.lock.*
-
-# 7. config files
-**/tsconfig.json
-**/tsconfig.json.*
-**/tsconfig.paths.json
-**/tsconfig.paths.json.*
-**/tsconfig.default.json
-**/tsconfig.default.json.*
-**/tsconfig.regular.json
-**/tsconfig.regular.json.*
-**/jsconfig.json
-**/jsconfig.json.*
-**/jsconfig.paths.json
-**/jsconfig.paths.json.*
-**/jsconfig.default.json
-**/jsconfig.default.json.*
-**/jsconfig.regular.json
-**/jsconfig.regular.json.*
-**/metro.config.js
-**/metro.config.*
-**/jest.config.js
-**/jest.config.*
-**/babel.config.js
-**/babel.config.*
-**/.watchmanconfig
-**/.watchmanconfig.*
-**/.prettierrc
-**/.prettierrc.*
-**/.prettierignore
-**/.prettierignore.*
-**/.prettierrc.js
-**/.prettierrc.js.*
-**/.eslintrc
-**/.eslintrc.*
-**/.eslintignore
-**/.eslintignore.*
-**/.eslintrc.js
-**/.eslintrc.js.*
-**/.stylelintrc
-**/.stylelintrc.*
-**/.stylelintignore
-**/.swcrc
-**/.swcrc.*
-
-# 8. etc files
-**/push.cjs
-**/push.cjs.*
-**/push.sh
-**/push.sh.*
-**/fetch.cjs
-**/fetch.cjs.*
-**/fetch.sh
-**/fetch.sh.*
-**/pull.cjs
-**/pull.cjs
-**/pull.sh
-**/pull.sh.*
-**/merge.cjs
-**/merge.cjs.*
-**/merge.sh
-**/merge.sh.*
-**/*.vsix
-**/*.vsix.*
-**/*.vsix
-**/*.vsix.*
-**/bun.lock
-**/bun.lock.*
 **/pnpm-lock.yaml
 **/pnpm-lock.yaml.*
+**/bun.lockb
+**/bun.lockb.*
+**/bun.lock
+**/bun.lock.*
+
+# 7. etc
+# **/ecosystem.config.js
+# **/ecosystem.config.*
