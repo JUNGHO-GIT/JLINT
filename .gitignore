@@ -1,4 +1,4 @@
-# .gitignore.public
+# .gitignore.private
 
 # Directories --------------------------------------------------------------------------------=
 
@@ -30,11 +30,11 @@
 **/.vendor/
 
 # 3. Framework / tool caches
-**/.next/
-**/.nuxt/
-**/.svelte-kit/
-**/.turbo/
-**/.vite/
+# **/.next/
+# **/.nuxt/
+# **/.svelte-kit/
+# **/.turbo/
+# **/.vite/
 **/.parcel-cache/
 **/.nyc_output/
 **/.cache/
@@ -48,13 +48,13 @@
 **/.direnv/
 
 # 5. Project-private areas
-**/admin/
-**/private/
-**/auth/
+# **/admin/
+# **/private/
+# **/auth/
 
 # 6. IDE / editor
-**/.vscode/
-**/.idea/
+# **/.vscode/
+# **/.idea/
 **/.history/
 **/.backup/
 **/.bookmark/
@@ -64,8 +64,8 @@
 **/.gulp/
 
 # 7. Java / runtime artifacts
-**/META-INF/
-**/.META-INF/
+# **/META-INF/
+# **/.META-INF/
 **/hs_err_pid*/
 **/replay_pid*/
 
@@ -87,27 +87,27 @@
 **/lerna-debug.log
 
 # 3. Secrets / env / credentials
-**/env.*
-**/*env.*
-**/*.env
-**/*.env.*
-**/.envrc
-**/*.properties
-**/*.properties.*
-**/*.props
-**/*.props.*
-**/app.json
-**/app.json.*
-**/*.keystore
-**/*.keystore.*
-**/*.jks
-**/*.jks.*
-**/*.p12
-**/*.p12.*
-**/*.pem
-**/*.pem.*
-**/*.key
-**/*.key.*
+# **/env.*
+# **/*env.*
+# **/*.env
+# **/*.env.*
+# **/.envrc
+# **/*.properties
+# **/*.properties.*
+# **/*.props
+# **/*.props.*
+# **/app.json
+# **/app.json.*
+# **/*.keystore
+# **/*.keystore.*
+# **/*.jks
+# **/*.jks.*
+# **/*.p12
+# **/*.p12.*
+# **/*.pem
+# **/*.pem.*
+# **/*.key
+# **/*.key.*
 
 # 4. Java/IDE project files
 **/.classpath
@@ -148,5 +148,5 @@
 **/bun.lock.*
 
 # 7. etc
-**/ecosystem.config.js
-**/ecosystem.config.*
+# **/ecosystem.config.js
+# **/ecosystem.config.*
