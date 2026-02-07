@@ -4,7 +4,7 @@
   "description": "Universal Language formatter",
   "publisher": "JUNGHO",
   "license": "Apache-2.0",
-  "version": "3.1.5",
+  "version": "3.1.6",
   "main": "./out/extension.js",
   "icon": "logo.webp",
   "repository": {
@@ -51,6 +51,10 @@
       {
         "command": "extension.Jlint",
         "title": "Jlint"
+      },
+      {
+        "command": "extension.JlintRemoveComments",
+        "title": "Jlint: Remove Comments"
       }
     ],
     "keybindings": [
@@ -64,6 +68,16 @@
       "commandPalette": [
         {
           "command": "extension.Jlint",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "extension.JlintRemoveComments",
+          "when": "editorTextFocus"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "extension.JlintRemoveComments",
           "when": "editorTextFocus"
         }
       ]
@@ -115,7 +129,7 @@
     }
   },
   "engines": {
-    "vscode": ">=1.108.0",
+    "vscode": ">=1.109.0",
     "node": ">=21.0.0",
     "npm": ">=10.0.0",
     "pnpm": ">=9.0.0"
@@ -137,42 +151,42 @@
     "prettier": "3.7.4",
     "prettier-plugin-java": "2.7.7",
     "prettier-plugin-jsp": "1.0.13",
-    "sql-formatter": "15.6.12",
+    "sql-formatter": "15.7.0",
     "strip-comments": "2.0.1",
     "strip-json-comments": "5.0.3",
     "terser": "5.46.0"
   },
   "devDependencies": {
-    "@eslint/js": "9.39.2",
+    "@eslint/js": "10.0.1",
     "@stylistic/eslint-plugin": "5.7.1",
-    "@swc/cli": "0.7.10",
-    "@swc/core": "1.15.10",
+    "@swc/cli": "0.8.00",
+    "@swc/core": "1.15.11",
     "@swc/helpers": "0.5.18",
     "@types/clean-css": "4.2.11",
     "@types/eslint": "9.6.1",
     "@types/eslint-plugin-jsx-a11y": "6.10.1",
     "@types/eslint__js": "9.14.0",
     "@types/html-minifier-terser": "7.0.2",
-    "@types/node": "25.0.10",
+    "@types/node": "25.2.1",
     "@types/strip-comments": "2.0.4",
-    "@types/vscode": "1.108.1",
-    "@typescript-eslint/eslint-plugin": "8.53.1",
-    "@typescript-eslint/parser": "8.53.1",
+    "@types/vscode": "1.109.0",
+    "@typescript-eslint/eslint-plugin": "8.54.0",
+    "@typescript-eslint/parser": "8.54.0",
     "@vscode/vsce": "3.7.1",
-    "esbuild": "0.27.2",
-    "eslint": "9.39.2",
+    "esbuild": "0.27.3",
+    "eslint": "10.0.0",
     "eslint-define-config": "2.1.0",
     "eslint-plugin-html": "8.1.4",
     "eslint-plugin-jsx-a11y": "6.10.2",
     "eslint-plugin-react": "7.37.5",
     "eslint-plugin-react-hooks": "7.0.1",
     "eslint-plugin-unicorn": "62.0.0",
-    "globals": "17.1.0",
+    "globals": "17.3.0",
     "ts-morph": "27.0.2",
     "ts-prune": "0.10.3",
     "tsc-alias": "1.8.16",
     "tsx": "4.21.0",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.53.1"
+    "typescript-eslint": "8.54.0"
   }
 }

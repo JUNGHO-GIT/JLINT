@@ -21,4 +21,5 @@ export {
   getSyntax,
   getLogic,
   getFinalCheck,
+  getRemoveComments,
 } from "@cores/Controller";

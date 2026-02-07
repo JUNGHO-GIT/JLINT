@@ -5,7 +5,7 @@
  * @since 2026-1-4
  */
 
-import { main } from "@exportCores";
+import { main, getRemoveComments } from "@exportCores";
 import { path, vscode, setExtensionPath } from "@exportLibs";
 import { logger, initLogger, notify } from "@exportScripts";
 
@@ -63,7 +63,7 @@ export const activate = (context: vscode.ExtensionContext) => {
     const filePath = editor.document.uri.fsPath;
     const fileName = path.basename(filePath);
     const fileTabSize = editorTabSize;
-    const fileEol = String(editor.document.eol === 1 ? `lf` : `crlf`);
+    const fileEol = editor.document.eol === vscode.EndOfLine.LF ? `lf` : `crlf`;
     const fileExt = editor.document.languageId;
 
     await main(
@@ -78,8 +78,45 @@ export const activate = (context: vscode.ExtensionContext) => {
     await notify(`info`, `Linting Completed - "${fileName}"`);
   });
 
+  const removeCommentsCommand = vscode.commands.registerCommand(`extension.JlintRemoveComments`, async () => {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      await notify(`error`, `Jlint - No active editor found.`);
+      return;
+    }
+
+    if (editor.document.uri.scheme !== `file`) {
+      await notify(`error`, `Jlint - Please save the file before removing comments.`);
+      return;
+    }
+
+    const editorConfig = vscode.workspace.getConfiguration(`editor`, editor.document.uri);
+    const editorTabSize = editorConfig.get(`tabSize`, 2) as number;
+
+    const filePath = editor.document.uri.fsPath;
+    const fileName = path.basename(filePath);
+    const fileTabSize = editorTabSize;
+    const fileEol = editor.document.eol === vscode.EndOfLine.LF ? `lf` : `crlf`;
+    const fileExt = editor.document.languageId;
+    const initContents = editor.document.getText();
+    const finalContents = await getRemoveComments(initContents, fileTabSize, fileEol, fileExt);
+
+    const document = editor.document;
+    const fullRange = new vscode.Range(
+      document.positionAt(0),
+      document.positionAt(document.getText().length),
+    );
+    await editor.edit((editBuilder: vscode.TextEditorEdit) => {
+      editBuilder.replace(fullRange, finalContents);
+    });
+    await document.save();
+
+    await notify(`info`, `Comments Removed - "${fileName}"`);
+  });
+
   // 3. Listen for configuration changes -----------------------------------------------------------
   context.subscriptions.push(command);
+  context.subscriptions.push(removeCommentsCommand);
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration((event: vscode.ConfigurationChangeEvent) => {
       if (event.affectsConfiguration(`Jlint`)) {

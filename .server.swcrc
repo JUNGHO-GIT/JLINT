@@ -1,6 +1,6 @@
 /**
  * @file .server.swcrc
- * @description swc 설정 (서버) - Schema 기반 누락 옵션 추가 및 최적화
+ * @description swc 설정 (서버)
  * @author Jungho
  * @since 2025-11-30
  * @updated 2025-12-14
@@ -105,7 +105,6 @@
       "useDefineForClassFields": false, // TS 표준(defineProperty) 대신 할당 사용 (legacyDecorator와 궁합)
       "treatConstEnumAsEnum": false, // const enum을 일반 enum으로 보존할지 여부
       "verbatimModuleSyntax": false, // import/export 문법을 그대로 유지할지 여부
-
       "react": {
         "runtime": "automatic", // React 17+ 신규 런타임
         "useBuiltins": true, // Object.assign 등 내장 사용 여부

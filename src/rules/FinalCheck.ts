@@ -128,6 +128,9 @@ export const globalRules = async (
     const rules3 = (
       /(\s*)(&&|\|\||\?\?|\?)(\n+)(\s*)(.*)/gm
     );
+    const rules4 = (
+      /(\s*)(-+)(\s*)(\n)(^\s*)(public|private|function|class)/gm
+    );
 
     const applyGlobalRules = (
       source: string,
@@ -146,6 +149,9 @@ export const globalRules = async (
         ))
         .replaceAll(rules3, (...p: unknown[]) => (
           `${p[1]}${p[2]} ${p[5]}`
+        ))
+        .replaceAll(rules4, (...p: unknown[]) => (
+          `${p[1]}${p[2]}\n${p[5]}${p[6]}`
         ));
 
         if (current === prev) {
@@ -255,7 +261,6 @@ export const ternaryRules = async (
           }
           continue;
         }
-
         if (ch === `/` && next === `/`) {
           current += ch + next;
           inLineComment = true;
@@ -268,7 +273,6 @@ export const ternaryRules = async (
           i += 1;
           continue;
         }
-
         if (ch === `'`) {
           inSingle = true;
           current += ch;
@@ -284,7 +288,6 @@ export const ternaryRules = async (
           current += ch;
           continue;
         }
-
         if (ch === `(`) {
           depthParen += 1;
         }
@@ -303,7 +306,6 @@ export const ternaryRules = async (
         else if (ch === `}`) {
           depthBrace = depthBrace > 0 ? depthBrace - 1 : 0;
         }
-
         if (ch === `,` && depthParen === 0 && depthBracket === 0 && depthBrace === 0) {
           const trimmed = current.trim();
           if (trimmed.length > 0) {
@@ -486,7 +488,6 @@ export const ternaryRules = async (
           }
           continue;
         }
-
         if (ch === `/` && next === `/`) {
           out += ch + next;
           inLineComment = true;
@@ -499,7 +500,6 @@ export const ternaryRules = async (
           i += 1;
           continue;
         }
-
         if (ch === `'`) {
           inSingle = true;
           out += ch;
@@ -515,7 +515,6 @@ export const ternaryRules = async (
           out += ch;
           continue;
         }
-
         if (ch === `?`) {
           if (next === `?` || next === `.`) {
             out += ch;
