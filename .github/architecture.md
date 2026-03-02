@@ -48,7 +48,7 @@ Jlint는 JavaScript, TypeScript, JSX, TSX, Java, JSP, HTML, CSS, JSON, XML, YAML
 │   └── assets/
 │       ├── scripts/              # logger, notify, modules
 │       └── type/domain/          # 프로젝트 타입 정의
-├── out/                          # ⚠ SWC 빌드 산출물 (직접 수정 금지)
+├── out/                          # ⚠ SWC 빌드 산출물 (src/에서 수정 후 rebuild)
 ├── .node/
 │   ├── mjs/                      # 빌드/배포 스크립트 (bun 기반)
 │   └── lib/                      # 스크립트 공유 유틸리티
@@ -80,8 +80,8 @@ User (Alt+Shift+F) → extension.ts → Main → Controller → langs/* → rule
 
 ## 4. 빌드/실행 명령어
 
-| 작업 | 명령어 (bun 필요) | bun 없이 대체 |
-|------|-------------------|--------------|
+| 작업 | 명령어 (bun 설치 시) | bun 없이 대체 |
+|------|---------------------|--------------|
 | **의존성 설치** | `npm install --legacy-peer-deps` | 동일 |
 | **빌드** | `npm run build` | `node .node/mjs/swc.mjs --npm --build --server` |
 | **Type-check** | `npx tsc --noEmit` | 동일 |
