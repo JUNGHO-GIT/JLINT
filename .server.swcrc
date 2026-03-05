@@ -3,198 +3,73 @@
  * @description swc 설정 (서버)
  * @author Jungho
  * @since 2025-11-30
- * @updated 2025-12-14
+ * @updated 2026-02-08
  */
-
 {
-  // 0. common -----------------------------------------------------------------------------------------------------
   "$schema": "https://swc.rs/schema.json",
-  "inlineSourcesContent": false, // 소스맵에 원본 소스 포함 여부 (기본값 true – 여기선 명시적으로 비활성)
-  "isModule": true, // 모듈로 취급할지 여부 (true/false/'unknown')
-  "minify": false, // 서버 코드는 기본적으로 minify 비활성화 (디버깅 우선)
-  "sourceMaps": false, // 소스맵 생성 여부 (true / false / 'inline')
-  "exclude": [], // 변환에서 제외할 패턴 배열 (정규식 문자열)
-
-  // "configFile": ".server.swcrc", // [CLI 미지원] 설정 파일 경로
-  // "cwd": "", // [CLI 미지원] 작업 디렉터리 (빈 문자열이면 process.cwd())
-  // "envName": "", // [CLI 미지원] 환경 이름 (SWC_ENV / NODE_ENV 기반)
-  // "filename": "", // [CLI 미지원] 현재 파일 이름 (CLI 사용 시 자동 설정)
-  // "inputSourceMap": "", // [CLI 미지원] 입력 소스맵 (true/false/문자열) – 빈 문자열이면 자동
-  // "script": false, // [CLI 미지원] script 모드 강제 여부 (true면 모듈 아님)
-  // "outputPath": "", // [CLI 미지원] 출력 경로 힌트 (CLI 소스맵 경로 계산용)
-  // "root": "", // [CLI 미지원] 프로젝트 루트 경로 (빈 문자열이면 cwd)
-  // "rootMode": "root", // [CLI 미지원] root 해석 방식 ('root' | 'upward' | 'upward-optional')
-  // "sourceFileName": "", // [CLI 미지원] 소스맵에 기록할 파일 이름 (빈 값이면 자동)
-  // "sourceRoot": "", // [CLI 미지원] 소스맵의 sourceRoot 값
-  // "swcrc": true, // [CLI 미지원] .swcrc 자동 탐색 여부
-  // "test": "", // [CLI 미지원] 변환 대상 필터용 패턴 – 빈 문자열이면 전체 허용
-  // "plugin": {}, // [CLI 미지원] JS/wasm 플러그인 설정 (일반 사용에서는 대부분 미사용)
-  // "swcrcRoots": [], // [CLI 미지원] swcrc 탐색 루트 패턴 – 빈 배열이면 root 기준
-  // "caller": { // [CLI 미지원] 호출자 정보 (툴링에서만 사용)
-  //   "name": "" // 호출자 이름
-  // },
-
-  // 2. module -----------------------------------------------------------------------------------------------------
+  "isModule": true,
+  "minify": false, // 서버 – 디버깅/스택 트레이스 가독성 우선
+  "sourceMaps": true, // 런타임 에러 디버깅 필수 (--enable-source-maps)
+  "inlineSourcesContent": true, // 소스맵에 원본 포함 – 배포 환경에서도 원본 추적 가능
+  "exclude": [
+    "node_modules"
+  ],
   "module": {
-    "type": "commonjs", // 모듈 타입 ('commonjs' – Node/Express용)
-    "strict": true, // __esModule 호환성 강화 (true 권장)
-    "strictMode": true, // 'use strict' 디렉티브 출력 여부
-    "lazy": false, // lazy import 활성화 여부 (배열일 경우 특정 모듈만)
-    "noInterop": false, // interop 헬퍼 완전 비활성화 여부
-    "importInterop": "swc", // CJS <-> ESM interop 방식 ('swc' | 'node' | 'none')
-    "ignoreDynamic": false // 동적 import 유지 (Node.js 지원 시 false 권장)
-    // "allowTopLevelThis": false, // [CLI 미지원] 최상위 this 허용 여부
-    // "exportInteropAnnotation": false, // [CLI 미지원] cjs-module-lexer 애노테이션 추가 여부
-    // "moduleId": "", // [CLI 미지원] AMD/UMD 모듈 ID (CJS에서는 사용 안 함)
-    // "outFileExtension": "js", // [CLI 미지원] 출력 확장자 ('js' | 'cjs' | 'mjs')
-    // "preserveImportMeta": false, // [CLI 미지원] import.meta 유지 여부
-    // "resolveFully": false // [CLI 미지원] .mjs 등까지 경로 완전 해석 여부
+    "type": "commonjs", // Node.js/NestJS 표준 모듈 시스템
+    "strict": true,
+    "strictMode": true,
+    "lazy": true, // 의존성 지연 로딩 – 콜드 스타트 시간 단축
+    "noInterop": false,
+    "importInterop": "swc",
+    "ignoreDynamic": false,
+    "preserveImportMeta": false,
+    "resolveFully": false
   },
-
-  // 3. jsc --------------------------------------------------------------------------------------------------------
   "jsc": {
-
-    // 3-0. common --------------------------------------------------------------------------------
-    "baseUrl": "./", // paths 해석 기준 경로
-    "target": "es2022", // Node.js 18+ 안정적 지원 버전 (esnext -> es2022)
-    "loose": true, // 전역 loose 모드 사용 여부 (성능 유리)
-    "externalHelpers": false, // @swc/helpers 외부 모듈 사용 여부
-    "keepClassNames": true, // 서버 로그/TypeORM 등에서 클래스명 유지 필수
-    "preserveAllComments": false, // true면 모든 주석 보존
-    "paths": {}, // 모듈 alias 매핑 (TS paths 와 동일 개념)
-
-    // 3-2. parser --------------------------------------------------------------------------------
+    "baseUrl": "./",
+    "target": "es2022", // Node.js 18+ 안정 지원
+    "loose": true,
+    "externalHelpers": true, // @swc/helpers 외부화 – 모듈 간 헬퍼 코드 중복 제거
+    "keepClassNames": true, // NestJS DI, TypeORM 엔티티, 에러 로그 클래스명 보존
+    "preserveAllComments": false,
+    "paths": {},
     "parser": {
-      "syntax": "typescript", // 파서 문법 ('typescript' | 'ecmascript')
-      "tsx": false, // 서버 기본: TSX 미사용 (SSR 등에서는 true 로 변경 가능)
-      "decorators": true, // 데코레이터 문법 허용 여부
-      "dynamicImport": true // import() 문법 허용 여부
-      // "importAssertions": false // [추가] import assertions 구문 허용 여부
+      "syntax": "typescript",
+      "tsx": false, // 서버 기본 – SSR 필요 시 true
+      "decorators": true, // NestJS @Controller, @Injectable 등
+      "dynamicImport": true
     },
-
-    // 3-4. minify --------------------------------------------------------------------------------
+    // [참고] root "minify": false 일 때 jsc.minify 블록은 적용되지 않음
+    // 프로덕션 서버 빌드 시 minify: true 로 전환하면 아래 설정이 활성화됨
     "minify": {
       "compress": {
-        "unused": true, // 사용되지 않는 변수/함수 제거
-        "dead_code": true, // 도달 불가(dead) 코드 제거
-        "drop_console": false, // 서버 로그 유지를 위해 false
-        "drop_debugger": true // debugger 제거 여부
+        "dead_code": true,
+        "drop_console": false, // 서버 로그 보존
+        "drop_debugger": true,
+        "unused": true
       },
       "mangle": {
-        "keep_classnames": true, // 클래스 이름 유지 (서버 에러 트레이킹용)
-        "keep_fnames": true // 함수 이름 유지
+        "keep_classnames": true, // DI 컨테이너 / ORM 리플렉션 보호
+        "keep_fnames": true // 스택 트레이스 가독성 보존
+      },
+      "format": {
+        "comments": "all" // 서버 코드 주석 보존 (JSDoc, TODO 등)
       }
-      // "ecma": 2022, // [CLI 미지원] minify 시 기준 ES 버전
-      // "inlineSourcesContent": false, // [CLI 미지원] 소스맵에 원본 소스 포함 여부
-      // "keep_classnames": false, // [CLI 미지원] 전역 클래스 이름 유지 여부
-      // "keep_fnames": false, // [CLI 미지원] 전역 함수 이름 유지 여부
-      // "module": false, // [CLI 미지원] 모듈 모드 난독화 여부
-      // "outputPath": "", // [CLI 미지원] 소스맵 경로 계산용 출력 경로
-      // "safari10": false, // [CLI 미지원] Safari 10 버그 워크어라운드
-      // "sourceMap": false, // [CLI 미지원] minify 기준 소스맵 생성 여부
-      // "toplevel": true, // [CLI 미지원] 최상위 변수/함수까지 난독화/압축
-      // "format": { // [CLI 미지원]
-      //   "comments": "all" // 주석 처리 정책 ('all' | 'some' | false)
-      // }
     },
-
-    // 3-5. transform ----------------------------------------------------------------------------
     "transform": {
-      "legacyDecorator": true, // NestJS 등 서버 프레임워크 호환 (true)
-      "decoratorMetadata": true, // Reflection 사용 시 필수 (true)
-      "useDefineForClassFields": false, // TS 표준(defineProperty) 대신 할당 사용 (legacyDecorator와 궁합)
-      "treatConstEnumAsEnum": false, // const enum을 일반 enum으로 보존할지 여부
-      "verbatimModuleSyntax": false, // import/export 문법을 그대로 유지할지 여부
+      "legacyDecorator": true, // NestJS / TypeORM 레거시 데코레이터
+      "decoratorMetadata": true, // reflect-metadata 기반 DI 필수
+      "useDefineForClassFields": false, // legacyDecorator 와 호환 – 할당 방식 유지
+      "treatConstEnumAsEnum": false,
+      "verbatimModuleSyntax": false,
       "react": {
-        "runtime": "automatic", // React 17+ 신규 런타임
-        "useBuiltins": true, // Object.assign 등 내장 사용 여부
-        "refresh": false // 서버 사이드이므로 Refresh 비활성
-        // "pragma": "React.createElement", // [automatic에선 미사용] classic runtime JSX 팩토리 함수
-        // "pragmaFrag": "React.Fragment", // [automatic에선 미사용] classic runtime Fragment 이름
-        // "development": false, // [CLI 미지원] 개발 모드용 transform 활성화 여부
-        // "importSource": "react", // [CLI 미지원] automatic runtime 사용 시 jsx/jsxs import 소스
-        // "throwIfNamespace": true // [CLI 미지원] JSX namespace 사용 시 에러 여부
+        "runtime": "automatic",
+        "useBuiltins": true,
+        "refresh": false // 프로덕션 서버 – 반드시 false
       }
-      // "decoratorVersion": "2022-03", // [CLI 미지원] decorator 사양 버전 (legacyDecorator가 true면 무시됨)
-      // "tsEnumIsMutable": false, // [추가] TS enum을 수정 가능한 객체로 컴파일할지 여부
-      // "constModules": { // [CLI 미지원]
-      //   "globals": {} // constModules 변환용 전역 상수 매핑
-      // },
-      // "optimizer": { // [CLI 미지원]
-      //   "simplify": true, // 코드 단순화 최적화 활성화 여부
-      //   "jsonify": {
-      //     "minCost": 1024 // JSON 치환 최소 비용 기준
-      //   },
-      //   "globals": {
-      //     "typeofs": {}, // typeof 결과 치환 매핑
-      //     "vars": {}, // 전역 상수 치환 매핑
-      //     "envs": ["NODE_ENV", "SWC_ENV"] // inline-global 대상 환경 변수 이름
-      //   }
-      // }
-
-      // 3-3. experimental --------------------------------------------------------------------------
-      // "experimental": { // [CLI 미지원]
-      //   "cacheRoot": "", // SWC 캐시 경로 (빈 문자열이면 기본 .swc 사용)
-      //   "disableAllLints": false, // 내장 lint 전체 비활성화
-      //   "disableBuiltinTransformsForInternalTesting": false, // 내장 transform 비활성화 (테스트용)
-      //   "emitAssertForImportAttributes": false, // import attributes 를 assert 로 출력
-      //   "emitIsolatedDts": false, // 모듈별 독립 .d.ts 생성 여부
-      //   "keepImportAssertions": false, // import assertions 유지 여부
-      //   "keepImportAttributes": false, // import/export attributes 유지 여부
-      //   "optimizeHygiene": false, // 변수 이름 hygiene 최적화
-      //   "runPluginFirst": false, // 플러그인을 TS/JS transform 보다 먼저 실행할지 여부
-      //   "plugins": [] // wasm 기반 플러그인 목록
-      // },
-
-      // 3-1. output --------------------------------------------------------------------------------
-      // "output": { // [CLI 미지원]
-      //   "charset": "utf8" // 출력 인코딩 ('utf8' | 'ascii')
-      // },
+    },
+    "output": {
+      "charset": "utf8"
     }
-
-    // 2. env --------------------------------------------------------------------------------------------------------
-    // [주의] env 와 jsc.target 은 함께 사용 불가 – jsc.target 사용 시 env 전체 주석 처리
-    // "env": {
-    //   "bugfixes": true, // 최신 문법 버그 패치 transform 활성화 여부
-    //   "coreJs": "", // core-js 버전 문자열 (예: '3.36') – 빈 문자열이면 사용 안 함
-    //   "debug": false, // env 변환 디버그 로그 출력 여부
-    //   "dynamicImport": true, // dynamic import 관련 env transform 활성화 여부
-    //   "forceAllTransforms": true, // 가능한 모든 transform 강제 적용 여부
-    //   "loose": false, // env transform 을 loose 모드로 적용할지 여부
-    //   "mode": "usage", // polyfill 모드 ('usage' | 'entry')
-    //   "path": "", // polyfill 로드 경로 prefix
-    //   "shippedProposals": false, // 구현된 proposal 도 변환할지 여부
-    //   "targets": {}, // 타겟 환경 (browserslist / node 버전 등)
-    //   "exclude": [], // 적용하지 않을 transform 이름 목록
-    //   "include": [], // 항상 포함할 transform 이름 목록
-    //   "skip": [] // 특정 타깃에서만 건너뛸 transform 목록
-    // },
-
-    // 3-6. assumptions ---------------------------------------------------------------------------
-    // "assumptions": { // [CLI 미지원]
-    //   "arrayLikeIsIterable": false, // ArrayLike 를 iterable 로 가정
-    //   "constantReexports": false, // 재노출 export 를 상수로 가정
-    //   "constantSuper": false, // super 호출을 상수 호출로 가정
-    //   "enumerableModuleMeta": false, // 모듈 메타를 enumerable 로 둘지 여부
-    //   "ignoreFunctionLength": false, // 함수 length 를 신뢰하지 않도록 가정
-    //   "ignoreFunctionName": false, // 함수 name 을 신뢰하지 않도록 가정
-    //   "ignoreToPrimitiveHint": false, // ToPrimitive hint 무시 여부
-    //   "iterableIsArray": false, // iterable 이 배열이라고 가정
-    //   "mutableTemplateObject": false, // 템플릿 객체가 수정 가능하다고 가정
-    //   "noClassCalls": false, // 클래스 생성자 직접 호출이 없다고 가정
-    //   "noDocumentAll": false, // document.all 이 항상 falsy 라고 가정
-    //   "noIncompleteNsImportDetection": false, // namespace import 누락 탐지 비활성
-    //   "noNewArrows": false, // new 관련 화살표 변환 단순화 가정
-    //   "objectRestNoSymbols": false, // object rest 에서 symbol 무시 가정
-    //   "privateFieldsAsProperties": false, // private 필드를 일반 프로퍼티처럼 취급
-    //   "pureGetters": false, // getter 에 부작용 없다고 가정
-    //   "setClassMethods": false, // 클래스 메서드를 정의 시점에 설정
-    //   "setComputedProperties": false, // 계산된 프로퍼티를 정의 시점에 설정
-    //   "setPublicClassFields": false, // public 필드를 정의 시점에 설정
-    //   "setSpreadProperties": false, // spread 프로퍼티를 단순 assign 으로 처리
-    //   "skipForOfIteratorClosing": false, // for-of iterator closing 생략 가정
-    //   "superIsCallableConstructor": false, // super 가 항상 호출 가능 생성자라 가정
-    //   "tsEnumIsReadonly": false // TS enum 을 readonly 로 취급
-    // }
   }
 }

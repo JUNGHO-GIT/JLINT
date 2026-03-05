@@ -12,9 +12,7 @@ import os from "node:os";
 import process from "node:process";
 import { execSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import {
-  logger, runPrompt, fileExists,
-} from "../lib/utils.mjs";
+import { logger, runPrompt, fileExists } from "../lib/utils.mjs";
 import { env } from "../lib/env.mjs";
 import { settings } from "../lib/settings.mjs";
 
@@ -38,6 +36,7 @@ const args3 = argv.find((arg) => [
 ].includes(arg))?.replace(`--`, ``) || ``;
 const BACKUP_DIR = path.join(`.node`, `.tmp`);
 const BACKUP_PATH = path.join(BACKUP_DIR, `git.mjs.backup.json`);
+const gitRemotes = settings.gitRemotes;
 
 // 2. 유틸리티 함수 --------------------------------------------------------------------------
 const getTimestamp = () => {
@@ -67,8 +66,8 @@ const execOutput = (cmd) => {
 
 // 3. 원격 저장소 유틸 -----------------------------------------------------------------------
 const remoteUtils = {
-  getSettings: (remoteName = ``) => (remoteName === settings.git.remotes.public.name ? settings.git.remotes.public
-      : remoteName === settings.git.remotes.private.name ? settings.git.remotes.private
+  getSettings: (remoteName = ``) => (remoteName === gitRemotes.public.name ? gitRemotes.public
+      : remoteName === gitRemotes.private.name ? gitRemotes.private
         : null),
 
   getBranch: (remoteName = ``) => remoteUtils.getSettings(remoteName)?.branch || null,
@@ -95,8 +94,8 @@ const remoteUtils = {
 // 4-1. 기본브랜치 설정
 const setDefaultBranches = () => {
   const remoteNames = [
-    settings.git.remotes.public.name,
-    settings.git.remotes.private.name,
+    gitRemotes.public.name,
+    gitRemotes.private.name,
   ];
 
   remoteNames.forEach((remoteName) => {
@@ -129,7 +128,9 @@ const setDefaultBranches = () => {
       execSync(`gh api repos/${owner}/${repo} -X PATCH -f default_branch=${targetBranch}`, { stdio: `pipe` });
       logger(`success`, `GitHub default branch 변경 완료: ${targetBranch}`);
 
-      if (!targetBranch.endsWith(`main`)) {
+      const shouldDeleteLegacyMain = remoteName === gitRemotes.public.name &&
+        targetBranch !== `main`;
+      if (shouldDeleteLegacyMain) {
         execSilent(`git push ${remoteName} --delete main`)
           ? logger(`success`, `원격 'main' 브랜치 삭제 완료: ${remoteName}`)
           : logger(`info`, `원격 'main' 브랜치 없음 또는 이미 삭제됨`);
@@ -147,8 +148,8 @@ const cleanupBranches = () => {
 
   const uniqueDefaults = [
     ...new Set([
-      remoteUtils.getBranch(settings.git.remotes.public.name),
-      remoteUtils.getBranch(settings.git.remotes.private.name),
+      remoteUtils.getBranch(gitRemotes.public.name),
+      remoteUtils.getBranch(gitRemotes.private.name),
     ].filter(Boolean)),
   ];
 
@@ -195,8 +196,8 @@ const switchToDefaultBranch = (switchTo = ``) => {
     return;
   }
 
-  const created = remoteUtils.ensureLocalFromRemote(switchTo, settings.git.remotes.private.name)
-    || remoteUtils.ensureLocalFromRemote(switchTo, settings.git.remotes.public.name);
+  const created = remoteUtils.ensureLocalFromRemote(switchTo, gitRemotes.private.name)
+    || remoteUtils.ensureLocalFromRemote(switchTo, gitRemotes.public.name);
 
   created
     ? logger(`info`, `로컬 기본브랜치 생성/전환 완료: ${switchTo}`)
@@ -205,13 +206,18 @@ const switchToDefaultBranch = (switchTo = ``) => {
 
 const cleanupRemoteBranches = (uniqueDefaults = []) => {
   const remoteNames = [
-    settings.git.remotes.public.name,
-    settings.git.remotes.private.name,
+    gitRemotes.public.name,
+    gitRemotes.private.name,
   ];
 
   remoteNames.forEach((remoteName) => {
     if (!remoteUtils.exists(remoteName)) {
       logger(`info`, `Remote '${remoteName}' 존재하지 않음 - 원격 브랜치 정리 건너뜀`);
+      return;
+    }
+
+    if (remoteName === gitRemotes.private.name) {
+      logger(`info`, `Remote '${remoteName}' 원격 브랜치 삭제 건너뜀 (private 보호)`);
       return;
     }
 
@@ -495,17 +501,70 @@ const updatePackageVersion = (newVersion = ``) => {
   logger(`success`, `package.json 버전 업데이트 완료: ${newVersion}`);
 };
 
+// 7-1. package.json 기본 scripts 동기화 ------------------------------------------------------
+const overwritePackageDefaultScripts = () => {
+  if (!fileExists(`package.json`)) {
+    logger(`info`, `package.json 없음 - 기본 scripts 덮어쓰기 건너뜀`);
+    return;
+  }
+
+  const defaultScripts = settings?.packageJsonScripts;
+  const canSync = defaultScripts &&
+    typeof defaultScripts === `object` &&
+    Object.keys(defaultScripts).length > 0;
+
+  if (!canSync) {
+    logger(`info`, `settings.packageJsonScripts 설정 없음 - 기본 scripts 덮어쓰기 건너뜀`);
+    return;
+  }
+
+  try {
+    const pkg = JSON.parse(fs.readFileSync(`package.json`, `utf8`));
+    const currentScripts = pkg?.scripts && typeof pkg.scripts === `object`
+      ? pkg.scripts
+      : {};
+    const nextScripts = {
+      ...defaultScripts,
+    };
+
+    const hasSameScriptCount = Object.keys(currentScripts).length === Object.keys(nextScripts).length;
+    let hasChanged = !hasSameScriptCount;
+
+    !hasChanged && Object.entries(nextScripts).forEach(([
+      key,
+      value,
+    ]) => {
+      if (currentScripts[key] !== value) {
+        hasChanged = true;
+      }
+    });
+
+    if (!hasChanged) {
+      logger(`info`, `package.json 기본 scripts 이미 최신 상태`);
+      return;
+    }
+
+    pkg.scripts = nextScripts;
+    fs.writeFileSync(`package.json`, `${JSON.stringify(pkg, null, 2)}\n`, `utf8`);
+    logger(`success`, `package.json 기본 scripts 초기화 후 덮어쓰기 완료`);
+  }
+  catch (error) {
+    logger(`error`, `package.json 기본 scripts 덮어쓰기 실패: ${error instanceof Error ? error.message : String(error)}`);
+    throw error;
+  }
+};
+
 // 8. Git Fetch ------------------------------------------------------------------------------
 const gitFetch = () => {
-  const privateExists = remoteUtils.exists(settings.git.remotes.private.name);
-  const publicExists = remoteUtils.exists(settings.git.remotes.public.name);
+  const privateExists = remoteUtils.exists(gitRemotes.private.name);
+  const publicExists = remoteUtils.exists(gitRemotes.public.name);
 
   if (!privateExists && !publicExists) {
     logger(`warn`, `사용 가능한 remote가 없습니다 - fetch/reset 스킵`);
     return;
   }
 
-  const targetRemote = privateExists ? settings.git.remotes.private.name : settings.git.remotes.public.name;
+  const targetRemote = privateExists ? gitRemotes.private.name : gitRemotes.public.name;
   const targetBranch = remoteUtils.getBranch(targetRemote);
 
   if (!targetBranch) {
@@ -523,6 +582,7 @@ const gitFetch = () => {
     logger(`info`, `Git Reset Hard 시작: ${fullRef}`);
     execSync(`git reset --hard ${fullRef}`, { stdio: `inherit` });
     logger(`success`, `Git Reset Hard 완료: ${fullRef}`);
+    overwritePackageDefaultScripts();
   }
   catch (error) {
     logger(`error`, `Git Fetch/Reset 실패: ${error instanceof Error ? error.message : String(error)}`);
@@ -613,8 +673,8 @@ const runPushProcess = async () => {
 
   envManager.modify();
   try {
-    gitPush(settings.git.remotes.public.name, `.gitignore.public`, commitMsg, baseCommit);
-    gitPush(settings.git.remotes.private.name, `.gitignore.private`, commitMsg, baseCommit);
+    gitPush(gitRemotes.public.name, `.gitignore.public`, commitMsg, baseCommit);
+    gitPush(gitRemotes.private.name, `.gitignore.private`, commitMsg, baseCommit);
     logger(`success`, `Git Push 완료`);
   }
   finally {
@@ -638,6 +698,11 @@ const runPushProcess = async () => {
 
   try {
     if (args2 === `fetch`) {
+      const answer = await runPrompt(`fetch/reset 을 실행합니다. 계속하시겠습니까? (y/n): `);
+      if (answer.toLowerCase() !== `y`) {
+        logger(`info`, `사용자가 fetch 를 취소했습니다`);
+        process.exit(0);
+      }
       ensureGitLfs();
       manageBranches(`setDefault`);
       manageBranches(`cleanup`);
@@ -645,7 +710,7 @@ const runPushProcess = async () => {
     }
 
     if (args2 === `push`) {
-      await runPushProcess(); // await를 통해 프롬프트 입력 및 프로세스 완료 대기
+      await runPushProcess();
       manageBranches(`setDefault`);
       manageBranches(`cleanup`);
     }

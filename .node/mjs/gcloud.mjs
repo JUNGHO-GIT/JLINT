@@ -35,6 +35,18 @@ const getKeyPath = (pf = ``) => (pf === `win` ? env.ssh.win.keyPath : env.ssh.li
 const getServiceId = (pf = ``) => (pf === `win` ? env.ssh.win.serviceId : env.ssh.linux.serviceId);
 const getGcpPath = () => `gs://${env.gcp.bucket}/${env.gcp.path}`;
 const getBasePath = () => `${env.basePath}/${env.domain}/${env.projectName}`;
+const gcloudTooling = env?.tooling?.gcloud || {};
+const gcloudClientTooling = gcloudTooling.client || {};
+const gcloudServerTooling = gcloudTooling.server || {};
+const BUILD_DIR_NAME = gcloudClientTooling.buildDirName || `build`;
+const BUILD_ARCHIVE_FILE_NAME = gcloudClientTooling.archiveFileName || `build.tar.gz`;
+const REMOTE_CLIENT_DIR_NAME = gcloudClientTooling.remoteClientDirName || `client`;
+const REMOTE_EXTRACT_STRIP_COMPONENTS = Number.isFinite(Number(gcloudClientTooling.remoteExtractStripComponents))
+  ? Number(gcloudClientTooling.remoteExtractStripComponents)
+  : 1;
+const GCLOUD_SERVER_CLEANUP_PATHS = Array.isArray(gcloudServerTooling.cleanupPaths)
+  ? gcloudServerTooling.cleanupPaths
+  : [];
 
 // 3. SSH 명령 실행 --------------------------------------------------------------------------
 const runSshCommand = (pf = ``, commands = ``) => {
@@ -66,35 +78,35 @@ const buildProject = () => {
 
 // 4-2. client 배포 (압축 및 업로드) -----------------------------------------------------------
 const compressBuild = () => {
-  const buildDir = path.join(process.cwd(), `build`);
+  const buildDir = path.join(process.cwd(), BUILD_DIR_NAME);
 
   !fileExists(buildDir) && (() => {
     throw new Error(`build 폴더가 존재하지 않습니다: ${buildDir}`);
   })();
 
-  execCommand(`tar -zcvf build.tar.gz build`, `build 폴더 압축`);
+  execCommand(`tar -zcvf ${BUILD_ARCHIVE_FILE_NAME} ${BUILD_DIR_NAME}`, `build 폴더 압축`);
 };
 
 // 4-3. client 배포 (GCP 업로드) -----------------------------------------------------------
 const uploadToGCP = () => {
   const gcpPath = getGcpPath();
-  const tarFile = path.join(process.cwd(), `build.tar.gz`);
+  const tarFile = path.join(process.cwd(), BUILD_ARCHIVE_FILE_NAME);
 
   !fileExists(tarFile) && (() => {
-    throw new Error(`build.tar.gz 파일이 존재하지 않습니다`);
+    throw new Error(`${BUILD_ARCHIVE_FILE_NAME} 파일이 존재하지 않습니다`);
   })();
 
-  execCommand(`gcloud storage cp build.tar.gz ${gcpPath}`, `GCP 업로드`);
+  execCommand(`gcloud storage cp ${BUILD_ARCHIVE_FILE_NAME} ${gcpPath}`, `GCP 업로드`);
   logger(`info`, `업로드 경로: ${gcpPath}`);
 };
 
 // 4-4. client 배포 (임시 파일 삭제) -----------------------------------------------------------
 const deleteBuildTar = (pf = ``) => {
-  const tarFile = path.join(process.cwd(), `build.tar.gz`);
+  const tarFile = path.join(process.cwd(), BUILD_ARCHIVE_FILE_NAME);
 
-  !fileExists(tarFile) ? logger(`warn`, `build.tar.gz 파일이 존재하지 않음 - 삭제 건너뜀`) : (() => {
-    const cmd = pf === `win` ? `del build.tar.gz` : `rm -rf build.tar.gz`;
-    execCommand(cmd, `build.tar.gz 삭제`);
+  !fileExists(tarFile) ? logger(`warn`, `${BUILD_ARCHIVE_FILE_NAME} 파일이 존재하지 않음 - 삭제 건너뜀`) : (() => {
+    const cmd = pf === `win` ? `del ${BUILD_ARCHIVE_FILE_NAME}` : `rm -rf ${BUILD_ARCHIVE_FILE_NAME}`;
+    execCommand(cmd, `${BUILD_ARCHIVE_FILE_NAME} 삭제`);
   })();
 };
 
@@ -103,17 +115,17 @@ const runClientRemoteScript = (pf = ``) => {
   logger(`info`, `원격 서버 클라이언트 배포 스크립트 실행 시작`);
 
   const basePath = getBasePath();
-  const clientPath = `${basePath}/client`;
+  const clientPath = `${basePath}/${REMOTE_CLIENT_DIR_NAME}`;
   const gcpPath = getGcpPath();
 
   const commands = [
     `cd ${basePath}`,
-    `sudo rm -rf client`,
-    `sudo mkdir -p client`,
+    `sudo rm -rf ${REMOTE_CLIENT_DIR_NAME}`,
+    `sudo mkdir -p ${REMOTE_CLIENT_DIR_NAME}`,
     `cd ${clientPath}`,
     `sudo gcloud storage cp ${gcpPath} .`,
-    `sudo tar -zvxf build.tar.gz --strip-components=1`,
-    `sudo rm build.tar.gz`,
+    `sudo tar -zvxf ${BUILD_ARCHIVE_FILE_NAME} --strip-components=${REMOTE_EXTRACT_STRIP_COMPONENTS}`,
+    `sudo rm ${BUILD_ARCHIVE_FILE_NAME}`,
     `sudo chmod -R 755 ${clientPath}`,
     `sudo systemctl restart nginx`,
   ].join(` && `);
@@ -139,33 +151,20 @@ const runServerRemoteScript = (pf = ``) => {
 
   const basePath = getBasePath();
   const serverPath = `${basePath}/server`;
-  const resetBranch = settings.git.deploy.resetBranch;
+  const resetBranch = settings.gitDeploy.resetBranch;
 
   !resetBranch && (() => {
-    throw new Error(`배포 브랜치가 설정되지 않았습니다 (settings.git.deploy.resetBranch)`);
+    throw new Error(`배포 브랜치가 설정되지 않았습니다 (settings.gitDeploy.resetBranch)`);
   })();
 
   // 불필요한 파일 정리
-  const uslessFiles = [
-    `.node`,
-    `.idea`,
-    `.github`,
-    `.vscode`,
-    `.gitattributes`,
-    `.gitignore`,
-    `.gitignore.private`,
-    `.gitignore.public`,
-    `.server.swcrc`,
-    `eslint.config.mjs`,
-    `package.default.json`,
-    `tsconfig.default.json`,
-  ];
+  const uslessFiles = GCLOUD_SERVER_CLEANUP_PATHS;
 
   const commands = [
     `cd ${serverPath}`,
     `sudo git fetch --all`,
     `sudo git reset --hard ${resetBranch}`,
-    `sudo rm -rf client`,
+    `sudo rm -rf ${REMOTE_CLIENT_DIR_NAME}`,
     `sudo chmod -R 755 ${serverPath}`,
     ...uslessFiles.map((file) => `sudo rm -rf ${file}`),
     `sudo npm install --legacy-peer-deps`,

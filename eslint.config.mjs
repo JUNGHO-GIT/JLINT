@@ -2057,11 +2057,11 @@ const RULES_STYLISTIC = {
   ],
   "@stylistic/quote-props": [
     `error`,
-    `as-needed`,
+    `consistent`,
     {
-      keywords: false,
+      keywords: true,
       unnecessary: true,
-      numbers: false,
+      numbers: true,
     },
   ],
   "@stylistic/jsx-quotes": [ `error`, `prefer-double` ],
