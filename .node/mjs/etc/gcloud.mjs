@@ -9,9 +9,9 @@ import path from "node:path";
 import process from "node:process";
 import { execSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { logger, getPlatform, execCommand, fileExists } from "../lib/utils.mjs";
-import { env } from "../lib/env.mjs";
-import { settings } from "../lib/settings.mjs";
+import { logger, getPlatform, execCommand, fileExists } from "../../lib/utils.mjs";
+import { env } from "../../lib/env.mjs";
+import { settings } from "../../lib/settings.mjs";
 
 // 1. 인자 파싱 ------------------------------------------------------------------------------
 const __filename = fileURLToPath(import.meta.url);
@@ -47,6 +47,8 @@ const REMOTE_EXTRACT_STRIP_COMPONENTS = Number.isFinite(Number(gcloudClientTooli
 const GCLOUD_SERVER_CLEANUP_PATHS = Array.isArray(gcloudServerTooling.cleanupPaths)
   ? gcloudServerTooling.cleanupPaths
   : [];
+const PROJECT_BUILD_SCRIPT_PATH = path.join(__dirname, `..`, `project`, `swc.mjs`);
+const GIT_ACTION_SCRIPT_PATH = path.join(__dirname, `..`, `git`, `action.mjs`);
 
 // 3. SSH 명령 실행 --------------------------------------------------------------------------
 const runSshCommand = (pf = ``, commands = ``) => {
@@ -73,7 +75,7 @@ const runSshCommand = (pf = ``, commands = ``) => {
 
 // 4-1. client 배포 (빌드) -----------------------------------------------------------------------
 const buildProject = () => {
-  execCommand(`${args1} run build`, `프로젝트 빌드`);
+  execCommand(`node "${PROJECT_BUILD_SCRIPT_PATH}" --${args1} --build --client`, `프로젝트 빌드`);
 };
 
 // 4-2. client 배포 (압축 및 업로드) -----------------------------------------------------------
@@ -136,13 +138,11 @@ const runClientRemoteScript = (pf = ``) => {
 
 // 5-1. server 배포 (git push) ---------------------------------------------------------------
 const runGitPush = () => {
-  const gitScript = path.join(__dirname, `git.mjs`);
-
-  !fileExists(gitScript) && (() => {
-    throw new Error(`git.mjs 스크립트가 존재하지 않습니다: ${gitScript}`);
+  !fileExists(GIT_ACTION_SCRIPT_PATH) && (() => {
+    throw new Error(`git action 스크립트가 존재하지 않습니다: ${GIT_ACTION_SCRIPT_PATH}`);
   })();
 
-  execCommand(`${args1} ${gitScript} --${args1} --push --n`, `git push 명령어 실행`);
+  execCommand(`node "${GIT_ACTION_SCRIPT_PATH}" --${args1} --push --n`, `git push 명령어 실행`);
 };
 
 // 5-2. server 배포 (원격 서버 스크립트 실행) -------------------------------------------------

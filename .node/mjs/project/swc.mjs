@@ -10,7 +10,7 @@ import path from "node:path";
 import process from "node:process";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { logger, runCmd, validateDir, delDir, getProjectType, getPmArgs } from "../lib/utils.mjs";
+import { logger, runCmd, validateDir, delDir, getProjectType, getPmArgs } from "../../lib/utils.mjs";
 
 // 1. 인자 파싱 ------------------------------------------------------------------------------
 const __filename = fileURLToPath(import.meta.url);

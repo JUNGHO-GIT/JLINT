@@ -11,7 +11,7 @@ import process from "node:process";
 import { Project } from "ts-morph";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
-import { logger, spawnWrapper } from "../lib/utils.mjs";
+import { logger, spawnWrapper } from "../../lib/utils.mjs";
 
 // 1. 인자 파싱 ------------------------------------------------------------------------------
 const __filename = fileURLToPath(import.meta.url);

@@ -10,7 +10,7 @@ import os from "node:os";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
-import { logger } from "../lib/utils.mjs";
+import { logger } from "../../lib/utils.mjs";
 
 // 1. 인자 파싱 ------------------------------------------------------------------------------
 const __filename = fileURLToPath(import.meta.url);

@@ -9,9 +9,9 @@ import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
-import { env } from "../lib/env.mjs";
-import { settings } from "../lib/settings.mjs";
-import { createDir, logger } from "../lib/utils.mjs";
+import { env } from "../../lib/env.mjs";
+import { settings } from "../../lib/settings.mjs";
+import { createDir, logger } from "../../lib/utils.mjs";
 
 // 1. 인자 파싱 ------------------------------------------------------------------------------
 const __filename = fileURLToPath(import.meta.url);

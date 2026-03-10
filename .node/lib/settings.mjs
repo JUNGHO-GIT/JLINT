@@ -44,18 +44,83 @@ const cdn = {
     {
       "sourcePath": `src/public/node/mjs`,
       "targetPath": `.node/mjs`,
+      "files": [`shared.mjs`],
+    },
+    {
+      "sourcePath": `src/public/node/mjs/etc`,
+      "targetPath": `.node/mjs/etc`,
+      "files": [
+        `gcloud.mjs`,
+        `vsce.mjs`,
+      ],
+    },
+    {
+      "sourcePath": `src/public/node/mjs/project`,
+      "targetPath": `.node/mjs/project`,
       "files": [
         `sync.mjs`,
         `swc.mjs`,
-        `git.mjs`,
-        `fix.mjs`,
-        `reset.mjs`,
-        `gcloud.mjs`,
-        `vsce.mjs`,
-        `sort.mjs`,
-        `remove.mjs`,
+      ],
+    },
+    {
+      "sourcePath": `src/public/node/mjs/fs`,
+      "targetPath": `.node/mjs/fs`,
+      "files": [
         `ai-config.mjs`,
         `vscode-config.mjs`,
+      ],
+    },
+    {
+      "sourcePath": `src/public/node/mjs/git`,
+      "targetPath": `.node/mjs/git`,
+      "files": [
+        `action.mjs`,
+        `fetch.mjs`,
+        `push.mjs`,
+      ],
+    },
+    {
+      "sourcePath": `src/public/node/mjs/ps`,
+      "targetPath": `.node/mjs/ps`,
+      "files": [
+        `run-backup-env.mjs`,
+        `run-backup-vsix.mjs`,
+        `run-config-project.mjs`,
+        `run-fix-pwsh.mjs`,
+        `run-http-loop.mjs`,
+        `run-kill-debloat.mjs`,
+        `run-kill-java.mjs`,
+        `run-kill-node.mjs`,
+        `run-kill-onedrive.mjs`,
+        `run-kill-port.mjs`,
+        `run-kill-service.mjs`,
+        `run-make-simlink.mjs`,
+        `run-paste-files.mjs`,
+        `run-remove-files.mjs`,
+        `run-selected.mjs`,
+        `run-sql-result.mjs`,
+        `run-update-npm.mjs`,
+      ],
+    },
+    {
+      "sourcePath": `src/public/node/mjs/ps/lib`,
+      "targetPath": `.node/mjs/ps/lib`,
+      "files": [
+        `classes.mjs`,
+        `env.mjs`,
+        `script-runtime.mjs`,
+      ],
+    },
+    {
+      "sourcePath": `src/public/node/mjs/utils`,
+      "targetPath": `.node/mjs/utils`,
+      "files": [
+        `fix.mjs`,
+        `remove.mjs`,
+        `reset.mjs`,
+        `sort.mjs`,
+        `selected.mjs`,
+        `sql-result.mjs`,
       ],
     },
 
@@ -68,12 +133,18 @@ const cdn = {
 
     // 1-3. config
     {
-      "sourcePath": `src/public/config`,
+      "sourcePath": `src/public/git`,
       "targetPath": ``,
       "files": [
         `.gitattributes`,
         `.gitignore.public`,
         `.gitignore.private`,
+      ],
+    },
+    {
+      "sourcePath": `src/public/config`,
+      "targetPath": ``,
+      "files": [
         `.server.swcrc`,
         `eslint.config.mjs`,
         `.editorconfig`,
@@ -125,7 +196,7 @@ const ai = {
       ],
     },
     "codex": {
-      "folders": [`agents`],
+      "folders": [ `agents`, `skills` ],
       "files": [
         `AGENTS.md`,
         `config.toml`,
@@ -135,6 +206,15 @@ const ai = {
         `agents/monitor.toml`,
         `agents/reviewer.toml`,
         `agents/worker.toml`,
+        `skills/.system/skill-installer/SKILL.md`,
+        `skills/.system/skill-creator/SKILL.md`,
+        `skills/.system/spreadsheets/SKILL.md`,
+        `skills/.system/slides/SKILL.md`,
+        `skills/gh-fix-ci/SKILL.md`,
+        `skills/security-threat-model/SKILL.md`,
+        `skills/security-best-practices/SKILL.md`,
+        `skills/sentry/SKILL.md`,
+        `skills/yeet/SKILL.md`,
       ],
     },
     "copilot": {
@@ -157,23 +237,12 @@ const ai = {
 // 4. package.json 기본값 ---------------------------------------------------------------------
 const packageJson = {
   "scripts": {
-    "sync": "bun .node/mjs/sync.mjs --bun --sync --server",
-    "start": "bun .node/mjs/swc.mjs --bun --start --server",
-    "build": "bun .node/mjs/swc.mjs --bun --build --server",
-    "fix": "bun .node/mjs/fix.mjs --bun --fix",
-    "sort": "bun .node/mjs/sort.mjs --bun --sort",
-    "selected": "node .node/mjs/selected.mjs --bun --selected",
-    "reset": "bun .node/mjs/reset.mjs --bun --reset",
-    "remove": "bun .node/mjs/remove.mjs --bun --remove",
-    "vsce": "bun .node/mjs/vsce.mjs --bun --package",
-    "gcloud": "bun .node/mjs/gcloud.mjs --bun --server",
-    "git-fetch": "bun .node/mjs/git.mjs --bun --fetch",
-    "git-push-msg-y": "bun .node/mjs/git.mjs --bun --push --y",
-    "git-push-msg-n": "bun .node/mjs/git.mjs --bun --push --n",
-    "fs:ai-to-local": "bun .node/mjs/ai-config.mjs to-local",
-    "fs:ai-to-jnode": "bun .node/mjs/ai-config.mjs to-jnode",
-    "fs:vscode-to-local": "bun .node/mjs/vscode-config.mjs to-local",
-    "fs:vscode-to-jnode": "bun .node/mjs/vscode-config.mjs to-jnode"
+    "etc": `bun run .node/mjs/shared.mjs --etc`,
+    "project": `bun run .node/mjs/shared.mjs --project`,
+    "fs": `bun run .node/mjs/shared.mjs --fs`,
+    "git": `bun run .node/mjs/shared.mjs --git`,
+    "ps": `bun run .node/mjs/shared.mjs --ps`,
+    "utils": `bun run .node/mjs/shared.mjs --utils`
   },
 };
 

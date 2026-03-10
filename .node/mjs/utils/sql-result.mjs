@@ -8,8 +8,8 @@
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { createConnection } from "mysql2/promise";
-import { envKorpay } from "../../../private/node/lib/env.2.mjs";
-import { logger } from "../lib/utils.mjs";
+import { envKorpay } from "../../../../private/node/lib/env.2.mjs";
+import { logger } from "../../lib/utils.mjs";
 
 // 0. 상수 -----------------------------------------------------------------------------------------------
 const mysql2Tooling = envKorpay?.mysql2 || {};
