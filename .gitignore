@@ -1,6 +1,6 @@
-# .gitignore-private
+# .gitignore-public
 
-# Directories --------------------------------------------------------------------------------=
+# Directories ---------------------------------------------------------------------------------
 
 # 1. Build outputs
 **/build/
@@ -18,6 +18,7 @@
 **/temp/
 **/.temp/
 **/tmp/
+**/.tmp/
 **/bundle/
 **/.bundle/
 **/gen/
@@ -31,11 +32,11 @@
 **/.vendor/
 
 # 3. Framework / tool caches
-# **/.next/
-# **/.nuxt/
-# **/.svelte-kit/
-# **/.turbo/
-# **/.vite/
+**/.next/
+**/.nuxt/
+**/.svelte-kit/
+**/.turbo/
+**/.vite/
 **/.parcel-cache/
 **/.nyc_output/
 **/.cache/
@@ -51,27 +52,25 @@
 **/.direnv/
 
 # 5. Project-private areas
-# **/admin/
-# **/private/
-# **/auth/
-# **/secrets/
-# **/.secret/
-# **/.secrets/
+**/admin/
+**/private/
+**/auth/
+**/secrets/
+**/.secret/
+**/.secrets/
 
 # 6. IDE / editor
-# **/.vscode/
-# **/.idea/
+**/.vscode/
+**/.idea/
 **/.history/
 **/.backup/
 **/.bookmark/
-**/.tmp/
-**/.etc/
 **/.grunt/
 **/.gulp/
 
 # 7. Java / runtime artifacts
-# **/META-INF/
-# **/.META-INF/
+**/META-INF/
+**/.META-INF/
 **/hs_err_pid*/
 **/replay_pid*/
 
@@ -83,16 +82,16 @@
 **/.cypress/
 **/storybook-static/
 
-# Files --------------------------------------------------------------------------------------=
+# Files ---------------------------------------------------------------------------------------
 
 # 1. OS / editor noise
-**/*.swp
-**/*.swo
-**/*.swn
 **/.DS_Store
 **/Thumbs.db
 **/Desktop.ini
 **/ehthumbs.db
+**/*.swp
+**/*.swo
+**/*.swn
 
 # 2. Logs
 **/*.log
@@ -103,38 +102,40 @@
 **/lerna-debug.log*
 
 # 3. Secrets / env / credentials
-# **/.env*
-# **/.envrc
-# **/.npmrc
-# **/.yarnrc
-# **/.pnpmrc
-# **/*.properties
-# **/*.properties.*
-# **/*.props
-# **/*.props.*
-# **/app.json
-# **/app.json.*
-# **/*.keystore
-# **/*.keystore.*
-# **/*.jks
-# **/*.jks.*
-# **/*.p12
-# **/*.p12.*
-# **/*.pfx
-# **/*.pem
-# **/*.pem.*
-# **/*.key
-# **/*.key.*
-# **/*.crt
-# **/*.cer
-# **/*.der
-# **/*.csr
+# 3-1. env files
+**/.env*
+**/.envrc
+
+# 3-2. common rc files that often contain tokens
+**/.npmrc
+**/.yarnrc
+**/.pnpmrc
+
+# 3-3. properties/props (keep templates)
+**/*.properties
+**/*.properties.*
+**/*.props
+**/*.props.*
+
+# 3-4. json config
+**/app.json
+**/app.json.*
+
+# 3-5. keys / certs
+**/*.keystore
+**/*.jks
+**/*.p12
+**/*.pfx
+**/*.pem
+**/*.key
+**/*.crt
+**/*.cer
+**/*.der
+**/*.csr
 
 # 4. Java/IDE project files
 **/.classpath
-**/.classpath.*
 **/.project
-**/.project.*
 **/.settings/
 **/*.iml
 **/*.ipr
@@ -143,15 +144,10 @@
 
 # 5. Temporary / patch files
 **/*.tmp
-**/*.tmp.*
 **/*.bak
-**/*.bak.*
 **/*.backup
-**/*.backup.*
 **/*.orig
-**/*.orig.*
 **/*.rej
-**/*.rej.*
 **/*.pid
 **/*.pid.*
 **/*.seed
@@ -159,17 +155,11 @@
 
 # 6. Lock files (common)
 **/package-lock.json
-**/package-lock.json.*
 **/npm-shrinkwrap.json
-**/npm-shrinkwrap.json.*
 **/yarn.lock
-**/yarn.lock.*
 **/pnpm-lock.yaml
-**/pnpm-lock.yaml.*
 **/bun.lockb
-**/bun.lockb.*
 **/bun.lock
-**/bun.lock.*
 
 # 7. Node/TS build metadata
 **/*.tsbuildinfo
@@ -177,8 +167,8 @@
 **/.stylelintcache
 
 # 8. Process managers / local runtime
-# **/ecosystem.config.js
-# **/ecosystem.config.*
+**/ecosystem.config.js
+**/ecosystem.config.*
 
 # 9. Legacy renamed env modules
 **/.node/env.mjs
