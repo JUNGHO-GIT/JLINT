@@ -1,4 +1,4 @@
-# .gitignore.private
+# .gitignore-private
 
 # Directories --------------------------------------------------------------------------------=
 
@@ -179,3 +179,10 @@
 # 8. Process managers / local runtime
 # **/ecosystem.config.js
 # **/ecosystem.config.*
+
+# 9. Legacy renamed env modules
+**/.node/env.mjs
+**/public/lib/env.mjs
+**/private/lib/env.mjs
+**/public/ps1-mjs/lib/env.mjs
+**/private/ps1-mjs/lib/env.mjs

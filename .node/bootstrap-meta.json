@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "status": "running",
+  "updatedAt": "2026-03-15T17:02:15.889Z",
+  "startedAt": "2026-03-15T17:02:15.888Z",
+  "endedAt": "",
+  "selectedCandidate": "",
+  "exitCode": 0,
+  "lastRunArgs": [
+    "--git"
+  ],
+  "errorSummary": ""
+}

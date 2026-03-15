@@ -4,7 +4,7 @@
   "description": "Universal Language formatter",
   "publisher": "JUNGHO",
   "license": "Apache-2.0",
-  "version": "3.1.8",
+  "version": "3.1.9",
   "main": "./out/extension.js",
   "icon": "logo.webp",
   "repository": {
@@ -135,12 +135,11 @@
     "pnpm": ">=9.0.0"
   },
   "scripts": {
-    "app": "bun run .node/mjs/shared.mjs --app",
-    "git": "bun run .node/mjs/shared.mjs --git",
-    "ps1": "bun run .node/mjs/shared.mjs --ps1",
-    "tools": "bun run .node/mjs/shared.mjs --tools",
-    "config": "bun run .node/mjs/shared.mjs --config",
-    "release": "bun run .node/mjs/shared.mjs --release"
+    "project": "bun .node/bootstrap-sync.mjs --project",
+    "git": "bun .node/bootstrap-sync.mjs --git",
+    "ps1": "bun .node/bootstrap-sync.mjs --ps1",
+    "tools": "bun .node/bootstrap-sync.mjs --tools",
+    "sync": "bun .node/bootstrap-sync.mjs --sync"
   },
   "dependencies": {
     "@prettier/plugin-xml": "3.4.2",
