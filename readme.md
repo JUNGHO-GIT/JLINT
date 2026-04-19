@@ -1,59 +1,18 @@
 # Jlint
 
-A lightweight VS Code extension for code formatting and linting.  
-Format code and detect errors with visual separation of code blocks.
+## Overview
 
-## Key Features
+Jlint is a VS Code extension that formats multiple document types through shared
+rules and language-specific formatters.
 
-| Feature | Description |
-| :--- | :--- |
-| **Multi-Language** | JavaScript, TypeScript, JSX, TSX, Java, JSP, HTML, CSS, JSON, XML |
-| **Easy to Use** | Just `Alt+Shift+F` to format or lint |
-| **Fast & Efficient** | Built with Babel and Prettier for high performance |
-| **Visual Separation** | Comment lines to separate code blocks visually |
-| **Error Modal** | Display error messages in a clear modal popup |
+## Structure
 
-## Shortcuts
+* `src/cores/` coordinates formatter selection and execution flow
+* `src/langs/` contains language-specific formatting logic
+* `src/rules/` contains shared cleanup and normalization rules
+* `src/assets/` and `src/exports/` provide shared helpers and barrel exports
 
-| Command | Windows | Mac |
-| :--- | :--- | :--- |
-| Format / Lint | `Alt+Shift+F` | `Option+Shift+F` |
+## Notes
 
-## Settings
-
-| Setting | Default | Description |
-| :--- | :--- | :--- |
-| `ActiveLint` | `true` | Enable or disable linting |
-| `RemoveComments` | `false` | Remove comments from code |
-| `InsertLine` | `true` | Insert comment vertical line to separate blocks |
-
-## Preview
-
-### Before
-
-<img
-	src="https://storage.googleapis.com/jungho-bucket/JLINT/IMAGE/main/main3.webp"
-	width="450"
-/>
-
-### After
-
-<img
-	src="https://storage.googleapis.com/jungho-bucket/JLINT/IMAGE/main/main4.webp"
-	width="450"
-/>
-
-### Error Modal
-
-<img
-	src="https://storage.googleapis.com/jungho-bucket/JLINT/IMAGE/main/main5.webp"
-	width="450"
-/>
-
-## Architecture
-
-[Architecture Document](./architecture.md)
-
-## License
-
-[Apache License 2.0](./license.md)
+* The extension focuses on editor commands rather than a standalone formatter CLI.
+* Shared rules are kept separate from language modules to limit coupling.
