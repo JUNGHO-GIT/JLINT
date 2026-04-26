@@ -1,9 +1,9 @@
-# JLINT Architecture
+# jlint Architecture
 
 ## Structure Map
 
 ```text
-JLINT
+jlint
 |-- src/
 |   |-- cores/       -> formatter routing and orchestration
 |   |-- langs/       -> language-specific formatters

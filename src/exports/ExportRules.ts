@@ -5,25 +5,24 @@
  * @since 2026-1-4
  */
 
-// -------------------------------------------------------------------------------
+// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
 export {
-  capitalize,
-  singleTags,
-  semicolon,
-  space,
-  lineBreak,
-} from "@rules/Syntax";
-
-// -------------------------------------------------------------------------------
-export {
-  ifElse,
-  tryCatch,
-} from "@rules/Logic";
-
-// -------------------------------------------------------------------------------
-export {
-  globalRules,
-  ternaryRules,
-  iifeRules,
-  langSpecificRules,
+	globalRules,
+	iifeRules,
+	langSpecificRules,
+	ternaryRules,
 } from "@rules/FinalCheck";
+
+// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
+export {
+	ifElse,
+	tryCatch,
+} from "@rules/Logic";
+// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
+export {
+	capitalize,
+	lineBreak,
+	semicolon,
+	singleTags,
+	space,
+} from "@rules/Syntax";

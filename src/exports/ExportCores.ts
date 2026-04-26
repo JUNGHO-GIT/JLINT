@@ -5,21 +5,15 @@
  * @since 2026-1-4
  */
 
-// -------------------------------------------------------------------------------
+// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
+export { getContents } from "@cores/Contents";
+// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
 export {
-  main,
-} from "@cores/Main";
-
-// -------------------------------------------------------------------------------
-export {
-  getContents,
-} from "@cores/Contents";
-
-// -------------------------------------------------------------------------------
-export {
-  getLanguage,
-  getSyntax,
-  getLogic,
-  getFinalCheck,
-  getRemoveComments,
+	getFinalCheck,
+	getLanguage,
+	getLogic,
+	getRemoveComments,
+	getSyntax,
 } from "@cores/Controller";
+// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
+export { main } from "@cores/Main";

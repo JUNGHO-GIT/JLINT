@@ -4,12 +4,12 @@
   "description": "Universal Language formatter",
   "publisher": "JUNGHO",
   "license": "Apache-2.0",
-  "version": "3.1.8",
+  "version": "3.1.9",
   "main": "./out/extension.js",
   "icon": "logo.webp",
   "repository": {
     "type": "git",
-    "url": "https://github.com/JUNGHO-GIT/JLINT.git"
+    "url": "https://github.com/jungho-dev/jlint.git"
   },
   "categories": [
     "Formatters",
@@ -129,7 +129,7 @@
     }
   },
   "engines": {
-    "vscode": ">=1.109.0",
+    "vscode": "1.116.0",
     "node": ">=21.0.0",
     "npm": ">=10.0.0",
     "pnpm": ">=9.0.0"
@@ -149,39 +149,25 @@
     "sql-formatter": "15.7.3",
     "strip-comments": "2.0.1",
     "strip-json-comments": "5.0.3",
-    "terser": "5.46.1"
+    "terser": "5.46.2"
   },
   "devDependencies": {
-    "@eslint/js": "10.0.1",
-    "@stylistic/eslint-plugin": "5.10.0",
+    "@biomejs/biome": "2.4.13",
     "@swc/cli": "0.8.1",
-    "@swc/core": "1.15.26",
+    "@swc/core": "1.15.30",
     "@swc/helpers": "0.5.21",
     "@types/clean-css": "4.2.11",
-    "@types/eslint": "9.6.1",
-    "@types/eslint-plugin-jsx-a11y": "6.10.1",
-    "@types/eslint__js": "9.14.0",
     "@types/html-minifier-terser": "7.0.2",
     "@types/node": "25.6.0",
     "@types/strip-comments": "2.0.4",
     "@types/vscode": "1.116.0",
-    "@typescript-eslint/eslint-plugin": "8.58.2",
-    "@typescript-eslint/parser": "8.58.2",
     "@vscode/vsce": "3.9.1",
     "esbuild": "0.28.0",
-    "eslint": "10.2.1",
-    "eslint-define-config": "2.1.0",
-    "eslint-plugin-html": "8.1.4",
-    "eslint-plugin-jsx-a11y": "6.10.2",
-    "eslint-plugin-react": "7.37.5",
-    "eslint-plugin-react-hooks": "7.1.1",
-    "eslint-plugin-unicorn": "64.0.0",
     "globals": "17.5.0",
     "ts-morph": "28.0.0",
     "ts-prune": "0.10.3",
     "tsc-alias": "1.8.16",
     "tsx": "4.21.0",
-    "typescript": "6.0.3",
-    "typescript-eslint": "8.58.2"
+    "typescript": "6.0.3"
   }
 }

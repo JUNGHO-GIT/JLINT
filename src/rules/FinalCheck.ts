@@ -7,7 +7,7 @@
 
 import { logger } from "@exportScripts";
 
-// 0. langSpecificRules ---------------------------------------------------------------------------
+// 0. langSpecificRules ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 export const langSpecificRules = async (
   contentsParam: string,
   fileExt: string,
@@ -111,7 +111,7 @@ export const langSpecificRules = async (
   return result;
 };
 
-// 1. globalRules ----------------------------------------------------------------------------------
+// 1. globalRules ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
 export const globalRules = async (
   contentsParam: string,
   fileExt: string,
@@ -173,7 +173,7 @@ export const globalRules = async (
   return result;
 };
 
-// 2. ternaryRules ---------------------------------------------------------------------------------
+// 2. ternaryRules ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 export const ternaryRules = async (
   contentsParam: string,
   fileExt: string,
@@ -612,7 +612,7 @@ export const ternaryRules = async (
   return result;
 };
 
-// 3. iifeRules ------------------------------------------------------------------------------------
+// 3. iifeRules ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 export const iifeRules = async (
   contentsParam: string,
   fileExt: string,

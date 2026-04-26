@@ -7,7 +7,7 @@
 
 import { logger } from "@exportScripts";
 
-// 1. capitalize -----------------------------------------------------------------------------------
+// 1. capitalize ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
 export const capitalize = async (
   contentsParam: string,
   fileExt: string,
@@ -54,7 +54,7 @@ export const capitalize = async (
   }
 };
 
-// 2. singleTags -----------------------------------------------------------------------------------
+// 2. singleTags ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
 export const singleTags = async (
   contentsParam: string,
   fileExt: string,
@@ -84,7 +84,7 @@ export const singleTags = async (
   }
 };
 
-// 3. semicolon -----------------------------------------------------------------------------------
+// 3. semicolon ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
 export const semicolon = async (
   contentsParam: string,
   fileExt: string,
@@ -108,7 +108,7 @@ export const semicolon = async (
   }
 };
 
-// 4. space ---------------------------------------------------------------------------------------
+// 4. space ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 export const space = async (
   contentsParam: string,
   fileExt: string,
@@ -132,7 +132,7 @@ export const space = async (
   }
 };
 
-// 5. lineBreak ------------------------------------------------------------------------------------
+// 5. lineBreak ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 export const lineBreak = async (
   contentsParam: string,
   fileExt: string,

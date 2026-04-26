@@ -2,7 +2,7 @@
 
 * text eol=lf
 
-# Directories --------------------------------------------------------------------------------
+# Directories ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
 
 # 1. Build outputs
 **/build/** linguist-vendored linguist-generated
@@ -72,7 +72,7 @@
 **/hs_err_pid* linguist-vendored linguist-generated
 **/replay_pid* linguist-vendored linguist-generated
 
-# Files --------------------------------------------------------------------------------------
+# Files ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
 
 # 1. OS / editor noise
 **/*.swp linguist-vendored linguist-generated
@@ -160,7 +160,7 @@
 **/ecosystem.config.js linguist-vendored linguist-generated
 **/ecosystem.config.* linguist-vendored linguist-generated
 
-# Binary files (LFS) -------------------------------------------------------------------------
+# Binary files (LFS) ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
 
 *.zip filter=lfs diff=lfs merge=lfs -text
 *.tar.gz filter=lfs diff=lfs merge=lfs -text

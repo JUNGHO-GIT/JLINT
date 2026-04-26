@@ -8,7 +8,7 @@
 import { TextDecoder, vscode } from "@exportLibs";
 import { logger } from "@exportScripts";
 
-// -------------------------------------------------------------------------------------------------
+// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
 export const getContents = async (filePath: string, fileTabSize: number, fileEol: string, fileExt: string) => {
   const data = await vscode.workspace.fs.readFile(vscode.Uri.file(filePath));
   const decoder = new TextDecoder(`utf-8`);
