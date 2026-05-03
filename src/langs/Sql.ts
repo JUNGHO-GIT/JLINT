@@ -13,8 +13,8 @@ import type { CommonType } from "@exportTypes";
 // 0. removeComments ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
 export const removeComments = async (
 	contentsParam: string,
-	fileTabSize: number,
-	fileEol: string,
+	_fileTabSize: number,
+	_fileEol: string,
 	fileExt: string,
 ) => {
 	try {
@@ -24,7 +24,8 @@ export const removeComments = async (
 
 		logger(`debug`, `${fileExt}:removeComments - Y`);
 		return finalResult;
-	} catch (error: unknown) {
+	}
+  catch (error: unknown) {
 		logger(`error`, `${fileExt}:removeComments - ${(error as Error).message}`);
 		return contentsParam;
 	}
@@ -34,9 +35,9 @@ export const removeComments = async (
 export const prettierFormat = async (
 	commonParam: CommonType,
 	contentsParam: string,
-	fileName: string,
-	fileTabSize: number,
-	fileEol: string,
+	_fileName: string,
+	_fileTabSize: number,
+	_fileEol: string,
 	fileExt: string,
 ) => {
 	try {
@@ -58,19 +59,19 @@ export const prettierFormat = async (
 
 		// 3. options
 		const baseOptions: FormatOptionsWithLanguage = {
-			language: parser,
-			tabWidth: commonParam.indentSize,
-			useTabs: commonParam.useTabs,
-			keywordCase: `upper`,
 			dataTypeCase: `upper`,
+			denseOperators: false,
+			expressionWidth: 100,
 			functionCase: `upper`,
 			identifierCase: `upper`,
 			indentStyle: `standard`,
-			logicalOperatorNewline: `before`,
-			expressionWidth: 100,
+			keywordCase: `upper`,
+			language: parser,
 			linesBetweenQueries: 1,
-			denseOperators: false,
+			logicalOperatorNewline: `before`,
 			newlineBeforeSemicolon: false,
+			tabWidth: commonParam.indentSize,
+			useTabs: commonParam.useTabs,
 		};
 		const formatterAvailable =
 			sqlFormatter && typeof sqlFormatter.format === `function`;
@@ -94,7 +95,8 @@ export const prettierFormat = async (
 				})();
 		logger(`debug`, `${fileExt}:prettierFormat - end`);
 		return finalResult;
-	} catch (error: unknown) {
+	}
+  catch (error: unknown) {
 		const msg = (error as Error).message
 			.toString()
 			.trim()
@@ -116,7 +118,8 @@ export const insertLine = async (contentsParam: string, fileExt: string) => {
 
 		logger(`debug`, `${fileExt}:insertLine - Y`);
 		return finalResult;
-	} catch (error: unknown) {
+	}
+  catch (error: unknown) {
 		logger(`error`, `${fileExt}:insertLine - ${(error as Error).message}`);
 		return contentsParam;
 	}
@@ -129,7 +132,8 @@ export const insertSpace = async (contentsParam: string, fileExt: string) => {
 
 		logger(`debug`, `${fileExt}:insertSpace - Y`);
 		return finalResult;
-	} catch (error: unknown) {
+	}
+  catch (error: unknown) {
 		logger(`error`, `${fileExt}:insertSpace - ${(error as Error).message}`);
 		return contentsParam;
 	}

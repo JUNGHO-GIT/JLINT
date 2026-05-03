@@ -129,15 +129,16 @@
     }
   },
   "engines": {
-    "vscode": "1.116.0",
+    "vscode": ">=1.118.0",
     "node": ">=21.0.0",
     "npm": ">=10.0.0",
     "pnpm": ">=9.0.0"
   },
   "scripts": {
-    "git": "bun ~/.bootstrap/bootstrap-sync.mjs --git",
-    "sync": "bun ~/.bootstrap/bootstrap-sync.mjs --sync",
-    "tools": "bun ~/.bootstrap/bootstrap-sync.mjs --tools"
+    "git": "bun run ~/.bootstrap/bootstrap-sync.ts --git",
+    "swc": "bun run ~/.bootstrap/bootstrap-sync.ts --swc",
+    "sync": "bun run ~/.bootstrap/bootstrap-sync.ts --sync",
+    "tools": "bun run ~/.bootstrap/bootstrap-sync.ts --tools"
   },
   "dependencies": {
     "@prettier/plugin-xml": "3.4.2",
@@ -152,22 +153,20 @@
     "terser": "5.46.2"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.13",
     "@swc/cli": "0.8.1",
-    "@swc/core": "1.15.30",
+    "@swc/core": "1.15.33",
     "@swc/helpers": "0.5.21",
     "@types/clean-css": "4.2.11",
     "@types/html-minifier-terser": "7.0.2",
     "@types/node": "25.6.0",
     "@types/strip-comments": "2.0.4",
-    "@types/vscode": "1.116.0",
+    "@types/vscode": "1.118.0",
     "@vscode/vsce": "3.9.1",
     "esbuild": "0.28.0",
-    "globals": "17.5.0",
+    "globals": "17.6.0",
     "ts-morph": "28.0.0",
     "ts-prune": "0.10.3",
-    "tsc-alias": "1.8.16",
-    "tsx": "4.21.0",
+    "tsc-alias": "1.8.17",
     "typescript": "6.0.3"
   }
 }

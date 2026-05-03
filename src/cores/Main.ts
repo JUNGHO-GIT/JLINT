@@ -47,7 +47,7 @@ export const main = async (
 	finalContents = await getLanguage(
 		commonParam,
 		finalContents,
-		fileName,
+		filePath,
 		fileTabSize,
 		fileEol,
 		fileExt,

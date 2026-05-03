@@ -26,11 +26,11 @@ export const activate = (context: vscode.ExtensionContext) => {
 		const config = vscode.workspace.getConfiguration(`Jlint`);
 		return {
 			activateLint: config.get(`activateLint`, true) as boolean,
-			removeComments: config.get(`removeComments`, true) as boolean,
+			indentSize: 2 as number,
 			insertLine: config.get(`insertLine`, true) as boolean,
-			useTabs: false,
-			indentSize: 2,
 			quoteType: config.get(`quoteType`, `double`) as string,
+			removeComments: config.get(`removeComments`, true) as boolean,
+			useTabs: false,
 		};
 	};
 
@@ -63,8 +63,8 @@ export const activate = (context: vscode.ExtensionContext) => {
 			const jlintConfig = getConfiguration();
 			const commonConfig = {
 				...jlintConfig,
-				useTabs: !editorInsertSpaces,
 				indentSize: editorTabSize,
+				useTabs: !editorInsertSpaces,
 			};
 
 			const filePath = editor.document.uri.fsPath;
@@ -95,7 +95,6 @@ export const activate = (context: vscode.ExtensionContext) => {
 				await notify(`error`, `Jlint - No active editor found.`);
 				return;
 			}
-
 			if (editor.document.uri.scheme !== `file`) {
 				await notify(
 					`error`,
@@ -103,18 +102,16 @@ export const activate = (context: vscode.ExtensionContext) => {
 				);
 				return;
 			}
-
 			const editorConfig = vscode.workspace.getConfiguration(
 				`editor`,
 				editor.document.uri,
 			);
+      
 			const editorTabSize = editorConfig.get(`tabSize`, 2) as number;
-
 			const filePath = editor.document.uri.fsPath;
 			const fileName = path.basename(filePath);
 			const fileTabSize = editorTabSize;
-			const fileEol =
-				editor.document.eol === vscode.EndOfLine.LF ? `lf` : `crlf`;
+			const fileEol = editor.document.eol === vscode.EndOfLine.LF ? `lf` : `crlf`;
 			const fileExt = editor.document.languageId;
 			const initContents = editor.document.getText();
 			const finalContents = await getRemoveComments(

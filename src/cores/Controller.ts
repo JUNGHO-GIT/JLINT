@@ -83,7 +83,8 @@ export const getRemoveComments = async (
 				fileExt,
 			);
 		}
-	} catch (error: unknown) {
+		}
+		catch (error: unknown) {
 		logger(
 			`error`,
 			`${fileExt}:getRemoveComments - ${(error as Error).message}`,
@@ -97,7 +98,7 @@ export const getRemoveComments = async (
 export const getLanguage = async (
 	commonParam: CommonType,
 	initContents: string,
-	fileName: string,
+	formatTargetPath: string,
 	fileTabSize: number,
 	fileEol: string,
 	fileExt: string,
@@ -157,7 +158,7 @@ export const getLanguage = async (
 		(resultContents = await langRules.prettierFormat(
 			commonParam,
 			resultContents,
-			fileName,
+			formatTargetPath,
 			fileTabSize,
 			fileEol,
 			fileExt,

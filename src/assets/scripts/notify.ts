@@ -14,9 +14,9 @@ const AUTO_CLOSE_MS = 1000;
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
 const showProgress = async (text: string): Promise<void> => {
   await vscode.window.withProgress({
+    cancellable: false,
     location: vscode.ProgressLocation.Notification,
     title: text,
-    cancellable: false,
   },
   async (_) => {
     await new Promise((res) => {
@@ -31,23 +31,23 @@ export const notify = async (
   value: string,
 ): Promise<void> => {
   const config = {
-    title: {
-      str: `[${MAIN}]`,
-    },
     debug: {
       str: `[DEBUG]`,
     },
-    info: {
-      str: `[INFO]`,
+    error: {
+      str: `[ERROR]`,
     },
     hint: {
       str: `[HINT]`,
     },
+    info: {
+      str: `[INFO]`,
+    },
+    title: {
+      str: `[${MAIN}]`,
+    },
     warn: {
       str: `[WARN]`,
-    },
-    error: {
-      str: `[ERROR]`,
     },
   };
   const text = `${config.title.str} ${config[type].str} ${value}`;

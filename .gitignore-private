@@ -1,98 +1,99 @@
 # .gitignore-private
 
-# Directories ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--=
+# Directories ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
 # 1. Build outputs
 **/build/
-**/.build/
+**/*.build/
 **/dist/
-**/.dist/
+**/*.dist/
 **/out/
-**/.out/
+**/*.out/
 **/target/
-**/.target/
+**/*.target/
 **/coverage/
-**/.coverage/
+**/*.coverage/
 **/debug/
-**/.debug/
+**/*.debug/
 **/temp/
-**/.temp/
+**/*.temp/
 **/tmp/
+**/*.tmp/
 **/bundle/
-**/.bundle/
+**/*.bundle/
 **/gen/
-**/.gen/
+**/*.gen/
 **/bin/
-**/.bin/
+**/*.bin/
 
 # 2. Dependencies / package artifacts
 **/node_modules/
 **/vendor/
-**/.vendor/
+**/*.vendor/
 
 # 3. Framework / tool caches
-# **/.next/
-# **/.nuxt/
-# **/.svelte-kit/
-# **/.turbo/
-# **/.vite/
-**/.parcel-cache/
-**/.nyc_output/
-**/.cache/
-**/.pnpm-store/
-**/.yarn/
-**/.pnp/
-**/.gradle/
-**/.m2/
-**/.ivy2/
+**/*.next/
+**/*.nuxt/
+**/*.svelte-kit/
+**/*.turbo/
+**/*.vite/
+**/*.parcel-cache/
+**/*.nyc_output/
+**/*.cache/
+**/*.pnpm-store/
+**/*.yarn/
+**/*.pnp/
+**/*.gradle/
+**/*.m2/
+**/*.ivy2/
 
 # 4. VCS / misc
-**/.git/
-**/.direnv/
+**/*.git/
+**/*.direnv/
 
 # 5. Project-private areas
 # **/admin/
 # **/private/
 # **/auth/
 # **/secrets/
-# **/.secret/
-# **/.secrets/
+# **/*.secret/
+# **/*.secrets/
 
 # 6. IDE / editor
-# **/.vscode/
-# **/.idea/
-**/.history/
-**/.backup/
-**/.bookmark/
-**/.tmp/
-**/.etc/
-**/.grunt/
-**/.gulp/
+# **/*.vscode/
+# **/*.idea/
+**/*.history/
+**/*.backup/
+**/*.bookmark/
+**/*.tmp/
+**/*.etc/
+**/*.grunt/
+**/*.gulp/
 
 # 7. Java / runtime artifacts
 # **/META-INF/
-# **/.META-INF/
+# **/*.META-INF/
 **/hs_err_pid*/
 **/replay_pid*/
 
 # 8. Test / tooling artifacts
 **/reports/
 **/artifacts/
-**/.allure/
-**/.playwright/
-**/.cypress/
+**/*.allure/
+**/*.playwright/
+**/*.cypress/
 **/storybook-static/
 
-# Files ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--=
+# Files ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
 # 1. OS / editor noise
-**/*.swp
-**/*.swo
-**/*.swn
-**/.DS_Store
+**/*.DS_Store
 **/Thumbs.db
 **/Desktop.ini
 **/ehthumbs.db
+**/*.swp
+**/*.swo
+**/*.swn
 
 # 2. Logs
 **/*.log
@@ -103,43 +104,47 @@
 **/lerna-debug.log*
 
 # 3. Secrets / env / credentials
-# **/.env*
-# **/.envrc
-# **/.npmrc
-# **/.yarnrc
-# **/.pnpmrc
+# 3-1. env files
+# /.env
+# /.env.*
+# **/*.env*
+# **/*.envrc
+
+# 3-2. common rc files that often contain tokens
+# **/*.npmrc
+# **/*.yarnrc
+# **/*.pnpmrc
+
+# 3-3. properties/props (keep templates)
 # **/*.properties
 # **/*.properties.*
 # **/*.props
 # **/*.props.*
+
+# 3-4. json config
 # **/app.json
 # **/app.json.*
+
+# 3-5. keys / certs
 # **/*.keystore
-# **/*.keystore.*
 # **/*.jks
-# **/*.jks.*
 # **/*.p12
-# **/*.p12.*
 # **/*.pfx
 # **/*.pem
-# **/*.pem.*
 # **/*.key
-# **/*.key.*
 # **/*.crt
 # **/*.cer
 # **/*.der
 # **/*.csr
 
 # 4. Java/IDE project files
-**/.classpath
-**/.classpath.*
-**/.project
-**/.project.*
-**/.settings/
+**/*.classpath
+**/*.project
+**/*.settings/
 **/*.iml
 **/*.ipr
 **/*.iws
-**/.factorypath
+**/*.factorypath
 
 # 5. Temporary / patch files
 **/*.tmp
@@ -173,16 +178,13 @@
 
 # 7. Node/TS build metadata
 **/*.tsbuildinfo
-**/.eslintcache
-**/.stylelintcache
+**/*.eslintcache
+**/*.stylelintcache
+**/*.vsix
 
 # 8. Process managers / local runtime
 # **/ecosystem.config.js
 # **/ecosystem.config.*
 
-# 9. Legacy renamed env modules
-**/.node/env.mjs
-**/public/lib/env.mjs
-**/private/lib/env.mjs
-**/public/ps1-mjs/lib/env.mjs
-**/private/ps1-mjs/lib/env.mjs
+# 99. case of env
+# **/*[eE][nN][vV]*

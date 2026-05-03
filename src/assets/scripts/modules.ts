@@ -7,6 +7,7 @@
 
 import _fs from "node:fs";
 import _path from "node:path";
+import { pathToFileURL } from "node:url";
 import { logger } from "@exportScripts";
 
 // ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
@@ -42,7 +43,8 @@ const resolveModulePath = (specifier: string) => {
 					? packageJson.exports.default
 					: `index.js`;
 			return _path.join(basePath, mainFile);
-		} catch {
+		}
+		catch {
 			return _path.join(basePath, `index.js`);
 		}
 	}
@@ -71,7 +73,8 @@ const isEsmModule = (pkgPath: string): boolean => {
 			return hasImport && !hasRequire;
 		}
 		return false;
-	} catch {
+	}
+	catch {
 		return false;
 	}
 };
@@ -86,11 +89,12 @@ const dynamicImport = async (specifier: string) => {
 	if (useEsm) {
 		try {
 			const fileUrl = _path.isAbsolute(resolvedPath)
-				? `file:///${resolvedPath.replaceAll(`\\`, `/`)}`
+				? pathToFileURL(resolvedPath).href
 				: resolvedPath;
 			const moduleResult = await import(fileUrl);
 			return resolveModule(moduleResult);
-		} catch (error: unknown) {
+		}
+		catch (error: unknown) {
 			logger(
 				`error`,
 				`dynamicImport - ESM import failed for ${specifier}: ${(error as Error).message}`,
@@ -102,18 +106,21 @@ const dynamicImport = async (specifier: string) => {
 	try {
 		const requiredModule = require(resolvedPath);
 		return resolveModule(requiredModule);
-	} catch {
+	}
+	catch {
 		try {
 			const fileUrl = _path.isAbsolute(resolvedPath)
-				? `file:///${resolvedPath.replaceAll(`\\`, `/`)}`
+				? pathToFileURL(resolvedPath).href
 				: resolvedPath;
 			const moduleResult = await import(fileUrl);
 			return resolveModule(moduleResult);
-		} catch {
+		}
+		catch {
 			try {
 				const fallbackModule = require(specifier);
 				return resolveModule(fallbackModule);
-			} catch (error: unknown) {
+			}
+			catch (error: unknown) {
 				logger(
 					`error`,
 					`dynamicImport - all attempts failed for ${specifier}: ${(error as Error).message}`,

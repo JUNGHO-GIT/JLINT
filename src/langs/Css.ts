@@ -31,25 +31,22 @@ export const removeComments = async (
 					beforeBlockEnds: true,
 					betweenSelectors: true,
 				},
+				breakWith: fileEol,
+				indentBy: fileTabSize,
+				indentWith: `tab`,
+				semicolonAfterLastProperty: true,
 				spaces: {
 					aroundSelectorRelation: true,
 					beforeBlockBegins: true,
 					beforeValue: true,
 				},
-				breakWith: fileEol,
-				indentBy: fileTabSize,
-				indentWith: `tab`,
-				semicolonAfterLastProperty: true,
 				wrapAt: 120,
 			},
 			level: {
 				1: {
 					all: false,
-					specialComments: `none`,
-					selectorsSortingMethod: `standard`,
-					normalizeUrls: false,
-					roundingPrecision: false,
 					cleanupCharsets: true,
+					normalizeUrls: false,
 					optimizeBackground: true,
 					optimizeBorderRadius: true,
 					optimizeFilter: true,
@@ -57,46 +54,50 @@ export const removeComments = async (
 					optimizeFontWeight: true,
 					optimizeOutline: true,
 					removeEmpty: true,
-					removeWhitespace: true,
 					removeNegativePaddings: true,
 					removeQuotes: false,
+					removeWhitespace: true,
 					replaceMultipleZeros: false,
 					replaceTimeUnits: false,
 					replaceZeroUnits: false,
+					roundingPrecision: false,
+					selectorsSortingMethod: `standard`,
+					specialComments: `none`,
 					tidyAtRules: true,
 					tidyBlockScopes: true,
 					tidySelectors: true,
 				},
 				2: {
 					all: false,
-					mergeMedia: true,
 					mergeAdjacentRules: true,
 					mergeIntoShorthands: true,
+					mergeMedia: true,
 					mergeNonAdjacentRules: true,
+					overrideProperties: true,
+					reduceNonAdjacentRules: true,
 					removeDuplicateFontRules: true,
 					removeDuplicateMediaBlocks: true,
 					removeDuplicateRules: true,
-					removeUnusedAtRules: true,
-					reduceNonAdjacentRules: true,
 					removeEmpty: true,
-					overrideProperties: true,
+					removeUnusedAtRules: true,
 				},
 			},
 		}).minify(contentsParam).styles;
 
 		const baseOptions: StripOptions = {
-			language: `css`,
-			preserveNewlines: false,
-			keepProtected: false,
 			block: true,
+			keepProtected: false,
+			language: `css`,
 			line: true,
+			preserveNewlines: false,
 		};
 
 		const finalResult = strip(minifyResult, baseOptions);
 
 		logger(`debug`, `${fileExt}:removeComments - Y`);
 		return finalResult;
-	} catch (error: unknown) {
+	}
+  catch (error: unknown) {
 		logger(`error`, `${fileExt}:removeComments - ${(error as Error).message}`);
 		return contentsParam;
 	}
@@ -107,7 +108,7 @@ export const prettierFormat = async (
 	commonParam: CommonType,
 	contentsParam: string,
 	fileName: string,
-	fileTabSize: number,
+	_fileTabSize: number,
 	fileEol: string,
 	fileExt: string,
 ) => {
@@ -128,53 +129,55 @@ export const prettierFormat = async (
 
 		// 3. options
 		const baseOptions: PrettierOptions = {
-			parser: parser,
-			singleQuote: commonParam.quoteType === `single`,
-			printWidth: 1000,
-			tabWidth: commonParam.indentSize,
-			useTabs: commonParam.useTabs,
-			quoteProps: `as-needed`,
-			jsxSingleQuote: commonParam.quoteType === `single`,
-			trailingComma: `all`,
-			bracketSpacing: false,
-			jsxBracketSameLine: false,
-			arrowParens: `always`,
-			rangeStart: 0,
-			rangeEnd: Number.POSITIVE_INFINITY,
-			requirePragma: false,
-			insertPragma: false,
-			proseWrap: `preserve`,
-			htmlWhitespaceSensitivity: `ignore`,
-			vueIndentScriptAndStyle: true,
-			endOfLine: fileEol === `lf` ? `lf` : `crlf`,
-			embeddedLanguageFormatting: `auto`,
-			singleAttributePerLine: false,
-			bracketSameLine: false,
-			semi: true,
-			filepath: fileName,
 			__embeddedInHtml: true,
+			arrowParens: `always`,
+			bracketSameLine: false,
+			bracketSpacing: true,
+			checkIgnorePragma: false,
+			embeddedLanguageFormatting: `auto`,
+			endOfLine: fileEol === `lf` ? `lf` : `crlf`,
+			filepath: fileName,
+			htmlWhitespaceSensitivity: `ignore`,
+			insertPragma: false,
+			jsxBracketSameLine: false,
+			jsxSingleQuote: commonParam.quoteType === `single`,
+			objectWrap: `preserve`,
+			parser: parser,
+			printWidth: 1000,
+			proseWrap: `preserve`,
+			quoteProps: `as-needed`,
+			rangeEnd: Number.POSITIVE_INFINITY,
+			rangeStart: 0,
+			requirePragma: false,
+			semi: true,
+			singleAttributePerLine: false,
+			singleQuote: commonParam.quoteType === `single`,
+			tabWidth: commonParam.indentSize,
+			trailingComma: `all`,
+			useTabs: commonParam.useTabs,
+			vueIndentScriptAndStyle: true,
+      experimentalOperatorPosition: "end",
+      experimentalTernaries: true,
 		};
-		const formatterAvailable =
-			prettier && typeof prettier.format === `function`;
+		const formatterAvailable = prettier && typeof prettier.format === `function`;
 		logger(
 			formatterAvailable ? `debug` : `warn`,
 			`${fileExt}:prettierFormat - ${formatterAvailable ? `formatter:ready` : `formatter:missing`}`,
 		);
-		const finalResult = formatterAvailable
-			? await (async () => {
-					logger(`debug`, `${fileExt}:prettierFormat - format:start`);
-					const formatted = await prettier.format(contentsParam, baseOptions);
-					logger(`debug`, `${fileExt}:prettierFormat - format:success`);
-					return formatted;
-				})()
-			: (() => {
-					logger(`warn`, `${fileExt}:prettierFormat - format:skipped`);
-					return contentsParam;
-				})();
+		const finalResult = formatterAvailable ? await (async () => {
+      logger(`debug`, `${fileExt}:prettierFormat - format:start`);
+      const formatted = await prettier.format(contentsParam, baseOptions);
+      logger(`debug`, `${fileExt}:prettierFormat - format:success`);
+      return formatted;
+    })() : (() => {
+      logger(`warn`, `${fileExt}:prettierFormat - format:skipped`);
+      return contentsParam;
+    })();
 		logger(`debug`, `${fileExt}:prettierFormat - end`);
 		return finalResult;
-	} catch (error: unknown) {
-		const msg = error.message
+	}
+  catch (error: unknown) {
+		const msg = (error instanceof Error ? error.message : String(error))
 			.toString()
 			.trim()
 			.replaceAll(/\u001B\[[\d;]*[FGKm]/g, ``);
@@ -195,7 +198,8 @@ export const insertLine = async (contentsParam: string, fileExt: string) => {
 
 		logger(`debug`, `${fileExt}:insertLine - Y`);
 		return finalResult;
-	} catch (error: unknown) {
+	}
+  catch (error: unknown) {
 		logger(`error`, `${fileExt}:insertLine - ${(error as Error).message}`);
 		return contentsParam;
 	}
@@ -208,7 +212,8 @@ export const insertSpace = async (contentsParam: string, fileExt: string) => {
 
 		logger(`debug`, `${fileExt}:insertSpace - Y`);
 		return finalResult;
-	} catch (error: unknown) {
+	}
+  catch (error: unknown) {
 		logger(`error`, `${fileExt}:insertSpace - ${(error as Error).message}`);
 		return contentsParam;
 	}
