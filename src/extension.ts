@@ -1,6 +1,6 @@
 /**
  * @file extension.ts
- * @description foo
+ * @description VS Code 확장 진입점
  * @author Jungho
  * @since 2026-1-4
  */
@@ -8,27 +8,28 @@
 import { getRemoveComments, main } from "@exportCores";
 import { path, setExtensionPath, vscode } from "@exportLibs";
 import { initLogger, logger, notify } from "@exportScripts";
+import type { CommonType } from "@exportTypes";
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
-export const deactivate = () => {
+export const deactivate = (): void => {
 	logger(`info`, `Jlint is now deactivated`);
 };
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
-export const activate = (context: vscode.ExtensionContext) => {
+export const activate = (context: vscode.ExtensionContext): void => {
 	// 0. Initialize Logger
 	initLogger();
 	setExtensionPath(context.extensionPath);
 	logger(`info`, `Jlint is now active!`);
 
 	// 1. Get Configuration
-	const getConfiguration = () => {
+	const getConfiguration = (): CommonType => {
 		const config = vscode.workspace.getConfiguration(`Jlint`);
 		return {
 			activateLint: config.get(`activateLint`, true) as boolean,
 			indentSize: 2 as number,
-			insertLine: config.get(`insertLine`, true) as boolean,
-			quoteType: config.get(`quoteType`, `double`) as string,
+			insertLine: config.get(`insertLine`, false) as boolean,
+			quoteType: config.get<CommonType[`quoteType`]>(`quoteType`, `double`),
 			removeComments: config.get(`removeComments`, true) as boolean,
 			useTabs: false,
 		};
@@ -106,7 +107,7 @@ export const activate = (context: vscode.ExtensionContext) => {
 				`editor`,
 				editor.document.uri,
 			);
-      
+
 			const editorTabSize = editorConfig.get(`tabSize`, 2) as number;
 			const filePath = editor.document.uri.fsPath;
 			const fileName = path.basename(filePath);

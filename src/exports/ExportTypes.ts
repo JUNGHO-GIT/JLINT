@@ -1,9 +1,17 @@
 /**
  * @file ExportTypes.ts
- * @description foo
+ * @description 공통 타입 배럴
  * @author Jungho
  * @since 2026-1-4
  */
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
-export type { CommonType } from "@type/common";
+export type {
+  CommonType,
+  LanguageName,
+  LanguageRules,
+  PrettierFormatRule,
+  QuoteType,
+  RemoveCommentsRule,
+  TextTransformRule,
+} from "@type/common";

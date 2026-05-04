@@ -119,8 +119,9 @@ export const globalRules = async (
   let result = contentsParam;
 
   try {
+    const hasGlobalTarget = /[=&|?-]/.test(result);
     const rules1 = (
-      /(\s*)(.+\S)(\s*)\n(\s*)(=)(\s*)(.+\S)/gm
+      /^([^\S\n\r]*)(.*\S)[^\S\n\r]*\n[^\S\n\r]*(=)\s*(.+\S)$/gm
     );
     const rules2 = (
       /(&{2}|\|{2}|\?\?|=(?![=>]))[\t ]*\n\s*/gm
@@ -137,12 +138,15 @@ export const globalRules = async (
     ) => {
       const maxIterations = 100;
       let current = source;
+      const hasGlobalRuleTarget = (
+        value: string,
+      ) => /\n[^\S\n\r]*=|(?:&&|\|\||\?\?|=(?![=>]))[\t ]*\n|\n\s*(?:&&|\|\||\?\?|\?)|-+\s*\n\s*(?:public|private|function|class)/m.test(value);
 
       for (let iter = 0; iter < maxIterations; iter += 1) {
         const prev = current;
         current = current
         .replaceAll(rules1, (...p: unknown[]) => (
-          `${p[1]}${p[2]} ${p[5]} ${p[7]}`
+          `${p[1]}${p[2]} ${p[3]} ${p[4]}`
         ))
         .replaceAll(rules2, (...p: unknown[]) => (
           `${p[1]} `
@@ -154,7 +158,7 @@ export const globalRules = async (
           `${p[1]}${p[2]}\n${p[5]}${p[6]}`
         ));
 
-        if (current === prev) {
+        if (current === prev || !hasGlobalRuleTarget(current)) {
           break;
         }
       }
@@ -162,7 +166,9 @@ export const globalRules = async (
       return current;
     };
 
-    result = applyGlobalRules(result);
+    if (hasGlobalTarget) {
+      result = applyGlobalRules(result);
+    }
     logger(`debug`, `${fileExt}:globalRules - Y`);
   }
   catch (error: unknown) {
@@ -181,6 +187,7 @@ export const ternaryRules = async (
   let result = contentsParam;
 
   try {
+    const hasTernaryTarget = /[?&|]|^[^\S\n\r]*:/m.test(result);
     const rules1 = (
       /(^\s*.*\S)\s*\n(\s*)(\?|:|&&|\|\||\?\?)(\s+)(.*)$/gm
     );
@@ -576,6 +583,12 @@ export const ternaryRules = async (
     ): string => {
       const maxIterations = 100;
       let current = source;
+      const hasTernaryRuleTarget = (
+        value: string,
+      ) => (
+        /\n[^\S\n\r]*(?:\?|:|&&|\|\||\?\?)[^\S\n\r]+|\?.*\n[^\S\n\r]*:|(?:&&|\|\||\?\?|\?)\n/m.test(value)
+        || (value.includes(`,`) && /\?\s*\(/m.test(value))
+      );
 
       for (let iter = 0; iter < maxIterations; iter += 1) {
         const prev = current;
@@ -591,9 +604,11 @@ export const ternaryRules = async (
           `${p[1]}${p[2]} ${p[5]}`
         ));
 
-        current = formatTernarySequenceBranches(current);
+        if (current.includes(`?`) && current.includes(`(`) && current.includes(`,`)) {
+          current = formatTernarySequenceBranches(current);
+        }
 
-        if (current === prev) {
+        if (current === prev || !hasTernaryRuleTarget(current)) {
           break;
         }
       }
@@ -601,7 +616,9 @@ export const ternaryRules = async (
       return current;
     };
 
-    result = applyTernaryRules(result);
+    if (hasTernaryTarget) {
+      result = applyTernaryRules(result);
+    }
     logger(`debug`, `${fileExt}:ternaryRules - Y`);
   }
   catch (error: unknown) {
@@ -620,6 +637,7 @@ export const iifeRules = async (
   let result = contentsParam;
 
   try {
+    const hasIifeTarget = result.includes(`(()`);
     // (1) 삼항 + IIFE 한 줄로 합치기
     const rules1 = (
       /(\s*)([^\n?]+?)\n[\t ]*\?(\s*\(\(\)\s*=>\s*{[\S\s]*?}\)\(\))\n[\t ]*:(\s*\(\(\)\s*=>\s*{[\S\s]*?}\)\(\))(\s*;?)/gm
@@ -660,39 +678,32 @@ export const iifeRules = async (
     const applyIifeRules = (
       source: string,
     ) => {
-      const maxIterations = 100;
       let current = source;
 
-      for (let iter = 0; iter < maxIterations; iter += 1) {
-        const prev = current;
+      current = current
+      .replaceAll(rules1, (...p: unknown[]) => {
+        const indent = p[1] as string;
+        const condition = (p[2] as string).trim();
+        const firstBranch = p[3] as string;
+        const secondBranch = p[4] as string;
+        const tail = (p[5] as string) || ``;
 
-        current = current
-        .replaceAll(rules1, (...p: unknown[]) => {
-          const indent = p[1] as string;
-          const condition = (p[2] as string).trim();
-          const firstBranch = p[3] as string;
-          const secondBranch = p[4] as string;
-          const tail = (p[5] as string) || ``;
+        return `${indent}${condition} ?${firstBranch} :${secondBranch}${tail}`;
+      })
+      .replaceAll(rules2, (...p: unknown[]) => {
+        const baseIndent = p[1] as string;
+        const header = p[2] as string;
+        const bodyBlock = p[3] as string;
 
-          return `${indent}${condition} ?${firstBranch} :${secondBranch}${tail}`;
-        })
-        .replaceAll(rules2, (...p: unknown[]) => {
-          const baseIndent = p[1] as string;
-          const header = p[2] as string;
-          const bodyBlock = p[3] as string;
-
-          return normalizeIifeBody(baseIndent, header, bodyBlock);
-        });
-
-        if (current === prev) {
-          break;
-        }
-      }
+        return normalizeIifeBody(baseIndent, header, bodyBlock);
+      });
 
       return current;
     };
 
-    result = applyIifeRules(result);
+    if (hasIifeTarget) {
+      result = applyIifeRules(result);
+    }
     logger(`debug`, `${fileExt}:iifeRules - Y`);
   }
   catch (error: unknown) {

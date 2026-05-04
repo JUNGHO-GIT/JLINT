@@ -1,6 +1,6 @@
 /**
  * @file Controller.ts
- * @description Controller
+ * @description 언어 라우팅과 공통 규칙 파이프라인
  * @author Jungho
  * @since 2026-1-4
  */
@@ -20,9 +20,74 @@ import {
 	tryCatch,
 } from "@exportRules";
 import { logger, notify } from "@exportScripts";
-import type { CommonType } from "@exportTypes";
+import type { CommonType, LanguageName, LanguageRules } from "@exportTypes";
 
-// 0. 주석제거 ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
+// 0. 언어 규칙 맵 ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
+const LANGUAGE_RULES: Record<LanguageName, LanguageRules> = {
+	Css: Langs.Css,
+	Html: Langs.Html,
+	Java: Langs.Java,
+	Javascript: Langs.Javascript,
+	Javascriptreact: Langs.Javascriptreact,
+	Json: Langs.Json,
+	Jsp: Langs.Jsp,
+	Sql: Langs.Sql,
+	Typescript: Langs.Typescript,
+	Typescriptreact: Langs.Typescriptreact,
+	Xml: Langs.Xml,
+	Yaml: Langs.Yaml,
+};
+
+const LANGUAGE_NAME_BY_FILE_EXT: Record<string, LanguageName> = {
+	css: `Css`,
+	htm: `Html`,
+	html: `Html`,
+	jav: `Java`,
+	java: `Java`,
+	javascript: `Javascript`,
+	javascriptreact: `Javascriptreact`,
+	"spring-boot-properties-yaml": `Yaml`,
+	js: `Javascript`,
+	json: `Json`,
+	jsonc: `Json`,
+	jsp: `Jsp`,
+	jspx: `Jsp`,
+	jsx: `Javascriptreact`,
+	mybatis: `Xml`,
+	plsql: `Sql`,
+	scss: `Css`,
+	sql: `Sql`,
+	ts: `Typescript`,
+	tsx: `Typescriptreact`,
+	typescript: `Typescript`,
+	typescriptreact: `Typescriptreact`,
+	xml: `Xml`,
+	yaml: `Yaml`,
+	yml: `Yaml`,
+};
+
+// 1. 언어 규칙 해석 ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
+const resolveLanguageRules = async (
+	fileExt: string,
+	caller: string,
+): Promise<LanguageRules | null> => {
+	let languageRules: LanguageRules | null = null;
+	const languageName = LANGUAGE_NAME_BY_FILE_EXT[fileExt] ?? null;
+
+	if (languageName) {
+		logger(`debug`, `${caller} - langStr:${languageName}`);
+		languageRules = LANGUAGE_RULES[languageName];
+	}
+	else {
+		const message = `${caller} - Unsupported language: ${fileExt}`;
+		logger(`error`, message);
+		await notify(`error`, message);
+	}
+
+	return languageRules;
+};
+
+// 2. 주석제거 ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
 export const getRemoveComments = async (
 	contentsParam: string,
 	fileTabSize: number,
@@ -32,69 +97,29 @@ export const getRemoveComments = async (
 	let resultContents = contentsParam || ``;
 
 	try {
-		const langStr =
-			fileExt === `css` || fileExt === `scss`
-				? `Css`
-				: fileExt === `html` || fileExt === `htm`
-					? `Html`
-					: fileExt === `jsp` || fileExt === `jspx`
-						? `Jsp`
-						: fileExt === `json` || fileExt === `jsonc`
-							? `Json`
-							: fileExt === `java` || fileExt === `jav`
-								? `Java`
-								: fileExt === `sql` || fileExt === `plsql`
-									? `Sql`
-									: fileExt === `yaml` ||
-											fileExt === `yml` ||
-											fileExt === `spring-boot-properties-yaml`
-										? `Yaml`
-										: fileExt === `xml` || fileExt === `mybatis`
-											? `Xml`
-											: fileExt === `javascript` || fileExt === `js`
-												? `Javascript`
-												: fileExt === `javascriptreact` || fileExt === `jsx`
-													? `Javascriptreact`
-													: fileExt === `typescript` || fileExt === `ts`
-														? `Typescript`
-														: fileExt === `typescriptreact` || fileExt === `tsx`
-															? `Typescriptreact`
-															: null;
+		const languageRules = await resolveLanguageRules(fileExt, `getRemoveComments`);
 
-		langStr
-			? logger(`debug`, `getRemoveComments - langStr:${langStr}`)
-			: (logger(
-					`error`,
-					`getRemoveComments - Unsupported language: ${fileExt}`,
-				),
-				notify(
-					`error`,
-					`getRemoveComments - Unsupported language: ${fileExt}`,
-				));
-
-		if (langStr) {
-			const langFactory = (Langs as any)[langStr as string];
-			const langRules =
-				typeof langFactory === `function` ? langFactory() : langFactory;
-			resultContents = await langRules.removeComments(
+		if (languageRules) {
+			resultContents = await languageRules.removeComments(
 				resultContents,
 				fileTabSize,
 				fileEol,
 				fileExt,
 			);
 		}
-		}
-		catch (error: unknown) {
+	}
+	catch (error: unknown) {
+		const message = error instanceof Error ? error.message : String(error);
 		logger(
 			`error`,
-			`${fileExt}:getRemoveComments - ${(error as Error).message}`,
+			`${fileExt}:getRemoveComments - ${message}`,
 		);
 	}
 
 	return resultContents;
 };
 
-// 1. 언어정보 ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
+// 3. 언어정보 ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
 export const getLanguage = async (
 	commonParam: CommonType,
 	initContents: string,
@@ -103,74 +128,43 @@ export const getLanguage = async (
 	fileEol: string,
 	fileExt: string,
 ) => {
-	// 동적으로 언어별 규칙 모듈 import (html -> Html)
-	const langStr =
-		fileExt === `css` || fileExt === `scss`
-			? `Css`
-			: fileExt === `html` || fileExt === `htm`
-				? `Html`
-				: fileExt === `jsp` || fileExt === `jspx`
-					? `Jsp`
-					: fileExt === `json` || fileExt === `jsonc`
-						? `Json`
-						: fileExt === `java` || fileExt === `jav`
-							? `Java`
-							: fileExt === `sql` || fileExt === `plsql`
-								? `Sql`
-								: fileExt === `yaml` ||
-										fileExt === `yml` ||
-										fileExt === `spring-boot-properties-yaml`
-									? `Yaml`
-									: fileExt === `xml` || fileExt === `mybatis`
-										? `Xml`
-										: fileExt === `javascript` || fileExt === `js`
-											? `Javascript`
-											: fileExt === `javascriptreact` || fileExt === `jsx`
-												? `Javascriptreact`
-												: fileExt === `typescript` || fileExt === `ts`
-													? `Typescript`
-													: fileExt === `typescriptreact` || fileExt === `tsx`
-														? `Typescriptreact`
-														: null;
-
-	langStr
-		? logger(`debug`, `getLanguage - langStr:${langStr}`)
-		: (logger(`error`, `getLanguage - Unsupported language: ${fileExt}`),
-			notify(`error`, `getLanguage - Unsupported language: ${fileExt}`));
-
 	let resultContents = initContents || ``;
-	!langStr && (() => resultContents)();
-	const langFactory = (Langs as any)[langStr as string];
-	const langRules =
-		typeof langFactory === `function` ? langFactory() : langFactory;
 
-	if (!commonParam.activateLint) {
-		return resultContents;
+	try {
+		const languageRules = await resolveLanguageRules(fileExt, `getLanguage`);
+
+		if (languageRules && commonParam.activateLint) {
+			if (commonParam.removeComments) {
+				resultContents = await languageRules.removeComments(
+					resultContents,
+					fileTabSize,
+					fileEol,
+					fileExt,
+				);
+			}
+			resultContents = await languageRules.prettierFormat(
+				commonParam,
+				resultContents,
+				formatTargetPath,
+				fileTabSize,
+				fileEol,
+				fileExt,
+			);
+			if (commonParam.insertLine) {
+				resultContents = await languageRules.insertLine(resultContents, fileExt);
+			}
+			resultContents = await languageRules.insertSpace(resultContents, fileExt);
+		}
 	}
-	commonParam.removeComments &&
-		(resultContents = await langRules.removeComments(
-			resultContents,
-			fileTabSize,
-			fileEol,
-			fileExt,
-		));
-	commonParam.activateLint &&
-		(resultContents = await langRules.prettierFormat(
-			commonParam,
-			resultContents,
-			formatTargetPath,
-			fileTabSize,
-			fileEol,
-			fileExt,
-		));
-	commonParam.insertLine &&
-		(resultContents = await langRules.insertLine(resultContents, fileExt));
-	resultContents = await langRules.insertSpace(resultContents, fileExt);
+	catch (error: unknown) {
+		const message = error instanceof Error ? error.message : String(error);
+		logger(`error`, `${fileExt}:getLanguage - ${message}`);
+	}
 
 	return resultContents;
 };
 
-// 2. 문법 ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
+// 4. 문법 ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
 export const getSyntax = async (
 	commonParam: CommonType,
 	afterLanguageContents: string,
@@ -189,7 +183,7 @@ export const getSyntax = async (
 	return resultContents;
 };
 
-// 3. 로직 ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
+// 5. 로직 ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
 export const getLogic = async (
 	commonParam: CommonType,
 	afterSyntaxContents: string,
@@ -205,7 +199,7 @@ export const getLogic = async (
 	return resultContents;
 };
 
-// 4. 최종 점검 ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
+// 6. 최종 점검 ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
 export const getFinalCheck = async (
 	commonParam: CommonType,
 	afterLogicContents: string,

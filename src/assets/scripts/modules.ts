@@ -11,19 +11,31 @@ import { pathToFileURL } from "node:url";
 import { logger } from "@exportScripts";
 
 // ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
-const _moduleCache: Map<string, any> = new Map();
+const _moduleCache: Map<string, unknown> = new Map();
 let _extensionPath: string = ``;
 
 // ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
-export const setExtensionPath = (path: string) => {
+export const setExtensionPath = (path: string): void => {
 	_extensionPath = path;
 };
 
 // ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
-const resolveModule = (moduleResult: unknown) =>
-	moduleResult && typeof moduleResult === `object` && `default` in moduleResult
-		? moduleResult.default
-		: moduleResult;
+const hasDefaultExport = (
+	moduleResult: unknown,
+): moduleResult is { default: unknown } => (
+	Boolean(moduleResult && typeof moduleResult === `object` && `default` in moduleResult)
+);
+
+// ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
+const resolveModule = (moduleResult: unknown): unknown => {
+	let resolvedModule = moduleResult;
+
+	if (hasDefaultExport(moduleResult)) {
+		resolvedModule = moduleResult.default;
+	}
+
+	return resolvedModule;
+};
 
 // ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
 const resolveModulePath = (specifier: string) => {
@@ -36,7 +48,14 @@ const resolveModulePath = (specifier: string) => {
 
 	if (_fs.existsSync(packageJsonPath)) {
 		try {
-			const packageJson = JSON.parse(_fs.readFileSync(packageJsonPath, `utf8`));
+			const packageJson = JSON.parse(
+				_fs.readFileSync(packageJsonPath, `utf8`),
+			) as {
+				main?: string;
+				exports?: {
+					default?: string;
+				};
+			};
 			const mainFile = packageJson.main
 				? packageJson.main
 				: packageJson.exports?.default
@@ -61,7 +80,10 @@ const isEsmModule = (pkgPath: string): boolean => {
 		return false;
 	}
 	try {
-		const packageJson = JSON.parse(_fs.readFileSync(packageJsonPath, `utf8`));
+		const packageJson = JSON.parse(_fs.readFileSync(packageJsonPath, `utf8`)) as {
+			type?: string;
+			exports?: unknown;
+		};
 		if (packageJson.type === `module`) {
 			return true;
 		}
@@ -80,7 +102,7 @@ const isEsmModule = (pkgPath: string): boolean => {
 };
 
 // ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
-const dynamicImport = async (specifier: string) => {
+const dynamicImport = async (specifier: string): Promise<unknown | null> => {
 	const resolvedPath = resolveModulePath(specifier);
 	const basePath = _path.join(_extensionPath, `out`, `node_modules`, specifier);
 	const useEsm = isEsmModule(basePath);
@@ -95,9 +117,10 @@ const dynamicImport = async (specifier: string) => {
 			return resolveModule(moduleResult);
 		}
 		catch (error: unknown) {
+			const message = error instanceof Error ? error.message : String(error);
 			logger(
 				`error`,
-				`dynamicImport - ESM import failed for ${specifier}: ${(error as Error).message}`,
+				`dynamicImport - ESM import failed for ${specifier}: ${message}`,
 			);
 			return null;
 		}
@@ -121,9 +144,10 @@ const dynamicImport = async (specifier: string) => {
 				return resolveModule(fallbackModule);
 			}
 			catch (error: unknown) {
+				const message = error instanceof Error ? error.message : String(error);
 				logger(
 					`error`,
-					`dynamicImport - all attempts failed for ${specifier}: ${(error as Error).message}`,
+					`dynamicImport - all attempts failed for ${specifier}: ${message}`,
 				);
 				return null;
 			}
@@ -132,12 +156,14 @@ const dynamicImport = async (specifier: string) => {
 };
 
 // ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
-export const getModuleWithCache = async (moduleName: string) => {
-	if (_moduleCache.has(moduleName)) {
-		return _moduleCache.get(moduleName);
+export const getModuleWithCache = async <T = unknown>(
+	moduleName: string,
+): Promise<T | null> => {
+	if (!_moduleCache.has(moduleName)) {
+		const moduleResult = await dynamicImport(moduleName);
+		moduleResult && _moduleCache.set(moduleName, moduleResult);
 	}
-	const moduleResult = await dynamicImport(moduleName);
-	moduleResult && _moduleCache.set(moduleName, moduleResult);
 
-	return _moduleCache.get(moduleName) || null;
+	const cachedModule = _moduleCache.get(moduleName) ?? null;
+	return cachedModule as T | null;
 };

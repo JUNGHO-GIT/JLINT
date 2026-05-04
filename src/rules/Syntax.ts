@@ -13,6 +13,11 @@ export const capitalize = async (
   fileExt: string,
 ) => {
   try {
+    if (fileExt !== `xml` && fileExt !== `sql`) {
+      logger(`debug`, `${fileExt}:capitalize - N`);
+      return contentsParam;
+    }
+
     const rules1 = (
       /([^/<>]\b)(\s*)(select|from|where|insert|into|values|update|set|delete|on|create)\b(\s*)([^/<>]\b)/gm
     );
@@ -40,13 +45,8 @@ export const capitalize = async (
       `${p[1]}${p[2]}${(p[3] as string).toUpperCase()}${p[4]}${p[5]}`
     ));
 
-    return (
-			(fileExt !== `xml` && fileExt !== `sql`) ? (
-				logger(`debug`, `${fileExt}:capitalize - N`), contentsParam
-			) : (
-				logger(`debug`, `${fileExt}:capitalize - Y`), finalResult
-			)
-    );
+    logger(`debug`, `${fileExt}:capitalize - Y`);
+    return finalResult;
   }
   catch (error: unknown) {
     logger(`error`, `${fileExt}:capitalize - ${(error as Error).message}`);
@@ -168,8 +168,11 @@ export const lineBreak = async (
     const rules10 = (
       /(\n+)(^.)(\s*)(})(\s*)(\n)(\s*)(\/\/)/gm
     );
-    const rules11 = (
-      /(.*?)(\n*)(.*?)(\n*)(?<=^.\s*)(return)(\s*?)(\S*?)(\s*)(\n)(\s*)(})/gm
+    const rules11a = (
+      /(\S[^\n]*)(\n{2,})([^\S\n\r]*return\s*?\S*?\s*\n\s*})/gm
+    );
+    const rules11b = (
+      /^(.[^\S\n\r]*return\s*?\S*?\s*\n\s*})/
     );
     const rules12 = (
       /(^\s*)(@Value)(\s*)(\()(.*)(\n+)(.*)(\))/gm
@@ -180,6 +183,8 @@ export const lineBreak = async (
     const rules14 = (
       /(\s*)(@Override)(\n|\n+)(.*)(\n|\n+)(\s*)(public|private)/gm
     );
+    const rulesCommentGuard = /\/\//;
+    const rules11Guard = /\n{2,}[^\S\n\r]*return|^[^\n][^\S\n\r]*return/;
 
     let finalResult: string = contentsParam
     .replaceAll(rules1, (...p: unknown[]) => (
@@ -200,28 +205,51 @@ export const lineBreak = async (
       finalResult = finalResult
       .replaceAll(rules4, (...p: unknown[]) => (
         `${p[1]}${p[2]}\n${p[6]}`
-      ))
-      .replaceAll(rules5, (...p: unknown[]) => (
-        `${p[1]}${p[2]}${p[3]}${p[4]}\n`
-      ))
+      ));
+
+      if (rulesCommentGuard.test(finalResult)) {
+        finalResult = finalResult
+        .replaceAll(rules5, (...p: unknown[]) => (
+          `${p[1]}${p[2]}${p[3]}${p[4]}\n`
+        ));
+      }
+
+      finalResult = finalResult
       .replaceAll(rules6, (...p: unknown[]) => (
         `${p[1]}${p[2]}${p[3]}${p[4]}\n\n${p[8]}${p[10]}`
       ))
-      .replaceAll(rules7, (...p: unknown[]) => (
-        `${p[1]}${p[2]}\n\n${p[4]}`
-      ))
+      if (rulesCommentGuard.test(finalResult)) {
+        finalResult = finalResult
+        .replaceAll(rules7, (...p: unknown[]) => (
+          `${p[1]}${p[2]}\n\n${p[4]}`
+        ));
+      }
+
+      finalResult = finalResult
       .replaceAll(rules8, (...p: unknown[]) => (
         `${p[1]}${p[2]}\n${p[3]}`
       ))
       .replaceAll(rules9, (...p: unknown[]) => (
         `${p[1]} ${p[3]}\n${p[6]}${p[7]}`
       ))
-      .replaceAll(rules10, (...p: unknown[]) => (
-        `${p[1]}${p[2]}${p[3]}${p[4]}\n\n${p[7]}${p[8]}`
-      ))
-      .replaceAll(rules11, (...p: unknown[]) => (
-        `${p[1]}\n${p[3]}${p[4]}${p[5]}${p[6]}${p[7]}${p[8]}${p[9]}${p[10]}${p[11]}`
-      ))
+      if (rulesCommentGuard.test(finalResult)) {
+        finalResult = finalResult
+        .replaceAll(rules10, (...p: unknown[]) => (
+          `${p[1]}${p[2]}${p[3]}${p[4]}\n\n${p[7]}${p[8]}`
+        ));
+      }
+
+      if (rules11Guard.test(finalResult)) {
+        finalResult = finalResult
+        .replaceAll(rules11a, (...p: unknown[]) => (
+          `${p[1]}\n${p[3]}`
+        ))
+        .replace(rules11b, (...p: unknown[]) => (
+          `\n${p[1]}`
+        ));
+      }
+
+      finalResult = finalResult
       .replaceAll(rules12, (...p: unknown[]) => (
         `${p[1]}${p[2]} (${p[5]}${p[7]})`
       ))

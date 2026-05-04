@@ -13,6 +13,11 @@ export const ifElse = async (
   fileExt: string,
 ) => {
   try {
+    if (fileExt === `xml` || fileExt === `json` || fileExt === `sql`) {
+      logger(`debug`, `${fileExt}:ifElse - N`);
+      return contentsParam;
+    }
+
     // 1. if( / if (  => if (
     const rules1 = (
       /\bif\s*\(/gm
@@ -101,13 +106,7 @@ export const ifElse = async (
       `\n${p[2]}}`
     ));
 
-    finalResult = (
-			fileExt === `xml` || fileExt === `json` || fileExt === `sql`
-		) ? (
-			logger(`debug`, `${fileExt}:ifElse - N`), contentsParam
-		) : (
-			logger(`debug`, `${fileExt}:ifElse - Y`), finalResult
-		);
+    logger(`debug`, `${fileExt}:ifElse - Y`);
 
     return finalResult;
   }
@@ -123,6 +122,11 @@ export const tryCatch = async (
   fileExt: string,
 ) => {
   try {
+    if (fileExt === `xml` || fileExt === `json` || fileExt === `sql`) {
+      logger(`debug`, `${fileExt}:tryCatch - N`);
+      return contentsParam;
+    }
+
     // 1. try { 포맷
     const rules1 = (
       /\btry\s*{/gm
@@ -222,13 +226,7 @@ export const tryCatch = async (
       `\n${p[2]}}`
     ));
 
-    finalResult = (
-			fileExt === `xml` || fileExt === `json` || fileExt === `sql`
-		) ? (
-			logger(`debug`, `${fileExt}:tryCatch - N`), contentsParam
-		) : (
-			logger(`debug`, `${fileExt}:tryCatch - Y`), finalResult
-		);
+    logger(`debug`, `${fileExt}:tryCatch - Y`);
 
     return finalResult;
   }
