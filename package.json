@@ -1,0 +1,172 @@
+{
+  "name": "jlint",
+  "displayName": "Jlint",
+  "description": "Universal Language formatter",
+  "publisher": "JUNGHO",
+  "license": "Apache-2.0",
+  "version": "3.2.0",
+  "main": "./out/extension.js",
+  "icon": "logo.webp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jungho-dev/jlint.git"
+  },
+  "categories": [
+    "Formatters",
+    "Linters",
+    "Programming Languages",
+    "Snippets",
+    "Language Packs",
+    "Extension Packs",
+    "Debuggers",
+    "Other"
+  ],
+  "keywords": [
+    "lint",
+    "formatter",
+    "jlint",
+    "code",
+    "format",
+    "prettier",
+    "java",
+    "xml",
+    "html",
+    "css",
+    "javascript",
+    "typescript",
+    "json",
+    "yaml",
+    "sql",
+    "jsp",
+    "universal"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "outputChannels": [
+      "Jlint"
+    ],
+    "commands": [
+      {
+        "command": "extension.Jlint",
+        "title": "Jlint"
+      },
+      {
+        "command": "extension.JlintRemoveComments",
+        "title": "Jlint: Remove Comments"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "extension.Jlint",
+        "key": "alt+shift+f",
+        "when": "editorTextFocus"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "extension.Jlint",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "extension.JlintRemoveComments",
+          "when": "editorTextFocus"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "extension.JlintRemoveComments",
+          "when": "editorTextFocus"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Jlint",
+      "properties": {
+        "Jlint.logLevel": {
+          "type": "string",
+          "scope": "window",
+          "enum": [
+            "off",
+            "debug",
+            "info",
+            "warn",
+            "error"
+          ],
+          "default": "info"
+        },
+        "Jlint.activateLint": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable or disable the lint",
+          "scope": "resource"
+        },
+        "Jlint.removeComments": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable or disable the remove comments",
+          "scope": "resource"
+        },
+        "Jlint.insertLine": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable or disable the insert 'vertical line'",
+          "scope": "resource"
+        },
+        "Jlint.quoteType": {
+          "type": "string",
+          "enum": [
+            "single",
+            "double"
+          ],
+          "default": "double",
+          "description": "Set the quote type for strings (single: ', double: \")",
+          "scope": "resource"
+        }
+      }
+    }
+  },
+  "engines": {
+    "vscode": ">=1.116.0",
+    "node": ">=21.0.0",
+    "npm": ">=10.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "scripts": {
+    "git": "bun run ~/.bootstrap/bootstrap-sync.ts --git",
+    "swc": "bun run ~/.bootstrap/bootstrap-sync.ts --swc",
+    "sync": "bun run ~/.bootstrap/bootstrap-sync.ts --sync",
+    "tools": "bun run ~/.bootstrap/bootstrap-sync.ts --tools"
+  },
+  "dependencies": {
+    "@prettier/plugin-xml": "3.4.2",
+    "clean-css": "5.3.3",
+    "html-minifier-terser": "7.2.0",
+    "prettier": "3.8.3",
+    "prettier-plugin-java": "2.8.1",
+    "prettier-plugin-jsp": "1.0.13",
+    "sql-formatter": "15.7.3",
+    "strip-comments": "2.0.1",
+    "strip-json-comments": "5.0.3",
+    "terser": "5.46.2"
+  },
+  "devDependencies": {
+    "@swc/cli": "0.8.1",
+    "@swc/core": "1.15.33",
+    "@swc/helpers": "0.5.21",
+    "@types/clean-css": "4.2.11",
+    "@types/html-minifier-terser": "7.0.2",
+    "@types/node": "25.6.0",
+    "@types/strip-comments": "2.0.4",
+    "@types/vscode": "1.116.0",
+    "@vscode/vsce": "3.9.1",
+    "esbuild": "0.28.0",
+    "globals": "17.6.0",
+    "ts-morph": "28.0.0",
+    "ts-prune": "0.10.3",
+    "tsc-alias": "1.8.17",
+    "typescript": "6.0.3"
+  }
+}

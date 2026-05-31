@@ -1,0 +1,155 @@
+# .gitattributes
+
+# Directories ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
+
+# 1. Build outputs
+**/build/** linguist-vendored linguist-generated
+**/.build/** linguist-vendored linguist-generated
+**/dist/** linguist-vendored linguist-generated
+**/.dist/** linguist-vendored linguist-generated
+**/out/** linguist-vendored linguist-generated
+**/.out/** linguist-vendored linguist-generated
+**/target/** linguist-vendored linguist-generated
+**/.target/** linguist-vendored linguist-generated
+**/coverage/** linguist-vendored linguist-generated
+**/.coverage/** linguist-vendored linguist-generated
+**/debug/** linguist-vendored linguist-generated
+**/.debug/** linguist-vendored linguist-generated
+**/temp/** linguist-vendored linguist-generated
+**/.temp/** linguist-vendored linguist-generated
+**/bundle/** linguist-vendored linguist-generated
+**/.bundle/** linguist-vendored linguist-generated
+**/gen/** linguist-vendored linguist-generated
+**/.gen/** linguist-vendored linguist-generated
+**/bin/** linguist-vendored linguist-generated
+**/.bin/** linguist-vendored linguist-generated
+
+# 2. Dependencies / package artifacts
+**/node_modules/** linguist-vendored linguist-generated
+**/vendor/** linguist-vendored linguist-generated
+**/.vendor/** linguist-vendored linguist-generated
+
+# 3. Framework / tool caches
+**/.next/** linguist-vendored linguist-generated
+**/.nuxt/** linguist-vendored linguist-generated
+**/.svelte-kit/** linguist-vendored linguist-generated
+**/.turbo/** linguist-vendored linguist-generated
+**/.vite/** linguist-vendored linguist-generated
+**/.parcel-cache/** linguist-vendored linguist-generated
+**/.nyc_output/** linguist-vendored linguist-generated
+**/.cache/** linguist-vendored linguist-generated
+**/.pnpm-store/** linguist-vendored linguist-generated
+**/.yarn/** linguist-vendored linguist-generated
+**/.pnp/** linguist-vendored linguist-generated
+**/.gradle/** linguist-vendored linguist-generated
+
+# 4. VCS / misc
+**/.git/** linguist-vendored linguist-generated
+**/.direnv/** linguist-vendored linguist-generated
+
+# 5. Project-private areas
+**/admin/** linguist-vendored linguist-generated
+**/private/** linguist-vendored linguist-generated
+**/auth/** linguist-vendored linguist-generated
+
+# 6. IDE / editor
+**/.vscode/** linguist-vendored linguist-generated
+**/.idea/** linguist-vendored linguist-generated
+**/.history/** linguist-vendored linguist-generated
+**/.backup/** linguist-vendored linguist-generated
+**/.bookmark/** linguist-vendored linguist-generated
+**/.tmp/** linguist-vendored linguist-generated
+**/.etc/** linguist-vendored linguist-generated
+**/.grunt/** linguist-vendored linguist-generated
+**/.gulp/** linguist-vendored linguist-generated
+
+# 7. Java / runtime artifacts
+**/META-INF/** linguist-vendored linguist-generated
+**/.META-INF/** linguist-vendored linguist-generated
+**/hs_err_pid* linguist-vendored linguist-generated
+**/replay_pid* linguist-vendored linguist-generated
+
+# Files ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
+
+# 1. OS / editor noise
+**/*.swp linguist-vendored linguist-generated
+**/*.swo linguist-vendored linguist-generated
+**/.DS_Store linguist-vendored linguist-generated
+**/Thumbs.db linguist-vendored linguist-generated
+**/Desktop.ini linguist-vendored linguist-generated
+
+# 2. Logs
+**/*.log linguist-vendored linguist-generated
+**/npm-debug.log linguist-vendored linguist-generated
+**/yarn-debug.log linguist-vendored linguist-generated
+**/yarn-error.log linguist-vendored linguist-generated
+**/pnpm-debug.log linguist-vendored linguist-generated
+**/lerna-debug.log linguist-vendored linguist-generated
+
+# 3. Secrets / env / credentials
+**/env.* linguist-vendored linguist-generated
+**/*env.* linguist-vendored linguist-generated
+**/*.env linguist-vendored linguist-generated
+**/*.env.* linguist-vendored linguist-generated
+**/.envrc linguist-vendored linguist-generated
+**/*.properties linguist-vendored linguist-generated
+**/*.properties.* linguist-vendored linguist-generated
+**/*.props linguist-vendored linguist-generated
+**/*.props.* linguist-vendored linguist-generated
+**/app.json linguist-vendored linguist-generated
+**/app.json.* linguist-vendored linguist-generated
+**/*.keystore linguist-vendored linguist-generated
+**/*.keystore.* linguist-vendored linguist-generated
+**/*.jks linguist-vendored linguist-generated
+**/*.jks.* linguist-vendored linguist-generated
+**/*.p12 linguist-vendored linguist-generated
+**/*.p12.* linguist-vendored linguist-generated
+**/*.pem linguist-vendored linguist-generated
+**/*.pem.* linguist-vendored linguist-generated
+**/*.key linguist-vendored linguist-generated
+**/*.key.* linguist-vendored linguist-generated
+
+# 4. Java/IDE project files
+**/.classpath linguist-vendored linguist-generated
+**/.classpath.* linguist-vendored linguist-generated
+**/.project linguist-vendored linguist-generated
+**/.project.* linguist-vendored linguist-generated
+**/.settings/** linguist-vendored linguist-generated
+**/*.iml linguist-vendored linguist-generated
+**/*.ipr linguist-vendored linguist-generated
+**/*.iws linguist-vendored linguist-generated
+
+# 5. Temporary / patch files
+**/*.tmp linguist-vendored linguist-generated
+**/*.tmp.* linguist-vendored linguist-generated
+**/*.bak linguist-vendored linguist-generated
+**/*.bak.* linguist-vendored linguist-generated
+**/*.backup linguist-vendored linguist-generated
+**/*.backup.* linguist-vendored linguist-generated
+**/*.orig linguist-vendored linguist-generated
+**/*.orig.* linguist-vendored linguist-generated
+**/*.rej linguist-vendored linguist-generated
+**/*.rej.* linguist-vendored linguist-generated
+**/*.pid linguist-vendored linguist-generated
+**/*.pid.* linguist-vendored linguist-generated
+
+# 6. Lock files (common)
+**/package-lock.json linguist-vendored linguist-generated
+**/package-lock.json.* linguist-vendored linguist-generated
+**/npm-shrinkwrap.json linguist-vendored linguist-generated
+**/npm-shrinkwrap.json.* linguist-vendored linguist-generated
+**/yarn.lock linguist-vendored linguist-generated
+**/yarn.lock.* linguist-vendored linguist-generated
+**/pnpm-lock.yaml linguist-vendored linguist-generated
+**/pnpm-lock.yaml.* linguist-vendored linguist-generated
+**/bun.lockb linguist-vendored linguist-generated
+**/bun.lockb.* linguist-vendored linguist-generated
+**/bun.lock linguist-vendored linguist-generated
+**/bun.lock.* linguist-vendored linguist-generated
+
+# 7. etc
+**/eslint.config.bak linguist-vendored linguist-generated
+**/tsconfig*.json linguist-vendored linguist-generated
+**/tsconfig*.json.* linguist-vendored linguist-generated
+**/ecosystem.config.js linguist-vendored linguist-generated
+**/ecosystem.config.* linguist-vendored linguist-generated

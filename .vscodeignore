@@ -1,0 +1,73 @@
+# .vscodeignore
+
+# 소스 코드 (번들링되므로 제외)
+**/src/**
+**/*.ts
+!out/**/*.js
+
+# 빌드 도구 및 설정
+**/.node/**
+**/*.cjs
+**/tsconfig*.json
+**/.eslintrc*
+**/.prettierrc*
+**/.babel*
+**/.swcrc
+**/webpack.config.js
+**/esbuild.config.js
+**/vsce.config.json
+**/eslint.config.js
+**/rollup.config.js
+**/jest.config.js
+**/gulpfile.js
+
+# 패키지 관리자
+**/package-lock.json
+**/yarn.lock
+**/pnpm-lock.yaml
+**/bun.lock*
+**/.npmrc
+**/.yarnrc*
+
+# Git
+**/.git/**
+**/.gitignore*
+**/.gitattributes
+**/.github/**
+
+# VS Code
+**/.vscode/**
+**/.vscode-test/**
+
+# 테스트
+**/test/**
+**/tests/**
+**/*.test.*
+**/*.spec.*
+**/coverage/**
+**/.nyc_output/**
+
+# 임시 파일
+**/.DS_Store
+**/.history/**
+**/dist/**
+**/tmp/**
+**/temp/**
+**/.cache/**
+**/.bookmark/**
+**/*.log
+**/vsix-extracted/**
+
+# node_modules 내 불필요한 파일
+**/node_modules/**/.bin/**
+**/node_modules/**/test/**
+**/node_modules/**/tests/**
+**/node_modules/**/*.md
+**/node_modules/**/*.markdown
+**/node_modules/**/LICENSE*
+**/node_modules/**/CHANGELOG*
+**/node_modules/**/.npmignore
+**/node_modules/**/.eslintrc*
+**/node_modules/**/tsconfig.json
+**/node_modules/**/*.map
+!out/node_modules/**

@@ -1,0 +1,84 @@
+/**
+ * @file .server.swcrc
+ * @description swc 설정 (서버)
+ * @author Jungho
+ * @since 2025-11-30
+ * @updated 2026-05-02
+ */
+{
+  "$schema": "https://swc.rs/schema.json",
+  "isModule": "unknown",
+  "minify": false,
+  "sourceMaps": true,
+  "inlineSourcesContent": true,
+  "exclude": [
+    ".*node_modules.*"
+  ],
+  "module": {
+    "type": "commonjs",
+    "strict": false,
+    "strictMode": true,
+    "lazy": false,
+    "noInterop": false,
+    "importInterop": "node",
+    "ignoreDynamic": false,
+    "preserveImportMeta": false,
+    "resolveFully": false
+  },
+  "jsc": {
+    "baseUrl": "./",
+    "target": "es2022",
+    "loose": true,
+    "externalHelpers": true,
+    "keepClassNames": true,
+    "preserveAllComments": false,
+    "paths": {},
+    "parser": {
+      "syntax": "typescript",
+      "tsx": false,
+      "decorators": true,
+      "dynamicImport": true
+    },
+    "minify": {
+      "compress": {
+        "computed_props": true,
+        "conditionals": true,
+        "comparisons": true,
+        "dead_code": true,
+        "defaults": true,
+        "drop_console": false,
+        "drop_debugger": true,
+        "evaluate": true,
+        "hoist_props": true,
+        "if_return": true,
+        "join_vars": true,
+        "loops": true,
+        "negate_iife": true,
+        "properties": true,
+        "reduce_vars": true,
+        "side_effects": true,
+        "switches": true,
+        "typeofs": true,
+        "unused": true
+      },
+      "mangle": {
+        "keepClassNames": true,
+        "keepFnNames": true
+      },
+      "format": {
+        "comments": "all",
+        "asciiOnly": false
+      }
+    },
+    "transform": {
+      "legacyDecorator": true,
+      "decoratorMetadata": true,
+      "useDefineForClassFields": false,
+      "treatConstEnumAsEnum": false,
+      "verbatimModuleSyntax": false
+    },
+    "output": {
+      "charset": "utf8"
+    }
+  }
+}

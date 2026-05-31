@@ -1,0 +1,112 @@
+/**
+ * @file .client.swcrc
+ * @description swc 설정 (클라이언트)
+ * @author Jungho
+ * @since 2025-11-30
+ * @updated 2026-05-02
+ */
+{
+  "$schema": "https://swc.rs/schema.json",
+  "isModule": "unknown",
+  "minify": true,
+  "sourceMaps": true,
+  "inlineSourcesContent": false,
+  "exclude": [
+    ".*node_modules.*"
+  ],
+  "module": {
+    "type": "es6",
+    "strict": false,
+    "strictMode": true,
+    "lazy": false,
+    "noInterop": false,
+    "importInterop": "swc",
+    "ignoreDynamic": false,
+    "preserveImportMeta": false,
+    "resolveFully": false
+  },
+  "jsc": {
+    "baseUrl": "./",
+    "target": "es2022",
+    "loose": true,
+    "externalHelpers": true,
+    "keepClassNames": false,
+    "preserveAllComments": false,
+    "paths": {},
+    "parser": {
+      "syntax": "typescript",
+      "tsx": true,
+      "decorators": true,
+      "dynamicImport": true
+    },
+    "minify": {
+      "compress": {
+        "arguments": false,
+        "arrows": true,
+        "booleans": true,
+        "collapse_vars": true,
+        "comparisons": true,
+        "computed_props": true,
+        "conditionals": true,
+        "dead_code": true,
+        "defaults": true,
+        "directives": true,
+        "drop_console": true,
+        "drop_debugger": true,
+        "evaluate": true,
+        "hoist_props": true,
+        "if_return": true,
+        "join_vars": true,
+        "loops": true,
+        "negate_iife": true,
+        "passes": 2,
+        "properties": true,
+        "reduce_vars": true,
+        "sequences": true,
+        "side_effects": true,
+        "switches": true,
+        "typeofs": true,
+        "unused": true
+      },
+      "mangle": {
+        "keepClassNames": false,
+        "keepFnNames": false,
+        "topLevel": true
+      },
+      "format": {
+        "comments": false,
+        "asciiOnly": true
+      }
+    },
+    "transform": {
+      "legacyDecorator": true,
+      "decoratorMetadata": true,
+      "useDefineForClassFields": false,
+      "treatConstEnumAsEnum": false,
+      "verbatimModuleSyntax": false,
+      "react": {
+        "runtime": "automatic",
+        "development": false,
+        "useBuiltins": true,
+        "refresh": false
+      },
+      "optimizer": {
+        "simplify": true,
+        "globals": {
+          "vars": {
+            "process.env.NODE_ENV": "\"production\""
+          },
+          "typeofs": {
+            "window": "object"
+          }
+        },
+        "jsonify": {
+          "minCost": 1024
+        }
+      }
+    },
+    "output": {
+      "charset": "utf8"
+    }
+  }
+}
