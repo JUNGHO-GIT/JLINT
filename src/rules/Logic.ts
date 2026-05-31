@@ -9,13 +9,13 @@ import { logger } from "@exportScripts";
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
 export const ifElse = async (
-  contentsParam: string,
+  cntnPrm: string,
   fileExt: string,
 ) => {
   try {
     if (fileExt === `xml` || fileExt === `json` || fileExt === `sql`) {
       logger(`debug`, `${fileExt}:ifElse - N`);
-      return contentsParam;
+      return cntnPrm;
     }
 
     // 1. if( / if (  => if (
@@ -61,7 +61,7 @@ export const ifElse = async (
       /(\r?\n)+([^\S\n\r]*)}/gm
     );
 
-    let finalResult: string = contentsParam
+    let finalResult: string = cntnPrm
     // if / else if 헤더 정규화
     .replaceAll(rules1, () => (
       `if (`
@@ -112,19 +112,19 @@ export const ifElse = async (
   }
   catch (error: unknown) {
     logger(`error`, `${fileExt}:ifElse - ${(error as Error).message}`);
-    return contentsParam;
+    return cntnPrm;
   }
 };
 
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
 export const tryCatch = async (
-  contentsParam: string,
+  cntnPrm: string,
   fileExt: string,
 ) => {
   try {
     if (fileExt === `xml` || fileExt === `json` || fileExt === `sql`) {
       logger(`debug`, `${fileExt}:tryCatch - N`);
-      return contentsParam;
+      return cntnPrm;
     }
 
     // 1. try { 포맷
@@ -181,7 +181,7 @@ export const tryCatch = async (
       /(\r?\n)+([^\S\n\r]*)}/gm
     );
 
-    let finalResult: string = contentsParam
+    let finalResult: string = cntnPrm
     // try / catch / finally 헤더 기본 정규화
     .replaceAll(rules1, () => (
       `try {`
@@ -232,6 +232,6 @@ export const tryCatch = async (
   }
   catch (error: unknown) {
     logger(`error`, `${fileExt}:tryCatch - ${(error as Error).message}`);
-    return contentsParam;
+    return cntnPrm;
   }
 };

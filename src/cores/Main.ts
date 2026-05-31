@@ -7,7 +7,7 @@
 
 import {
 	getContents,
-	getFinalCheck,
+	getFinalCheck as gtFnlChck,
 	getLanguage,
 	getLogic,
 	getSyntax,
@@ -38,23 +38,23 @@ export const main = async (
 			`fileEol: ${fileEol}`,
 	);
 
-	let finalContents = await getContents(
+	let fnlCntn = await getContents(
 		filePath,
 		fileTabSize,
 		fileEol,
 		fileExt,
 	);
-	finalContents = await getLanguage(
+	fnlCntn = await getLanguage(
 		commonParam,
-		finalContents,
+		fnlCntn,
 		filePath,
 		fileTabSize,
 		fileEol,
 		fileExt,
 	);
-	finalContents = await getSyntax(commonParam, finalContents, fileExt);
-	finalContents = await getLogic(commonParam, finalContents, fileExt);
-	finalContents = await getFinalCheck(commonParam, finalContents, fileExt);
+	fnlCntn = await getSyntax(commonParam, fnlCntn, fileExt);
+	fnlCntn = await getLogic(commonParam, fnlCntn, fileExt);
+	fnlCntn = await gtFnlChck(commonParam, fnlCntn, fileExt);
 
 	// VS Code 에디터를 통해 내용 교체 (파일 동기화 유지)
 	const editor = vscode.window.activeTextEditor;
@@ -65,7 +65,7 @@ export const main = async (
 			document.positionAt(document.getText().length),
 		);
 		await editor.edit((editBuilder: vscode.TextEditorEdit) => {
-			editBuilder.replace(fullRange, finalContents);
+			editBuilder.replace(fullRange, fnlCntn);
 		});
 		await document.save();
 	}

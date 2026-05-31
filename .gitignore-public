@@ -4,89 +4,89 @@
 
 # 1. Build outputs
 **/build/
-**/*.build/
+**/.build/
 **/dist/
-**/*.dist/
+**/.dist/
 **/out/
-**/*.out/
+**/.out/
 **/target/
-**/*.target/
+**/.target/
 **/coverage/
-**/*.coverage/
+**/.coverage/
 **/debug/
-**/*.debug/
+**/.debug/
 **/temp/
-**/*.temp/
+**/.temp/
 **/tmp/
-**/*.tmp/
+**/.tmp/
 **/bundle/
-**/*.bundle/
+**/.bundle/
 **/gen/
-**/*.gen/
+**/.gen/
 **/bin/
-**/*.bin/
+**/.bin/
 
 # 2. Dependencies / package artifacts
 **/node_modules/
 **/vendor/
-**/*.vendor/
+**/.vendor/
 
 # 3. Framework / tool caches
-**/*.next/
-**/*.nuxt/
-**/*.svelte-kit/
-**/*.turbo/
-**/*.vite/
-**/*.parcel-cache/
-**/*.nyc_output/
-**/*.cache/
-**/*.pnpm-store/
-**/*.yarn/
-**/*.pnp/
-**/*.gradle/
-**/*.m2/
-**/*.ivy2/
+**/.next/
+**/.nuxt/
+**/.svelte-kit/
+**/.turbo/
+**/.vite/
+**/.parcel-cache/
+**/.nyc_output/
+**/.cache/
+**/.pnpm-store/
+**/.yarn/
+**/.pnp/
+**/.gradle/
+**/.m2/
+**/.ivy2/
 
 # 4. VCS / misc
-**/*.git/
-**/*.direnv/
+**/.git/
+**/.direnv/
 
 # 5. Project-private areas
 **/admin/
 **/private/
 **/auth/
 **/secrets/
-**/*.secret/
-**/*.secrets/
+**/.secret/
+**/.secrets/
 
 # 6. IDE / editor
-**/*.vscode/
-**/*.idea/
-**/*.history/
-**/*.backup/
-**/*.bookmark/
-**/*.tmp/
-**/*.grunt/
-**/*.gulp/
+**/.vscode/
+**/.idea/
+**/.history/
+**/.backup/
+**/.bookmark/
+**/.tmp/
+**/.grunt/
+**/.gulp/
 
 # 7. Java / runtime artifacts
 **/META-INF/
-**/*.META-INF/
+**/.META-INF/
 **/hs_err_pid*/
 **/replay_pid*/
 
 # 8. Test / tooling artifacts
 **/reports/
 **/artifacts/
-**/*.allure/
-**/*.playwright/
-**/*.cypress/
+**/.allure/
+**/.playwright/
+**/.cypress/
 **/storybook-static/
 
 # Files ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
 # 1. OS / editor noise
-**/*.DS_Store
+**/.DS_Store
 **/Thumbs.db
 **/Desktop.ini
 **/ehthumbs.db
@@ -106,13 +106,13 @@
 # 3-1. env files
 /.env
 /.env.*
-**/*.env*
-**/*.envrc
+**/.env*
+**/.envrc
 
 # 3-2. common rc files that often contain tokens
-**/*.npmrc
-**/*.yarnrc
-**/*.pnpmrc
+**/.npmrc
+**/.yarnrc
+**/.pnpmrc
 
 # 3-3. properties/props (keep templates)
 **/*.properties
@@ -137,19 +137,23 @@
 **/*.csr
 
 # 4. Java/IDE project files
-**/*.classpath
-**/*.project
-**/*.settings/
+**/.classpath
+**/.project
+**/.settings/
 **/*.iml
 **/*.ipr
 **/*.iws
-**/*.factorypath
+**/.factorypath
 
 # 5. Temporary / patch files
 **/*.tmp
 **/*.tmp.*
 **/*.bak
 **/*.bak.*
+**/*jungho
+**/*.jungho.*
+**/*.base
+**/*.base.*
 **/*.backup
 **/*.backup.*
 **/*.orig
@@ -177,9 +181,8 @@
 
 # 7. Node/TS build metadata
 **/*.tsbuildinfo
-**/*.eslintcache
-**/*.stylelintcache
-**/*.vsix
+**/.eslintcache
+**/.stylelintcache
 
 # 8. Process managers / local runtime
 **/ecosystem.config.js

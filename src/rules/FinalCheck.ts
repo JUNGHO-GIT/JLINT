@@ -8,11 +8,11 @@
 import { logger } from "@exportScripts";
 
 // 0. langSpecificRules ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-export const langSpecificRules = async (
-  contentsParam: string,
+export const lngSpcfRls = async (
+  cntnPrm: string,
   fileExt: string,
 ) => {
-  let result = contentsParam;
+  let result = cntnPrm;
 
   try {
     const rules1 = (
@@ -105,7 +105,7 @@ export const langSpecificRules = async (
   }
   catch (error: unknown) {
     logger(`error`, `${fileExt}:langSpecificRules - ${(error as Error).message}`);
-    result = contentsParam;
+    result = cntnPrm;
   }
 
   return result;
@@ -113,13 +113,13 @@ export const langSpecificRules = async (
 
 // 1. globalRules ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
 export const globalRules = async (
-  contentsParam: string,
+  cntnPrm: string,
   fileExt: string,
 ) => {
-  let result = contentsParam;
+  let result = cntnPrm;
 
   try {
-    const hasGlobalTarget = /[=&|?-]/.test(result);
+    const hsGlblTgt = /[=&|?-]/.test(result);
     const rules1 = (
       /^([^\S\n\r]*)(.*\S)[^\S\n\r]*\n[^\S\n\r]*(=)\s*(.+\S)$/gm
     );
@@ -133,16 +133,16 @@ export const globalRules = async (
       /(\s*)(-+)(\s*)(\n)(^\s*)(public|private|function|class)/gm
     );
 
-    const applyGlobalRules = (
+    const applGlblRls = (
       source: string,
     ) => {
-      const maxIterations = 100;
+      const mxItrt = 100;
       let current = source;
-      const hasGlobalRuleTarget = (
+      const hsGlblRlTgt = (
         value: string,
       ) => /\n[^\S\n\r]*=|(?:&&|\|\||\?\?|=(?![=>]))[\t ]*\n|\n\s*(?:&&|\|\||\?\?|\?)|-+\s*\n\s*(?:public|private|function|class)/m.test(value);
 
-      for (let iter = 0; iter < maxIterations; iter += 1) {
+      for (let iter = 0; iter < mxItrt; iter += 1) {
         const prev = current;
         current = current
         .replaceAll(rules1, (...p: unknown[]) => (
@@ -158,7 +158,7 @@ export const globalRules = async (
           `${p[1]}${p[2]}\n${p[5]}${p[6]}`
         ));
 
-        if (current === prev || !hasGlobalRuleTarget(current)) {
+        if (current === prev || !hsGlblRlTgt(current)) {
           break;
         }
       }
@@ -166,14 +166,14 @@ export const globalRules = async (
       return current;
     };
 
-    if (hasGlobalTarget) {
-      result = applyGlobalRules(result);
+    if (hsGlblTgt) {
+      result = applGlblRls(result);
     }
     logger(`debug`, `${fileExt}:globalRules - Y`);
   }
   catch (error: unknown) {
     logger(`error`, `${fileExt}:globalRules - ${(error as Error).message}`);
-    result = contentsParam;
+    result = cntnPrm;
   }
 
   return result;
@@ -181,13 +181,13 @@ export const globalRules = async (
 
 // 2. ternaryRules ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 export const ternaryRules = async (
-  contentsParam: string,
+  cntnPrm: string,
   fileExt: string,
 ) => {
-  let result = contentsParam;
+  let result = cntnPrm;
 
   try {
-    const hasTernaryTarget = /[?&|]|^[^\S\n\r]*:/m.test(result);
+    const hsTrnrTgt = /[?&|]|^[^\S\n\r]*:/m.test(result);
     const rules1 = (
       /(^\s*.*\S)\s*\n(\s*)(\?|:|&&|\|\||\?\?)(\s+)(.*)$/gm
     );
@@ -198,7 +198,7 @@ export const ternaryRules = async (
       /(\s*)(&&|\|\||\?\?|\?)(\n+)(\s*)(.*)/gm
     );
 
-    const splitTopLevelByComma = (
+    const splTpLvByCm = (
       inner: string,
     ): string[] => {
       const list: string[] = [];
@@ -211,24 +211,24 @@ export const ternaryRules = async (
       let inSingle = false;
       let inDouble = false;
       let inBacktick = false;
-      let inLineComment = false;
-      let inBlockComment = false;
+      let inLnCmt = false;
+      let inBlckCmt = false;
       let escaping = false;
 
       for (let i = 0; i < inner.length; i += 1) {
         const ch = inner[i];
         const next = inner[i + 1] ?? ``;
 
-        if (inLineComment) {
+        if (inLnCmt) {
           current += ch;
-          inLineComment = ch !== `\n`;
+          inLnCmt = ch !== `\n`;
           continue;
         }
-        if (inBlockComment) {
+        if (inBlckCmt) {
           current += ch;
           if (ch === `*` && next === `/`) {
             current += next;
-            inBlockComment = false;
+            inBlckCmt = false;
             i += 1;
           }
           continue;
@@ -270,13 +270,13 @@ export const ternaryRules = async (
         }
         if (ch === `/` && next === `/`) {
           current += ch + next;
-          inLineComment = true;
+          inLnCmt = true;
           i += 1;
           continue;
         }
         if (ch === `/` && next === `*`) {
           current += ch + next;
-          inBlockComment = true;
+          inBlckCmt = true;
           i += 1;
           continue;
         }
@@ -333,7 +333,7 @@ export const ternaryRules = async (
       return list;
     };
 
-    const formatTernarySequenceBranches = (
+    const frmTrSqBr = (
       source: string,
     ): string => {
       let out = ``;
@@ -342,44 +342,44 @@ export const ternaryRules = async (
       let inSingle = false;
       let inDouble = false;
       let inBacktick = false;
-      let inLineComment = false;
-      let inBlockComment = false;
+      let inLnCmt = false;
+      let inBlckCmt = false;
       let escaping = false;
 
-      const findMatchingParen = (
+      const fndMtchPrn = (
         start: number,
       ): number => {
         let depth = 0;
 
         let innerSingle = false;
         let innerDouble = false;
-        let innerBacktick = false;
-        let innerLineComment = false;
-        let innerBlockComment = false;
-        let innerEscaping = false;
+        let innrBckt = false;
+        let innrLnCmt = false;
+        let innrBlckCmt = false;
+        let innrEscp = false;
 
         for (let j = start; j < n; j += 1) {
           const ch2 = source[j];
           const next2 = source[j + 1] ?? ``;
 
-          if (innerLineComment) {
-            innerLineComment = ch2 !== `\n`;
+          if (innrLnCmt) {
+            innrLnCmt = ch2 !== `\n`;
             continue;
           }
-          if (innerBlockComment) {
+          if (innrBlckCmt) {
             if (ch2 === `*` && next2 === `/`) {
               j += 1;
-              innerBlockComment = false;
+              innrBlckCmt = false;
             }
             continue;
           }
-          if (innerEscaping) {
-            innerEscaping = false;
+          if (innrEscp) {
+            innrEscp = false;
             continue;
           }
           if (innerSingle) {
             if (ch2 === `\\`) {
-              innerEscaping = true;
+              innrEscp = true;
             }
             else if (ch2 === `'`) {
               innerSingle = false;
@@ -388,30 +388,30 @@ export const ternaryRules = async (
           }
           if (innerDouble) {
             if (ch2 === `\\`) {
-              innerEscaping = true;
+              innrEscp = true;
             }
             else if (ch2 === `"`) {
               innerDouble = false;
             }
             continue;
           }
-          if (innerBacktick) {
+          if (innrBckt) {
             if (ch2 === `\\`) {
-              innerEscaping = true;
+              innrEscp = true;
             }
             else if (ch2 === `\``) {
-              innerBacktick = false;
+              innrBckt = false;
             }
             continue;
           }
 
           if (ch2 === `/` && next2 === `/`) {
-            innerLineComment = true;
+            innrLnCmt = true;
             j += 1;
             continue;
           }
           if (ch2 === `/` && next2 === `*`) {
-            innerBlockComment = true;
+            innrBlckCmt = true;
             j += 1;
             continue;
           }
@@ -424,7 +424,7 @@ export const ternaryRules = async (
             continue;
           }
           if (ch2 === `\``) {
-            innerBacktick = true;
+            innrBckt = true;
             continue;
           }
 
@@ -446,16 +446,16 @@ export const ternaryRules = async (
         const ch = source[i];
         const next = source[i + 1] ?? ``;
 
-        if (inLineComment) {
+        if (inLnCmt) {
           out += ch;
-          inLineComment = ch !== `\n`;
+          inLnCmt = ch !== `\n`;
           continue;
         }
-        if (inBlockComment) {
+        if (inBlckCmt) {
           out += ch;
           if (ch === `*` && next === `/`) {
             out += next;
-            inBlockComment = false;
+            inBlckCmt = false;
             i += 1;
           }
           continue;
@@ -497,13 +497,13 @@ export const ternaryRules = async (
         }
         if (ch === `/` && next === `/`) {
           out += ch + next;
-          inLineComment = true;
+          inLnCmt = true;
           i += 1;
           continue;
         }
         if (ch === `/` && next === `*`) {
           out += ch + next;
-          inBlockComment = true;
+          inBlckCmt = true;
           i += 1;
           continue;
         }
@@ -537,7 +537,7 @@ export const ternaryRules = async (
           }
 
           const parenStart = j;
-          const closeIndex = findMatchingParen(parenStart);
+          const closeIndex = fndMtchPrn(parenStart);
 
           if (closeIndex === -1) {
             out += ch;
@@ -545,7 +545,7 @@ export const ternaryRules = async (
           }
 
           const inner = source.slice(parenStart + 1, closeIndex);
-          const expressions = splitTopLevelByComma(inner);
+          const expressions = splTpLvByCm(inner);
 
           if (expressions.length <= 1) {
             out += source.slice(i, closeIndex + 1);
@@ -559,8 +559,8 @@ export const ternaryRules = async (
 					) : (
 						source.slice(lineStart + 1, i)
 					);
-          const lineIndentMatch = lineHead.match(/^(\t*)/u);
-          const baseIndent = lineIndentMatch ? lineIndentMatch[1] : ``;
+          const lnIndnMtch = lineHead.match(/^(\t*)/u);
+          const baseIndent = lnIndnMtch ? lnIndnMtch[1] : ``;
           const bodyIndent = `${baseIndent}\t`;
 
           const joined = expressions
@@ -578,19 +578,19 @@ export const ternaryRules = async (
       return out;
     };
 
-    const applyTernaryRules = (
+    const applTrnrRls = (
       source: string,
     ): string => {
-      const maxIterations = 100;
+      const mxItrt = 100;
       let current = source;
-      const hasTernaryRuleTarget = (
+      const hsTrnrRlTgt = (
         value: string,
       ) => (
         /\n[^\S\n\r]*(?:\?|:|&&|\|\||\?\?)[^\S\n\r]+|\?.*\n[^\S\n\r]*:|(?:&&|\|\||\?\?|\?)\n/m.test(value)
         || (value.includes(`,`) && /\?\s*\(/m.test(value))
       );
 
-      for (let iter = 0; iter < maxIterations; iter += 1) {
+      for (let iter = 0; iter < mxItrt; iter += 1) {
         const prev = current;
 
         current = current
@@ -605,10 +605,10 @@ export const ternaryRules = async (
         ));
 
         if (current.includes(`?`) && current.includes(`(`) && current.includes(`,`)) {
-          current = formatTernarySequenceBranches(current);
+          current = frmTrSqBr(current);
         }
 
-        if (current === prev || !hasTernaryRuleTarget(current)) {
+        if (current === prev || !hsTrnrRlTgt(current)) {
           break;
         }
       }
@@ -616,14 +616,14 @@ export const ternaryRules = async (
       return current;
     };
 
-    if (hasTernaryTarget) {
-      result = applyTernaryRules(result);
+    if (hsTrnrTgt) {
+      result = applTrnrRls(result);
     }
     logger(`debug`, `${fileExt}:ternaryRules - Y`);
   }
   catch (error: unknown) {
     logger(`error`, `${fileExt}:ternaryRules - ${(error as Error).message}`);
-    result = contentsParam;
+    result = cntnPrm;
   }
 
   return result;
@@ -631,13 +631,13 @@ export const ternaryRules = async (
 
 // 3. iifeRules ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 export const iifeRules = async (
-  contentsParam: string,
+  cntnPrm: string,
   fileExt: string,
 ) => {
-  let result = contentsParam;
+  let result = cntnPrm;
 
   try {
-    const hasIifeTarget = result.includes(`(()`);
+    const hsIfTgt = result.includes(`(()`);
     // (1) 삼항 + IIFE 한 줄로 합치기
     const rules1 = (
       /(\s*)([^\n?]+?)\n[\t ]*\?(\s*\(\(\)\s*=>\s*{[\S\s]*?}\)\(\))\n[\t ]*:(\s*\(\(\)\s*=>\s*{[\S\s]*?}\)\(\))(\s*;?)/gm
@@ -648,7 +648,7 @@ export const iifeRules = async (
       /^(\t*)(.*(?:[,:?]|&&|\|\|)\s*\(\(\)\s*=>\s*{)[\t ]*\n([\S\s]*?\n)(\t*)}\)\(\);/gm
     );
 
-    const normalizeIifeBody = (
+    const nrmlIfBdy = (
       baseIndent: string,
       header: string,
       bodyBlock: string,
@@ -668,14 +668,14 @@ export const iifeRules = async (
         const match = line.match(/^(\t*)(.*)$/u);
         const origIndent = match ? match[1] : ``;
         const content = match ? match[2] : line;
-        const relativeIndent = `\t`.repeat(origIndent.length - minIndent);
-        return `${bodyIndent}${relativeIndent}${content}`;
+        const rltvIndn = `\t`.repeat(origIndent.length - minIndent);
+        return `${bodyIndent}${rltvIndn}${content}`;
       });
 
       return `${baseIndent}${header}\n${normalized.join(`\n`)}\n${baseIndent}})();`;
     };
 
-    const applyIifeRules = (
+    const applIfRls = (
       source: string,
     ) => {
       let current = source;
@@ -695,20 +695,20 @@ export const iifeRules = async (
         const header = p[2] as string;
         const bodyBlock = p[3] as string;
 
-        return normalizeIifeBody(baseIndent, header, bodyBlock);
+        return nrmlIfBdy(baseIndent, header, bodyBlock);
       });
 
       return current;
     };
 
-    if (hasIifeTarget) {
-      result = applyIifeRules(result);
+    if (hsIfTgt) {
+      result = applIfRls(result);
     }
     logger(`debug`, `${fileExt}:iifeRules - Y`);
   }
   catch (error: unknown) {
     logger(`error`, `${fileExt}:iifeRules - ${(error as Error).message}`);
-    result = contentsParam;
+    result = cntnPrm;
   }
 
   return result;

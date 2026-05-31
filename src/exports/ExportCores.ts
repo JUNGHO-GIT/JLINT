@@ -9,10 +9,10 @@
 export { getContents } from "@cores/Contents";
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
 export {
-	getFinalCheck,
+	gtFnlChck as getFinalCheck,
 	getLanguage,
 	getLogic,
-	getRemoveComments,
+	gtRmvCmts as getRemoveComments,
 	getSyntax,
 } from "@cores/Controller";
 // ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-

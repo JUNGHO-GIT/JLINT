@@ -7,49 +7,49 @@
 
 import _fs from "node:fs";
 import _path from "node:path";
-import { pathToFileURL } from "node:url";
+import { pathToFileURL as pthTFlUrl } from "node:url";
 import { logger } from "@exportScripts";
 
 // ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
 const _moduleCache: Map<string, unknown> = new Map();
-let _extensionPath: string = ``;
+let _extPth: string = ``;
 
 // ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
-export const setExtensionPath = (path: string): void => {
-	_extensionPath = path;
+export const stExtPth = (path: string): void => {
+	_extPth = path;
 };
 
 // ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
-const hasDefaultExport = (
+const hsDefExpr = (
 	moduleResult: unknown,
 ): moduleResult is { default: unknown } => (
 	Boolean(moduleResult && typeof moduleResult === `object` && `default` in moduleResult)
 );
 
 // ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
-const resolveModule = (moduleResult: unknown): unknown => {
-	let resolvedModule = moduleResult;
+const rslvMod = (moduleResult: unknown): unknown => {
+	let rslvMod2 = moduleResult;
 
-	if (hasDefaultExport(moduleResult)) {
-		resolvedModule = moduleResult.default;
+	if (hsDefExpr(moduleResult)) {
+		rslvMod2 = moduleResult.default;
 	}
 
-	return resolvedModule;
+	return rslvMod2;
 };
 
 // ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
-const resolveModulePath = (specifier: string) => {
-	const basePath = _path.join(_extensionPath, `out`, `node_modules`, specifier);
+const rslvModPth = (specifier: string) => {
+	const basePath = _path.join(_extPth, `out`, `node_modules`, specifier);
 
 	if (!_fs.existsSync(basePath)) {
 		return specifier;
 	}
-	const packageJsonPath = _path.join(basePath, `package.json`);
+	const pckgJsnPth = _path.join(basePath, `package.json`);
 
-	if (_fs.existsSync(packageJsonPath)) {
+	if (_fs.existsSync(pckgJsnPth)) {
 		try {
 			const packageJson = JSON.parse(
-				_fs.readFileSync(packageJsonPath, `utf8`),
+				_fs.readFileSync(pckgJsnPth, `utf8`),
 			) as {
 				main?: string;
 				exports?: {
@@ -75,12 +75,12 @@ const resolveModulePath = (specifier: string) => {
 
 // ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
 const isEsmModule = (pkgPath: string): boolean => {
-	const packageJsonPath = _path.join(pkgPath, `package.json`);
-	if (!_fs.existsSync(packageJsonPath)) {
+	const pckgJsnPth = _path.join(pkgPath, `package.json`);
+	if (!_fs.existsSync(pckgJsnPth)) {
 		return false;
 	}
 	try {
-		const packageJson = JSON.parse(_fs.readFileSync(packageJsonPath, `utf8`)) as {
+		const packageJson = JSON.parse(_fs.readFileSync(pckgJsnPth, `utf8`)) as {
 			type?: string;
 			exports?: unknown;
 		};
@@ -102,19 +102,19 @@ const isEsmModule = (pkgPath: string): boolean => {
 };
 
 // ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
-const dynamicImport = async (specifier: string): Promise<unknown | null> => {
-	const resolvedPath = resolveModulePath(specifier);
-	const basePath = _path.join(_extensionPath, `out`, `node_modules`, specifier);
+const dynmImpr = async (specifier: string): Promise<unknown | null> => {
+	const resolvedPath = rslvModPth(specifier);
+	const basePath = _path.join(_extPth, `out`, `node_modules`, specifier);
 	const useEsm = isEsmModule(basePath);
 
 	// ESM 모듈은 import()만 사용
 	if (useEsm) {
 		try {
 			const fileUrl = _path.isAbsolute(resolvedPath)
-				? pathToFileURL(resolvedPath).href
+				? pthTFlUrl(resolvedPath).href
 				: resolvedPath;
 			const moduleResult = await import(fileUrl);
-			return resolveModule(moduleResult);
+			return rslvMod(moduleResult);
 		}
 		catch (error: unknown) {
 			const message = error instanceof Error ? error.message : String(error);
@@ -127,21 +127,21 @@ const dynamicImport = async (specifier: string): Promise<unknown | null> => {
 	}
 	// CJS 모듈은 require() 먼저 시도
 	try {
-		const requiredModule = require(resolvedPath);
-		return resolveModule(requiredModule);
+		const rqrdMod = require(resolvedPath);
+		return rslvMod(rqrdMod);
 	}
 	catch {
 		try {
 			const fileUrl = _path.isAbsolute(resolvedPath)
-				? pathToFileURL(resolvedPath).href
+				? pthTFlUrl(resolvedPath).href
 				: resolvedPath;
 			const moduleResult = await import(fileUrl);
-			return resolveModule(moduleResult);
+			return rslvMod(moduleResult);
 		}
 		catch {
 			try {
-				const fallbackModule = require(specifier);
-				return resolveModule(fallbackModule);
+				const fbMod = require(specifier);
+				return rslvMod(fbMod);
 			}
 			catch (error: unknown) {
 				const message = error instanceof Error ? error.message : String(error);
@@ -156,11 +156,11 @@ const dynamicImport = async (specifier: string): Promise<unknown | null> => {
 };
 
 // ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
-export const getModuleWithCache = async <T = unknown>(
+export const gtModWthCch = async <T = unknown>(
 	moduleName: string,
 ): Promise<T | null> => {
 	if (!_moduleCache.has(moduleName)) {
-		const moduleResult = await dynamicImport(moduleName);
+		const moduleResult = await dynmImpr(moduleName);
 		moduleResult && _moduleCache.set(moduleName, moduleResult);
 	}
 

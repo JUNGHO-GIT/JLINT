@@ -5,14 +5,14 @@
  * @since 2026-1-4
  */
 
-import type { PrettierOptions, StripOptions } from "@exportLibs";
+import type { PrettierOptions as PrttOpts, StripOptions } from "@exportLibs";
 import { getPrettier, htmlMinify, strip } from "@exportLibs";
 import { logger, modal } from "@exportScripts";
 import type { CommonType } from "@exportTypes";
 
 // 0. removeComments ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
-export const removeComments = async (
-	contentsParam: string,
+export const rmvCmts = async (
+	cntnPrm: string,
 	_fileTabSize: number,
 	_fileEol: string,
 	fileExt: string,
@@ -24,7 +24,7 @@ export const removeComments = async (
 		const pattern3 = /("|')(\s*)(@{http:\/\/)([\S\s]*?)("|')/gm;
 		const pattern4 = /("|')(\s*)(@{https:\/\/)([\S\s]*?)("|')/gm;
 
-		const httpResult = contentsParam
+		const httpResult = cntnPrm
 			.replaceAll(
 				pattern1,
 				(...p: unknown[]) => `${p[1]}${p[2]}httpp${p[4]}${p[5]}`,
@@ -135,14 +135,14 @@ export const removeComments = async (
 	}
   catch (error: unknown) {
 		logger(`error`, `${fileExt}:removeComments - ${(error as Error).message}`);
-		return contentsParam;
+		return cntnPrm;
 	}
 };
 
 // 1. prettierFormat ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
-export const prettierFormat = async (
+export const prttFrmt = async (
 	commonParam: CommonType,
-	contentsParam: string,
+	cntnPrm: string,
 	fileName: string,
 	_fileTabSize: number,
 	fileEol: string,
@@ -152,10 +152,10 @@ export const prettierFormat = async (
 		logger(`debug`, `${fileExt}:prettierFormat - start`);
 		// 0. prettier
 		const prettier = await getPrettier();
-		const prettierStatus = prettier ? `prettier:loaded` : `prettier:missing`;
+		const prttStat = prettier ? `prettier:loaded` : `prettier:missing`;
 		logger(
 			prettier ? `debug` : `warn`,
-			`${fileExt}:prettierFormat - ${prettierStatus}`,
+			`${fileExt}:prettierFormat - ${prttStat}`,
 		);
 
 		// 1. parser
@@ -164,7 +164,7 @@ export const prettierFormat = async (
 		// 2. plugin
 
 		// 3. options
-		const baseOptions: PrettierOptions = {
+		const baseOptions: PrttOpts = {
 			__embeddedInHtml: true,
 			arrowParens: `always`,
 			bracketSameLine: false,
@@ -200,18 +200,18 @@ export const prettierFormat = async (
 		const rules2 =
 			/(\s*)[^"'`](<.*>)(<)(input|label|a|b|p|span|select|div|option|bold|caption|strong)/gm;
 
-		const result = contentsParam
+		const result = cntnPrm
 			.replaceAll(rules1, () => ``)
 			.replaceAll(
 				rules2,
 				(...p: unknown[]) => `${p[1]}${p[2]}\n${p[1]}\t${p[3]}${p[4]}`,
 			);
-		const formatterAvailable = prettier && typeof prettier.format === `function`;
+		const frmtAvail = prettier && typeof prettier.format === `function`;
 		logger(
-			formatterAvailable ? `debug` : `warn`,
-			`${fileExt}:prettierFormat - ${formatterAvailable ? `formatter:ready` : `formatter:missing`}`,
+			frmtAvail ? `debug` : `warn`,
+			`${fileExt}:prettierFormat - ${frmtAvail ? `formatter:ready` : `formatter:missing`}`,
 		);
-		const finalResult = formatterAvailable
+		const finalResult = frmtAvail
 			? await (async () => {
 					logger(`debug`, `${fileExt}:prettierFormat - format:start`);
 					const formatted = await prettier.format(result, baseOptions);
@@ -228,7 +228,7 @@ export const prettierFormat = async (
 				})()
 			: (() => {
 					logger(`warn`, `${fileExt}:prettierFormat - format:skipped`);
-					return contentsParam;
+					return cntnPrm;
 				})();
 		logger(`debug`, `${fileExt}:prettierFormat - end`);
 		return finalResult;
@@ -239,17 +239,17 @@ export const prettierFormat = async (
 			.trim()
 			.replaceAll(/\u001B\[[\d;]*[FGKm]/g, ``);
 		const msgRegex = /([\S\s]*)(\s*)(https)(.*?)(\()(.*?)(\))([\S\s]*)/gm;
-		const msgRegexReplace = `[Jlint]\n\nError Line = [ $6 ]\nError Site = $8`;
-		const msgResult = msg.replaceAll(msgRegex, msgRegexReplace);
+		const msgReRplc = `[Jlint]\n\nError Line = [ $6 ]\nError Site = $8`;
+		const msgResult = msg.replaceAll(msgRegex, msgReRplc);
 
 		logger(`error`, `${fileExt}:prettierFormat - ${msgResult}`);
 		modal(`error`, `${fileExt}: Prettier Format Error:\n${msgResult}`);
-		return contentsParam;
+		return cntnPrm;
 	}
 };
 
 // 2. insertLine ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
-export const insertLine = async (contentsParam: string, fileExt: string) => {
+export const insertLine = async (cntnPrm: string, fileExt: string) => {
 	try {
 		const rules1 = /^(?!\/\/--)\n*(\s*)(<head\s*.*\s*>)(\s*?)/gm;
 		const rules2 = /^(?!\/\/--)\n*(\s*)(<body\s*.*\s*>)(\s*?)/gm;
@@ -261,7 +261,7 @@ export const insertLine = async (contentsParam: string, fileExt: string) => {
 		const rules8 = /^(?!\/\/--)\n*(\s*)(<form\s*.*\s*>)(\s*?)/gm;
 		const rules9 = /^(?!\/\/--)\n*(\s*)(<div class="row\s*.*\s*>)(\s*?)/gm;
 
-		const finalResult: string = contentsParam
+		const finalResult: string = cntnPrm
 			.replaceAll(rules1, (...p: unknown[]) => {
 				const p1 = p[1] as string;
 				const p2 = p[2] as string;
@@ -340,18 +340,18 @@ export const insertLine = async (contentsParam: string, fileExt: string) => {
 	}
   catch (error: unknown) {
 		logger(`error`, `${fileExt}:insertLine - ${(error as Error).message}`);
-		return contentsParam;
+		return cntnPrm;
 	}
 };
 
 // 3. insertSpace ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
-export const insertSpace = async (contentsParam: string, fileExt: string) => {
+export const insertSpace = async (cntnPrm: string, fileExt: string) => {
 	try {
 		const rules1 = /(\s*)(\))(\s+)(;)/gm;
 		const rules2 = /(\s*)(@)(\s*)([\S\s]*?)(\s*)(\()/gm;
 		const rules3 = /(\s*?)(ception)({)/gm;
 
-		const finalResult: string = contentsParam
+		const finalResult: string = cntnPrm
 			.replaceAll(rules1, (...p: unknown[]) => `${p[1]}${p[2]};`)
 			.replaceAll(rules2, (...p: unknown[]) => `${p[1]}${p[2]}${p[4]} ${p[6]}`)
 			.replaceAll(rules3, (...p: unknown[]) => `${p[2]} ${p[3]}`);
@@ -361,6 +361,8 @@ export const insertSpace = async (contentsParam: string, fileExt: string) => {
 	}
   catch (error: unknown) {
 		logger(`error`, `${fileExt}:insertSpace - ${(error as Error).message}`);
-		return contentsParam;
+		return cntnPrm;
 	}
 };
+
+export { prttFrmt as prettierFormat, rmvCmts as removeComments };

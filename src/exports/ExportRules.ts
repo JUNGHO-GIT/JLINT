@@ -9,7 +9,7 @@
 export {
 	globalRules,
 	iifeRules,
-	langSpecificRules,
+	lngSpcfRls as langSpecificRules,
 	ternaryRules,
 } from "@rules/FinalCheck";
 

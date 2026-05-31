@@ -32,7 +32,7 @@ export type LanguageName =
   | `Yaml`;
 
 export type RemoveCommentsRule = (
-  contentsParam: string,
+  cntnPrm: string,
   fileTabSize: number,
   fileEol: string,
   fileExt: string,
@@ -40,7 +40,7 @@ export type RemoveCommentsRule = (
 
 export type PrettierFormatRule = (
   commonParam: CommonType,
-  contentsParam: string,
+  cntnPrm: string,
   fileName: string,
   fileTabSize: number,
   fileEol: string,
@@ -48,7 +48,7 @@ export type PrettierFormatRule = (
 ) => Promise<string>;
 
 export type TextTransformRule = (
-  contentsParam: string,
+  cntnPrm: string,
   fileExt: string,
 ) => Promise<string>;
 

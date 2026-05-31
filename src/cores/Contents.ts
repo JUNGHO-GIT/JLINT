@@ -15,7 +15,7 @@ export const getContents = async (filePath: string, fileTabSize: number, fileEol
   const dataStr = decoder.decode(data);
 
   try {
-    const updateContent = dataStr
+    const updtCont = dataStr
     .split(fileEol === `lf` ? `\n` : `\r\n`)
     .map((line: string) => line.trimEnd())
     .filter((line: string, idx: number, arr: string[]) => {
@@ -35,7 +35,7 @@ export const getContents = async (filePath: string, fileTabSize: number, fileEol
     .trim();
 
     logger(`debug`, `${fileExt}:getContents - Y`);
-    return updateContent;
+    return updtCont;
   }
   catch (error: unknown) {
     logger(`error`, `${fileExt}:getContents - ${(error as Error).message}`);

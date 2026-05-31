@@ -7,77 +7,64 @@
 
 import { vscode } from "@exportLibs";
 
-// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
 const MAIN = `Jlint`;
-const AUTO_CLOSE_MS = 1000;
-
-// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
-const showProgress = async (text: string): Promise<void> => {
-  await vscode.window.withProgress({
-    cancellable: false,
-    location: vscode.ProgressLocation.Notification,
-    title: text,
+const AT_CLS_MS = 1000;
+const LOG_CONFIG = {
+  "debug": {
+    "str": `[D]`,
   },
-  async (_) => {
-    await new Promise((res) => {
-      setTimeout(res, AUTO_CLOSE_MS);
-    });
-  });
+  "info": {
+    "str": `[I]`,
+  },
+  "hint": {
+    "str": `[H]`,
+  },
+  "warn": {
+    "str": `[W]`,
+  },
+  "error": {
+    "str": `[E]`,
+  },
+} as const;
+
+type NotifyType = keyof typeof LOG_CONFIG;
+
+// 1. Show progress ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+const showProgress = async (text: string): Promise<void> => {
+  await vscode.window.withProgress(
+    {
+      "location": vscode.ProgressLocation.Notification,
+      "title": text,
+      "cancellable": false,
+    },
+    async () => {
+      await new Promise<void>((resolve) => {
+        setTimeout(resolve, AT_CLS_MS);
+      });
+    },
+  );
 };
 
-// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
-export const notify = async (
-  type: `debug` | `info` | `hint` | `warn` | `error`,
-  value: string,
-): Promise<void> => {
-  const config = {
-    debug: {
-      str: `[DEBUG]`,
-    },
-    error: {
-      str: `[ERROR]`,
-    },
-    hint: {
-      str: `[HINT]`,
-    },
-    info: {
-      str: `[INFO]`,
-    },
-    title: {
-      str: `[${MAIN}]`,
-    },
-    warn: {
-      str: `[WARN]`,
-    },
-  };
-  const text = `${config.title.str} ${config[type].str} ${value}`;
+// 2. Format notify ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+const formatNotify = (type: NotifyType, value: string): string => `[${MAIN}] ${LOG_CONFIG[type].str} ${value}`;
 
-  type === `debug` && await showProgress(text);
-  type === `info` && await showProgress(text);
-  type === `hint` && await showProgress(text);
-  type === `warn` && await showProgress(text);
-  type === `error` && await showProgress(text);
+// 3. Notify ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+export const notify = async (type: NotifyType, value: string): Promise<void> => {
+  await showProgress(formatNotify(type, value));
 };
 
-// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
-export const modal = (
-  type: `info` | `warn` | `error`,
-  value: string,
-): Thenable<string | undefined> => {
+// 4. Modal ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+export const modal = (type: `info` | `warn` | `error`, value: string): Thenable<string | undefined> => {
   const text = `[${MAIN}] ${value}`;
   const options = {
-    modal: true,
+    "modal": true,
   };
 
-  const result = (
-		type === `info` ? (
-			vscode.window.showInformationMessage(text, options)
-		) : type === `warn` ? (
-			vscode.window.showWarningMessage(text, options)
-		) : (
-			vscode.window.showErrorMessage(text, options)
-		)
-  );
-
-  return result;
+  if (type === `info`) {
+    return vscode.window.showInformationMessage(text, options);
+  }
+  if (type === `warn`) {
+    return vscode.window.showWarningMessage(text, options);
+  }
+  return vscode.window.showErrorMessage(text, options);
 };

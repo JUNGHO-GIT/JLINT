@@ -5,20 +5,20 @@
  * @since 2026-1-4
  */
 
-import type { FormatOptionsWithLanguage } from "@exportLibs";
-import { getSqlFormatter } from "@exportLibs";
+import type { FormatOptionsWithLanguage as FrmOpWtLa } from "@exportLibs";
+import { gtSqlFrmt } from "@exportLibs";
 import { logger, modal } from "@exportScripts";
 import type { CommonType } from "@exportTypes";
 
 // 0. removeComments ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
-export const removeComments = async (
-	contentsParam: string,
+export const rmvCmts = async (
+	cntnPrm: string,
 	_fileTabSize: number,
 	_fileEol: string,
 	fileExt: string,
 ) => {
 	try {
-		const minifyResult = contentsParam;
+		const minifyResult = cntnPrm;
 
 		const finalResult = minifyResult;
 
@@ -27,14 +27,14 @@ export const removeComments = async (
 	}
   catch (error: unknown) {
 		logger(`error`, `${fileExt}:removeComments - ${(error as Error).message}`);
-		return contentsParam;
+		return cntnPrm;
 	}
 };
 
 // 1. prettierFormat ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
-export const prettierFormat = async (
+export const prttFrmt = async (
 	commonParam: CommonType,
-	contentsParam: string,
+	cntnPrm: string,
 	_fileName: string,
 	_fileTabSize: number,
 	_fileEol: string,
@@ -43,13 +43,13 @@ export const prettierFormat = async (
 	try {
 		logger(`debug`, `${fileExt}:prettierFormat - start`);
 		// 0. prettier
-		const sqlFormatter = await getSqlFormatter();
-		const formatterStatus = sqlFormatter
+		const sqlFormatter = await gtSqlFrmt();
+		const frmtStat = sqlFormatter
 			? `sqlFormatter:loaded`
 			: `sqlFormatter:missing`;
 		logger(
 			sqlFormatter ? `debug` : `warn`,
-			`${fileExt}:prettierFormat - ${formatterStatus}`,
+			`${fileExt}:prettierFormat - ${frmtStat}`,
 		);
 
 		// 1. parser
@@ -58,7 +58,7 @@ export const prettierFormat = async (
 		// 2. plugin
 
 		// 3. options
-		const baseOptions: FormatOptionsWithLanguage = {
+		const baseOptions: FrmOpWtLa = {
 			dataTypeCase: `upper`,
 			denseOperators: false,
 			expressionWidth: 100,
@@ -73,17 +73,17 @@ export const prettierFormat = async (
 			tabWidth: commonParam.indentSize,
 			useTabs: commonParam.useTabs,
 		};
-		const formatterAvailable =
+		const frmtAvail =
 			sqlFormatter && typeof sqlFormatter.format === `function`;
 		logger(
-			formatterAvailable ? `debug` : `warn`,
-			`${fileExt}:prettierFormat - ${formatterAvailable ? `formatter:ready` : `formatter:missing`}`,
+			frmtAvail ? `debug` : `warn`,
+			`${fileExt}:prettierFormat - ${frmtAvail ? `formatter:ready` : `formatter:missing`}`,
 		);
-		const finalResult = formatterAvailable
+		const finalResult = frmtAvail
 			? await (async () => {
 					logger(`debug`, `${fileExt}:prettierFormat - format:start`);
 					const formatted = await sqlFormatter.format(
-						contentsParam,
+						cntnPrm,
 						baseOptions,
 					);
 					logger(`debug`, `${fileExt}:prettierFormat - format:success`);
@@ -91,7 +91,7 @@ export const prettierFormat = async (
 				})()
 			: (() => {
 					logger(`warn`, `${fileExt}:prettierFormat - format:skipped`);
-					return contentsParam;
+					return cntnPrm;
 				})();
 		logger(`debug`, `${fileExt}:prettierFormat - end`);
 		return finalResult;
@@ -102,39 +102,41 @@ export const prettierFormat = async (
 			.trim()
 			.replaceAll(/\u001B\[[\d;]*[FGKm]/g, ``);
 		const msgRegex = /([\S\s]*)(\s*)(https)(.*?)(\()(.*?)(\))([\S\s]*)/gm;
-		const msgRegexReplace = `[Jlint]\n\nError Line = [ $6 ]\nError Site = $8`;
-		const msgResult = msg.replaceAll(msgRegex, msgRegexReplace);
+		const msgReRplc = `[Jlint]\n\nError Line = [ $6 ]\nError Site = $8`;
+		const msgResult = msg.replaceAll(msgRegex, msgReRplc);
 
 		logger(`error`, `${fileExt}:prettierFormat - ${msgResult}`);
 		modal(`error`, `${fileExt}: Prettier Format Error:\n${msgResult}`);
-		return contentsParam;
+		return cntnPrm;
 	}
 };
 
 // 2. insertLine ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
-export const insertLine = async (contentsParam: string, fileExt: string) => {
+export const insertLine = async (cntnPrm: string, fileExt: string) => {
 	try {
-		const finalResult = contentsParam;
+		const finalResult = cntnPrm;
 
 		logger(`debug`, `${fileExt}:insertLine - Y`);
 		return finalResult;
 	}
   catch (error: unknown) {
 		logger(`error`, `${fileExt}:insertLine - ${(error as Error).message}`);
-		return contentsParam;
+		return cntnPrm;
 	}
 };
 
 // 3. insertSpace ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
-export const insertSpace = async (contentsParam: string, fileExt: string) => {
+export const insertSpace = async (cntnPrm: string, fileExt: string) => {
 	try {
-		const finalResult = contentsParam;
+		const finalResult = cntnPrm;
 
 		logger(`debug`, `${fileExt}:insertSpace - Y`);
 		return finalResult;
 	}
   catch (error: unknown) {
 		logger(`error`, `${fileExt}:insertSpace - ${(error as Error).message}`);
-		return contentsParam;
+		return cntnPrm;
 	}
 };
+
+export { prttFrmt as prettierFormat, rmvCmts as removeComments };

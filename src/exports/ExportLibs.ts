@@ -6,15 +6,15 @@
  */
 
 // ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
-import type * as PrettierModule from "prettier";
-import type { Plugin as PrettierPlugin } from "prettier";
-import type * as SqlFormatterModule from "sql-formatter";
-import { getModuleWithCache as _getModuleWithCache } from "@scripts/modules";
+import type * as PrttMod from "prettier";
+import type { Plugin as PrttPlgn } from "prettier";
+import type * as SqlFrmtMod from "sql-formatter";
+import { gtModWthCch as _gtModWthCch } from "@scripts/modules";
 
 export { default as fs } from "node:fs";
 export { default as path } from "node:path";
 export { TextDecoder } from "node:util";
-export { setExtensionPath } from "@scripts/modules";
+export { stExtPth as setExtensionPath } from "@scripts/modules";
 export { default as CleanCSS } from "clean-css";
 export { minify as htmlMinify } from "html-minifier-terser";
 export type { Options as PrettierOptions, Plugin as PrettierPlugin } from "prettier";
@@ -29,15 +29,15 @@ export { minify as jsMinify } from "terser";
 export { default as vscode } from "vscode";
 
 // ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
-export const getPrettier = async (): Promise<typeof PrettierModule | null> =>
-	_getModuleWithCache<typeof PrettierModule>(`prettier`);
-export const getPrettierPluginJava = async (): Promise<PrettierPlugin | null> =>
-	_getModuleWithCache<PrettierPlugin>(`prettier-plugin-java`);
-export const getPrettierPluginJsp = async (): Promise<PrettierPlugin | null> =>
-	_getModuleWithCache<PrettierPlugin>(`prettier-plugin-jsp`);
-export const getPrettierPluginXml = async (): Promise<PrettierPlugin | null> =>
-	_getModuleWithCache<PrettierPlugin>(`@prettier/plugin-xml`);
-export const getPrettierPluginYaml = async (): Promise<PrettierPlugin | null> =>
-	_getModuleWithCache<PrettierPlugin>(`prettier/plugins/yaml`);
-export const getSqlFormatter = async (): Promise<typeof SqlFormatterModule | null> =>
-	_getModuleWithCache<typeof SqlFormatterModule>(`sql-formatter`);
+export const getPrettier = async (): Promise<typeof PrttMod | null> =>
+	_gtModWthCch<typeof PrttMod>(`prettier`);
+export const gtPrttPlgnJv = async (): Promise<PrttPlgn | null> =>
+	_gtModWthCch<PrttPlgn>(`prettier-plugin-java`);
+export const gtPrPlJs = async (): Promise<PrttPlgn | null> =>
+	_gtModWthCch<PrttPlgn>(`prettier-plugin-jsp`);
+export const gtPrPlXm = async (): Promise<PrttPlgn | null> =>
+	_gtModWthCch<PrttPlgn>(`@prettier/plugin-xml`);
+export const gtPrPlYm = async (): Promise<PrttPlgn | null> =>
+	_gtModWthCch<PrttPlgn>(`prettier/plugins/yaml`);
+export const gtSqlFrmt = async (): Promise<typeof SqlFrmtMod | null> =>
+	_gtModWthCch<typeof SqlFrmtMod>(`sql-formatter`);
