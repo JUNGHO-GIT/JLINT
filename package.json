@@ -162,7 +162,7 @@
     "@types/strip-comments": "2.0.4",
     "@types/vscode": "1.116.0",
     "@vscode/vsce": "3.9.1",
-    "esbuild": "0.28.0",
+    "esbuild": "0.28.1",
     "globals": "17.6.0",
     "ts-morph": "28.0.0",
     "ts-prune": "0.10.3",
