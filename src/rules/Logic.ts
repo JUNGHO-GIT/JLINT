@@ -7,15 +7,15 @@
 
 import { logger } from "@exportScripts";
 
-// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
+// ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 export const ifElse = async (
-  cntnPrm: string,
+  contents: string,
   fileExt: string,
 ) => {
   try {
     if (fileExt === `xml` || fileExt === `json` || fileExt === `sql`) {
       logger(`debug`, `${fileExt}:ifElse - N`);
-      return cntnPrm;
+      return contents;
     }
 
     // 1. if( / if (  => if (
@@ -61,7 +61,7 @@ export const ifElse = async (
       /(\r?\n)+([^\S\n\r]*)}/gm
     );
 
-    let finalResult: string = cntnPrm
+    const finalResult: string = contents
     // if / else if 헤더 정규화
     .replaceAll(rules1, () => (
       `if (`
@@ -112,19 +112,19 @@ export const ifElse = async (
   }
   catch (error: unknown) {
     logger(`error`, `${fileExt}:ifElse - ${(error as Error).message}`);
-    return cntnPrm;
+    return contents;
   }
 };
 
-// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
+// ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 export const tryCatch = async (
-  cntnPrm: string,
+  contents: string,
   fileExt: string,
 ) => {
   try {
     if (fileExt === `xml` || fileExt === `json` || fileExt === `sql`) {
       logger(`debug`, `${fileExt}:tryCatch - N`);
-      return cntnPrm;
+      return contents;
     }
 
     // 1. try { 포맷
@@ -181,7 +181,7 @@ export const tryCatch = async (
       /(\r?\n)+([^\S\n\r]*)}/gm
     );
 
-    let finalResult: string = cntnPrm
+    const finalResult: string = contents
     // try / catch / finally 헤더 기본 정규화
     .replaceAll(rules1, () => (
       `try {`
@@ -232,6 +232,6 @@ export const tryCatch = async (
   }
   catch (error: unknown) {
     logger(`error`, `${fileExt}:tryCatch - ${(error as Error).message}`);
-    return cntnPrm;
+    return contents;
   }
 };

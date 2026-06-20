@@ -8,7 +8,7 @@
 import { vscode } from "@exportLibs";
 
 const MAIN = `Jlint`;
-const AT_CLS_MS = 1000;
+const AUTO_CLOSE_MS = 1000;
 const LOG_CONFIG = {
   "debug": {
     "str": `[D]`,
@@ -39,7 +39,7 @@ const showProgress = async (text: string): Promise<void> => {
     },
     async () => {
       await new Promise<void>((resolve) => {
-        setTimeout(resolve, AT_CLS_MS);
+        setTimeout(resolve, AUTO_CLOSE_MS);
       });
     },
   );

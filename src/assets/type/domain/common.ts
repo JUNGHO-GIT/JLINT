@@ -5,7 +5,7 @@
  * @since 2026-1-4
  */
 
-// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
+// ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 export type QuoteType = `single` | `double`;
 
 export type CommonType = {
@@ -25,6 +25,8 @@ export type LanguageName =
   | `Javascriptreact`
   | `Json`
   | `Jsp`
+  | `Python`
+  | `Rust`
   | `Sql`
   | `Typescript`
   | `Typescriptreact`
@@ -32,7 +34,7 @@ export type LanguageName =
   | `Yaml`;
 
 export type RemoveCommentsRule = (
-  cntnPrm: string,
+  contents: string,
   fileTabSize: number,
   fileEol: string,
   fileExt: string,
@@ -40,7 +42,7 @@ export type RemoveCommentsRule = (
 
 export type PrettierFormatRule = (
   commonParam: CommonType,
-  cntnPrm: string,
+  contents: string,
   fileName: string,
   fileTabSize: number,
   fileEol: string,
@@ -48,7 +50,7 @@ export type PrettierFormatRule = (
 ) => Promise<string>;
 
 export type TextTransformRule = (
-  cntnPrm: string,
+  contents: string,
   fileExt: string,
 ) => Promise<string>;
 

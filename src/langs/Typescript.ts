@@ -5,20 +5,20 @@
  * @since 2026-1-4
  */
 
-import type { PrettierOptions as PrttOpts, StripOptions } from "@exportLibs";
+import type { PrettierOptions, StripOptions } from "@exportLibs";
 import { getPrettier, jsMinify, strip } from "@exportLibs";
 import { logger, modal } from "@exportScripts";
 import type { CommonType } from "@exportTypes";
 
-// 0. removeComments ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
-export const rmvCmts = async (
-	cntnPrm: string,
+// 0. removeComments ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+export const removeComments = async (
+	contents: string,
 	_fileTabSize: number,
 	_fileEol: string,
 	fileExt: string,
 ) => {
 	try {
-		const minifyResult = await jsMinify(cntnPrm, {
+		const minifyResult = await jsMinify(contents, {
 			compress: false,
 			format: {
 				comments: false,
@@ -34,22 +34,22 @@ export const rmvCmts = async (
 			preserveNewlines: false,
 		};
 
-		const sfMnfyRes = minifyResult ?? ``;
-		const finalResult = strip(sfMnfyRes, baseOptions);
+		const safeMinifyResult = minifyResult ?? ``;
+		const finalResult = strip(safeMinifyResult, baseOptions);
 
 		logger(`debug`, `${fileExt}:removeComments - Y`);
 		return finalResult;
 	}
   catch (error: unknown) {
 		logger(`error`, `${fileExt}:removeComments - ${(error as Error).message}`);
-		return cntnPrm;
+		return contents;
 	}
 };
 
-// 1. prettierFormat ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
-export const prttFrmt = async (
+// 1. prettierFormat ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+export const prettierFormat = async (
 	commonParam: CommonType,
-	cntnPrm: string,
+	contents: string,
 	fileName: string,
 	_fileTabSize: number,
 	fileEol: string,
@@ -59,10 +59,10 @@ export const prttFrmt = async (
 		logger(`debug`, `${fileExt}:prettierFormat - start`);
 		// 0. prettier
 		const prettier = await getPrettier();
-		const prttStat = prettier ? `prettier:loaded` : `prettier:missing`;
+		const prettierStatus = prettier ? `prettier:loaded` : `prettier:missing`;
 		logger(
 			prettier ? `debug` : `warn`,
-			`${fileExt}:prettierFormat - ${prttStat}`,
+			`${fileExt}:prettierFormat - ${prettierStatus}`,
 		);
 
 		// 1. parser
@@ -71,7 +71,7 @@ export const prttFrmt = async (
 		// 2. plugin
 
 		// 3. options
-		const baseOptions: PrttOpts = {
+		const baseOptions: PrettierOptions = {
 			__embeddedInHtml: true,
 			arrowParens: `always`,
 			bracketSameLine: false,
@@ -102,15 +102,15 @@ export const prttFrmt = async (
       experimentalOperatorPosition: "end",
       experimentalTernaries: true,
 		};
-		const frmtAvail = prettier && typeof prettier.format === `function`;
+		const formatAvailable = prettier && typeof prettier.format === `function`;
 		logger(
-			frmtAvail ? `debug` : `warn`,
-			`${fileExt}:prettierFormat - ${frmtAvail ? `formatter:ready` : `formatter:missing`}`,
+			formatAvailable ? `debug` : `warn`,
+			`${fileExt}:prettierFormat - ${formatAvailable ? `formatter:ready` : `formatter:missing`}`,
 		);
-		const finalResult = frmtAvail
+		const finalResult = formatAvailable
 			? await (async () => {
 					logger(`debug`, `${fileExt}:prettierFormat - format:start`);
-					const formatted = await prettier.format(cntnPrm, baseOptions);
+					const formatted = await prettier.format(contents, baseOptions);
 					const chained = (formatted as string).replaceAll(
 						/\n(\t+)(\.)/g,
 						(...p: unknown[]) => {
@@ -124,7 +124,7 @@ export const prttFrmt = async (
 				})()
 			: (() => {
 					logger(`warn`, `${fileExt}:prettierFormat - format:skipped`);
-					return cntnPrm;
+					return contents;
 				})();
 		logger(`debug`, `${fileExt}:prettierFormat - end`);
 		return finalResult;
@@ -135,17 +135,17 @@ export const prttFrmt = async (
 			.trim()
 			.replaceAll(/\u001B\[[\d;]*[FGKm]/g, ``);
 		const msgRegex = /([\S\s]*)(\s*)(https)(.*?)(\()(.*?)(\))([\S\s]*)/gm;
-		const msgReRplc = `[Jlint]\n\nError Line = [ $6 ]\nError Site = $8`;
-		const msgResult = msg.replaceAll(msgRegex, msgReRplc);
+		const msgReplacement = `[Jlint]\n\nError Line = [ $6 ]\nError Site = $8`;
+		const msgResult = msg.replaceAll(msgRegex, msgReplacement);
 
 		logger(`error`, `${fileExt}:prettierFormat - ${msgResult}`);
 		modal(`error`, `${fileExt}: Prettier Format Error:\n${msgResult}`);
-		return cntnPrm;
+		return contents;
 	}
 };
 
-// 2. insertLine ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
-export const insertLine = async (cntnPrm: string, fileExt: string) => {
+// 2. insertLine ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+export const insertLine = async (contents: string, fileExt: string) => {
 	try {
 		const rules1 =
 			/^(?!\/\/--)(?!(?:.*\bclassName\b)|(?:.*class=".*"))\n*(\s*)(public|private|function|class)(\s*.*)(\s*?)/gm;
@@ -156,46 +156,46 @@ export const insertLine = async (cntnPrm: string, fileExt: string) => {
 			/^(?!\/\/--)\n*(\s*)(useEffect\s*\(\s*\(\s*.*?\)\s*=>\s*{)(\s*?)/gm;
 		const rules5 = /^(?!\/\/--)\n*(\s*)(return\s*.*?\s*<)(\s*?)/gm;
 
-		const finalResult: string = cntnPrm
+		const finalResult: string = contents
 			.replaceAll(rules1, (...p: unknown[]) => {
 				const p1 = p[1] as string;
 				const p2 = p[2] as string;
 				const p3 = p[3] as string;
 				const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
-				const insetLine = `// ${`-`.repeat(spaceSize)}-`;
-				return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+				const dividerLine = `// ${`-`.repeat(spaceSize)}-`;
+				return `\n${p1}${dividerLine}\n${p1}${p2}${p3}`;
 			})
 			.replaceAll(rules2, (...p: unknown[]) => {
 				const p1 = p[1] as string;
 				const p2 = p[2] as string;
 				const p3 = p[3] as string;
 				const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
-				const insetLine = `// ${`-`.repeat(spaceSize)}-`;
-				return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+				const dividerLine = `// ${`-`.repeat(spaceSize)}-`;
+				return `\n${p1}${dividerLine}\n${p1}${p2}${p3}`;
 			})
 			.replaceAll(rules3, (...p: unknown[]) => {
 				const p1 = p[1] as string;
 				const p2 = p[2] as string;
 				const p3 = p[3] as string;
 				const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
-				const insetLine = `// ${`-`.repeat(spaceSize)}-`;
-				return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+				const dividerLine = `// ${`-`.repeat(spaceSize)}-`;
+				return `\n${p1}${dividerLine}\n${p1}${p2}${p3}`;
 			})
 			.replaceAll(rules4, (...p: unknown[]) => {
 				const p1 = p[1] as string;
 				const p2 = p[2] as string;
 				const p3 = p[3] as string;
 				const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
-				const insetLine = `// ${`-`.repeat(spaceSize)}-`;
-				return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+				const dividerLine = `// ${`-`.repeat(spaceSize)}-`;
+				return `\n${p1}${dividerLine}\n${p1}${p2}${p3}`;
 			})
 			.replaceAll(rules5, (...p: unknown[]) => {
 				const p1 = p[1] as string;
 				const p2 = p[2] as string;
 				const p3 = p[3] as string;
 				const spaceSize = 100 - (p1.length + `// `.length + `-`.length);
-				const insetLine = `// ${`-`.repeat(spaceSize)}-`;
-				return `\n${p1}${insetLine}\n${p1}${p2}${p3}`;
+				const dividerLine = `// ${`-`.repeat(spaceSize)}-`;
+				return `\n${p1}${dividerLine}\n${p1}${p2}${p3}`;
 			});
 
 		logger(`debug`, `${fileExt}:insertLine - Y`);
@@ -203,12 +203,12 @@ export const insertLine = async (cntnPrm: string, fileExt: string) => {
 	}
   catch (error: unknown) {
 		logger(`error`, `${fileExt}:insertLine - ${(error as Error).message}`);
-		return cntnPrm;
+		return contents;
 	}
 };
 
-// 3. insertSpace ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
-export const insertSpace = async (cntnPrm: string, fileExt: string) => {
+// 3. insertSpace ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+export const insertSpace = async (contents: string, fileExt: string) => {
 	try {
 		const rules1 =
 			/(\s*)(public|private|function)(\s*)(.*?)(\s*)\((\s*)(.*?)(\s*)\)(\s*)({)/gm;
@@ -217,7 +217,7 @@ export const insertSpace = async (cntnPrm: string, fileExt: string) => {
 		const rules3 =
 			/^(\s*\/\/ --.*){2}(\n*)(^\s*)(public|private|function)(.*)/gm;
 
-		const finalResult: string = cntnPrm
+		const finalResult: string = contents
 			.replaceAll(
 				rules1,
 				(...p: unknown[]) => `${p[1]}${p[2]} ${p[4]} (${p[7]}) {`,
@@ -230,8 +230,6 @@ export const insertSpace = async (cntnPrm: string, fileExt: string) => {
 	}
   catch (error: unknown) {
 		logger(`error`, `${fileExt}:insertSpace - ${(error as Error).message}`);
-		return cntnPrm;
+		return contents;
 	}
 };
-
-export { prttFrmt as prettierFormat, rmvCmts as removeComments };

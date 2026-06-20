@@ -11,8 +11,8 @@ import {
 	globalRules,
 	ifElse,
 	iifeRules,
-	langSpecificRules as lngSpcfRls,
 	lineBreak,
+	langSpecificRules,
 	semicolon,
 	singleTags,
 	space,
@@ -20,10 +20,10 @@ import {
 	tryCatch,
 } from "@exportRules";
 import { logger, notify } from "@exportScripts";
-import type { CommonType, LanguageName, LanguageRules as LangRls } from "@exportTypes";
+import type { CommonType, LanguageRules, LanguageName } from "@exportTypes";
 
-// 0. 언어 규칙 맵 ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
-const LANG_RLS: Record<LanguageName, LangRls> = {
+// 0. 언어 규칙 맵 ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+const LANGUAGE_RULES: Record<LanguageName, LanguageRules> = {
 	Css: Langs.Css,
 	Html: Langs.Html,
 	Java: Langs.Java,
@@ -31,6 +31,8 @@ const LANG_RLS: Record<LanguageName, LangRls> = {
 	Javascriptreact: Langs.Javascriptreact,
 	Json: Langs.Json,
 	Jsp: Langs.Jsp,
+	Python: Langs.Python,
+	Rust: Langs.Rust,
 	Sql: Langs.Sql,
 	Typescript: Langs.Typescript,
 	Typescriptreact: Langs.Typescriptreact,
@@ -38,7 +40,7 @@ const LANG_RLS: Record<LanguageName, LangRls> = {
 	Yaml: Langs.Yaml,
 };
 
-const LNBFE: Record<string, LanguageName> = {
+const LANGUAGE_BY_EXT: Record<string, LanguageName> = {
 	css: `Css`,
 	htm: `Html`,
 	html: `Html`,
@@ -55,6 +57,10 @@ const LNBFE: Record<string, LanguageName> = {
 	jsx: `Javascriptreact`,
 	mybatis: `Xml`,
 	plsql: `Sql`,
+	py: `Python`,
+	python: `Python`,
+	rs: `Rust`,
+	rust: `Rust`,
 	scss: `Css`,
 	sql: `Sql`,
 	ts: `Typescript`,
@@ -66,17 +72,17 @@ const LNBFE: Record<string, LanguageName> = {
 	yml: `Yaml`,
 };
 
-// 1. 언어 규칙 해석 ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
-const rslvLangRls = async (
+// 1. 언어 규칙 해석 ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+const resolveLanguageRules = async (
 	fileExt: string,
 	caller: string,
-): Promise<LangRls | null> => {
-	let langRls: LangRls | null = null;
-	const languageName = LNBFE[fileExt] ?? null;
+): Promise<LanguageRules | null> => {
+	let languageRules: LanguageRules | null = null;
+	const languageName = LANGUAGE_BY_EXT[fileExt] ?? null;
 
 	if (languageName) {
 		logger(`debug`, `${caller} - langStr:${languageName}`);
-		langRls = LANG_RLS[languageName];
+		languageRules = LANGUAGE_RULES[languageName];
 	}
 	else {
 		const message = `${caller} - Unsupported language: ${fileExt}`;
@@ -84,24 +90,24 @@ const rslvLangRls = async (
 		await notify(`error`, message);
 	}
 
-	return langRls;
+	return languageRules;
 };
 
-// 2. 주석제거 ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
-export const gtRmvCmts = async (
-	cntnPrm: string,
+// 2. 주석제거 ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+export const getRemoveComments = async (
+	contents: string,
 	fileTabSize: number,
 	fileEol: string,
 	fileExt: string,
 ) => {
-	let resCntn = cntnPrm || ``;
+	let result = contents || ``;
 
 	try {
-		const langRls = await rslvLangRls(fileExt, `getRemoveComments`);
+		const languageRules = await resolveLanguageRules(fileExt, `getRemoveComments`);
 
-		if (langRls) {
-			resCntn = await langRls.removeComments(
-				resCntn,
+		if (languageRules) {
+			result = await languageRules.removeComments(
+				result,
 				fileTabSize,
 				fileEol,
 				fileExt,
@@ -116,44 +122,44 @@ export const gtRmvCmts = async (
 		);
 	}
 
-	return resCntn;
+	return result;
 };
 
-// 3. 언어정보 ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
+// 3. 언어정보 ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 export const getLanguage = async (
 	commonParam: CommonType,
 	initContents: string,
-	frmtTgtPth: string,
+	filePath: string,
 	fileTabSize: number,
 	fileEol: string,
 	fileExt: string,
 ) => {
-	let resCntn = initContents || ``;
+	let result = initContents || ``;
 
 	try {
-		const langRls = await rslvLangRls(fileExt, `getLanguage`);
+		const languageRules = await resolveLanguageRules(fileExt, `getLanguage`);
 
-		if (langRls && commonParam.activateLint) {
+		if (languageRules && commonParam.activateLint) {
 			if (commonParam.removeComments) {
-				resCntn = await langRls.removeComments(
-					resCntn,
+				result = await languageRules.removeComments(
+					result,
 					fileTabSize,
 					fileEol,
 					fileExt,
 				);
 			}
-			resCntn = await langRls.prettierFormat(
+			result = await languageRules.prettierFormat(
 				commonParam,
-				resCntn,
-				frmtTgtPth,
+				result,
+				filePath,
 				fileTabSize,
 				fileEol,
 				fileExt,
 			);
 			if (commonParam.insertLine) {
-				resCntn = await langRls.insertLine(resCntn, fileExt);
+				result = await languageRules.insertLine(result, fileExt);
 			}
-			resCntn = await langRls.insertSpace(resCntn, fileExt);
+			result = await languageRules.insertSpace(result, fileExt);
 		}
 	}
 	catch (error: unknown) {
@@ -161,58 +167,58 @@ export const getLanguage = async (
 		logger(`error`, `${fileExt}:getLanguage - ${message}`);
 	}
 
-	return resCntn;
+	return result;
 };
 
-// 4. 문법 ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
+// 4. 문법 ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 export const getSyntax = async (
 	commonParam: CommonType,
-	aftrLangCntn: string,
+	contents: string,
 	fileExt: string,
 ) => {
-	let resCntn = aftrLangCntn;
+	let result = contents;
 	if (!commonParam.activateLint) {
-		return resCntn;
+		return result;
 	}
-	resCntn = await capitalize(resCntn, fileExt);
-	resCntn = await singleTags(resCntn, fileExt);
-	resCntn = await semicolon(resCntn, fileExt);
-	resCntn = await space(resCntn, fileExt);
-	resCntn = await lineBreak(resCntn, fileExt);
+	result = await capitalize(result, fileExt);
+	result = await singleTags(result, fileExt);
+	result = await semicolon(result, fileExt);
+	result = await space(result, fileExt);
+	result = await lineBreak(result, fileExt);
 
-	return resCntn;
+	return result;
 };
 
-// 5. 로직 ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
+// 5. 로직 ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 export const getLogic = async (
 	commonParam: CommonType,
-	aftrSyntCntn: string,
+	contents: string,
 	fileExt: string,
 ) => {
-	let resCntn = aftrSyntCntn;
+	let result = contents;
 	if (!commonParam.activateLint) {
-		return resCntn;
+		return result;
 	}
-	resCntn = await ifElse(resCntn, fileExt);
-	resCntn = await tryCatch(resCntn, fileExt);
+	result = await ifElse(result, fileExt);
+	result = await tryCatch(result, fileExt);
 
-	return resCntn;
+	return result;
 };
 
-// 6. 최종 점검 ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
-export const gtFnlChck = async (
+// 6. 최종 점검 ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+export const getFinalCheck = async (
 	commonParam: CommonType,
-	aftrLgcCntn: string,
+	contents: string,
 	fileExt: string,
 ) => {
-	let resCntn = aftrLgcCntn;
+	let result = contents;
 	if (!commonParam.activateLint) {
-		return resCntn;
+		return result;
 	}
-	resCntn = await lngSpcfRls(resCntn, fileExt);
-	resCntn = await globalRules(resCntn, fileExt);
-	resCntn = await ternaryRules(resCntn, fileExt);
-	resCntn = await iifeRules(resCntn, fileExt);
+	result = await langSpecificRules(result, fileExt);
+	result = await globalRules(result, fileExt);
+	result = await ternaryRules(result, fileExt);
+	result = await iifeRules(result, fileExt);
 
-	return resCntn;
+	return result;
 };

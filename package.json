@@ -4,7 +4,7 @@
   "description": "Universal Language formatter",
   "publisher": "JUNGHO",
   "license": "Apache-2.0",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "main": "./out/extension.js",
   "icon": "logo.webp",
   "repository": {
@@ -38,6 +38,8 @@
     "yaml",
     "sql",
     "jsp",
+    "python",
+    "rust",
     "universal"
   ],
   "activationEvents": [
@@ -142,6 +144,7 @@
   },
   "dependencies": {
     "@prettier/plugin-xml": "3.4.2",
+    "@wasm-fmt/ruff_fmt": "^0.15.16",
     "clean-css": "5.3.3",
     "html-minifier-terser": "7.2.0",
     "prettier": "3.8.3",

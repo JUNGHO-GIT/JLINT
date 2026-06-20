@@ -7,15 +7,15 @@
 
 import { logger } from "@exportScripts";
 
-// 1. capitalize ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
+// 1. capitalize ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 export const capitalize = async (
-  cntnPrm: string,
+  contents: string,
   fileExt: string,
 ) => {
   try {
     if (fileExt !== `xml` && fileExt !== `sql`) {
       logger(`debug`, `${fileExt}:capitalize - N`);
-      return cntnPrm;
+      return contents;
     }
 
     const rules1 = (
@@ -31,7 +31,7 @@ export const capitalize = async (
       /([^/<>]\b)(\s*)(inner join|left join|right join|full join|outer join)\b(\s*)([^/<>]\b)/gm
     );
 
-    const finalResult: string = cntnPrm
+    const finalResult: string = contents
     .replaceAll(rules1, (...p: unknown[]) => (
       `${p[1]}${p[2]}${(p[3] as string).toUpperCase()}${p[4]}${p[5]}`
     ))
@@ -50,13 +50,13 @@ export const capitalize = async (
   }
   catch (error: unknown) {
     logger(`error`, `${fileExt}:capitalize - ${(error as Error).message}`);
-    return cntnPrm;
+    return contents;
   }
 };
 
-// 2. singleTags ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
+// 2. singleTags ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 export const singleTags = async (
-  cntnPrm: string,
+  contents: string,
   fileExt: string,
 ) => {
   try {
@@ -67,7 +67,7 @@ export const singleTags = async (
       /(<)\b(area|base|br|col|command|embed|hr|img|input|keygen|link|meta|param|source|track|wbr)\b(\s*)(\/*>)/gm
     );
 
-    const finalResult: string = cntnPrm
+    const finalResult: string = contents
     .replaceAll(rules1, (...p: unknown[]) => (
       `${p[1]}${p[2]}${p[3]}${p[4]}/>`
     ))
@@ -80,13 +80,13 @@ export const singleTags = async (
   }
   catch (error: unknown) {
     logger(`error`, `${fileExt}:singleTags - ${(error as Error).message}`);
-    return cntnPrm;
+    return contents;
   }
 };
 
-// 3. semicolon ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
+// 3. semicolon ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 export const semicolon = async (
-  cntnPrm: string,
+  contents: string,
   fileExt: string,
 ) => {
   try {
@@ -94,7 +94,7 @@ export const semicolon = async (
       /(\s*)(return)(\s*)(;)/gm
     );
 
-    const finalResult: string = cntnPrm
+    const finalResult: string = contents
     .replaceAll(rules1, (...p: unknown[]) => (
       `${p[1]}${p[2]};`
     ));
@@ -104,13 +104,13 @@ export const semicolon = async (
   }
   catch (error: unknown) {
     logger(`error`, `${fileExt}:semicolon - ${(error as Error).message}`);
-    return cntnPrm;
+    return contents;
   }
 };
 
 // 4. space ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 export const space = async (
-  cntnPrm: string,
+  contents: string,
   fileExt: string,
 ) => {
   try {
@@ -118,7 +118,7 @@ export const space = async (
       /((?:function\s*[\w$]*|(?:const|let|var)\s+[\w$]+\s*=\s*(?:async\s*)?)\s*\()([^)]*)\)/gm
     );
 
-    const finalResult: string = cntnPrm
+    const finalResult: string = contents
     .replaceAll(rules1, (...p: unknown[]) => (
       `${p[1]}${(p[2] as string).replaceAll(/([\w$]+)\s*=\s*/g, `$1=`)})`
     ));
@@ -128,13 +128,13 @@ export const space = async (
   }
   catch (error: unknown) {
     logger(`error`, `${fileExt}:space - ${(error as Error).message}`);
-    return cntnPrm;
+    return contents;
   }
 };
 
 // 5. lineBreak ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 export const lineBreak = async (
-  cntnPrm: string,
+  contents: string,
   fileExt: string,
 ) => {
   try {
@@ -183,10 +183,10 @@ export const lineBreak = async (
     const rules14 = (
       /(\s*)(@Override)(\n|\n+)(.*)(\n|\n+)(\s*)(public|private)/gm
     );
-    const rlsCmtGrd = /\/\//;
+    const commentGuard = /\/\//;
     const rules11Guard = /\n{2,}[^\S\n\r]*return|^[^\n][^\S\n\r]*return/;
 
-    let finalResult: string = cntnPrm
+    let finalResult: string = contents
     .replaceAll(rules1, (...p: unknown[]) => (
       `${p[1]}\n${p[3]}`
     ));
@@ -207,7 +207,7 @@ export const lineBreak = async (
         `${p[1]}${p[2]}\n${p[6]}`
       ));
 
-      if (rlsCmtGrd.test(finalResult)) {
+      if (commentGuard.test(finalResult)) {
         finalResult = finalResult
         .replaceAll(rules5, (...p: unknown[]) => (
           `${p[1]}${p[2]}${p[3]}${p[4]}\n`
@@ -218,7 +218,7 @@ export const lineBreak = async (
       .replaceAll(rules6, (...p: unknown[]) => (
         `${p[1]}${p[2]}${p[3]}${p[4]}\n\n${p[8]}${p[10]}`
       ))
-      if (rlsCmtGrd.test(finalResult)) {
+      if (commentGuard.test(finalResult)) {
         finalResult = finalResult
         .replaceAll(rules7, (...p: unknown[]) => (
           `${p[1]}${p[2]}\n\n${p[4]}`
@@ -232,7 +232,7 @@ export const lineBreak = async (
       .replaceAll(rules9, (...p: unknown[]) => (
         `${p[1]} ${p[3]}\n${p[6]}${p[7]}`
       ))
-      if (rlsCmtGrd.test(finalResult)) {
+      if (commentGuard.test(finalResult)) {
         finalResult = finalResult
         .replaceAll(rules10, (...p: unknown[]) => (
           `${p[1]}${p[2]}${p[3]}${p[4]}\n\n${p[7]}${p[8]}`
@@ -266,6 +266,6 @@ export const lineBreak = async (
   }
   catch (error: unknown) {
     logger(`error`, `${fileExt}:lineBreak - ${(error as Error).message}`);
-    return cntnPrm;
+    return contents;
   }
 };

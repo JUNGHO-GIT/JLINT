@@ -5,25 +5,21 @@
  * @since 2026-1-4
  */
 
-import { getRemoveComments as gtRmvCmts, main } from "@exportCores";
-import { path, setExtensionPath as stExtPth, vscode } from "@exportLibs";
+import { getRemoveComments, main } from "@exportCores";
+import { path, setExtensionPath, vscode } from "@exportLibs";
 import { initLogger, logger, notify } from "@exportScripts";
 import type { CommonType } from "@exportTypes";
 
-// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
-export const deactivate = (): void => {
-	logger(`info`, `Jlint is now deactivated`);
-};
-
-// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
+// ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 export const activate = (context: vscode.ExtensionContext): void => {
-	// 0. Initialize Logger
+
+	// Initialize Logger ――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 	initLogger();
-	stExtPth(context.extensionPath);
+	setExtensionPath(context.extensionPath);
 	logger(`info`, `Jlint is now active!`);
 
-	// 1. Get Configuration
-	const gtCfg = (): CommonType => {
+	// Get Configuration ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+	const getConfig = (): CommonType => {
 		const config = vscode.workspace.getConfiguration(`Jlint`);
 		return {
 			activateLint: config.get(`activateLint`, true) as boolean,
@@ -35,7 +31,7 @@ export const activate = (context: vscode.ExtensionContext): void => {
 		};
 	};
 
-	// 2. Register Command
+	// Register Command ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 	const command = vscode.commands.registerCommand(
 		`extension.Jlint`,
 		async () => {
@@ -55,22 +51,22 @@ export const activate = (context: vscode.ExtensionContext): void => {
 				`editor`,
 				editor.document.uri,
 			);
-			const edtrInsrSpcs = editorConfig.get(
+			const editorInsertSpaces = editorConfig.get(
 				`insertSpaces`,
 				true,
 			) as boolean;
-			const edtrTbSz = editorConfig.get(`tabSize`, 2) as number;
+			const editorTabSize = editorConfig.get(`tabSize`, 2) as number;
 
-			const jlintConfig = gtCfg();
+			const jlintConfig = getConfig();
 			const commonConfig = {
 				...jlintConfig,
-				indentSize: edtrTbSz,
-				useTabs: !edtrInsrSpcs,
+				indentSize: editorTabSize,
+				useTabs: !editorInsertSpaces,
 			};
 
 			const filePath = editor.document.uri.fsPath;
 			const fileName = path.basename(filePath);
-			const fileTabSize = edtrTbSz;
+			const fileTabSize = editorTabSize;
 			const fileEol =
 				editor.document.eol === vscode.EndOfLine.LF ? `lf` : `crlf`;
 			const fileExt = editor.document.languageId;
@@ -88,7 +84,8 @@ export const activate = (context: vscode.ExtensionContext): void => {
 		},
 	);
 
-	const rmvCmtsCmd = vscode.commands.registerCommand(
+  // removeCommentsCommand ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+	const removeCommentsCommand = vscode.commands.registerCommand(
 		`extension.JlintRemoveComments`,
 		async () => {
 			const editor = vscode.window.activeTextEditor;
@@ -108,14 +105,14 @@ export const activate = (context: vscode.ExtensionContext): void => {
 				editor.document.uri,
 			);
 
-			const edtrTbSz = editorConfig.get(`tabSize`, 2) as number;
+			const editorTabSize = editorConfig.get(`tabSize`, 2) as number;
 			const filePath = editor.document.uri.fsPath;
 			const fileName = path.basename(filePath);
-			const fileTabSize = edtrTbSz;
+			const fileTabSize = editorTabSize;
 			const fileEol = editor.document.eol === vscode.EndOfLine.LF ? `lf` : `crlf`;
 			const fileExt = editor.document.languageId;
 			const initContents = editor.document.getText();
-			const fnlCntn = await gtRmvCmts(
+			const finalContents = await getRemoveComments(
 				initContents,
 				fileTabSize,
 				fileEol,
@@ -128,7 +125,7 @@ export const activate = (context: vscode.ExtensionContext): void => {
 				document.positionAt(document.getText().length),
 			);
 			await editor.edit((editBuilder: vscode.TextEditorEdit) => {
-				editBuilder.replace(fullRange, fnlCntn);
+				editBuilder.replace(fullRange, finalContents);
 			});
 			await document.save();
 
@@ -136,19 +133,22 @@ export const activate = (context: vscode.ExtensionContext): void => {
 		},
 	);
 
-	// 3. Listen for configuration changes ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――--
+	// Listen for configuration changes ―――――――――――――――――――――――――――――――――――――――――――――――――――――――
 	context.subscriptions.push(command);
-	context.subscriptions.push(rmvCmtsCmd);
+	context.subscriptions.push(removeCommentsCommand);
 	context.subscriptions.push(
 		vscode.workspace.onDidChangeConfiguration(
 			(event: vscode.ConfigurationChangeEvent) => {
 				if (event.affectsConfiguration(`Jlint`)) {
 					logger(
 						`info`,
-						`configuration - updated: ${JSON.stringify(gtCfg(), null, 2)}`,
+						`configuration - updated: ${JSON.stringify(getConfig(), null, 2)}`,
 					);
 				}
 			},
 		),
 	);
+};
+export const deactivate = (): void => {
+	logger(`info`, `Jlint is now deactivated`);
 };

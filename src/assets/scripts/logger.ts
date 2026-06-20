@@ -7,7 +7,7 @@
 
 import { vscode } from "@exportLibs";
 
-const TLR024 = /^\s+/gm;
+const LEADING_WS = /^\s+/gm;
 const MAIN = `Jlint`;
 const LOG_LEVEL_MAP = {
   "off": 0,
@@ -49,12 +49,11 @@ const LOG_CONFIG = {
 } as const;
 
 type LogType = Exclude<keyof typeof LOG_LEVEL_MAP, `off`>;
-
-let otptChnn: vscode.OutputChannel | null = null;
+let outputChannel: vscode.OutputChannel | null = null;
 
 // 1. Init logger ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 export const initLogger = (): void => {
-  otptChnn ??= vscode.window.createOutputChannel(MAIN);
+  outputChannel ??= vscode.window.createOutputChannel(MAIN);
 };
 
 // 2. Get log level ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
@@ -72,11 +71,11 @@ const shouldLog = (type: LogType): boolean => {
 };
 
 // 4. Format log ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-const formatLog = (text = ``): string => text.trim().replaceAll(TLR024, ``);
+const formatLog = (text = ``): string => text.trim().replaceAll(LEADING_WS, ``);
 
 // 5. Append output ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 const appendOutput = (message: string): void => {
-  otptChnn?.appendLine(message);
+  outputChannel?.appendLine(message);
 };
 
 // 6. Logger ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――

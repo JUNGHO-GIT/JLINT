@@ -8,14 +8,14 @@
 import { TextDecoder, vscode } from "@exportLibs";
 import { logger } from "@exportScripts";
 
-// ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-
+// ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 export const getContents = async (filePath: string, fileTabSize: number, fileEol: string, fileExt: string) => {
   const data = await vscode.workspace.fs.readFile(vscode.Uri.file(filePath));
   const decoder = new TextDecoder(`utf-8`);
   const dataStr = decoder.decode(data);
 
   try {
-    const updtCont = dataStr
+    const updatedContents = dataStr
     .split(fileEol === `lf` ? `\n` : `\r\n`)
     .map((line: string) => line.trimEnd())
     .filter((line: string, idx: number, arr: string[]) => {
@@ -35,7 +35,7 @@ export const getContents = async (filePath: string, fileTabSize: number, fileEol
     .trim();
 
     logger(`debug`, `${fileExt}:getContents - Y`);
-    return updtCont;
+    return updatedContents;
   }
   catch (error: unknown) {
     logger(`error`, `${fileExt}:getContents - ${(error as Error).message}`);
