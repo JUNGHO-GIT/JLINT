@@ -11,6 +11,7 @@ import { logger } from "@exportScripts";
 export const ifElse = async (
   contents: string,
   fileExt: string,
+  insertParen = false,
 ) => {
   try {
     if (fileExt === `xml` || fileExt === `json` || fileExt === `sql`) {
@@ -61,7 +62,7 @@ export const ifElse = async (
       /(\r?\n)+([^\S\n\r]*)}/gm
     );
 
-    const finalResult: string = contents
+    let finalResult: string = contents
     // if / else if 헤더 정규화
     .replaceAll(rules1, () => (
       `if (`
@@ -106,7 +107,70 @@ export const ifElse = async (
       `\n${p[2]}}`
     ));
 
+    // 9. Rust 전용: if / else if 조건을 소괄호로 감싼다 (if let / 이미 괄호인 조건 제외)
+    //    if cond {  =>  if (cond) {
+    if (fileExt === `rust` && insertParen) {
+      const isWrapped = (
+        value: string,
+      ): boolean => {
+        if (value[0] !== `(` || value[value.length - 1] !== `)`) {
+          return false;
+        }
+        let depth = 0;
+        let inStr = false;
+        let inChar = false;
+        for (let i = 0; i < value.length; i += 1) {
+          const ch = value[i];
+          if (inStr) {
+            if (ch.charCodeAt(0) === 92) {
+              i += 1;
+            }
+            else if (ch === `"`) {
+              inStr = false;
+            }
+            continue;
+          }
+          if (inChar) {
+            if (ch.charCodeAt(0) === 92) {
+              i += 1;
+            }
+            else if (ch === `'`) {
+              inChar = false;
+            }
+            continue;
+          }
+          if (ch === `"`) {
+            inStr = true;
+          }
+          else if (ch === `'`) {
+            inChar = true;
+          }
+          else if (ch === `(`) {
+            depth += 1;
+          }
+          else if (ch === `)`) {
+            depth -= 1;
+            if (depth === 0 && i < value.length - 1) {
+              return false;
+            }
+          }
+        }
+        return depth === 0;
+      };
+      const rules9 = (
+        /^([^\S\n\r]*)(if|else\s+if)\s+(?!let\b)(.+?)\s*\{[^\S\n\r]*\r?$/gm
+      );
+      finalResult = finalResult.replaceAll(rules9, (...p: unknown[]) => {
+        const indent = p[1] as string;
+        const keyword = p[2] as string;
+        const condition = (p[3] as string).trim();
+        const inner = isWrapped(condition) ? condition : `(${condition})`;
+        return `${indent}${keyword} ${inner} {`;
+      });
+    }
+
     logger(`debug`, `${fileExt}:ifElse - Y`);
+
 
     return finalResult;
   }

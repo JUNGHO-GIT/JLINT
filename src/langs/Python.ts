@@ -115,7 +115,14 @@ export const insertLine = async (contents: string, fileExt: string) => {
 // 3. insertSpace ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 export const insertSpace = async (contents: string, fileExt: string) => {
 	try {
-		const finalResult = contents;
+		// 함수/클래스 정의 앞 빈 줄 1칸 보장 (앞 줄이 코드일 때만; 빈 줄·주석·여는 블록·데코레이터 뒤 스킵)
+		const blankRule =
+			/^([^\S\n\r]*[^\s#@][^\n\r]*(?<!:)\n)([^\S\n\r]*)((?:async\s+)?(?:def|class)\b)/gm;
+
+		const finalResult: string = contents.replaceAll(
+			blankRule,
+			(...p: unknown[]) => `${p[1]}\n${p[2]}${p[3]}`,
+		);
 
 		logger(`debug`, `${fileExt}:insertSpace - Y`);
 		return finalResult;

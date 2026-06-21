@@ -30,6 +30,7 @@ export const main = async (
 		`activateLint: ${commonParam.activateLint} \n` +
     `removeComments: ${commonParam.removeComments} \n` +
     `insertLine: ${commonParam.insertLine} \n` +
+    `insertParen: ${commonParam.insertParen} \n` +
     `indentSize: ${commonParam.indentSize} \n` +
     `quoteType: ${commonParam.quoteType} \n` +
     `fileName: ${fileName} \n` +

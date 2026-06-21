@@ -215,6 +215,9 @@ export const insertSpace = async (contents: string, fileExt: string) => {
 			/(\s*)(public|private|function)(\s*)(\()(\s*)(.*?)(\s*)\)(\s*)({)/gm;
 		const rules3 =
 			/^(\s*\/\/ --.*){2}(\n*)(^\s*)(public|private|function)(.*)/gm;
+		// 함수/클래스 정의 앞 빈 줄 1칸 보장 (앞 줄이 코드일 때만; 빈 줄·주석·여는 블록·데코레이터 뒤 스킵)
+		const blankRule =
+			/^([^\S\n\r]*[^\s/#*@][^\n\r]*(?<!\{)\n)([^\S\n\r]*)((?:export\s+)?(?:default\s+)?(?:async\s+)?(?:function\b|class\b))/gm;
 
 		const finalResult: string = contents
 			.replaceAll(
@@ -222,7 +225,8 @@ export const insertSpace = async (contents: string, fileExt: string) => {
 				(...p: unknown[]) => `${p[1]}${p[2]} ${p[4]} (${p[7]}) {`,
 			)
 			.replaceAll(rules2, (...p: unknown[]) => `${p[1]}${p[2]} (${p[6]}) {`)
-			.replaceAll(rules3, (...p: unknown[]) => `${p[2]}${p[3]}${p[4]}${p[5]}`);
+			.replaceAll(rules3, (...p: unknown[]) => `${p[2]}${p[3]}${p[4]}${p[5]}`)
+			.replaceAll(blankRule, (...p: unknown[]) => `${p[1]}\n${p[2]}${p[3]}`);
 
 		logger(`debug`, `${fileExt}:insertSpace - Y`);
 		return finalResult;

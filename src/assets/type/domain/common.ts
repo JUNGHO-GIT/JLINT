@@ -12,6 +12,7 @@ export type CommonType = {
   activateLint: boolean;
   removeComments: boolean;
   insertLine: boolean;
+  insertParen: boolean;
   useTabs: boolean;
   indentSize: number;
   quoteType: QuoteType;

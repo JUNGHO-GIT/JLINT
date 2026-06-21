@@ -142,11 +142,15 @@ export const insertSpace = async (contents: string, fileExt: string) => {
 		const rules1 = /(\s*)(\))(\s+)(;)/gm;
 		const rules2 = /(\s*)(@)(\s*)([\S\s]*?)(\s*)(\()/gm;
 		const rules3 = /(\s*?)(ception)({)/gm;
+		// 메서드/타입 정의 앞 빈 줄 1칸 보장 (앞 줄이 코드일 때만; 빈 줄·주석·여는 블록·어노테이션 뒤 스킵)
+		const blankRule =
+			/^([^\S\n\r]*[^\s/#*@][^\n\r]*(?<!\{)\n)([^\S\n\r]*)((?:public|private|protected)\b[^\n]*|class\b|interface\b|enum\b)/gm;
 
 		const finalResult: string = contents
 			.replaceAll(rules1, (...p: unknown[]) => `${p[1]}${p[2]}${p[4]}`)
 			.replaceAll(rules2, (...p: unknown[]) => `${p[1]}${p[2]}${p[4]} ${p[6]}`)
-			.replaceAll(rules3, (...p: unknown[]) => `${p[2]} ${p[3]}`);
+			.replaceAll(rules3, (...p: unknown[]) => `${p[2]} ${p[3]}`)
+			.replaceAll(blankRule, (...p: unknown[]) => `${p[1]}\n${p[2]}${p[3]}`);
 
 		logger(`debug`, `${fileExt}:insertSpace - Y`);
 		return finalResult;

@@ -25,6 +25,7 @@ export const activate = (context: vscode.ExtensionContext): void => {
 			activateLint: config.get(`activateLint`, true) as boolean,
 			indentSize: 2 as number,
 			insertLine: config.get(`insertLine`, false) as boolean,
+			insertParen: config.get(`insertParen`, false) as boolean,
 			quoteType: config.get<CommonType[`quoteType`]>(`quoteType`, `double`),
 			removeComments: config.get(`removeComments`, true) as boolean,
 			useTabs: false,

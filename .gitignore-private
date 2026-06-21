@@ -25,6 +25,14 @@
 **/.gen/
 **/bin/
 **/.bin/
+**/*idea/
+**/*.idea/
+**/*docs/
+**/*.docs/
+**/*base/
+**/*.base/
+**/*backup/
+**/*.backup/
 
 # 2. Dependencies / package artifacts
 **/node_modules/
@@ -61,7 +69,6 @@
 
 # 6. IDE / editor
 # **/.vscode/
-# **/.idea/
 **/.history/
 **/.backup/
 **/.bookmark/

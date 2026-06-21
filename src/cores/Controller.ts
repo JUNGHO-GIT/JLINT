@@ -199,7 +199,7 @@ export const getLogic = async (
 	if (!commonParam.activateLint) {
 		return result;
 	}
-	result = await ifElse(result, fileExt);
+	result = await ifElse(result, fileExt, commonParam.insertParen);
 	result = await tryCatch(result, fileExt);
 
 	return result;
