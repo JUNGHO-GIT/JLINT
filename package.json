@@ -4,7 +4,7 @@
   "description": "Universal Language formatter",
   "publisher": "JUNGHO",
   "license": "Apache-2.0",
-  "version": "3.2.2",
+  "version": "3.2.3",
   "main": "./out/extension.js",
   "icon": "logo.webp",
   "repository": {
@@ -159,11 +159,11 @@
     "sql-formatter": "15.8.2",
     "strip-comments": "2.0.1",
     "strip-json-comments": "5.0.3",
-    "terser": "5.49.1"
+    "terser": "5.49.2"
   },
   "devDependencies": {
     "@swc/cli": "0.8.1",
-    "@swc/core": "1.15.47",
+    "@swc/core": "1.16.1",
     "@swc/helpers": "0.5.23",
     "@types/clean-css": "4.2.11",
     "@types/html-minifier-terser": "7.0.2",
@@ -171,11 +171,11 @@
     "@types/strip-comments": "2.0.4",
     "@types/vscode": "1.116.0",
     "@vscode/vsce": "3.9.2",
-    "esbuild": "0.28.1",
-    "globals": "17.9.0",
+    "esbuild": "0.28.2",
+    "globals": "17.11.0",
     "ts-morph": "28.0.0",
     "ts-prune": "0.10.3",
-    "tsc-alias": "1.9.1",
+    "tsc-alias": "1.9.2",
     "typescript": "7.0.2"
   }
 }
